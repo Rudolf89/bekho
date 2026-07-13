@@ -30,6 +30,7 @@ class Clase extends Model
         'academia_id',
         'sede_id',
         'instructor_id',
+        'planilla_id',
         'nombre',
         'grupo_etario',
         'nivel',
@@ -84,6 +85,16 @@ class Clase extends Model
     public function asistencias(): HasMany
     {
         return $this->hasMany(Asistencia::class);
+    }
+
+    /**
+     * Planilla (rutina) que le corresponde a la clase.
+     *
+     * @return BelongsTo<Planilla, $this>
+     */
+    public function planilla(): BelongsTo
+    {
+        return $this->belongsTo(Planilla::class);
     }
 
     /**

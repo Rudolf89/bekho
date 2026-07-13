@@ -15,3 +15,4 @@ require __DIR__.'/formacion.php';
 require __DIR__.'/usuarios.php';
 require __DIR__.'/gestion.php';
 require __DIR__.'/examenes.php';
+require __DIR__.'/planillas.php';

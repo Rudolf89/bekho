@@ -85,6 +85,11 @@
                     <flux:input wire:model="hora_inicio" type="time" label="Inicio" />
                     <flux:input wire:model="hora_fin" type="time" label="Fin" />
                 </div>
+                <flux:select wire:model="planilla_id" label="Planilla (rutina)" placeholder="Sin planilla">
+                    @foreach ($planillas as $planilla)
+                        <flux:select.option value="{{ $planilla->id }}">{{ $planilla->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
             </div>
 
             <flux:switch wire:model="activo" label="Activa" />

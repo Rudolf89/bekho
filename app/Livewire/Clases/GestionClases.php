@@ -6,6 +6,7 @@ use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Models\Clase;
+use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
@@ -23,6 +24,8 @@ class GestionClases extends Component
     public ?int $sede_id = null;
 
     public ?int $instructor_id = null;
+
+    public ?int $planilla_id = null;
 
     public string $grupo_etario = '';
 
@@ -47,6 +50,7 @@ class GestionClases extends Component
             'nombre' => ['required', 'string', 'max:255'],
             'sede_id' => ['required', Rule::exists('sedes', 'id')],
             'instructor_id' => ['nullable', Rule::exists('users', 'id')],
+            'planilla_id' => ['nullable', Rule::exists('planillas', 'id')],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
             'nivel' => ['required', Rule::enum(NivelEntrenamiento::class)],
             'dia_semana' => ['required', Rule::enum(DiaSemana::class)],
@@ -58,7 +62,7 @@ class GestionClases extends Component
 
     public function nuevo(): void
     {
-        $this->reset('editandoId', 'nombre', 'sede_id', 'instructor_id', 'grupo_etario',
+        $this->reset('editandoId', 'nombre', 'sede_id', 'instructor_id', 'planilla_id', 'grupo_etario',
             'nivel', 'dia_semana', 'hora_inicio', 'hora_fin');
         $this->activo = true;
         $this->resetErrorBag();
@@ -71,6 +75,7 @@ class GestionClases extends Component
         $this->nombre = $clase->nombre;
         $this->sede_id = $clase->sede_id;
         $this->instructor_id = $clase->instructor_id;
+        $this->planilla_id = $clase->planilla_id;
         $this->grupo_etario = $clase->grupo_etario->value;
         $this->nivel = $clase->nivel->value;
         $this->dia_semana = $clase->dia_semana->value;
@@ -108,6 +113,7 @@ class GestionClases extends Component
                 ->orderBy('dia_semana')->orderBy('hora_inicio')->get(),
             'sedes' => Sede::orderBy('nombre')->get(),
             'instructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
+            'planillas' => Planilla::where('activo', true)->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),
             'niveles' => NivelEntrenamiento::cases(),
             'dias' => DiaSemana::cases(),

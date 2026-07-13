@@ -23,7 +23,7 @@
                     @endcan
                 </flux:sidebar.group>
 
-                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes'])
+                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas'])
                     <flux:sidebar.group heading="Gestión" class="grid">
                         @can('gestionar alumnos')
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
@@ -48,6 +48,11 @@
                         @can('gestionar examenes')
                             <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
                                 Exámenes
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar planillas')
+                            <flux:sidebar.item icon="clipboard-document-list" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
+                                Planillas
                             </flux:sidebar.item>
                         @endcan
                     </flux:sidebar.group>
