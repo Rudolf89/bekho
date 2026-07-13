@@ -16,6 +16,20 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
                 </flux:sidebar.group>
+
+                @can('ver formacion')
+                    <flux:sidebar.group heading="Formación" class="grid">
+                        <flux:sidebar.item icon="academic-cap" :href="route('formacion.index')" :current="request()->routeIs('formacion.index') || request()->routeIs('formacion.nivel') || request()->routeIs('formacion.contenido')" wire:navigate>
+                            Aprender
+                        </flux:sidebar.item>
+
+                        @can('gestionar formacion')
+                            <flux:sidebar.item icon="cog-6-tooth" :href="route('formacion.admin.niveles')" :current="request()->routeIs('formacion.admin.*')" wire:navigate>
+                                Administrar
+                            </flux:sidebar.item>
+                        @endcan
+                    </flux:sidebar.group>
+                @endcan
             </flux:sidebar.nav>
 
             <flux:spacer />

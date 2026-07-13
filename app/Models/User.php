@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Enums\EstadoProgreso;
 use App\Models\Concerns\PerteneceAcademia;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -119,5 +120,25 @@ class User extends Authenticatable implements PasskeyUser
     public function sedes(): BelongsToMany
     {
         return $this->belongsToMany(Sede::class, 'sede_user');
+    }
+
+    /**
+     * Registros de progreso de formación del usuario.
+     *
+     * @return HasMany<ProgresoContenido, $this>
+     */
+    public function progresos(): HasMany
+    {
+        return $this->hasMany(ProgresoContenido::class);
+    }
+
+    /**
+     * Estado de progreso del usuario en un contenido (Pendiente si no hay registro).
+     */
+    public function progresoEn(Contenido $contenido): EstadoProgreso
+    {
+        return $this->progresos()
+            ->where('contenido_id', $contenido->id)
+            ->first()?->estado ?? EstadoProgreso::Pendiente;
     }
 }
