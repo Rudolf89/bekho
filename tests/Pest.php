@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\Tenancy\Academia;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -19,7 +20,7 @@ pest()->extend(TestCase::class)
     // Reinicia la academia (tenant) activa entre tests: el contenedor es estático
     // y el middleware la fija durante las peticiones, así que hay que limpiarla
     // para no contaminar tests posteriores (global scope + autorelleno).
-    ->beforeEach(fn () => App\Support\Tenancy\Academia::olvidar())
+    ->beforeEach(fn () => Academia::olvidar())
     ->in('Feature');
 
 /*

@@ -168,20 +168,26 @@ test('un apoderado solo ve a sus propios hijos', function () {
 
 // --- Asistencia --------------------------------------------------------------
 
-test('el roster de una clase son los estudiantes activos de su sede, grupo y nivel', function () {
+test('el roster de una clase son los estudiantes activos de su sede y grupo etario', function () {
+    // Las clases se dividen SOLO por grupo etario: el roster incluye a todos los
+    // For Kids de la sede, sin importar su nivel; excluye otros grupos etarios.
     Tenant::set($this->bekho->id);
     $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
 
-    $coincide = nuevoEstudiante($this->bekho->id, ['nombre' => 'Coincide', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'principiantes']);
-    nuevoEstudiante($this->bekho->id, ['nombre' => 'OtroNivel', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'avanzado']);
+    nuevoEstudiante($this->bekho->id, ['nombre' => 'KidPrincipiante', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'principiantes']);
+    nuevoEstudiante($this->bekho->id, ['nombre' => 'KidAvanzado', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'avanzado']);
+    nuevoEstudiante($this->bekho->id, ['nombre' => 'Adulto', 'sede_id' => $sede->id, 'grupo_etario' => 'jovenes_adultos', 'nivel' => 'principiantes']);
 
     $clase = Clase::create([
         'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
-        'grupo_etario' => 'for_kids', 'nivel' => 'principiantes', 'dia_semana' => 1,
+        'grupo_etario' => 'for_kids', 'dia_semana' => 1,
         'hora_inicio' => '10:00', 'activo' => true,
     ]);
 
     $roster = $clase->estudiantesEsperados()->get();
-    expect($roster)->toHaveCount(1);
-    expect($roster->first()->nombre)->toBe('Coincide');
+
+    // Ambos For Kids (cualquier nivel) entran; el adulto no.
+    expect($roster->pluck('nombre')->all())->toContain('KidPrincipiante', 'KidAvanzado');
+    expect($roster->pluck('nombre')->all())->not->toContain('Adulto');
+    expect($roster)->toHaveCount(2);
 });

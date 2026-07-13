@@ -4,7 +4,6 @@ namespace App\Livewire\Clases;
 
 use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
-use App\Enums\NivelEntrenamiento;
 use App\Models\Clase;
 use App\Models\Planilla;
 use App\Models\Sede;
@@ -29,8 +28,6 @@ class GestionClases extends Component
 
     public string $grupo_etario = '';
 
-    public string $nivel = '';
-
     public ?int $dia_semana = null;
 
     public ?string $hora_inicio = null;
@@ -52,7 +49,6 @@ class GestionClases extends Component
             'instructor_id' => ['nullable', Rule::exists('users', 'id')],
             'planilla_id' => ['nullable', Rule::exists('planillas', 'id')],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
-            'nivel' => ['required', Rule::enum(NivelEntrenamiento::class)],
             'dia_semana' => ['required', Rule::enum(DiaSemana::class)],
             'hora_inicio' => ['required', 'date_format:H:i'],
             'hora_fin' => ['nullable', 'date_format:H:i', 'after:hora_inicio'],
@@ -63,7 +59,7 @@ class GestionClases extends Component
     public function nuevo(): void
     {
         $this->reset('editandoId', 'nombre', 'sede_id', 'instructor_id', 'planilla_id', 'grupo_etario',
-            'nivel', 'dia_semana', 'hora_inicio', 'hora_fin');
+            'dia_semana', 'hora_inicio', 'hora_fin');
         $this->activo = true;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -77,7 +73,6 @@ class GestionClases extends Component
         $this->instructor_id = $clase->instructor_id;
         $this->planilla_id = $clase->planilla_id;
         $this->grupo_etario = $clase->grupo_etario->value;
-        $this->nivel = $clase->nivel->value;
         $this->dia_semana = $clase->dia_semana->value;
         $this->hora_inicio = substr((string) $clase->hora_inicio, 0, 5);
         $this->hora_fin = $clase->hora_fin ? substr((string) $clase->hora_fin, 0, 5) : null;
@@ -115,7 +110,6 @@ class GestionClases extends Component
             'instructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
             'planillas' => Planilla::where('activo', true)->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),
-            'niveles' => NivelEntrenamiento::cases(),
             'dias' => DiaSemana::cases(),
         ]);
     }

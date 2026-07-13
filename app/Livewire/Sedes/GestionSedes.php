@@ -120,6 +120,7 @@ class GestionSedes extends Component
             'sedes' => Sede::with('academia')->orderBy('nombre')->get(),
             'academias' => Academia::orderBy('nombre')->get(),
             'listaInstructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
+            'comunas' => config('comunas', []),
         ]);
     }
 }

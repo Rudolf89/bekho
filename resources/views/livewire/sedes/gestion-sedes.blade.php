@@ -62,7 +62,15 @@
             <flux:input wire:model="nombre" label="Nombre" required />
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="direccion" label="Dirección" />
-                <flux:input wire:model="comuna" label="Comuna" />
+                <flux:select wire:model="comuna" label="Comuna" placeholder="Selecciona una comuna">
+                    {{-- Conserva un valor previo que no esté en la lista (p. ej. otra región). --}}
+                    @if ($comuna && ! in_array($comuna, $comunas, true))
+                        <flux:select.option value="{{ $comuna }}">{{ $comuna }}</flux:select.option>
+                    @endif
+                    @foreach ($comunas as $c)
+                        <flux:select.option value="{{ $c }}">{{ $c }}</flux:select.option>
+                    @endforeach
+                </flux:select>
             </div>
 
             @if ($this->esSuperAdmin())

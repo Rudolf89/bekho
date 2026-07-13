@@ -19,7 +19,7 @@
     @if ($clase)
         {{-- Contador --}}
         <div class="flex items-center justify-between rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-            <flux:text>{{ $clase->grupo_etario->etiqueta() }} · {{ $clase->nivel->etiqueta() }}</flux:text>
+            <flux:text>{{ $clase->grupo_etario->etiqueta() }}</flux:text>
             <flux:badge color="green" size="lg">{{ $presentes }} / {{ $roster->count() }} presentes</flux:badge>
         </div>
 
@@ -45,7 +45,7 @@
                 </div>
             @empty
                 <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                    <flux:text>No hay estudiantes activos para esta clase (misma sede, grupo etario y nivel).</flux:text>
+                    <flux:text>No hay estudiantes activos para esta clase (misma sede y grupo etario).</flux:text>
                 </div>
             @endforelse
         </div>

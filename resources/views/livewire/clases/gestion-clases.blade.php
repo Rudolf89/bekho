@@ -12,7 +12,7 @@
             <flux:table.columns>
                 <flux:table.column>Día / Hora</flux:table.column>
                 <flux:table.column>Clase</flux:table.column>
-                <flux:table.column>Grupo · Nivel</flux:table.column>
+                <flux:table.column>Grupo</flux:table.column>
                 <flux:table.column>Sede</flux:table.column>
                 <flux:table.column>Instructor</flux:table.column>
                 <flux:table.column></flux:table.column>
@@ -27,7 +27,7 @@
                             </flux:text>
                         </flux:table.cell>
                         <flux:table.cell>{{ $clase->nombre }}</flux:table.cell>
-                        <flux:table.cell>{{ $clase->grupo_etario->etiqueta() }} · {{ $clase->nivel->etiqueta() }}</flux:table.cell>
+                        <flux:table.cell>{{ $clase->grupo_etario->etiqueta() }}</flux:table.cell>
                         <flux:table.cell>{{ $clase->sede?->nombre ?? '—' }}</flux:table.cell>
                         <flux:table.cell>{{ $clase->instructor?->name ?? '—' }}</flux:table.cell>
                         <flux:table.cell>
@@ -69,11 +69,6 @@
                 <flux:select wire:model="grupo_etario" label="Grupo etario" placeholder="Selecciona">
                     @foreach ($grupos as $g)
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                <flux:select wire:model="nivel" label="Nivel" placeholder="Selecciona">
-                    @foreach ($niveles as $n)
-                        <flux:select.option value="{{ $n->value }}">{{ $n->etiqueta() }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:select wire:model="dia_semana" label="Día" placeholder="Selecciona">

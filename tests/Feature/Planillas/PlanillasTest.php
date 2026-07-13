@@ -104,7 +104,7 @@ test('una clase puede apuntar a su planilla', function () {
 
     $clase = Clase::create([
         'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'planilla_id' => $planilla->id,
-        'nombre' => 'Kids AM', 'grupo_etario' => 'for_kids', 'nivel' => 'principiantes',
+        'nombre' => 'Kids AM', 'grupo_etario' => 'for_kids',
         'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
     ]);
 

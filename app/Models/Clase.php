@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
-use App\Enums\NivelEntrenamiento;
 use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +32,6 @@ class Clase extends Model
         'planilla_id',
         'nombre',
         'grupo_etario',
-        'nivel',
         'dia_semana',
         'hora_inicio',
         'hora_fin',
@@ -47,7 +45,6 @@ class Clase extends Model
     {
         return [
             'grupo_etario' => GrupoEtario::class,
-            'nivel' => NivelEntrenamiento::class,
             'dia_semana' => DiaSemana::class,
             'activo' => 'boolean',
         ];
@@ -98,8 +95,9 @@ class Clase extends Model
     }
 
     /**
-     * Estudiantes que corresponden a esta clase: activos de la misma sede,
-     * grupo etario y nivel (no hay inscripción explícita alumno↔clase).
+     * Estudiantes que corresponden a esta clase: activos de la misma sede y
+     * grupo etario (las clases se dividen solo por grupo etario; no hay
+     * inscripción explícita alumno↔clase).
      *
      * @return Builder<Estudiante>
      */
@@ -109,7 +107,6 @@ class Clase extends Model
             ->activos()
             ->where('sede_id', $this->sede_id)
             ->where('grupo_etario', $this->grupo_etario->value)
-            ->where('nivel', $this->nivel->value)
             ->orderBy('nombre');
     }
 

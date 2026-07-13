@@ -22,14 +22,13 @@ class ServicioExamenes
 {
     /**
      * Instructor a quien se acredita por defecto la graduación del estudiante:
-     * el instructor de su clase (misma sede, grupo etario y nivel).
+     * el instructor de su clase (misma sede y grupo etario).
      */
     public function instructorPorDefecto(Estudiante $estudiante): ?User
     {
         $clase = Clase::activas()
             ->where('sede_id', $estudiante->sede_id)
             ->where('grupo_etario', $estudiante->grupo_etario->value)
-            ->where('nivel', $estudiante->nivel->value)
             ->whereNotNull('instructor_id')
             ->first();
 
