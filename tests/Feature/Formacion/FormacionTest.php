@@ -30,7 +30,14 @@ afterEach(function () {
  */
 function usuarioConRol(string $rol, ?int $academiaId): User
 {
-    $user = User::factory()->create(['academia_id' => $academiaId]);
+    // Los roles con 2FA obligatoria (super-admin, maestro) necesitan la 2FA
+    // confirmada para navegar; si no, el middleware ExigeDosFactores los redirige.
+    $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
+
+    $user = User::factory()->create([
+        'academia_id' => $academiaId,
+        'two_factor_confirmed_at' => $exige2fa ? now() : null,
+    ]);
     $user->assignRole($rol);
 
     return $user;

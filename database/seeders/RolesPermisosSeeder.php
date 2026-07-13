@@ -21,6 +21,7 @@ class RolesPermisosSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permisos = [
+            'gestionar usuarios',
             'gestionar alumnos',
             'tomar asistencia',
             'registrar pagos',

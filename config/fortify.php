@@ -161,7 +161,11 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // El auto-registro público está desactivado a propósito: en una escuela
+        // con menores, las cuentas las crea la escuela desde la gestión de
+        // usuarios (permiso "gestionar usuarios"). Sin esta feature, /register
+        // deja de existir (404).
+        // Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([

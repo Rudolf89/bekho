@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+// Decisión de diseño (seguridad): NO se implementa MustVerifyEmail. La escuela
+// controla las altas y muchos alumnos (menores) no tienen correo propio, así que
+// no se exige verificación de email de forma global. Por eso también se quitó el
+// middleware 'verified' de las rutas. Para activarla en el futuro: implementar
+// aquí `implements MustVerifyEmail` y volver a poner 'verified' en las rutas.
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\EstadoProgreso;
 use App\Models\Concerns\PerteneceAcademia;
