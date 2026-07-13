@@ -171,7 +171,11 @@ return [
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
-            // 'window' => 0
+            // Tolerancia de desfase de reloj del validador TOTP, en múltiplos de
+            // 30s hacia cada lado. 1 = ±30s (recomendado en producción). Solo
+            // súbelo en local si el reloj del equipo está desfasado respecto del
+            // teléfono (p. ej. 30 ≈ ±15 min). Ver FORTIFY_2FA_WINDOW en .env.
+            'window' => (int) env('FORTIFY_2FA_WINDOW', 1),
         ]),
         Features::passkeys([
             'confirmPassword' => true,
