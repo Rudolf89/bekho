@@ -131,6 +131,26 @@ class Estudiante extends Model
     }
 
     /**
+     * Inscripciones a convocatorias de examen.
+     *
+     * @return HasMany<Inscripcion, $this>
+     */
+    public function inscripciones(): HasMany
+    {
+        return $this->hasMany(Inscripcion::class);
+    }
+
+    /**
+     * Historial de graduaciones.
+     *
+     * @return HasMany<Graduacion, $this>
+     */
+    public function graduaciones(): HasMany
+    {
+        return $this->hasMany(Graduacion::class);
+    }
+
+    /**
      * Escala de grados (cinturones) que corresponde según el grupo etario.
      */
     public function escalaGrado(): EscalaGrado
