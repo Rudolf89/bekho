@@ -21,6 +21,16 @@
                             Usuarios
                         </flux:sidebar.item>
                     @endcan
+                    @can('gestionar sedes')
+                        <flux:sidebar.item icon="building-office" :href="route('sedes.index')" :current="request()->routeIs('sedes.*')" wire:navigate>
+                            Sedes
+                        </flux:sidebar.item>
+                    @endcan
+                    @can('gestionar academias')
+                        <flux:sidebar.item icon="building-library" :href="route('academias.index')" :current="request()->routeIs('academias.*')" wire:navigate>
+                            Academias
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
 
                 @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas'])

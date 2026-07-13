@@ -23,6 +23,7 @@ class RolesPermisosSeeder extends Seeder
 
         $permisos = [
             'gestionar usuarios',
+            'gestionar sedes',
             'gestionar alumnos',
             'gestionar clases',
             'tomar asistencia',
@@ -33,17 +34,22 @@ class RolesPermisosSeeder extends Seeder
             'ver formacion',
         ];
 
-        foreach ($permisos as $permiso) {
+        // "gestionar academias" es exclusivo del super-admin (crear/editar las
+        // academias, que son el nivel raíz del tenant): no lo tiene el maestro.
+        $permisoAcademias = 'gestionar academias';
+
+        foreach ([...$permisos, $permisoAcademias] as $permiso) {
             Permission::findOrCreate($permiso);
         }
 
         // Refresca la caché para que los roles vean los permisos recién creados.
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // super-admin y maestro: todos los permisos.
+        // super-admin: todos los permisos, incluida la gestión de academias.
         $superAdmin = Role::findOrCreate('super-admin');
-        $superAdmin->syncPermissions($permisos);
+        $superAdmin->syncPermissions([...$permisos, $permisoAcademias]);
 
+        // maestro: todos menos gestionar academias.
         $maestro = Role::findOrCreate('maestro');
         $maestro->syncPermissions($permisos);
 

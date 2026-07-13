@@ -75,6 +75,14 @@ test('las pantallas de clases y pagos renderizan para un maestro', function () {
     $this->actingAs($user)->get(route('pagos.index'))->assertOk();
 });
 
+test('la gestión de estudiantes renderiza aunque existan apoderados', function () {
+    // Regresión: el multiselect de apoderados debe usar componentes de Flux libre.
+    actor('apoderado', $this->bekho->id);
+    $user = actor('maestro', $this->bekho->id);
+
+    $this->actingAs($user)->get(route('estudiantes.index'))->assertOk();
+});
+
 // --- Scope por academia ------------------------------------------------------
 
 test('los estudiantes se aíslan por academia', function () {

@@ -120,11 +120,14 @@
             </div>
 
             @if ($listaApoderados->isNotEmpty())
-                <flux:select wire:model="apoderados" variant="listbox" multiple label="Apoderados" placeholder="Selecciona apoderados">
-                    @foreach ($listaApoderados as $apoderado)
-                        <flux:select.option value="{{ $apoderado->id }}">{{ $apoderado->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
+                <div>
+                    <flux:label>Apoderados</flux:label>
+                    <div class="mt-2 max-h-40 space-y-2 overflow-y-auto rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                        @foreach ($listaApoderados as $apoderado)
+                            <flux:checkbox wire:model="apoderados" value="{{ $apoderado->id }}" label="{{ $apoderado->name }}" />
+                        @endforeach
+                    </div>
+                </div>
             @endif
 
             <flux:switch wire:model="activo" label="Activo" />
