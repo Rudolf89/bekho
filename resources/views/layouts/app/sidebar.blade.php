@@ -23,6 +23,39 @@
                     @endcan
                 </flux:sidebar.group>
 
+                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos'])
+                    <flux:sidebar.group heading="Gestión" class="grid">
+                        @can('gestionar alumnos')
+                            <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
+                                Estudiantes
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar clases')
+                            <flux:sidebar.item icon="calendar-days" :href="route('clases.index')" :current="request()->routeIs('clases.*')" wire:navigate>
+                                Clases
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('tomar asistencia')
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('asistencia.tomar')" :current="request()->routeIs('asistencia.*')" wire:navigate>
+                                Asistencia
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('registrar pagos')
+                            <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
+                                Pagos
+                            </flux:sidebar.item>
+                        @endcan
+                    </flux:sidebar.group>
+                @endcanany
+
+                @role('apoderado')
+                    <flux:sidebar.group heading="Apoderado" class="grid">
+                        <flux:sidebar.item icon="users" :href="route('mis-estudiantes.index')" :current="request()->routeIs('mis-estudiantes.*')" wire:navigate>
+                            Mis estudiantes
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endrole
+
                 @can('ver formacion')
                     <flux:sidebar.group heading="Formación" class="grid">
                         <flux:sidebar.item icon="academic-cap" :href="route('formacion.index')" :current="request()->routeIs('formacion.index') || request()->routeIs('formacion.nivel') || request()->routeIs('formacion.contenido')" wire:navigate>

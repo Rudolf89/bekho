@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Academia;
+use App\Models\ConfiguracionPago;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +24,7 @@ class RolesPermisosSeeder extends Seeder
         $permisos = [
             'gestionar usuarios',
             'gestionar alumnos',
+            'gestionar clases',
             'tomar asistencia',
             'registrar pagos',
             'gestionar examenes',
@@ -64,6 +66,13 @@ class RolesPermisosSeeder extends Seeder
         $academia = Academia::updateOrCreate(
             ['nombre' => 'BEKHO'],
             ['activo' => true],
+        );
+
+        // Configuración de pagos de la academia. Los montos quedan sin definir
+        // (cada escuela pone los suyos); solo se fija el descuento por hermanos.
+        ConfiguracionPago::updateOrCreate(
+            ['academia_id' => $academia->id],
+            ['descuento_hermanos_pct' => 20],
         );
 
         // Super administrador transversal (academia_id null → ve todas).

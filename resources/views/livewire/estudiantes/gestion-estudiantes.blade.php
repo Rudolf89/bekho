@@ -1,0 +1,138 @@
+<div class="mx-auto w-full max-w-6xl space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <flux:heading size="xl">Estudiantes</flux:heading>
+            <flux:text class="mt-1">Fichas de alumnos de la escuela</flux:text>
+        </div>
+        <flux:button wire:click="nuevo" icon="user-plus" variant="primary">Nuevo estudiante</flux:button>
+    </div>
+
+    {{-- Filtros --}}
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <flux:input wire:model.live.debounce.300ms="buscar" placeholder="Buscar por nombre o RUT" icon="magnifying-glass" />
+        <flux:select wire:model.live="filtroGrupo" placeholder="Todos los grupos">
+            <flux:select.option value="">Todos los grupos</flux:select.option>
+            @foreach ($grupos as $g)
+                <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
+            @endforeach
+        </flux:select>
+        <flux:select wire:model.live="filtroNivel" placeholder="Todos los niveles">
+            <flux:select.option value="">Todos los niveles</flux:select.option>
+            @foreach ($niveles as $n)
+                <flux:select.option value="{{ $n->value }}">{{ $n->etiqueta() }}</flux:select.option>
+            @endforeach
+        </flux:select>
+        <flux:select wire:model.live="filtroEstado">
+            <flux:select.option value="activos">Activos</flux:select.option>
+            <flux:select.option value="inactivos">Inactivos</flux:select.option>
+            <flux:select.option value="todos">Todos</flux:select.option>
+        </flux:select>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column>Nombre</flux:table.column>
+                <flux:table.column>Grupo</flux:table.column>
+                <flux:table.column>Nivel</flux:table.column>
+                <flux:table.column>Sede</flux:table.column>
+                <flux:table.column>Estado</flux:table.column>
+                <flux:table.column></flux:table.column>
+            </flux:table.columns>
+            <flux:table.rows>
+                @forelse ($estudiantes as $estudiante)
+                    <flux:table.row wire:key="est-{{ $estudiante->id }}">
+                        <flux:table.cell variant="strong">
+                            {{ $estudiante->nombre }}
+                            @if ($estudiante->rut)
+                                <flux:text size="sm" class="block">{{ $estudiante->rut }}</flux:text>
+                            @endif
+                        </flux:table.cell>
+                        <flux:table.cell>{{ $estudiante->grupo_etario->etiqueta() }}</flux:table.cell>
+                        <flux:table.cell>{{ $estudiante->nivel->etiqueta() }}</flux:table.cell>
+                        <flux:table.cell>{{ $estudiante->sede?->nombre ?? '—' }}</flux:table.cell>
+                        <flux:table.cell>
+                            <flux:badge :color="$estudiante->activo ? 'green' : 'zinc'" size="sm">
+                                {{ $estudiante->activo ? 'Activo' : 'Inactivo' }}
+                            </flux:badge>
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <div class="flex items-center justify-end gap-1">
+                                <flux:button wire:click="editar({{ $estudiante->id }})" icon="pencil-square" variant="ghost" size="sm" />
+                                <flux:button wire:click="alternarActivo({{ $estudiante->id }})"
+                                    :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm" />
+                            </div>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell colspan="6">
+                            <flux:text class="py-4 text-center">No se encontraron estudiantes.</flux:text>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+    </div>
+
+    <div>{{ $estudiantes->links() }}</div>
+
+    {{-- Formulario --}}
+    <flux:modal name="estudiante-modal" wire:model="mostrarModal" class="max-w-2xl md:min-w-2xl">
+        <form wire:submit="guardar" class="space-y-5">
+            <flux:heading size="lg">{{ $editandoId ? 'Editar estudiante' : 'Nuevo estudiante' }}</flux:heading>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <flux:input wire:model="nombre" label="Nombre" required />
+                <flux:input wire:model="rut" label="RUT" />
+                <flux:input wire:model="fecha_nacimiento" type="date" label="Fecha de nacimiento" />
+                <flux:select wire:model.live="grupo_etario" label="Grupo etario" placeholder="Selecciona">
+                    @foreach ($grupos as $g)
+                        <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }} ({{ $g->rangoEdad() }})</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select wire:model="nivel" label="Nivel" placeholder="Selecciona">
+                    @foreach ($niveles as $n)
+                        <flux:select.option value="{{ $n->value }}">{{ $n->etiqueta() }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select wire:model="grado_id" label="Grado (cinturón)" placeholder="Sin grado">
+                    @foreach ($this->gradosDisponibles() as $grado)
+                        <flux:select.option value="{{ $grado->id }}">{{ $grado->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select wire:model="sede_id" label="Sede" placeholder="Sin sede">
+                    @foreach ($sedes as $sede)
+                        <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:input wire:model="telefono_contacto" label="Teléfono de contacto" />
+                <flux:input wire:model="email_contacto" type="email" label="Email de contacto" />
+            </div>
+
+            <div>
+                <flux:label>Programas</flux:label>
+                <div class="mt-2 flex flex-wrap gap-4">
+                    @foreach ($listaProgramas as $programa)
+                        <flux:checkbox wire:model="programas" value="{{ $programa->id }}" label="{{ $programa->nombre }}" />
+                    @endforeach
+                </div>
+            </div>
+
+            @if ($listaApoderados->isNotEmpty())
+                <flux:select wire:model="apoderados" variant="listbox" multiple label="Apoderados" placeholder="Selecciona apoderados">
+                    @foreach ($listaApoderados as $apoderado)
+                        <flux:select.option value="{{ $apoderado->id }}">{{ $apoderado->name }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            @endif
+
+            <flux:switch wire:model="activo" label="Activo" />
+
+            <div class="flex justify-end gap-3">
+                <flux:button type="button" variant="outline" wire:click="$set('mostrarModal', false)">Cancelar</flux:button>
+                <flux:button type="submit" variant="primary">Guardar</flux:button>
+            </div>
+        </form>
+    </flux:modal>
+</div>
