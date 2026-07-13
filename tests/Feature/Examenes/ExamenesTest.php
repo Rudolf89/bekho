@@ -76,8 +76,8 @@ test('las convocatorias se aíslan por academia', function () {
 // --- Regla central: aprobar sube el grado y deja historial -------------------
 
 test('aprobar un examen sube el grado del estudiante y crea el historial', function () {
-    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'estandar', 'activo' => true]);
-    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'estandar', 'activo' => true]);
+    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
+    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
     $estudiante = Estudiante::create([
         'academia_id' => $this->bekho->id, 'nombre' => 'Carlos', 'grupo_etario' => 'for_kids',
@@ -104,8 +104,8 @@ test('aprobar un examen sube el grado del estudiante y crea el historial', funct
 });
 
 test('un examen reprobado no sube el grado ni crea historial', function () {
-    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'estandar', 'activo' => true]);
-    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'estandar', 'activo' => true]);
+    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
+    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
     $estudiante = Estudiante::create([
         'academia_id' => $this->bekho->id, 'nombre' => 'Diego', 'grupo_etario' => 'for_kids',
@@ -132,8 +132,8 @@ test('el conteo de graduaciones sube por la línea de supervisión', function ()
     $ana = usuarioExamen('maestro', $this->bekho->id);              // jefa
     $beto = usuarioExamen('instructor', $this->bekho->id, $ana->id); // Beto reporta a Ana
 
-    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'estandar', 'activo' => true]);
-    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'estandar', 'activo' => true]);
+    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
+    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
     // Dos graduaciones acreditadas a Beto.
     foreach (['Uno', 'Dos'] as $nombre) {

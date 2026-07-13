@@ -3,16 +3,19 @@
 namespace App\Enums;
 
 /**
- * Escala de grados (cinturones). Tigers usa un sistema de rangos y parches
- * propio, distinto al del resto de los grupos.
+ * Escala de grados (cinturones). Hay tres sistemas distintos:
  *
- * - estandar: For Kids y Jóvenes y Adultos.
- * - tigers: sistema propio de Tigers.
+ * - Tigers: sistema propio (cada color liso y luego con animal).
+ * - ForKids: intercala un cinturón "recomendado" antes de cada "decidido".
+ * - Adultos (Jóvenes y Adultos): solo el "decidido" de cada color.
+ *
+ * ForKids y Adultos comparten los grados negros (1º a 9º Dan) tras Rojo/Negro.
  */
 enum EscalaGrado: string
 {
-    case Estandar = 'estandar';
     case Tigers = 'tigers';
+    case ForKids = 'for_kids';
+    case Adultos = 'adultos';
 
     /**
      * Etiqueta legible en español.
@@ -20,8 +23,9 @@ enum EscalaGrado: string
     public function etiqueta(): string
     {
         return match ($this) {
-            self::Estandar => 'Estándar',
             self::Tigers => 'Tigers',
+            self::ForKids => 'For Kids',
+            self::Adultos => 'Jóvenes y Adultos',
         };
     }
 
@@ -30,6 +34,10 @@ enum EscalaGrado: string
      */
     public static function paraGrupo(GrupoEtario $grupo): self
     {
-        return $grupo === GrupoEtario::Tigers ? self::Tigers : self::Estandar;
+        return match ($grupo) {
+            GrupoEtario::Tigers => self::Tigers,
+            GrupoEtario::ForKids => self::ForKids,
+            GrupoEtario::JovenesAdultos => self::Adultos,
+        };
     }
 }

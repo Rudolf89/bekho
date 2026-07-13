@@ -7,6 +7,7 @@ use App\Models\Grado;
 use App\Models\Programa;
 use App\Support\Tenancy\Academia as Tenant;
 use Database\Seeders\CargosRangosSeeder;
+use Database\Seeders\GradosSeeder;
 use Database\Seeders\ProgramasSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
@@ -57,15 +58,32 @@ test('el grupo etario se sugiere pero no es automático en el solapamiento', fun
 
 test('la escala de grados corresponde al grupo etario', function () {
     expect(EscalaGrado::paraGrupo(GrupoEtario::Tigers))->toBe(EscalaGrado::Tigers);
-    expect(EscalaGrado::paraGrupo(GrupoEtario::ForKids))->toBe(EscalaGrado::Estandar);
-    expect(EscalaGrado::paraGrupo(GrupoEtario::JovenesAdultos))->toBe(EscalaGrado::Estandar);
+    expect(EscalaGrado::paraGrupo(GrupoEtario::ForKids))->toBe(EscalaGrado::ForKids);
+    expect(EscalaGrado::paraGrupo(GrupoEtario::JovenesAdultos))->toBe(EscalaGrado::Adultos);
+});
+
+test('el seeder de grados crea las tres escalas y es idempotente', function () {
+    $this->seed(GradosSeeder::class);
+    $this->seed(GradosSeeder::class); // no duplica
+
+    expect(Grado::porEscala(EscalaGrado::Tigers)->count())->toBe(18);
+    expect(Grado::porEscala(EscalaGrado::ForKids)->count())->toBe(27); // 18 + 9 danes
+    expect(Grado::porEscala(EscalaGrado::Adultos)->count())->toBe(19); // 10 + 9 danes
+
+    // Tigers empieza con Blanco y luego Blanco Tortuga.
+    $tigers = Grado::porEscala(EscalaGrado::Tigers)->ordenados()->pluck('nombre');
+    expect($tigers->first())->toBe('Blanco');
+    expect($tigers->get(1))->toBe('Blanco Tortuga');
+
+    // Los danes van al final en For Kids y Adultos.
+    expect(Grado::porEscala(EscalaGrado::Adultos)->ordenados()->pluck('nombre')->last())->toBe('9º Dan');
 });
 
 test('el scope porEscala filtra los grados de una escala', function () {
-    Grado::create(['nombre' => 'Blanco', 'orden' => 1, 'escala' => 'estandar', 'activo' => true]);
+    Grado::create(['nombre' => 'Blanco', 'orden' => 1, 'escala' => 'adultos', 'activo' => true]);
     Grado::create(['nombre' => 'Tigre Blanco', 'orden' => 1, 'escala' => 'tigers', 'activo' => true]);
 
-    expect(Grado::porEscala(EscalaGrado::Estandar)->count())->toBe(1);
+    expect(Grado::porEscala(EscalaGrado::Adultos)->count())->toBe(1);
     expect(Grado::porEscala(EscalaGrado::Tigers)->count())->toBe(1);
-    expect(Grado::porEscala(EscalaGrado::Estandar)->first()->nombre)->toBe('Blanco');
+    expect(Grado::porEscala(EscalaGrado::Adultos)->first()->nombre)->toBe('Blanco');
 });
