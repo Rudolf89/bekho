@@ -30,7 +30,9 @@ class EstableceAcademiaActual
             $usuario = Auth::user();
 
             if ($usuario->hasRole('super-admin')) {
-                Academia::set($this->academiaActivaSuperAdmin($request));
+                // El super-admin ve TODO el sistema; la academia activa solo se
+                // usa como contexto para crear registros (no filtra lecturas).
+                Academia::set($this->academiaActivaSuperAdmin($request), filtraLecturas: false);
             } else {
                 Academia::set($usuario->academia_id);
             }

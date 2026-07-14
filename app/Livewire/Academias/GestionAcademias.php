@@ -83,15 +83,10 @@ class GestionAcademias extends Component
 
     public function render()
     {
-        // Los conteos ignoran el aislamiento por academia para que cada fila
-        // muestre su total real (no el de la academia activa del super-admin).
-        $academias = Academia::withCount([
-            'sedes' => fn ($q) => $q->withoutGlobalScope('academia'),
-            'usuarios' => fn ($q) => $q->withoutGlobalScope('academia'),
-        ]);
-
+        // El super-admin no filtra lecturas, así que los conteos de sedes y
+        // usuarios salen globales (el total real de cada academia).
         return view('livewire.academias.gestion-academias', [
-            'academias' => $this->aplicarOrden($academias, ['nombre', 'activo'], 'nombre')->get(),
+            'academias' => $this->aplicarOrden(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'activo'], 'nombre')->get(),
         ]);
     }
 }

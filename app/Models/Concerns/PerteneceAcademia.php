@@ -21,7 +21,9 @@ trait PerteneceAcademia
     public static function bootPerteneceAcademia(): void
     {
         static::addGlobalScope('academia', function (Builder $builder): void {
-            if (Academia::hayActiva()) {
+            // El super-admin ve todo: hay academia activa (para crear) pero no
+            // se filtran las lecturas.
+            if (Academia::hayActiva() && Academia::filtraLecturas()) {
                 $modelo = $builder->getModel();
                 $builder->where($modelo->getTable().'.academia_id', Academia::id());
             }

@@ -3,6 +3,7 @@
 use App\Livewire\Academias\GestionAcademias;
 use App\Livewire\Sedes\GestionSedes;
 use App\Models\Academia;
+use App\Models\Estudiante;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Academia as Tenant;
@@ -38,14 +39,14 @@ test('el super-admin ve las sedes de todas las academias (aunque tenga una activ
     Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede BEKHO', 'activo' => true]);
     Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Norte', 'activo' => true]);
 
-    // Academia activa = BEKHO (como la deja el selector del super-admin).
-    Tenant::set($this->bekho->id);
-
-    // El super-admin ve ambas; el maestro de BEKHO solo la suya.
+    // Super-admin: academia activa = BEKHO pero SIN filtrar lecturas (ve todo).
+    Tenant::set($this->bekho->id, filtraLecturas: false);
     Livewire::actingAs(actorOrg('super-admin', null))->test(GestionSedes::class)
         ->assertSee('Sede BEKHO')
         ->assertSee('Sede Norte');
 
+    // Maestro: academia activa = BEKHO filtrando lecturas (solo la suya).
+    Tenant::set($this->bekho->id);
     Livewire::actingAs(actorOrg('maestro', $this->bekho->id))->test(GestionSedes::class)
         ->assertSee('Sede BEKHO')
         ->assertDontSee('Sede Norte');
@@ -55,11 +56,38 @@ test('los conteos de academias son globales, no de la academia activa', function
     $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
     Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Norte', 'activo' => true]);
 
-    Tenant::set($this->bekho->id);
+    Tenant::set($this->bekho->id, filtraLecturas: false);
 
     Livewire::actingAs(actorOrg('super-admin', null))->test(GestionAcademias::class)
         ->assertViewHas('academias', fn ($academias) => $academias
             ->firstWhere('nombre', 'ATA Norte')?->sedes_count === 1);
+});
+
+test('el alcance del super-admin (no filtrar lecturas) aplica a todo modelo por academia', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    // Con academia activa filtrando (maestro): solo ve la suya.
+    Tenant::set($this->bekho->id);
+    expect(Estudiante::count())->toBe(1);
+
+    // Super-admin (no filtra lecturas): ve las de todas las academias.
+    Tenant::set($this->bekho->id, filtraLecturas: false);
+    expect(Estudiante::count())->toBe(2);
+});
+
+test('en una petición real el super-admin ve alumnos de otra academia', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Otra Academia', 'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    Tenant::olvidar();
+
+    // La petición pasa por el middleware, que para el super-admin no filtra.
+    $this->actingAs(actorOrg('super-admin', null))
+        ->get(route('estudiantes.index'))
+        ->assertOk()
+        ->assertSee('Alumno Otra Academia');
 });
 
 // --- Permisos ----------------------------------------------------------------
