@@ -58,6 +58,36 @@ test('una clase puede tener varios instructores con su papel', function () {
         ->and($papeles[$ayudante->id])->toBe('ayudante');
 });
 
+test('el nombre de la clase se autocompleta con grupo, día, hora y sede', function () {
+    Livewire::actingAs($this->direccion)->test(GestionClases::class)
+        ->call('nuevo')
+        ->set('grupo_etario', 'tigers')
+        ->set('dia_semana', '1')
+        ->set('hora_inicio', '18:10')
+        ->set('sede_id', (string) $this->sede->id)
+        ->assertSet('nombre', 'Tigers · Lunes 18:10 · Central');
+});
+
+test('la hora de fin se autocompleta a inicio + 45 min pero es editable', function () {
+    Livewire::actingAs($this->direccion)->test(GestionClases::class)
+        ->call('nuevo')
+        ->set('hora_inicio', '18:10')
+        ->assertSet('hora_fin', '18:55')
+        // El usuario la puede cambiar y no se vuelve a sobrescribir.
+        ->set('hora_fin', '20:00')
+        ->set('hora_inicio', '19:00')
+        ->assertSet('hora_fin', '20:00');
+});
+
+test('si el usuario escribe un nombre, deja de autocompletarse', function () {
+    Livewire::actingAs($this->direccion)->test(GestionClases::class)
+        ->call('nuevo')
+        ->set('grupo_etario', 'tigers')
+        ->set('nombre', 'Clase de los pequeños')
+        ->set('dia_semana', '1')
+        ->assertSet('nombre', 'Clase de los pequeños');
+});
+
 test('la federación es de solo lectura: no puede crear una sede', function () {
     $federacion = User::factory()->create(['academia_id' => null]);
     $federacion->assignRole('federacion');

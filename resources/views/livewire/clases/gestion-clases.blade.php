@@ -62,27 +62,28 @@
         <form wire:submit="guardar" class="space-y-5">
             <flux:heading size="lg">{{ $editandoId ? 'Editar clase' : 'Nueva clase' }}</flux:heading>
 
-            <flux:input wire:model="nombre" label="Nombre de la clase" required />
+            <flux:input wire:model.live.debounce.400ms="nombre" label="Nombre de la clase"
+                description="Se completa solo con el grupo, día, hora y sede; puedes editarlo." required />
 
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:select wire:model="sede_id" label="Sede" placeholder="Selecciona">
+                <flux:select wire:model.live="sede_id" label="Sede" placeholder="Selecciona">
                     @foreach ($sedes as $sede)
                         <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="grupo_etario" label="Grupo etario" placeholder="Selecciona">
+                <flux:select wire:model.live="grupo_etario" label="Grupo etario" placeholder="Selecciona">
                     @foreach ($grupos as $g)
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="dia_semana" label="Día" placeholder="Selecciona">
+                <flux:select wire:model.live="dia_semana" label="Día" placeholder="Selecciona">
                     @foreach ($dias as $d)
                         <flux:select.option value="{{ $d->value }}">{{ $d->etiqueta() }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <div class="grid grid-cols-2 gap-2">
-                    <flux:input wire:model="hora_inicio" type="time" label="Inicio" />
-                    <flux:input wire:model="hora_fin" type="time" label="Fin" />
+                    <flux:input wire:model.live="hora_inicio" type="time" label="Inicio" />
+                    <flux:input wire:model.live="hora_fin" type="time" label="Fin" />
                 </div>
                 <flux:select wire:model="planilla_id" label="Planilla (rutina)" placeholder="Sin planilla">
                     @foreach ($planillas as $planilla)
