@@ -37,7 +37,12 @@ class GestionUsuarios extends Component
 
     public ?string $rango_id = '';
 
-    public ?string $sede_id = '';
+    /**
+     * Sedes asignadas al usuario (una persona puede estar a cargo de varias).
+     *
+     * @var array<int, string>
+     */
+    public array $sedes = [];
 
     public ?string $academia_id = '';
 
@@ -73,7 +78,8 @@ class GestionUsuarios extends Component
             'telefono' => ['nullable', 'string', 'max:50'],
             'rol' => ['required', Rule::in($this->rolesDisponibles())],
             'rango_id' => ['nullable', Rule::exists('cargos_rangos', 'id')],
-            'sede_id' => ['nullable', Rule::exists('sedes', 'id')],
+            'sedes' => ['array'],
+            'sedes.*' => [Rule::exists('sedes', 'id')],
             // La academia solo la elige el admin-plataforma; el resto usa la suya.
             'academia_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('academias', 'id')],
         ];
@@ -111,7 +117,7 @@ class GestionUsuarios extends Component
      */
     public function nuevo(): void
     {
-        $this->reset('editandoId', 'name', 'email', 'telefono', 'rol', 'rango_id', 'sede_id', 'academia_id');
+        $this->reset('editandoId', 'name', 'email', 'telefono', 'rol', 'rango_id', 'sedes', 'academia_id');
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
@@ -120,6 +126,15 @@ class GestionUsuarios extends Component
 
         $this->resetErrorBag();
         $this->mostrarModal = true;
+    }
+
+    /**
+     * Al cambiar de academia (admin-plataforma) se limpian las sedes elegidas:
+     * pertenecen a la academia anterior y ya no serían válidas.
+     */
+    public function updatedAcademiaId(): void
+    {
+        $this->sedes = [];
     }
 
     /**
@@ -133,7 +148,7 @@ class GestionUsuarios extends Component
         $this->telefono = $usuario->telefono;
         $this->rol = $usuario->roles->first()?->name ?? '';
         $this->rango_id = (string) ($usuario->rango_id ?? '');
-        $this->sede_id = (string) ($usuario->sedes->first()?->id ?? '');
+        $this->sedes = $usuario->sedes->pluck('id')->map(fn ($id) => (string) $id)->all();
         $this->academia_id = (string) ($usuario->academia_id ?? '');
         $this->activo = $usuario->activo;
         $this->resetErrorBag();
@@ -149,7 +164,6 @@ class GestionUsuarios extends Component
         // Los <select> opcionales devuelven '' cuando no se elige nada; se
         // normaliza a null antes de validar/guardar.
         $this->rango_id = $this->rango_id ?: null;
-        $this->sede_id = $this->sede_id ?: null;
 
         $datos = $this->validate();
 
@@ -185,7 +199,7 @@ class GestionUsuarios extends Component
         }
 
         $usuario->syncRoles([$datos['rol']]);
-        $usuario->sedes()->sync($this->sede_id ? [$this->sede_id] : []);
+        $usuario->sedes()->sync($this->sedes);
 
         $this->mostrarModal = false;
     }
@@ -307,7 +321,7 @@ class GestionUsuarios extends Component
             'roles' => $this->rolesDisponibles(),
             'rangos' => CargoRango::orderBy('nivel')->get(),
             'academias' => Academia::orderBy('nombre')->get(),
-            'sedes' => $academiaFormulario
+            'listaSedes' => $academiaFormulario
                 ? Sede::sinAcademia()->where('academia_id', $academiaFormulario)->orderBy('nombre')->get()
                 : collect(),
         ]);

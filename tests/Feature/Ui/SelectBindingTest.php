@@ -71,6 +71,6 @@ test('los select de usuarios arrancan vacíos para admin-plataforma', function (
     Livewire::test(GestionUsuarios::class)
         ->call('nuevo')
         ->assertSet('rango_id', '')
-        ->assertSet('sede_id', '')
+        ->assertSet('sedes', [])
         ->assertSet('academia_id', '');
 });

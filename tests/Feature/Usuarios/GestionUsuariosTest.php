@@ -30,7 +30,7 @@ test('se puede crear un usuario con rol dirección sin asignar sede', function (
         ->set('email', 'dir@bekho.cl')
         ->set('rol', 'direccion')
         ->set('academia_id', (string) $this->bekho->id)
-        ->set('sede_id', '')
+        ->set('sedes', [])
         ->call('guardar')
         ->assertHasNoErrors();
 
@@ -41,7 +41,26 @@ test('se puede crear un usuario con rol dirección sin asignar sede', function (
         ->and($user->sedes()->count())->toBe(0);
 });
 
-test('se puede quitar la sede de un usuario existente (dejarla en blanco)', function () {
+test('se puede asignar varias sedes a un usuario', function () {
+    $central = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $norte = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Norte', 'activo' => true]);
+
+    Livewire::actingAs($this->admin)->test(GestionUsuarios::class)
+        ->call('nuevo')
+        ->set('name', 'Multisede')
+        ->set('email', 'multi@bekho.cl')
+        ->set('rol', 'instructor')
+        ->set('academia_id', (string) $this->bekho->id)
+        ->set('sedes', [(string) $central->id, (string) $norte->id])
+        ->call('guardar')
+        ->assertHasNoErrors();
+
+    $user = User::sinAcademia()->where('email', 'multi@bekho.cl')->first();
+
+    expect($user->sedes()->pluck('nombre')->sort()->values()->all())->toBe(['Central', 'Norte']);
+});
+
+test('se pueden quitar todas las sedes de un usuario existente', function () {
     $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $user = User::factory()->create(['academia_id' => $this->bekho->id]);
     $user->assignRole('direccion');
@@ -49,8 +68,8 @@ test('se puede quitar la sede de un usuario existente (dejarla en blanco)', func
 
     Livewire::actingAs($this->admin)->test(GestionUsuarios::class)
         ->call('editar', $user->id)
-        ->assertSet('sede_id', (string) $sede->id)
-        ->set('sede_id', '')
+        ->assertSet('sedes', [(string) $sede->id])
+        ->set('sedes', [])
         ->call('guardar')
         ->assertHasNoErrors();
 

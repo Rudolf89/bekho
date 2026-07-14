@@ -87,15 +87,23 @@
                 </flux:select>
             @endif
 
-            {{-- La dirección administra toda la academia y puede no estar atada a
-                 una sede. La opción explícita "Sin sede" permite dejarla en blanco
-                 (el placeholder de Flux libre no se puede volver a seleccionar). --}}
-            <flux:select wire:model="sede_id" label="Sede" placeholder="Sin sede">
-                <flux:select.option value="">Sin sede</flux:select.option>
-                @foreach ($sedes as $sede)
-                    <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
-                @endforeach
-            </flux:select>
+            {{-- Una persona puede estar a cargo de varias sedes (o de ninguna: la
+                 dirección administra toda la academia y puede no estar atada a una
+                 sede). Multiselección con casillas. --}}
+            <div>
+                <flux:label>Sedes</flux:label>
+                @if ($listaSedes->isNotEmpty())
+                    <div class="mt-2 max-h-40 space-y-2 overflow-y-auto rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                        @foreach ($listaSedes as $sede)
+                            <flux:checkbox wire:model="sedes" value="{{ $sede->id }}" label="{{ $sede->nombre }}" />
+                        @endforeach
+                    </div>
+                @else
+                    <flux:text size="sm" class="mt-2 block text-zinc-500">
+                        {{ $this->esSuperAdmin() ? 'Elige una academia para ver sus sedes.' : 'Aún no hay sedes en esta academia.' }}
+                    </flux:text>
+                @endif
+            </div>
 
             <flux:switch wire:model="activo" label="Activo" />
 
