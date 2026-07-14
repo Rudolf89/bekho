@@ -68,7 +68,8 @@ class InscribirAlumno extends Component
     {
         return [
             'sede_id' => ['required', Rule::exists('sedes', 'id')],
-            'instructor_id' => ['required', Rule::exists('users', 'id')],
+            // El instructor debe estar asignado a la sede elegida (pivote sede_user).
+            'instructor_id' => ['required', Rule::exists('sede_user', 'user_id')->where('sede_id', $this->sede_id)],
             'nombres' => ['required', 'string', 'max:255'],
             'apellido_paterno' => ['required', 'string', 'max:255'],
             'apellido_materno' => ['required', 'string', 'max:255'],
@@ -90,6 +91,16 @@ class InscribirAlumno extends Component
             'dia_vencimiento' => ['required', Rule::in($this->diasVencimiento())],
             'acepto_reglamento' => ['accepted'],
         ];
+    }
+
+    /**
+     * Al cambiar la sede se limpia el instructor elegido: los instructores
+     * disponibles dependen de la sede (pivote sede_user), así que uno de otra
+     * sede dejaría de ser válido.
+     */
+    public function updatedSedeId(): void
+    {
+        $this->instructor_id = '';
     }
 
     /**
@@ -201,9 +212,18 @@ class InscribirAlumno extends Component
 
     public function render()
     {
+        // Los instructores disponibles son los asignados a la sede elegida
+        // (pivote sede_user). Sin sede elegida no se muestra ninguno.
+        $instructores = $this->sede_id !== ''
+            ? User::role(['instructor', 'direccion'])
+                ->whereHas('sedes', fn ($q) => $q->whereKey($this->sede_id))
+                ->orderBy('name')
+                ->get()
+            : collect();
+
         return view('livewire.inscripcion.inscribir-alumno', [
             'sedes' => Sede::orderBy('nombre')->get(),
-            'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
+            'instructores' => $instructores,
             'grupos' => GrupoEtario::cases(),
             'generos' => Genero::cases(),
             'regiones' => $this->regiones(),

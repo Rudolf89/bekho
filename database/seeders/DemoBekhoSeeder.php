@@ -77,6 +77,12 @@ class DemoBekhoSeeder extends Seeder
             ],
         );
 
+        // Los instructores (y Rodolfo) quedan asignados a la sede: así aparecen
+        // como instructores disponibles al inscribir un alumno en esa sede.
+        $sede->instructores()->sync(
+            $instructores->pluck('id')->push($rodolfo->id)->all(),
+        );
+
         // Alumnos por grupo etario. El nivel se deriva del cinturón, así que se
         // les asigna un grado de cada banda para que la demo muestre variedad.
         $grupos = ['tigers', 'for_kids', 'jovenes_adultos'];

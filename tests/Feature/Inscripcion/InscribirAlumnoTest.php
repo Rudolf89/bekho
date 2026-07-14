@@ -23,6 +23,8 @@ beforeEach(function () {
 
     $this->instructor = User::factory()->create(['academia_id' => $this->academia->id]);
     $this->instructor->assignRole('instructor');
+    // El instructor debe estar asignado a la sede para poder elegirlo en la ficha.
+    $this->instructor->sedes()->attach($this->sede->id);
 
     $usuario = User::factory()->create(['academia_id' => $this->academia->id]);
     $usuario->assignRole('direccion');
@@ -106,6 +108,38 @@ test('el día de vencimiento solo admite 1, 5, 10 o 15', function () {
 test('la comuna debe pertenecer a la región elegida', function () {
     inscribir()->set('region', 'Valparaíso')->set('comuna', 'Ñuñoa')->call('inscribir')
         ->assertHasErrors('comuna');
+});
+
+test('los instructores disponibles son solo los de la sede elegida', function () {
+    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
+    $instructorOtraSede = User::factory()->create(['academia_id' => $this->academia->id]);
+    $instructorOtraSede->assignRole('instructor');
+    $instructorOtraSede->sedes()->attach($otraSede->id);
+
+    Livewire::test(InscribirAlumno::class)
+        ->set('sede_id', (string) $this->sede->id)
+        ->assertViewHas('instructores', fn ($ins) => $ins->contains($this->instructor)
+            && ! $ins->contains($instructorOtraSede));
+});
+
+test('al cambiar de sede se limpia el instructor elegido', function () {
+    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
+
+    Livewire::test(InscribirAlumno::class)
+        ->set('sede_id', (string) $this->sede->id)
+        ->set('instructor_id', (string) $this->instructor->id)
+        ->set('sede_id', (string) $otraSede->id)
+        ->assertSet('instructor_id', '');
+});
+
+test('no se puede inscribir con un instructor que no pertenece a la sede', function () {
+    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
+    $ajeno = User::factory()->create(['academia_id' => $this->academia->id]);
+    $ajeno->assignRole('instructor');
+    $ajeno->sedes()->attach($otraSede->id);
+
+    inscribir()->set('instructor_id', (string) $ajeno->id)->call('inscribir')
+        ->assertHasErrors('instructor_id');
 });
 
 test('la fecha de nacimiento sugiere el grupo etario', function () {

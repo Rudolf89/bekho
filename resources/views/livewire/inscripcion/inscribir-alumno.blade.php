@@ -10,15 +10,21 @@
             <flux:heading size="lg">Lugar de entrenamiento</flux:heading>
             <flux:text size="sm" class="mb-4 mt-0.5 text-zinc-500">Dónde asiste a sus entrenamientos regulares.</flux:text>
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:select wire:model="sede_id" label="Sede *" placeholder="Selecciona la sede">
+                <flux:select wire:model.live="sede_id" label="Sede *" placeholder="Selecciona la sede">
                     @foreach ($sedes as $sede)
                         <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="instructor_id" label="Instructor a cargo *" placeholder="Selecciona el instructor">
-                    @foreach ($instructores as $instructor)
+                <flux:select wire:model="instructor_id" label="Instructor a cargo *"
+                    :placeholder="$sede_id ? 'Selecciona el instructor' : 'Primero elige la sede'"
+                    :disabled="! $sede_id">
+                    @forelse ($instructores as $instructor)
                         <flux:select.option value="{{ $instructor->id }}">{{ $instructor->name }}</flux:select.option>
-                    @endforeach
+                    @empty
+                        @if ($sede_id)
+                            <flux:select.option value="" disabled>Esta sede no tiene instructores asignados</flux:select.option>
+                        @endif
+                    @endforelse
                 </flux:select>
             </div>
         </section>
