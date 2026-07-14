@@ -91,16 +91,20 @@
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }} ({{ $g->rangoEdad() }})</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="nivel" label="Nivel" placeholder="Selecciona">
-                    @foreach ($niveles as $n)
-                        <flux:select.option value="{{ $n->value }}">{{ $n->etiqueta() }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                <flux:select wire:model="grado_id" label="Grado (cinturón)" placeholder="Sin grado">
+                <flux:select wire:model.live="grado_id" label="Grado (cinturón)" placeholder="Sin grado (nuevo)">
                     @foreach ($this->gradosDisponibles() as $grado)
                         <flux:select.option value="{{ $grado->id }}">{{ $grado->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
+                <div>
+                    <flux:label>Nivel</flux:label>
+                    <div class="mt-2 flex h-10 items-center gap-2">
+                        <flux:badge :color="$this->nivelDerivado()->value === 'avanzado' ? 'red' : ($this->nivelDerivado()->value === 'intermedio' ? 'amber' : 'green')">
+                            {{ $this->nivelDerivado()->etiqueta() }}
+                        </flux:badge>
+                        <flux:text size="sm" class="text-zinc-500">Según el cinturón</flux:text>
+                    </div>
+                </div>
                 <flux:select wire:model="sede_id" label="Sede" placeholder="Sin sede">
                     @foreach ($sedes as $sede)
                         <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>

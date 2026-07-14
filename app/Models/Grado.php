@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EscalaGrado;
+use App\Enums\NivelEntrenamiento;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,6 +40,23 @@ class Grado extends Model
             'escala' => EscalaGrado::class,
             'activo' => 'boolean',
         ];
+    }
+
+    /**
+     * Nivel de entrenamiento (Principiantes/Intermedio/Avanzado) al que
+     * corresponde este cinturón, según su color. El nivel del alumno se deriva
+     * de aquí: nuevo/sin cinturón (Blanco) => Principiantes.
+     *
+     * Corte por color: Blanco–Amarillo = Principiantes; Camuflado–Púrpura =
+     * Intermedio; desde Azul en adelante (incluidos Rojo/Negro y danes) = Avanzado.
+     */
+    public function nivelEntrenamiento(): NivelEntrenamiento
+    {
+        return match ($this->color) {
+            'Camuflado', 'Verde', 'Púrpura' => NivelEntrenamiento::Intermedio,
+            'Azul', 'Café', 'Rojo', 'Rojo/Negro', 'Negro' => NivelEntrenamiento::Avanzado,
+            default => NivelEntrenamiento::Principiantes,
+        };
     }
 
     /**

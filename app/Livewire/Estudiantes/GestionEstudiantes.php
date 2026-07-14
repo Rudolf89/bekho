@@ -42,8 +42,6 @@ class GestionEstudiantes extends Component
 
     public string $grupo_etario = '';
 
-    public string $nivel = '';
-
     public ?string $grado_id = '';
 
     public ?string $sede_id = '';
@@ -72,7 +70,7 @@ class GestionEstudiantes extends Component
             'rut' => ['nullable', 'string', 'max:20'],
             'fecha_nacimiento' => ['nullable', 'date'],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
-            'nivel' => ['required', Rule::enum(NivelEntrenamiento::class)],
+            // El nivel no se pide: se deriva del cinturón (grado) al guardar.
             'grado_id' => ['nullable', Rule::exists('grados', 'id')],
             'sede_id' => ['nullable', Rule::exists('sedes', 'id')],
             'telefono_contacto' => ['nullable', 'string', 'max:50'],
@@ -95,7 +93,7 @@ class GestionEstudiantes extends Component
     public function nuevo(): void
     {
         $this->reset('editandoId', 'nombre', 'rut', 'fecha_nacimiento', 'grupo_etario',
-            'nivel', 'grado_id', 'sede_id', 'telefono_contacto', 'email_contacto', 'programas', 'apoderados');
+            'grado_id', 'sede_id', 'telefono_contacto', 'email_contacto', 'programas', 'apoderados');
         $this->activo = true;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -108,7 +106,6 @@ class GestionEstudiantes extends Component
         $this->rut = $estudiante->rut;
         $this->fecha_nacimiento = $estudiante->fecha_nacimiento?->format('Y-m-d');
         $this->grupo_etario = $estudiante->grupo_etario->value;
-        $this->nivel = $estudiante->nivel->value;
         $this->grado_id = (string) ($estudiante->grado_id ?? '');
         $this->sede_id = (string) ($estudiante->sede_id ?? '');
         $this->telefono_contacto = $estudiante->telefono_contacto;
@@ -162,6 +159,17 @@ class GestionEstudiantes extends Component
         $escala = EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario));
 
         return Grado::porEscala($escala)->ordenados()->get();
+    }
+
+    /**
+     * Nivel que tendrá el alumno según el cinturón elegido en el formulario.
+     * Sin cinturón (alumno nuevo) => Principiantes.
+     */
+    public function nivelDerivado(): NivelEntrenamiento
+    {
+        return $this->grado_id
+            ? (Grado::find($this->grado_id)?->nivelEntrenamiento() ?? NivelEntrenamiento::Principiantes)
+            : NivelEntrenamiento::Principiantes;
     }
 
     public function render()

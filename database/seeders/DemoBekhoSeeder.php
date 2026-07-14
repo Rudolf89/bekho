@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Enums\EscalaGrado;
 use App\Enums\EstadoAsistencia;
+use App\Enums\GrupoEtario;
+use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoPago;
 use App\Models\Academia;
 use App\Models\Asistencia;
@@ -70,20 +72,36 @@ class DemoBekhoSeeder extends Seeder
             ['comuna' => 'Santiago', 'direccion' => 'Av. Ejemplo 1234', 'activo' => true],
         );
 
-        // Alumnos por grupo etario.
+        // Alumnos por grupo etario. El nivel se deriva del cinturón, así que se
+        // les asigna un grado de cada banda para que la demo muestre variedad.
         $grupos = ['tigers', 'for_kids', 'jovenes_adultos'];
-        $niveles = ['principiantes', 'intermedio', 'avanzado'];
+        $bandasColores = [
+            ['Blanco', 'Naranjo', 'Amarillo'],   // -> Principiantes
+            ['Camuflado', 'Verde', 'Púrpura'],   // -> Intermedio
+            ['Azul', 'Café', 'Rojo'],            // -> Avanzado
+        ];
         $nombres = ['Antonia', 'Benjamín', 'Catalina', 'Diego', 'Emilia', 'Felipe', 'Gabriela', 'Hugo',
             'Isidora', 'Joaquín', 'Karla', 'Lucas', 'Martina', 'Nicolás', 'Olivia', 'Pablo',
             'Renata', 'Sebastián', 'Tamara', 'Vicente', 'Ximena', 'Agustín', 'Florencia', 'Matías'];
 
         foreach ($nombres as $i => $nombre) {
+            $grupo = $grupos[$i % 3];
+            $escala = EscalaGrado::paraGrupo(GrupoEtario::from($grupo));
+            $grado = Grado::porEscala($escala)
+                ->whereIn('color', $bandasColores[$i % 3])
+                ->ordenados()
+                ->first();
+
             Estudiante::updateOrCreate(
                 ['academia_id' => $academia->id, 'nombre' => $nombre.' '.['Pérez', 'Soto', 'Muñoz', 'Rojas'][$i % 4]],
                 [
                     'sede_id' => $sede->id,
-                    'grupo_etario' => $grupos[$i % 3],
-                    'nivel' => $niveles[$i % 3],
+                    'grupo_etario' => $grupo,
+                    'grado_id' => $grado?->id,
+                    // El nivel se deriva del cinturón. En la semilla los eventos de
+                    // modelo están apagados (WithoutModelEvents), así que se calcula
+                    // aquí con el mismo criterio que usa el modelo.
+                    'nivel' => $grado?->nivelEntrenamiento() ?? NivelEntrenamiento::Principiantes,
                     'fecha_nacimiento' => now()->subYears(6 + $i % 25),
                     'activo' => true,
                     'created_at' => $i < 6 ? now()->subDays($i) : now()->subMonths(3),

@@ -51,6 +51,20 @@ class Estudiante extends Model
     }
 
     /**
+     * El nivel del alumno se deriva SIEMPRE de su cinturón (grado): al guardar
+     * se recalcula, así que graduar en un examen (que cambia grado_id) actualiza
+     * el nivel solo, y un alumno nuevo/sin cinturón queda en Principiantes.
+     */
+    protected static function booted(): void
+    {
+        static::saving(function (Estudiante $estudiante): void {
+            $estudiante->nivel = $estudiante->grado_id
+                ? (Grado::find($estudiante->grado_id)?->nivelEntrenamiento() ?? NivelEntrenamiento::Principiantes)
+                : NivelEntrenamiento::Principiantes;
+        });
+    }
+
+    /**
      * Academia dueña de la ficha.
      *
      * @return BelongsTo<Academia, $this>
