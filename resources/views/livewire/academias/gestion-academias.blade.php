@@ -59,7 +59,7 @@
 
             <flux:input wire:model="nombre" label="Nombre" required />
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="email" type="email" label="Email" />
+                <flux:input wire:model="email" type="email" label="Correo electrónico" />
                 <flux:input wire:model="telefono" label="Teléfono" />
             </div>
             <flux:input wire:model="logo" label="Logo (URL o ruta)" placeholder="https://…" />

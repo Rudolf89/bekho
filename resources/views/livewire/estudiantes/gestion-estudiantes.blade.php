@@ -107,7 +107,7 @@
                     @endforeach
                 </flux:select>
                 <flux:input wire:model="telefono_contacto" label="Teléfono de contacto" />
-                <flux:input wire:model="email_contacto" type="email" label="Email de contacto" />
+                <flux:input wire:model="email_contacto" type="email" label="Correo de contacto" />
             </div>
 
             <div>

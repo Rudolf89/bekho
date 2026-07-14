@@ -1,13 +1,19 @@
 <?php
 
+use App\Livewire\Panel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome')->name('home');
+// La raíz no muestra una página de marketing: es un sistema privado de gestión.
+// Se redirige al panel (si hay sesión) o al inicio de sesión.
+Route::get('/', fn () => Auth::check()
+    ? redirect()->route('dashboard')
+    : redirect()->route('login'))->name('home');
 
 // Sin middleware 'verified': el modelo User no implementa MustVerifyEmail, así
 // que ese middleware no protegía nada (dejaba pasar a todos). Ver nota en User.
 Route::middleware(['auth'])->group(function () {
-    Route::livewire('dashboard', App\Livewire\Panel::class)->name('dashboard');
+    Route::livewire('dashboard', Panel::class)->name('dashboard');
 });
 
 require __DIR__.'/settings.php';

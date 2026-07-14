@@ -11,7 +11,7 @@
         <flux:table>
             <flux:table.columns>
                 <flux:table.column sortable :sorted="$ordenCampo === 'name'" :direction="$ordenDir" wire:click="ordenarPor('name')">Nombre</flux:table.column>
-                <flux:table.column sortable :sorted="$ordenCampo === 'email'" :direction="$ordenDir" wire:click="ordenarPor('email')">Email</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'email'" :direction="$ordenDir" wire:click="ordenarPor('email')">Correo</flux:table.column>
                 <flux:table.column>Rol</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'activo'" :direction="$ordenDir" wire:click="ordenarPor('activo')">Estado</flux:table.column>
                 <flux:table.column></flux:table.column>
@@ -57,7 +57,7 @@
             <flux:heading size="lg">{{ $editandoId ? 'Editar usuario' : 'Nuevo usuario' }}</flux:heading>
 
             <flux:input wire:model="name" label="Nombre" required />
-            <flux:input wire:model="email" type="email" label="Email" required />
+            <flux:input wire:model="email" type="email" label="Correo electrónico" required />
             <flux:input wire:model="telefono" label="Teléfono" />
 
             <flux:select wire:model="rol" label="Rol" placeholder="Selecciona un rol">
