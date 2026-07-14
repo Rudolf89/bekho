@@ -5,6 +5,7 @@ namespace App\Livewire\Estudiantes;
 use App\Enums\EscalaGrado;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Programa;
@@ -19,7 +20,7 @@ use Livewire\WithPagination;
 #[Title('Estudiantes')]
 class GestionEstudiantes extends Component
 {
-    use WithPagination;
+    use ConOrden, WithPagination;
 
     // Filtros
     public string $buscar = '';
@@ -169,11 +170,10 @@ class GestionEstudiantes extends Component
             ->when($this->filtroGrupo !== '', fn ($q) => $q->where('grupo_etario', $this->filtroGrupo))
             ->when($this->filtroNivel !== '', fn ($q) => $q->where('nivel', $this->filtroNivel))
             ->when($this->filtroEstado === 'activos', fn ($q) => $q->where('activo', true))
-            ->when($this->filtroEstado === 'inactivos', fn ($q) => $q->where('activo', false))
-            ->orderBy('nombre');
+            ->when($this->filtroEstado === 'inactivos', fn ($q) => $q->where('activo', false));
 
         return view('livewire.estudiantes.gestion-estudiantes', [
-            'estudiantes' => $query->paginate(15),
+            'estudiantes' => $this->aplicarOrden($query, ['nombre', 'grupo_etario', 'nivel', 'activo'], 'nombre')->paginate(15),
             'grupos' => GrupoEtario::cases(),
             'niveles' => NivelEntrenamiento::cases(),
             'sedes' => Sede::orderBy('nombre')->get(),

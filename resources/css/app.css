@@ -69,3 +69,11 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Más aire en todas las tablas Flux (celdas y encabezados). Sin @layer para
+   ganarle en el cascade a las utilidades py-3 de Flux. */
+[data-flux-cell],
+[data-flux-column] {
+    padding-top: 0.95rem;
+    padding-bottom: 0.95rem;
+}

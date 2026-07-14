@@ -10,6 +10,7 @@ use App\Services\ServicioPagos;
 use App\Support\Tenancy\Academia;
 use Flux\Flux;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -58,11 +59,23 @@ class GestionPagos extends Component
 
     /**
      * Configuración de pagos de la academia activa (se crea si no existe).
+     *
+     * El super-admin no tiene academia activa (ve todas); en ese caso se usa su
+     * academia o, en su defecto, la primera, para no insertar academia_id nulo.
      */
     protected function config(): ConfiguracionPago
     {
+        $academiaId = Academia::id()
+            ?? Auth::user()?->academia_id
+            ?? \App\Models\Academia::query()->orderBy('id')->value('id');
+
+        // Si no hay ninguna academia, devuelve una configuración transitoria.
+        if (! $academiaId) {
+            return new ConfiguracionPago(['descuento_hermanos_pct' => 20]);
+        }
+
         return ConfiguracionPago::firstOrCreate(
-            ['academia_id' => Academia::id()],
+            ['academia_id' => $academiaId],
             ['descuento_hermanos_pct' => 20],
         );
     }

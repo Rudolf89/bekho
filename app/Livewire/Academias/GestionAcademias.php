@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Academias;
 
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Academia;
 use Flux\Flux;
 use Livewire\Attributes\Title;
@@ -10,6 +11,8 @@ use Livewire\Component;
 #[Title('Academias')]
 class GestionAcademias extends Component
 {
+    use ConOrden;
+
     public ?int $editandoId = null;
 
     public string $nombre = '';
@@ -81,7 +84,7 @@ class GestionAcademias extends Component
     public function render()
     {
         return view('livewire.academias.gestion-academias', [
-            'academias' => Academia::withCount(['sedes', 'usuarios'])->orderBy('nombre')->get(),
+            'academias' => $this->aplicarOrden(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'activo'], 'nombre')->get(),
         ]);
     }
 }

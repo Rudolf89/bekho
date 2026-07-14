@@ -10,9 +10,9 @@
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Día / Hora</flux:table.column>
-                <flux:table.column>Clase</flux:table.column>
-                <flux:table.column>Grupo</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'dia_semana'" :direction="$ordenDir" wire:click="ordenarPor('dia_semana')">Día / Hora</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Clase</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'grupo_etario'" :direction="$ordenDir" wire:click="ordenarPor('grupo_etario')">Grupo</flux:table.column>
                 <flux:table.column>Sede</flux:table.column>
                 <flux:table.column>Instructor</flux:table.column>
                 <flux:table.column></flux:table.column>

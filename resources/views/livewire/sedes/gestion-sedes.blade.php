@@ -10,12 +10,12 @@
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Nombre</flux:table.column>
-                <flux:table.column>Comuna</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Nombre</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'comuna'" :direction="$ordenDir" wire:click="ordenarPor('comuna')">Comuna</flux:table.column>
                 @if ($this->esSuperAdmin())
                     <flux:table.column>Academia</flux:table.column>
                 @endif
-                <flux:table.column>Estado</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'activo'" :direction="$ordenDir" wire:click="ordenarPor('activo')">Estado</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
             <flux:table.rows>

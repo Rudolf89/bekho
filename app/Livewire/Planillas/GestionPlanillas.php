@@ -5,6 +5,7 @@ namespace App\Livewire\Planillas;
 use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Planilla;
 use App\Models\Programa;
 use Flux\Flux;
@@ -15,6 +16,8 @@ use Livewire\Component;
 #[Title('Planillas de clase')]
 class GestionPlanillas extends Component
 {
+    use ConOrden;
+
     public string $nombre = '';
 
     public string $grupo_etario = '';
@@ -63,8 +66,8 @@ class GestionPlanillas extends Component
     public function render()
     {
         return view('livewire.planillas.gestion-planillas', [
-            'planillas' => Planilla::with('programa')
-                ->orderBy('grupo_etario')->orderBy('nivel')->orderBy('nombre')->get(),
+            'planillas' => $this->aplicarOrden(Planilla::with('programa'), ['nombre', 'grupo_etario', 'nivel'], 'grupo_etario')
+                ->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),
             'niveles' => NivelEntrenamiento::cases(),
             'programas' => Programa::activos()->ordenados()->get(),

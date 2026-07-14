@@ -10,10 +10,10 @@
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Nombre</flux:table.column>
-                <flux:table.column>Email</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'name'" :direction="$ordenDir" wire:click="ordenarPor('name')">Nombre</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'email'" :direction="$ordenDir" wire:click="ordenarPor('email')">Email</flux:table.column>
                 <flux:table.column>Rol</flux:table.column>
-                <flux:table.column>Estado</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'activo'" :direction="$ordenDir" wire:click="ordenarPor('activo')">Estado</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
             <flux:table.rows>

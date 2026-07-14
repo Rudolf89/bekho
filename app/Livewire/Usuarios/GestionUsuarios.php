@@ -3,6 +3,7 @@
 namespace App\Livewire\Usuarios;
 
 use App\Concerns\ProfileValidationRules;
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Academia;
 use App\Models\CargoRango;
 use App\Models\Sede;
@@ -19,7 +20,7 @@ use Spatie\Permission\Models\Role;
 #[Title('Gestión de usuarios')]
 class GestionUsuarios extends Component
 {
-    use ProfileValidationRules;
+    use ConOrden, ProfileValidationRules;
 
     /** Id del usuario en edición (null = creando). */
     public ?int $editandoId = null;
@@ -197,7 +198,7 @@ class GestionUsuarios extends Component
         $academiaFormulario = $this->academiaEfectiva();
 
         return view('livewire.usuarios.gestion-usuarios', [
-            'usuarios' => User::with('roles')->orderBy('name')->get(),
+            'usuarios' => $this->aplicarOrden(User::with('roles'), ['name', 'email', 'activo'], 'name')->get(),
             'roles' => $this->rolesDisponibles(),
             'rangos' => CargoRango::orderBy('nivel')->get(),
             'academias' => Academia::orderBy('nombre')->get(),

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Examenes;
 
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Convocatoria;
 use App\Models\Sede;
 use Flux\Flux;
@@ -12,6 +13,8 @@ use Livewire\Component;
 #[Title('Exámenes de grado')]
 class GestionConvocatorias extends Component
 {
+    use ConOrden;
+
     public string $nombre = '';
 
     public ?int $sede_id = null;
@@ -53,9 +56,11 @@ class GestionConvocatorias extends Component
     public function render()
     {
         return view('livewire.examenes.gestion-convocatorias', [
-            'convocatorias' => Convocatoria::with('sede')
-                ->withCount('inscripciones')
-                ->latest('fecha')->get(),
+            'convocatorias' => $this->aplicarOrden(
+                Convocatoria::with('sede')->withCount('inscripciones'),
+                ['fecha', 'nombre', 'estado'],
+                'fecha',
+            )->get(),
             'sedes' => Sede::orderBy('nombre')->get(),
         ]);
     }

@@ -10,8 +10,8 @@
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Planilla</flux:table.column>
-                <flux:table.column>Grupo · Nivel</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Planilla</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'grupo_etario'" :direction="$ordenDir" wire:click="ordenarPor('grupo_etario')">Grupo · Nivel</flux:table.column>
                 <flux:table.column>Programa</flux:table.column>
                 <flux:table.column>Habilidad</flux:table.column>
                 <flux:table.column></flux:table.column>

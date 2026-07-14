@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Sedes;
 
+use App\Livewire\Concerns\ConOrden;
 use App\Models\Academia;
 use App\Models\Sede;
 use App\Models\User;
@@ -14,6 +15,8 @@ use Livewire\Component;
 #[Title('Sedes')]
 class GestionSedes extends Component
 {
+    use ConOrden;
+
     public ?int $editandoId = null;
 
     public string $nombre = '';
@@ -117,7 +120,7 @@ class GestionSedes extends Component
     public function render()
     {
         return view('livewire.sedes.gestion-sedes', [
-            'sedes' => Sede::with('academia')->orderBy('nombre')->get(),
+            'sedes' => $this->aplicarOrden(Sede::with('academia'), ['nombre', 'comuna', 'activo'], 'nombre')->get(),
             'academias' => Academia::orderBy('nombre')->get(),
             'listaInstructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
             'comunas' => config('comunas', []),
