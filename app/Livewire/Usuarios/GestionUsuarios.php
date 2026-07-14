@@ -53,11 +53,11 @@ class GestionUsuarios extends Component
     public string $eliminandoNombre = '';
 
     /**
-     * Indica si el usuario autenticado es super-admin (ve/asigna todas las academias).
+     * Indica si el usuario autenticado es admin-plataforma (ve/asigna todas las academias).
      */
     public function esSuperAdmin(): bool
     {
-        return Auth::user()->hasRole('super-admin');
+        return Auth::user()->hasRole('admin-plataforma');
     }
 
     /**
@@ -74,14 +74,14 @@ class GestionUsuarios extends Component
             'rol' => ['required', Rule::in($this->rolesDisponibles())],
             'rango_id' => ['nullable', Rule::exists('cargos_rangos', 'id')],
             'sede_id' => ['nullable', Rule::exists('sedes', 'id')],
-            // La academia solo la elige el super-admin; el resto usa la suya.
+            // La academia solo la elige el admin-plataforma; el resto usa la suya.
             'academia_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('academias', 'id')],
         ];
     }
 
     /**
      * Roles que el usuario autenticado puede asignar.
-     * Un no super-admin no puede crear super-admins.
+     * Un no admin-plataforma no puede crear admin-plataformas.
      *
      * @return list<string>
      */
@@ -90,14 +90,14 @@ class GestionUsuarios extends Component
         $roles = Role::orderBy('name')->pluck('name');
 
         if (! $this->esSuperAdmin()) {
-            $roles = $roles->reject(fn (string $r) => $r === 'super-admin');
+            $roles = $roles->reject(fn (string $r) => $r === 'admin-plataforma');
         }
 
         return $roles->values()->all();
     }
 
     /**
-     * Academia efectiva del formulario (elegida por super-admin o la propia).
+     * Academia efectiva del formulario (elegida por admin-plataforma o la propia).
      */
     protected function academiaEfectiva(): ?int
     {

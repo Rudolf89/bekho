@@ -18,7 +18,7 @@ class FormacionDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO')->first();
+        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
 
         if (! $academia) {
             $this->command?->warn('No existe la academia BEKHO; ejecuta antes RolesPermisosSeeder.');

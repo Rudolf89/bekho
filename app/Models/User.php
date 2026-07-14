@@ -128,6 +128,27 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
+     * Clases en las que el usuario participa como instructor (cualquier papel).
+     *
+     * @return BelongsToMany<Clase, $this>
+     */
+    public function clases(): BelongsToMany
+    {
+        return $this->belongsToMany(Clase::class, 'clase_instructor')
+            ->withPivot('papel')
+            ->withTimestamps();
+    }
+
+    /**
+     * Indica si el usuario solo tiene acceso de lectura (federación): puede ver
+     * datos de todas las academias pero no crear ni modificar.
+     */
+    public function esSoloLectura(): bool
+    {
+        return $this->hasRole('federacion');
+    }
+
+    /**
      * Registros de progreso de formación del usuario.
      *
      * @return HasMany<ProgresoContenido, $this>

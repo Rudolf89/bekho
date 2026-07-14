@@ -166,7 +166,7 @@ class InscribirAlumno extends Component
         $datos = $this->validate();
 
         // La academia del alumno es la de su sede (funciona también para el
-        // super-admin, que gestiona por academia).
+        // admin-plataforma, que gestiona por academia).
         $academiaId = Sede::sinAcademia()->findOrFail($datos['sede_id'])->academia_id;
 
         Estudiante::create([
@@ -203,7 +203,7 @@ class InscribirAlumno extends Component
     {
         return view('livewire.inscripcion.inscribir-alumno', [
             'sedes' => Sede::orderBy('nombre')->get(),
-            'instructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
+            'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'grupos' => GrupoEtario::cases(),
             'generos' => Genero::cases(),
             'regiones' => $this->regiones(),

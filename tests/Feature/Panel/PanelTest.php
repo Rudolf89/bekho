@@ -11,10 +11,10 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
 });
 
-test('el panel (dashboard) renderiza para el super-admin', function () {
+test('el panel (dashboard) renderiza para el admin-plataforma', function () {
     $admin = User::where('email', 'admin@bekho.cl')->first();
     $admin->forceFill(['two_factor_confirmed_at' => now()])->save(); // requisito de 2FA por rol
 
@@ -29,7 +29,7 @@ test('el panel renderiza para un maestro con 2FA', function () {
         'academia_id' => $this->bekho->id,
         'two_factor_confirmed_at' => now(),
     ]);
-    $maestro->assignRole('maestro');
+    $maestro->assignRole('direccion');
 
     $this->actingAs($maestro)->get(route('dashboard'))
         ->assertOk()

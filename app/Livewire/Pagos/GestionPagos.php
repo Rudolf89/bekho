@@ -60,7 +60,7 @@ class GestionPagos extends Component
     /**
      * Configuración de pagos de la academia activa (se crea si no existe).
      *
-     * El super-admin no tiene academia activa (ve todas); en ese caso se usa su
+     * El admin-plataforma no tiene academia activa (ve todas); en ese caso se usa su
      * academia o, en su defecto, la primera, para no insertar academia_id nulo.
      */
     protected function config(): ConfiguracionPago

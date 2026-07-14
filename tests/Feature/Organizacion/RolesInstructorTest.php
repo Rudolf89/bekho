@@ -1,0 +1,150 @@
+<?php
+
+use App\Livewire\Estudiantes\GestionEstudiantes;
+use App\Livewire\Examenes\DetalleConvocatoria;
+use App\Models\Academia;
+use App\Models\CargoRango;
+use App\Models\Clase;
+use App\Models\Convocatoria;
+use App\Models\Estudiante;
+use App\Models\Inscripcion;
+use App\Models\Sede;
+use App\Models\User;
+use App\Support\Tenancy\Academia as Tenant;
+use Database\Seeders\RolesPermisosSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
+use Spatie\Permission\PermissionRegistrar;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed(RolesPermisosSeeder::class);
+    app(PermissionRegistrar::class)->forgetCachedPermissions();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    Tenant::set($this->bekho->id);
+});
+
+function usuarioRol(string $rol, ?int $academiaId, ?int $rangoId = null): User
+{
+    $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
+    $user = User::factory()->create([
+        'academia_id' => $academiaId,
+        'rango_id' => $rangoId,
+        'two_factor_confirmed_at' => $exige2fa ? now() : null,
+    ]);
+    $user->assignRole($rol);
+
+    return $user;
+}
+
+// --- Rol y rango son ejes independientes -------------------------------------
+
+test('un administrativo sin rango gestiona alumnos pero no pagos', function () {
+    $admin = usuarioRol('administrativo', $this->bekho->id);
+
+    expect($admin->rango_id)->toBeNull();
+
+    Tenant::olvidar();
+    $this->actingAs($admin)->get(route('estudiantes.index'))->assertOk();
+    $this->actingAs($admin)->get(route('inscripcion.crear'))->assertOk();
+    $this->actingAs($admin)->get(route('pagos.index'))->assertForbidden();
+});
+
+test('un usuario con rango y sin rol operativo no entra a la gestión', function () {
+    $maestro = CargoRango::create(['nombre' => 'Maestro', 'nivel' => 4]);
+
+    // Tiene un rango marcial pero su rol de software es "alumno" (sin permisos de gestión).
+    $user = usuarioRol('alumno', $this->bekho->id, $maestro->id);
+
+    expect($user->rango_id)->toBe($maestro->id);
+
+    Tenant::olvidar();
+    $this->actingAs($user)->get(route('estudiantes.index'))->assertForbidden();
+    $this->actingAs($user)->get(route('clases.index'))->assertForbidden();
+    $this->actingAs($user)->get(route('pagos.index'))->assertForbidden();
+});
+
+// --- Instructor: ve solo los alumnos de sus clases ---------------------------
+
+test('un instructor ve solo los alumnos de sus clases y no los de otra', function () {
+    $sedeA = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede A', 'activo' => true]);
+    $sedeB = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede B', 'activo' => true]);
+
+    $instructor = usuarioRol('instructor', $this->bekho->id);
+
+    // El instructor está asignado a una clase For Kids en la Sede A.
+    $clase = Clase::create([
+        'academia_id' => $this->bekho->id, 'sede_id' => $sedeA->id, 'nombre' => 'Kids A',
+        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+    ]);
+    $clase->sincronizarInstructores([$instructor->id => 'titular']);
+
+    $suyo = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno Suyo',
+        'sede_id' => $sedeA->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
+    $otraSede = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno Otra Sede',
+        'sede_id' => $sedeB->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
+    $otroGrupo = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno Otro Grupo',
+        'sede_id' => $sedeA->id, 'grupo_etario' => 'tigers', 'activo' => true]);
+
+    // Scope de consulta.
+    $visibles = Estudiante::visiblePara($instructor)->pluck('nombre')->all();
+    expect($visibles)->toBe(['Alumno Suyo']);
+
+    // Policy por ficha.
+    expect($instructor->can('view', $suyo))->toBeTrue();
+    expect($instructor->can('view', $otraSede))->toBeFalse();
+    expect($instructor->can('view', $otroGrupo))->toBeFalse();
+
+    // En la pantalla real solo aparece el suyo.
+    Livewire::actingAs($instructor)->test(GestionEstudiantes::class)
+        ->assertSee('Alumno Suyo')
+        ->assertDontSee('Alumno Otra Sede')
+        ->assertDontSee('Alumno Otro Grupo');
+});
+
+test('un instructor sin clases no ve ningún alumno', function () {
+    $instructor = usuarioRol('instructor', $this->bekho->id);
+
+    Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Cualquiera',
+        'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    expect(Estudiante::visiblePara($instructor)->count())->toBe(0);
+});
+
+// --- Instructor: inscribe en exámenes sin aprobación -------------------------
+
+test('un instructor puede inscribir a un alumno en un examen', function () {
+    $instructor = usuarioRol('instructor', $this->bekho->id);
+    $conv = Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'Examen',
+        'fecha' => now()->addDays(5), 'estado' => 'programada']);
+    $alumno = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Inscribible',
+        'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    Livewire::actingAs($instructor)->test(DetalleConvocatoria::class, ['convocatoria' => $conv])
+        ->call('inscribir', $alumno->id);
+
+    expect(Inscripcion::where('convocatoria_id', $conv->id)->where('estudiante_id', $alumno->id)->exists())
+        ->toBeTrue();
+});
+
+// --- Aislamiento entre academias se mantiene ---------------------------------
+
+test('un instructor de una academia no ve alumnos de otra academia', function () {
+    $otra = Academia::create(['nombre' => 'Otro Grupo', 'activo' => true]);
+
+    $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede', 'activo' => true]);
+    $instructor = usuarioRol('instructor', $this->bekho->id);
+    $clase = Clase::create([
+        'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
+        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+    ]);
+    $clase->sincronizarInstructores([$instructor->id => 'titular']);
+
+    // Alumno de la otra academia con la misma sede/grupo "por coincidencia".
+    Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Ajeno',
+        'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    // El tenant del instructor filtra por su academia: no aparece el ajeno.
+    expect(Estudiante::visiblePara($instructor)->count())->toBe(0);
+});

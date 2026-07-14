@@ -6,6 +6,7 @@ use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Planilla;
 use App\Models\Programa;
 use Flux\Flux;
@@ -16,7 +17,7 @@ use Livewire\Component;
 #[Title('Planillas de clase')]
 class GestionPlanillas extends Component
 {
-    use ConOrden;
+    use ConOrden, SoloLectura;
 
     public string $nombre = '';
 
@@ -53,6 +54,8 @@ class GestionPlanillas extends Component
 
     public function guardar()
     {
+        $this->bloqueaSiSoloLectura();
+
         // Los <select> opcionales devuelven '' cuando no se elige nada.
         $this->programa_id = $this->programa_id ?: null;
         $this->habilidad_vida = $this->habilidad_vida ?: null;

@@ -10,14 +10,14 @@
             <flux:heading size="xl">{{ $convocatoria->nombre }}</flux:heading>
             <flux:text class="mt-1">{{ $convocatoria->fecha->format('d-m-Y') }} · {{ $convocatoria->sede?->nombre ?? 'Todas las sedes' }}</flux:text>
         </div>
-        @unless ($finalizada)
+        @if ($finalizada)
+            <flux:badge color="green" size="lg">Finalizada</flux:badge>
+        @elsecan('gestionar examenes')
             <flux:button wire:click="finalizar" icon="check-badge" variant="primary"
                 wire:confirm="Al finalizar se aplicarán las graduaciones aprobadas y se subirá el grado. ¿Continuar?">
                 Finalizar convocatoria
             </flux:button>
-        @else
-            <flux:badge color="green" size="lg">Finalizada</flux:badge>
-        @endunless
+        @endif
     </div>
 
     {{-- Inscritos --}}
@@ -57,8 +57,12 @@
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
                                 @unless ($finalizada)
-                                    <flux:button wire:click="abrirEdicion({{ $ins->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                    <flux:button wire:click="eliminar({{ $ins->id }})" icon="trash" variant="ghost" size="sm" />
+                                    @can('gestionar examenes')
+                                        <flux:button wire:click="abrirEdicion({{ $ins->id }})" icon="pencil-square" variant="ghost" size="sm" />
+                                    @endcan
+                                    @can('inscribir examenes')
+                                        <flux:button wire:click="eliminar({{ $ins->id }})" icon="trash" variant="ghost" size="sm" />
+                                    @endcan
                                 @endunless
                             </div>
                         </flux:table.cell>

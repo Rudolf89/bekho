@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
@@ -38,22 +38,25 @@ function usuarioExamen(string $rol, ?int $academiaId, ?int $supervisorId = null)
 
 // --- Permisos ----------------------------------------------------------------
 
-test('un instructor no accede a la gestión de exámenes', function () {
+test('un instructor ve las convocatorias (para inscribir) pero no el conteo de gestión', function () {
     $user = usuarioExamen('instructor', $this->bekho->id);
 
     Tenant::olvidar();
-    $this->actingAs($user)->get(route('examenes.index'))->assertForbidden();
+    // Puede abrir el listado y el detalle porque inscribe.
+    $this->actingAs($user)->get(route('examenes.index'))->assertOk();
+    // El conteo en cascada (collares) es de gestión: no lo ve.
+    $this->actingAs($user)->get(route('examenes.conteo'))->assertForbidden();
 });
 
 test('un maestro accede a la gestión de exámenes', function () {
-    $user = usuarioExamen('maestro', $this->bekho->id);
+    $user = usuarioExamen('direccion', $this->bekho->id);
 
     Tenant::olvidar();
     $this->actingAs($user)->get(route('examenes.index'))->assertOk();
 });
 
 test('las pantallas de detalle y conteo renderizan para un maestro', function () {
-    $user = usuarioExamen('maestro', $this->bekho->id);
+    $user = usuarioExamen('direccion', $this->bekho->id);
     $conv = Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
 
     Tenant::olvidar();
@@ -129,7 +132,7 @@ test('un examen reprobado no sube el grado ni crea historial', function () {
 // --- Conteo en cascada -------------------------------------------------------
 
 test('el conteo de graduaciones sube por la línea de supervisión', function () {
-    $ana = usuarioExamen('maestro', $this->bekho->id);              // jefa
+    $ana = usuarioExamen('direccion', $this->bekho->id);              // jefa
     $beto = usuarioExamen('instructor', $this->bekho->id, $ana->id); // Beto reporta a Ana
 
     $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);

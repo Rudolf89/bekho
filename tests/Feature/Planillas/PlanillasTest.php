@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 function usuarioPlanilla(string $rol, ?int $academiaId): User

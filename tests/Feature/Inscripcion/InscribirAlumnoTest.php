@@ -14,7 +14,7 @@ use Spatie\Permission\Models\Role;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
-    foreach (['super-admin', 'maestro', 'instructor'] as $rol) {
+    foreach (['admin-plataforma', 'direccion', 'instructor'] as $rol) {
         Role::findOrCreate($rol, 'web');
     }
 
@@ -25,7 +25,7 @@ beforeEach(function () {
     $this->instructor->assignRole('instructor');
 
     $usuario = User::factory()->create(['academia_id' => $this->academia->id]);
-    $usuario->assignRole('maestro');
+    $usuario->assignRole('direccion');
     actingAs($usuario);
 });
 

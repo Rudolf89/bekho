@@ -10,7 +10,7 @@
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
-            @role('super-admin')
+            @role('admin-plataforma')
                 <div class="mb-2 border-b border-zinc-200 px-2 pb-3 dark:border-zinc-700">
                     <flux:text size="xs" class="mb-1.5 block font-semibold uppercase tracking-wide text-zinc-400">Academia activa</flux:text>
                     <livewire:selector-academia />
@@ -42,10 +42,12 @@
 
                 @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas'])
                     <flux:sidebar.group heading="Gestión" class="grid">
-                        @can('gestionar alumnos')
+                        @can('viewAny', App\Models\Estudiante::class)
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
                                 Alumnos
                             </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar alumnos')
                             <flux:sidebar.item icon="user-plus" :href="route('inscripcion.crear')" :current="request()->routeIs('inscripcion.*')" wire:navigate>
                                 Inscribir alumno
                             </flux:sidebar.item>
@@ -65,7 +67,7 @@
                                 Pagos
                             </flux:sidebar.item>
                         @endcan
-                        @can('gestionar examenes')
+                        @can('ver examenes')
                             <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
                                 Exámenes
                             </flux:sidebar.item>

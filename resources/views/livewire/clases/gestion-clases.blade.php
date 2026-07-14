@@ -14,7 +14,7 @@
                 <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Clase</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'grupo_etario'" :direction="$ordenDir" wire:click="ordenarPor('grupo_etario')">Grupo</flux:table.column>
                 <flux:table.column>Sede</flux:table.column>
-                <flux:table.column>Instructor</flux:table.column>
+                <flux:table.column>Instructores</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
             <flux:table.rows>
@@ -29,7 +29,16 @@
                         <flux:table.cell>{{ $clase->nombre }}</flux:table.cell>
                         <flux:table.cell>{{ $clase->grupo_etario->etiqueta() }}</flux:table.cell>
                         <flux:table.cell>{{ $clase->sede?->nombre ?? '—' }}</flux:table.cell>
-                        <flux:table.cell>{{ $clase->instructor?->name ?? '—' }}</flux:table.cell>
+                        <flux:table.cell>
+                            @forelse ($clase->instructores as $instructor)
+                                <flux:text size="sm" class="block">
+                                    {{ $instructor->name }}
+                                    <span class="text-zinc-400">· {{ \App\Enums\PapelEnClase::from($instructor->pivot->papel)->etiqueta() }}</span>
+                                </flux:text>
+                            @empty
+                                —
+                            @endforelse
+                        </flux:table.cell>
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
                                 <flux:button wire:click="editar({{ $clase->id }})" icon="pencil-square" variant="ghost" size="sm" />
@@ -61,11 +70,6 @@
                         <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="instructor_id" label="Instructor a cargo" placeholder="Sin asignar">
-                    @foreach ($instructores as $instructor)
-                        <flux:select.option value="{{ $instructor->id }}">{{ $instructor->name }}</flux:select.option>
-                    @endforeach
-                </flux:select>
                 <flux:select wire:model="grupo_etario" label="Grupo etario" placeholder="Selecciona">
                     @foreach ($grupos as $g)
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
@@ -85,6 +89,36 @@
                         <flux:select.option value="{{ $planilla->id }}">{{ $planilla->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
+            </div>
+
+            {{-- Instructores: una clase puede tener varios, cada uno con su papel. --}}
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <flux:label>Instructores</flux:label>
+                    <flux:button type="button" wire:click="agregarInstructor" icon="plus" variant="ghost" size="sm">Agregar</flux:button>
+                </div>
+
+                @forelse ($asignaciones as $indice => $asignacion)
+                    <div class="flex items-end gap-2" wire:key="asignacion-{{ $indice }}">
+                        <flux:select wire:model="asignaciones.{{ $indice }}.user_id" label="Instructor" placeholder="Selecciona" class="flex-1">
+                            @foreach ($instructores as $instructor)
+                                <flux:select.option value="{{ $instructor->id }}">{{ $instructor->name }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <flux:select wire:model="asignaciones.{{ $indice }}.papel" label="Papel" class="w-40">
+                            @foreach ($papeles as $papel)
+                                <flux:select.option value="{{ $papel->value }}">{{ $papel->etiqueta() }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <flux:button type="button" wire:click="quitarInstructor({{ $indice }})" icon="trash" variant="ghost" size="sm" />
+                    </div>
+                @empty
+                    <flux:text size="sm" class="text-zinc-500">Sin instructores asignados.</flux:text>
+                @endforelse
+
+                @error('asignaciones.*.user_id')
+                    <flux:text size="sm" class="text-red-500">{{ $message }}</flux:text>
+                @enderror
             </div>
 
             <flux:switch wire:model="activo" label="Activa" />

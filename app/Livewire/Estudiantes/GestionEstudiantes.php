@@ -12,6 +12,7 @@ use App\Models\Programa;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -20,7 +21,7 @@ use Livewire\WithPagination;
 #[Title('Estudiantes')]
 class GestionEstudiantes extends Component
 {
-    use ConOrden, WithPagination;
+    use AuthorizesRequests, ConOrden, WithPagination;
 
     // Filtros
     public string $buscar = '';
@@ -92,6 +93,8 @@ class GestionEstudiantes extends Component
 
     public function nuevo(): void
     {
+        $this->authorize('create', Estudiante::class);
+
         $this->reset('editandoId', 'nombre', 'rut', 'fecha_nacimiento', 'grupo_etario',
             'grado_id', 'sede_id', 'telefono_contacto', 'email_contacto', 'programas', 'apoderados');
         $this->activo = true;
@@ -101,6 +104,8 @@ class GestionEstudiantes extends Component
 
     public function editar(Estudiante $estudiante): void
     {
+        $this->authorize('update', $estudiante);
+
         $this->editandoId = $estudiante->id;
         $this->nombre = $estudiante->nombre;
         $this->rut = $estudiante->rut;
@@ -129,9 +134,11 @@ class GestionEstudiantes extends Component
 
         if ($this->editandoId) {
             $estudiante = Estudiante::findOrFail($this->editandoId);
+            $this->authorize('update', $estudiante);
             $estudiante->update($atributos);
             Flux::toast(variant: 'success', text: 'Estudiante actualizado.');
         } else {
+            $this->authorize('create', Estudiante::class);
             $estudiante = Estudiante::create($atributos);
             Flux::toast(variant: 'success', text: 'Estudiante creado.');
         }
@@ -144,6 +151,8 @@ class GestionEstudiantes extends Component
 
     public function alternarActivo(Estudiante $estudiante): void
     {
+        $this->authorize('update', $estudiante);
+
         $estudiante->update(['activo' => ! $estudiante->activo]);
     }
 
@@ -175,6 +184,7 @@ class GestionEstudiantes extends Component
     public function render()
     {
         $query = Estudiante::query()
+            ->visiblePara(auth()->user())
             ->with(['sede', 'grado'])
             ->when($this->buscar !== '', fn ($q) => $q->where(fn ($sub) => $sub
                 ->where('nombre', 'ilike', "%{$this->buscar}%")

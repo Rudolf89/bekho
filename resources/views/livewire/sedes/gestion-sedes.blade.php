@@ -12,6 +12,7 @@
             <flux:table.columns>
                 <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Nombre</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'comuna'" :direction="$ordenDir" wire:click="ordenarPor('comuna')">Comuna</flux:table.column>
+                <flux:table.column>Tipo</flux:table.column>
                 @if ($this->esSuperAdmin())
                     <flux:table.column>Academia</flux:table.column>
                 @endif
@@ -28,6 +29,12 @@
                             @endif
                         </flux:table.cell>
                         <flux:table.cell>{{ $sede->comuna ?? '—' }}</flux:table.cell>
+                        <flux:table.cell>
+                            {{ $sede->tipo->etiqueta() }}
+                            @if ($sede->privada)
+                                <flux:badge color="amber" size="sm">Privada</flux:badge>
+                            @endif
+                        </flux:table.cell>
                         @if ($this->esSuperAdmin())
                             <flux:table.cell>{{ $sede->academia?->nombre ?? '—' }}</flux:table.cell>
                         @endif
@@ -46,7 +53,7 @@
                     </flux:table.row>
                 @empty
                     <flux:table.row>
-                        <flux:table.cell colspan="5">
+                        <flux:table.cell colspan="6">
                             <flux:text class="py-4 text-center">Aún no hay sedes. Crea la primera.</flux:text>
                         </flux:table.cell>
                     </flux:table.row>
@@ -71,6 +78,17 @@
                         <flux:select.option value="{{ $c }}">{{ $c }}</flux:select.option>
                     @endforeach
                 </flux:select>
+            </div>
+
+            <div class="grid gap-4 sm:grid-cols-2">
+                <flux:select wire:model="tipo" label="Tipo de sede">
+                    @foreach ($tipos as $t)
+                        <flux:select.option value="{{ $t->value }}">{{ $t->etiqueta() }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <div class="flex items-end pb-1">
+                    <flux:switch wire:model="privada" label="Privada (solo miembros de la entidad)" />
+                </div>
             </div>
 
             @if ($this->esSuperAdmin())

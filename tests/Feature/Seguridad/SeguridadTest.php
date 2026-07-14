@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 /**
@@ -46,7 +46,7 @@ test('un usuario sin permiso gestionar usuarios no accede a la gestión', functi
 });
 
 test('un maestro con 2FA y permiso accede a la gestión de usuarios', function () {
-    $user = usuario('maestro', $this->bekho->id, con2fa: true);
+    $user = usuario('direccion', $this->bekho->id, con2fa: true);
 
     $this->actingAs($user)
         ->get(route('usuarios.index'))
@@ -56,7 +56,7 @@ test('un maestro con 2FA y permiso accede a la gestión de usuarios', function (
 // --- 3. 2FA obligatoria por rol ----------------------------------------------
 
 test('un maestro sin 2FA confirmada es redirigido a la pantalla de seguridad', function () {
-    $user = usuario('maestro', $this->bekho->id, con2fa: false);
+    $user = usuario('direccion', $this->bekho->id, con2fa: false);
 
     $this->actingAs($user)
         ->get(route('dashboard'))
@@ -64,15 +64,15 @@ test('un maestro sin 2FA confirmada es redirigido a la pantalla de seguridad', f
 });
 
 test('un maestro con 2FA confirmada pasa sin redirección', function () {
-    $user = usuario('maestro', $this->bekho->id, con2fa: true);
+    $user = usuario('direccion', $this->bekho->id, con2fa: true);
 
     $this->actingAs($user)
         ->get(route('dashboard'))
         ->assertOk();
 });
 
-test('el super-admin sin 2FA también es redirigido a seguridad', function () {
-    $user = usuario('super-admin', null, con2fa: false);
+test('el admin-plataforma sin 2FA también es redirigido a seguridad', function () {
+    $user = usuario('admin-plataforma', null, con2fa: false);
 
     $this->actingAs($user)
         ->get(route('dashboard'))
@@ -100,7 +100,7 @@ test('un apoderado sin 2FA NO es redirigido', function () {
 // --- La pantalla de seguridad no entra en bucle de redirección ---------------
 
 test('un maestro sin 2FA no entra en bucle al abrir seguridad', function () {
-    $user = usuario('maestro', $this->bekho->id, con2fa: false);
+    $user = usuario('direccion', $this->bekho->id, con2fa: false);
 
     // security.edit está exenta de la exigencia de 2FA. Puede redirigir a la
     // confirmación de contraseña (comportamiento normal de Fortify), pero NUNCA

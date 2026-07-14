@@ -5,8 +5,10 @@
             <flux:text class="mt-1">Fichas de alumnos de la escuela</flux:text>
         </div>
         <div class="flex gap-2">
-            <flux:button wire:click="nuevo" icon="plus" variant="ghost">Alta rápida</flux:button>
-            <flux:button :href="route('inscripcion.crear')" icon="user-plus" variant="primary" wire:navigate>Inscribir alumno</flux:button>
+            @can('create', App\Models\Estudiante::class)
+                <flux:button wire:click="nuevo" icon="plus" variant="ghost">Alta rápida</flux:button>
+                <flux:button :href="route('inscripcion.crear')" icon="user-plus" variant="primary" wire:navigate>Inscribir alumno</flux:button>
+            @endcan
         </div>
     </div>
 
@@ -61,9 +63,11 @@
                         </flux:table.cell>
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
-                                <flux:button wire:click="editar({{ $estudiante->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                <flux:button wire:click="alternarActivo({{ $estudiante->id }})"
-                                    :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm" />
+                                @can('update', $estudiante)
+                                    <flux:button wire:click="editar({{ $estudiante->id }})" icon="pencil-square" variant="ghost" size="sm" />
+                                    <flux:button wire:click="alternarActivo({{ $estudiante->id }})"
+                                        :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm" />
+                                @endcan
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

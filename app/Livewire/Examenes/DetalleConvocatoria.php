@@ -4,6 +4,7 @@ namespace App\Livewire\Examenes;
 
 use App\Enums\EstadoConvocatoria;
 use App\Enums\ResultadoExamen;
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Convocatoria;
 use App\Models\Estudiante;
 use App\Models\Grado;
@@ -11,6 +12,7 @@ use App\Models\Inscripcion;
 use App\Models\User;
 use App\Services\ServicioExamenes;
 use Flux\Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -18,6 +20,8 @@ use Livewire\Component;
 #[Title('Convocatoria')]
 class DetalleConvocatoria extends Component
 {
+    use AuthorizesRequests, SoloLectura;
+
     public Convocatoria $convocatoria;
 
     // Edición de una inscripción
@@ -60,6 +64,10 @@ class DetalleConvocatoria extends Component
      */
     public function inscribir(int $estudianteId, ServicioExamenes $servicio): void
     {
+        // El instructor inscribe; el alumno queda inscrito sin aprobación de nadie.
+        $this->authorize('inscribir examenes');
+        $this->bloqueaSiSoloLectura();
+
         if ($this->convocatoria->estado === EstadoConvocatoria::Finalizada) {
             return;
         }
@@ -84,6 +92,9 @@ class DetalleConvocatoria extends Component
 
     public function abrirEdicion(Inscripcion $inscripcion): void
     {
+        // Ajustar grado destino, nota o visto bueno es gestión, no inscripción.
+        $this->authorize('gestionar examenes');
+
         $this->inscripcionEditandoId = $inscripcion->id;
         $this->ins_grado_destino = (string) ($inscripcion->grado_destino_id ?? '');
         $this->ins_instructor = (string) ($inscripcion->instructor_id ?? '');
@@ -96,6 +107,9 @@ class DetalleConvocatoria extends Component
 
     public function guardarEdicion(ServicioExamenes $servicio): void
     {
+        $this->authorize('gestionar examenes');
+        $this->bloqueaSiSoloLectura();
+
         // Los <select> opcionales devuelven '' cuando no se elige nada.
         $this->ins_grado_destino = $this->ins_grado_destino ?: null;
         $this->ins_instructor = $this->ins_instructor ?: null;
@@ -124,6 +138,10 @@ class DetalleConvocatoria extends Component
 
     public function eliminar(Inscripcion $inscripcion): void
     {
+        // Quitar una inscripción es parte de inscribir (el instructor puede deshacer).
+        $this->authorize('inscribir examenes');
+        $this->bloqueaSiSoloLectura();
+
         if ($this->convocatoria->estado !== EstadoConvocatoria::Finalizada) {
             $inscripcion->delete();
         }
@@ -131,6 +149,10 @@ class DetalleConvocatoria extends Component
 
     public function finalizar(ServicioExamenes $servicio): void
     {
+        // Finalizar aplica las graduaciones: es gestión.
+        $this->authorize('gestionar examenes');
+        $this->bloqueaSiSoloLectura();
+
         $servicio->finalizar($this->convocatoria);
         $this->convocatoria->refresh();
 
@@ -153,7 +175,7 @@ class DetalleConvocatoria extends Component
             'inscritos' => $inscritos,
             'sugeridos' => $sugeridos,
             'grados' => Grado::ordenados()->get(),
-            'instructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
+            'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'resultados' => ResultadoExamen::cases(),
             'finalizada' => $this->convocatoria->estado === EstadoConvocatoria::Finalizada,
         ]);

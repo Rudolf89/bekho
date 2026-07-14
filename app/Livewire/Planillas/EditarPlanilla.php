@@ -3,6 +3,7 @@
 namespace App\Livewire\Planillas;
 
 use App\Enums\HabilidadVida;
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Planilla;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
@@ -12,6 +13,8 @@ use Livewire\Component;
 #[Title('Editar planilla')]
 class EditarPlanilla extends Component
 {
+    use SoloLectura;
+
     public Planilla $planilla;
 
     public ?string $habilidad_vida = '';
@@ -32,6 +35,8 @@ class EditarPlanilla extends Component
 
     public function guardar(): void
     {
+        $this->bloqueaSiSoloLectura();
+
         $this->habilidad_vida = $this->habilidad_vida ?: null;
 
         $this->validate([

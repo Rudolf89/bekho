@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\TipoSede;
 use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -21,6 +22,8 @@ class Sede extends Model
         'nombre',
         'direccion',
         'comuna',
+        'tipo',
+        'privada',
         'activo',
     ];
 
@@ -32,6 +35,8 @@ class Sede extends Model
     protected function casts(): array
     {
         return [
+            'tipo' => TipoSede::class,
+            'privada' => 'boolean',
             'activo' => 'boolean',
         ];
     }

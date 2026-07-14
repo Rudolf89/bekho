@@ -217,4 +217,63 @@ class Estudiante extends Model
     {
         return $query->where('activo', true);
     }
+
+    /**
+     * ¿El estudiante corresponde a alguna de las clases del instructor dado?
+     *
+     * No hay inscripción explícita alumno↔clase: las clases agrupan por sede y
+     * grupo etario, así que un alumno "pertenece" a un instructor cuando su sede
+     * y grupo etario coinciden con alguna clase donde el instructor está
+     * asignado (con cualquier papel).
+     */
+    public function esDeInstructor(User $instructor): bool
+    {
+        return $instructor->clases()
+            ->where('sede_id', $this->sede_id)
+            ->where('grupo_etario', $this->grupo_etario?->value)
+            ->exists();
+    }
+
+    /**
+     * Limita la consulta a los estudiantes visibles para el usuario dado. La
+     * misma regla de visibilidad que aplica la EstudiantePolicy, para no
+     * duplicar la lógica entre el listado y la autorización por ficha:
+     *
+     * - Con "gestionar alumnos" (dirección, administrativo, federación,
+     *   admin-plataforma): todos los de su academia (ya acotada por el tenant).
+     * - Instructor: solo los de las clases donde está asignado.
+     * - Apoderado: solo sus hijos.
+     * - Cualquier otro: ninguno.
+     *
+     * @param  Builder<Estudiante>  $query
+     * @return Builder<Estudiante>
+     */
+    public function scopeVisiblePara(Builder $query, User $usuario): Builder
+    {
+        if ($usuario->can('gestionar alumnos')) {
+            return $query;
+        }
+
+        if ($usuario->hasRole('instructor')) {
+            $clases = $usuario->clases()->get(['sede_id', 'grupo_etario']);
+
+            if ($clases->isEmpty()) {
+                return $query->whereRaw('1 = 0');
+            }
+
+            return $query->where(function (Builder $q) use ($clases): void {
+                foreach ($clases as $clase) {
+                    $q->orWhere(fn (Builder $sub) => $sub
+                        ->where('sede_id', $clase->sede_id)
+                        ->where('grupo_etario', $clase->grupo_etario->value));
+                }
+            });
+        }
+
+        if ($usuario->hasRole('apoderado')) {
+            return $query->whereHas('apoderados', fn (Builder $q) => $q->whereKey($usuario->id));
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
 }

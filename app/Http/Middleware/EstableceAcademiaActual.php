@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Fija la academia (tenant) activa a partir del usuario autenticado.
  *
- * Debe correr después de la autenticación. El super-admin no está atado a una
+ * Debe correr después de la autenticación. El admin-plataforma no está atado a una
  * academia: elige cuál gestionar mediante el selector (se guarda en la sesión).
  * Por defecto toma la primera, para que siempre haya un tenant activo y los
  * formularios puedan crear registros sin fallar.
@@ -29,9 +29,10 @@ class EstableceAcademiaActual
         if (Auth::check()) {
             $usuario = Auth::user();
 
-            if ($usuario->hasRole('super-admin')) {
-                // El super-admin ve TODO el sistema; la academia activa solo se
-                // usa como contexto para crear registros (no filtra lecturas).
+            if ($usuario->hasRole('admin-plataforma') || $usuario->hasRole('federacion')) {
+                // El admin-plataforma y la federación ven TODO el sistema. La academia
+                // activa solo sirve como contexto para crear registros (no filtra
+                // lecturas). La federación además es de solo lectura (ver User).
                 Academia::set($this->academiaActivaSuperAdmin($request), filtraLecturas: false);
             } else {
                 Academia::set($usuario->academia_id);
@@ -42,7 +43,7 @@ class EstableceAcademiaActual
     }
 
     /**
-     * Academia activa elegida por el super-admin (de la sesión). Si no hay una
+     * Academia activa elegida por el admin-plataforma (de la sesión). Si no hay una
      * elegida, usa la primera academia y la deja fijada.
      */
     protected function academiaActivaSuperAdmin(Request $request): ?int

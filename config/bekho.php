@@ -13,12 +13,12 @@ return [
     | Para el resto de los roles la 2FA es opcional (los usuarios pueden
     | activarla desde la pantalla de seguridad, pero no se les exige).
     |
-    | Contexto BEKHO: se protegen las cuentas con privilegios (super-admin,
-    | maestro) sin imponer fricción a alumnos (incluidos menores) ni apoderados.
+    | Contexto BEKHO: se protegen las cuentas con privilegios (admin-plataforma,
+    | dirección) sin imponer fricción a alumnos (incluidos menores) ni apoderados.
     |
     */
 
-    '2fa_obligatorio_para' => ['super-admin', 'maestro'],
+    '2fa_obligatorio_para' => ['admin-plataforma', 'direccion'],
 
     /*
     |--------------------------------------------------------------------------

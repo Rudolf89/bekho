@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 function actorOrg(string $rol, ?int $academiaId): User
@@ -32,22 +32,22 @@ function actorOrg(string $rol, ?int $academiaId): User
     return $user;
 }
 
-// --- Alcance del super-admin -------------------------------------------------
+// --- Alcance del admin-plataforma -------------------------------------------------
 
-test('el super-admin ve las sedes de todas las academias (aunque tenga una activa)', function () {
+test('el admin-plataforma ve las sedes de todas las academias (aunque tenga una activa)', function () {
     $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
     Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede BEKHO', 'activo' => true]);
     Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Norte', 'activo' => true]);
 
     // Super-admin: academia activa = BEKHO pero SIN filtrar lecturas (ve todo).
     Tenant::set($this->bekho->id, filtraLecturas: false);
-    Livewire::actingAs(actorOrg('super-admin', null))->test(GestionSedes::class)
+    Livewire::actingAs(actorOrg('admin-plataforma', null))->test(GestionSedes::class)
         ->assertSee('Sede BEKHO')
         ->assertSee('Sede Norte');
 
     // Maestro: academia activa = BEKHO filtrando lecturas (solo la suya).
     Tenant::set($this->bekho->id);
-    Livewire::actingAs(actorOrg('maestro', $this->bekho->id))->test(GestionSedes::class)
+    Livewire::actingAs(actorOrg('direccion', $this->bekho->id))->test(GestionSedes::class)
         ->assertSee('Sede BEKHO')
         ->assertDontSee('Sede Norte');
 });
@@ -58,12 +58,12 @@ test('los conteos de academias son globales, no de la academia activa', function
 
     Tenant::set($this->bekho->id, filtraLecturas: false);
 
-    Livewire::actingAs(actorOrg('super-admin', null))->test(GestionAcademias::class)
+    Livewire::actingAs(actorOrg('admin-plataforma', null))->test(GestionAcademias::class)
         ->assertViewHas('academias', fn ($academias) => $academias
             ->firstWhere('nombre', 'ATA Norte')?->sedes_count === 1);
 });
 
-test('el alcance del super-admin (no filtrar lecturas) aplica a todo modelo por academia', function () {
+test('el alcance del admin-plataforma (no filtrar lecturas) aplica a todo modelo por academia', function () {
     $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
     Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
     Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
@@ -77,14 +77,14 @@ test('el alcance del super-admin (no filtrar lecturas) aplica a todo modelo por 
     expect(Estudiante::count())->toBe(2);
 });
 
-test('en una petición real el super-admin ve alumnos de otra academia', function () {
+test('en una petición real el admin-plataforma ve alumnos de otra academia', function () {
     $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
     Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Otra Academia', 'grupo_etario' => 'for_kids', 'activo' => true]);
 
     Tenant::olvidar();
 
-    // La petición pasa por el middleware, que para el super-admin no filtra.
-    $this->actingAs(actorOrg('super-admin', null))
+    // La petición pasa por el middleware, que para el admin-plataforma no filtra.
+    $this->actingAs(actorOrg('admin-plataforma', null))
         ->get(route('estudiantes.index'))
         ->assertOk()
         ->assertSee('Alumno Otra Academia');
@@ -93,7 +93,7 @@ test('en una petición real el super-admin ve alumnos de otra academia', functio
 // --- Permisos ----------------------------------------------------------------
 
 test('un maestro gestiona sedes pero no academias', function () {
-    $user = actorOrg('maestro', $this->bekho->id);
+    $user = actorOrg('direccion', $this->bekho->id);
 
     Tenant::olvidar();
     $this->actingAs($user)->get(route('sedes.index'))->assertOk();
@@ -106,8 +106,8 @@ test('un instructor no gestiona sedes', function () {
     $this->actingAs($user)->get(route('sedes.index'))->assertForbidden();
 });
 
-test('el super-admin gestiona academias', function () {
-    $user = actorOrg('super-admin', null);
+test('el admin-plataforma gestiona academias', function () {
+    $user = actorOrg('admin-plataforma', null);
 
     $this->actingAs($user)->get(route('academias.index'))->assertOk();
 });
@@ -125,7 +125,7 @@ test('las sedes se aíslan por academia', function () {
 });
 
 test('un maestro crea una sede en su propia academia', function () {
-    $maestro = actorOrg('maestro', $this->bekho->id);
+    $maestro = actorOrg('direccion', $this->bekho->id);
 
     Livewire::actingAs($maestro)->test(GestionSedes::class)
         ->call('nueva')
@@ -141,8 +141,8 @@ test('un maestro crea una sede en su propia academia', function () {
 
 // --- Academias: creación -----------------------------------------------------
 
-test('el super-admin crea una academia nueva', function () {
-    $admin = actorOrg('super-admin', null);
+test('el admin-plataforma crea una academia nueva', function () {
+    $admin = actorOrg('admin-plataforma', null);
 
     Livewire::actingAs($admin)->test(GestionAcademias::class)
         ->call('nueva')

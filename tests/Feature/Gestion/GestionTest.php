@@ -18,7 +18,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 /**
@@ -49,14 +49,20 @@ function nuevoEstudiante(int $academiaId, array $extra = []): Estudiante
 
 // --- Permisos ----------------------------------------------------------------
 
-test('un instructor no accede a la gestión de estudiantes', function () {
+test('un instructor accede al listado de estudiantes (ve solo los de sus clases)', function () {
     $user = actor('instructor', $this->bekho->id);
 
-    $this->actingAs($user)->get(route('estudiantes.index'))->assertForbidden();
+    $this->actingAs($user)->get(route('estudiantes.index'))->assertOk();
+});
+
+test('un instructor no puede inscribir alumnos (eso es de dirección/administrativo)', function () {
+    $user = actor('instructor', $this->bekho->id);
+
+    $this->actingAs($user)->get(route('inscripcion.crear'))->assertForbidden();
 });
 
 test('un maestro accede a la gestión de estudiantes', function () {
-    $user = actor('maestro', $this->bekho->id);
+    $user = actor('direccion', $this->bekho->id);
 
     $this->actingAs($user)->get(route('estudiantes.index'))->assertOk();
 });
@@ -69,7 +75,7 @@ test('un instructor puede tomar asistencia pero no gestionar pagos', function ()
 });
 
 test('las pantallas de clases y pagos renderizan para un maestro', function () {
-    $user = actor('maestro', $this->bekho->id);
+    $user = actor('direccion', $this->bekho->id);
 
     $this->actingAs($user)->get(route('clases.index'))->assertOk();
     $this->actingAs($user)->get(route('pagos.index'))->assertOk();
@@ -78,7 +84,7 @@ test('las pantallas de clases y pagos renderizan para un maestro', function () {
 test('la gestión de estudiantes renderiza aunque existan apoderados', function () {
     // Regresión: el multiselect de apoderados debe usar componentes de Flux libre.
     actor('apoderado', $this->bekho->id);
-    $user = actor('maestro', $this->bekho->id);
+    $user = actor('direccion', $this->bekho->id);
 
     $this->actingAs($user)->get(route('estudiantes.index'))->assertOk();
 });

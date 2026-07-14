@@ -14,7 +14,7 @@ use Spatie\Permission\Models\Role;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
-    foreach (['super-admin', 'maestro', 'instructor', 'apoderado'] as $rol) {
+    foreach (['admin-plataforma', 'direccion', 'instructor', 'apoderado'] as $rol) {
         Role::findOrCreate($rol, 'web');
     }
 });
@@ -22,7 +22,7 @@ beforeEach(function () {
 function superAdminUi(): User
 {
     $user = User::factory()->create();
-    $user->assignRole('super-admin');
+    $user->assignRole('admin-plataforma');
     $user->forceFill(['two_factor_confirmed_at' => now()])->save();
 
     return $user;

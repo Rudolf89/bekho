@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO')->first();
+    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::olvidar();
 });
 
@@ -30,7 +30,7 @@ afterEach(function () {
  */
 function usuarioConRol(string $rol, ?int $academiaId): User
 {
-    // Los roles con 2FA obligatoria (super-admin, maestro) necesitan la 2FA
+    // Los roles con 2FA obligatoria (admin-plataforma, maestro) necesitan la 2FA
     // confirmada para navegar; si no, el middleware ExigeDosFactores los redirige.
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
 
@@ -53,7 +53,7 @@ test('un usuario sin permiso no accede a la administración', function () {
 });
 
 test('un usuario con permiso sí accede a la administración', function () {
-    $user = usuarioConRol('maestro', $this->bekho->id);
+    $user = usuarioConRol('direccion', $this->bekho->id);
 
     $this->actingAs($user)
         ->get(route('formacion.admin.niveles'))
@@ -144,7 +144,7 @@ test('marcarContenido como pendiente limpia visto_en', function () {
 });
 
 test('marcarContenido funciona sin tenant activo tomando la academia del contenido', function () {
-    // Simula el caso de un super-admin (sin academia activa) revisando contenido.
+    // Simula el caso de un admin-plataforma (sin academia activa) revisando contenido.
     $nivel = Nivel::create(['academia_id' => $this->bekho->id, 'nombre' => 'Nivel 1', 'orden' => 0, 'activo' => true]);
     $contenido = Contenido::create([
         'academia_id' => $this->bekho->id,

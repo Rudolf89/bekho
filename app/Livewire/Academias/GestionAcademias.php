@@ -83,7 +83,7 @@ class GestionAcademias extends Component
 
     public function render()
     {
-        // El super-admin no filtra lecturas, así que los conteos de sedes y
+        // El admin-plataforma no filtra lecturas, así que los conteos de sedes y
         // usuarios salen globales (el total real de cada academia).
         return view('livewire.academias.gestion-academias', [
             'academias' => $this->aplicarOrden(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'activo'], 'nombre')->get(),

@@ -3,9 +3,11 @@
 namespace App\Livewire\Examenes;
 
 use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Convocatoria;
 use App\Models\Sede;
 use Flux\Flux;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -13,7 +15,7 @@ use Livewire\Component;
 #[Title('Exámenes de grado')]
 class GestionConvocatorias extends Component
 {
-    use ConOrden;
+    use AuthorizesRequests, ConOrden, SoloLectura;
 
     public string $nombre = '';
 
@@ -37,6 +39,10 @@ class GestionConvocatorias extends Component
 
     public function nueva(): void
     {
+        // Crear convocatorias es gestión; el instructor solo inscribe.
+        $this->authorize('gestionar examenes');
+        $this->bloqueaSiSoloLectura();
+
         $this->reset('nombre', 'sede_id', 'fecha');
         $this->fecha = now()->format('Y-m-d');
         $this->resetErrorBag();
@@ -45,6 +51,9 @@ class GestionConvocatorias extends Component
 
     public function guardar(): void
     {
+        $this->authorize('gestionar examenes');
+        $this->bloqueaSiSoloLectura();
+
         $this->sede_id = $this->sede_id ?: null;
 
         $datos = $this->validate();

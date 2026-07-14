@@ -21,12 +21,12 @@ use function Pest\Laravel\actingAs;
  */
 
 beforeEach(function () {
-    foreach (['super-admin', 'maestro', 'instructor', 'apoderado'] as $rol) {
+    foreach (['admin-plataforma', 'direccion', 'instructor', 'apoderado'] as $rol) {
         Role::findOrCreate($rol, 'web');
     }
 
     $user = User::factory()->create();
-    $user->assignRole('super-admin');
+    $user->assignRole('admin-plataforma');
     $user->forceFill(['two_factor_confirmed_at' => now()])->save();
     actingAs($user);
 });
@@ -35,7 +35,6 @@ test('los select de clases arrancan vacíos, no en null', function () {
     Livewire::test(GestionClases::class)
         ->call('nuevo')
         ->assertSet('sede_id', '')
-        ->assertSet('instructor_id', '')
         ->assertSet('grupo_etario', '')
         ->assertSet('dia_semana', '')
         ->assertSet('planilla_id', '');
@@ -48,7 +47,7 @@ test('los select de estudiantes arrancan vacíos', function () {
         ->assertSet('sede_id', '');
 });
 
-test('los select de sedes arrancan vacíos para super-admin', function () {
+test('los select de sedes arrancan vacíos para admin-plataforma', function () {
     Livewire::test(GestionSedes::class)
         ->call('nueva')
         ->assertSet('comuna', '')
@@ -68,7 +67,7 @@ test('el select de convocatorias arranca vacío', function () {
         ->assertSet('sede_id', '');
 });
 
-test('los select de usuarios arrancan vacíos para super-admin', function () {
+test('los select de usuarios arrancan vacíos para admin-plataforma', function () {
     Livewire::test(GestionUsuarios::class)
         ->call('nuevo')
         ->assertSet('rango_id', '')

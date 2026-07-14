@@ -5,8 +5,10 @@
             <flux:text class="mt-1">Convocatorias de examen</flux:text>
         </div>
         <div class="flex gap-2">
-            <flux:button :href="route('examenes.conteo')" icon="trophy" variant="ghost" wire:navigate>Conteo de graduaciones</flux:button>
-            <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva convocatoria</flux:button>
+            @can('gestionar examenes')
+                <flux:button :href="route('examenes.conteo')" icon="trophy" variant="ghost" wire:navigate>Conteo de graduaciones</flux:button>
+                <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva convocatoria</flux:button>
+            @endcan
         </div>
     </div>
 

@@ -11,14 +11,14 @@ use Spatie\Permission\Models\Role;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
-    foreach (['super-admin', 'maestro', 'instructor'] as $rol) {
+    foreach (['admin-plataforma', 'direccion', 'instructor'] as $rol) {
         Role::findOrCreate($rol, 'web');
     }
 });
 
-test('el super-admin (sin academia) crea una clase y la academia se toma de la sede', function () {
+test('el admin-plataforma (sin academia) crea una clase y la academia se toma de la sede', function () {
     $admin = User::factory()->create(['academia_id' => null]);
-    $admin->assignRole('super-admin');
+    $admin->assignRole('admin-plataforma');
     actingAs($admin);
 
     $academia = Academia::create(['nombre' => 'ATA', 'activo' => true]);

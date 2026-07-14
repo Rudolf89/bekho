@@ -23,6 +23,6 @@ test('la tabla de usuarios ordena al hacer click', function () {
         ->call('ordenarPor', 'email')->assertSet('ordenDir', 'desc');
 });
 
-test('la pantalla de pagos ya no revienta para el super-admin', function () {
+test('la pantalla de pagos ya no revienta para el admin-plataforma', function () {
     $this->actingAs($this->admin)->get(route('pagos.index'))->assertOk();
 });

@@ -6,7 +6,7 @@ use App\Models\Academia;
 use Livewire\Component;
 
 /**
- * Selector de "academia activa" para el super-admin. Al cambiar, guarda la
+ * Selector de "academia activa" para el admin-plataforma. Al cambiar, guarda la
  * elección en la sesión y recarga para que el tenant activo se aplique en
  * toda la aplicación (listados y creación de registros).
  */

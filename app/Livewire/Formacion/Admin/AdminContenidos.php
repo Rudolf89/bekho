@@ -3,6 +3,7 @@
 namespace App\Livewire\Formacion\Admin;
 
 use App\Enums\TipoContenido;
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Contenido;
 use App\Models\Nivel;
 use Flux\Flux;
@@ -12,6 +13,8 @@ use Livewire\Component;
 #[Title('Administrar contenidos')]
 class AdminContenidos extends Component
 {
+    use SoloLectura;
+
     public Nivel $nivel;
 
     /** Id del contenido en edición (null = creando). */
@@ -110,6 +113,8 @@ class AdminContenidos extends Component
      */
     public function guardar(): void
     {
+        $this->bloqueaSiSoloLectura();
+
         $datos = $this->validate();
 
         // Limpia el campo que no corresponde al tipo elegido.
@@ -135,6 +140,8 @@ class AdminContenidos extends Component
      */
     public function alternarActivo(Contenido $contenido): void
     {
+        $this->bloqueaSiSoloLectura();
+
         $contenido->update(['activo' => ! $contenido->activo]);
     }
 
@@ -169,6 +176,8 @@ class AdminContenidos extends Component
      */
     protected function intercambiar(Contenido $a, ?Contenido $b): void
     {
+        $this->bloqueaSiSoloLectura();
+
         if (! $b) {
             return;
         }

@@ -12,7 +12,7 @@ class ConteoCascada extends Component
 {
     public function render(ServicioExamenes $servicio)
     {
-        $instructores = User::role(['maestro', 'instructor'])
+        $instructores = User::role(['direccion', 'instructor'])
             ->orderBy('name')
             ->get()
             ->map(fn (User $u) => [

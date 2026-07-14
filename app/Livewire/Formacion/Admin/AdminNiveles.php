@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Formacion\Admin;
 
+use App\Livewire\Concerns\SoloLectura;
 use App\Models\Nivel;
 use Flux\Flux;
 use Livewire\Attributes\Title;
@@ -10,6 +11,8 @@ use Livewire\Component;
 #[Title('Administrar niveles')]
 class AdminNiveles extends Component
 {
+    use SoloLectura;
+
     /** Id del nivel en edición (null = creando). */
     public ?int $editandoId = null;
 
@@ -68,6 +71,8 @@ class AdminNiveles extends Component
      */
     public function guardar(): void
     {
+        $this->bloqueaSiSoloLectura();
+
         $datos = $this->validate();
 
         if ($this->editandoId) {
@@ -86,6 +91,8 @@ class AdminNiveles extends Component
      */
     public function alternarActivo(Nivel $nivel): void
     {
+        $this->bloqueaSiSoloLectura();
+
         $nivel->update(['activo' => ! $nivel->activo]);
     }
 
@@ -120,6 +127,8 @@ class AdminNiveles extends Component
      */
     protected function intercambiar(Nivel $a, ?Nivel $b): void
     {
+        $this->bloqueaSiSoloLectura();
+
         if (! $b) {
             return;
         }

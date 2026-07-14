@@ -9,10 +9,15 @@ use App\Livewire\Pagos\GestionPagos;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
 
-// Gestión de estudiantes (permiso "gestionar alumnos").
+// Inscripción de alumnos (permiso "gestionar alumnos": dirección/administrativo).
 Route::middleware(['auth', 'can:gestionar alumnos'])->group(function () {
-    Route::livewire('estudiantes', GestionEstudiantes::class)->name('estudiantes.index');
     Route::livewire('inscripcion', InscribirAlumno::class)->name('inscripcion.crear');
+});
+
+// Listado de estudiantes: gestores ven todo su tenant; el instructor solo los
+// alumnos de sus clases; el apoderado sus hijos (autorizado por EstudiantePolicy).
+Route::middleware(['auth', 'can:viewAny,'.Estudiante::class])->group(function () {
+    Route::livewire('estudiantes', GestionEstudiantes::class)->name('estudiantes.index');
 });
 
 // Clases y horario (permiso "gestionar clases").

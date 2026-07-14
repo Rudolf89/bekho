@@ -6,7 +6,9 @@ use App\Enums\EscalaGrado;
 use App\Enums\EstadoAsistencia;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
+use App\Enums\PapelEnClase;
 use App\Enums\TipoPago;
+use App\Enums\TipoSede;
 use App\Models\Academia;
 use App\Models\Asistencia;
 use App\Models\CargoRango;
@@ -33,7 +35,7 @@ class DemoBekhoSeeder extends Seeder
 {
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO')->first();
+        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
         if (! $academia) {
             return;
         }
@@ -42,7 +44,7 @@ class DemoBekhoSeeder extends Seeder
 
         $admin = User::sinAcademia()->where('email', 'admin@bekho.cl')->first();
 
-        // Jerarquía: Maestro Rodolfo → super-admin; instructores → Rodolfo.
+        // Jerarquía: Maestro Rodolfo → admin-plataforma; instructores → Rodolfo.
         $rangoMaestro = CargoRango::where('nombre', 'Maestro')->first();
         $rodolfo = User::updateOrCreate(
             ['email' => 'rodolfo@bekho.cl'],
@@ -52,7 +54,7 @@ class DemoBekhoSeeder extends Seeder
                 'supervisor_id' => $admin?->id, 'activo' => true,
             ],
         );
-        $rodolfo->syncRoles(['maestro']);
+        $rodolfo->syncRoles(['direccion']);
 
         $instructores = collect(['Camila Rojas', 'Diego Soto'])->map(function (string $nombre, int $i) use ($academia, $rodolfo) {
             $u = User::updateOrCreate(
@@ -69,7 +71,10 @@ class DemoBekhoSeeder extends Seeder
 
         $sede = Sede::updateOrCreate(
             ['academia_id' => $academia->id, 'nombre' => 'BEKHO Central'],
-            ['comuna' => 'Santiago', 'direccion' => 'Av. Ejemplo 1234', 'activo' => true],
+            [
+                'comuna' => 'Santiago', 'direccion' => 'Av. Ejemplo 1234',
+                'tipo' => TipoSede::Academia, 'privada' => false, 'activo' => true,
+            ],
         );
 
         // Alumnos por grupo etario. El nivel se deriva del cinturón, así que se
@@ -126,13 +131,21 @@ class DemoBekhoSeeder extends Seeder
                 $planilla->generarEstructura();
             }
 
-            Clase::updateOrCreate(
+            $clase = Clase::updateOrCreate(
                 ['academia_id' => $academia->id, 'nombre' => 'Clase '.$grupo, 'dia_semana' => $diaHoy],
                 [
-                    'sede_id' => $sede->id, 'instructor_id' => $instructor->id, 'planilla_id' => $planilla->id,
+                    'sede_id' => $sede->id, 'planilla_id' => $planilla->id,
                     'grupo_etario' => $grupo, 'hora_inicio' => $ini, 'hora_fin' => $fin, 'activo' => true,
                 ],
             );
+
+            // El instructor configurado queda como titular; Rodolfo apoya como
+            // asistente (demuestra clases con varios instructores).
+            $papeles = [$instructor->id => PapelEnClase::Titular->value];
+            if (! $instructor->is($rodolfo)) {
+                $papeles[$rodolfo->id] = PapelEnClase::Asistente->value;
+            }
+            $clase->sincronizarInstructores($papeles);
         }
 
         // Asistencia de hoy (marca presentes a la mitad).
@@ -169,7 +182,7 @@ class DemoBekhoSeeder extends Seeder
             );
         }
 
-        // Historial de graduaciones (conteo en cascada del maestro/super-admin).
+        // Historial de graduaciones (conteo en cascada del maestro/admin-plataforma).
         $grado = Grado::porEscala(EscalaGrado::Adultos)->ordenados()->first();
         foreach ($alumnos->take(14) as $m => $est) {
             $instructor = $instructores[$m % 2];

@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 use function Pest\Laravel\actingAs;
 
 beforeEach(function () {
-    Role::findOrCreate('super-admin', 'web');
+    Role::findOrCreate('admin-plataforma', 'web');
 });
 
 /*
@@ -59,7 +59,7 @@ test('un usuario desactivado durante su sesión es expulsado', function () {
 function adminAutenticado(): User
 {
     $admin = User::factory()->create();
-    $admin->assignRole('super-admin');
+    $admin->assignRole('admin-plataforma');
     actingAs($admin);
 
     return $admin;

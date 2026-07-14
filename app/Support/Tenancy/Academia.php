@@ -11,7 +11,7 @@ namespace App\Support\Tenancy;
  *  - Filtrar las lecturas (aislamiento por academia).
  *  - Autocompletar academia_id al crear registros.
  *
- * El super-admin debe VER todo el sistema, pero al crear necesita una academia
+ * El admin-plataforma debe VER todo el sistema, pero al crear necesita una academia
  * de contexto. Por eso `filtraLecturas` puede apagarse: se conserva la academia
  * activa (para crear) pero no se filtran las lecturas (ve todas las academias).
  */
@@ -29,7 +29,7 @@ class Academia
 
     /**
      * Fija la academia activa. Con $filtraLecturas = false se mantiene como
-     * contexto para crear, pero no aísla las lecturas (el super-admin ve todo).
+     * contexto para crear, pero no aísla las lecturas (el admin-plataforma ve todo).
      */
     public static function set(?int $academiaId, bool $filtraLecturas = true): void
     {
