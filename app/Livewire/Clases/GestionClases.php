@@ -94,6 +94,11 @@ class GestionClases extends Component
 
         $datos = $this->validate();
 
+        // La clase pertenece a la academia de su sede. Así queda bien también
+        // cuando la crea el super-admin, que no tiene academia activa (y por
+        // tanto el relleno automático del tenant no aplica).
+        $datos['academia_id'] = Sede::sinAcademia()->findOrFail($datos['sede_id'])->academia_id;
+
         if ($this->editandoId) {
             Clase::findOrFail($this->editandoId)->update($datos);
             Flux::toast(variant: 'success', text: 'Clase actualizada.');
