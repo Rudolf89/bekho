@@ -98,6 +98,11 @@ test('el apoderado 1 no es obligatorio para Jóvenes y Adultos', function () {
         ->assertHasNoErrors();
 });
 
+test('el día de vencimiento solo admite 1, 5, 10 o 15', function () {
+    inscribir()->set('dia_vencimiento', '20')->call('inscribir')->assertHasErrors('dia_vencimiento');
+    inscribir()->set('dia_vencimiento', '10')->call('inscribir')->assertHasNoErrors();
+});
+
 test('la comuna debe pertenecer a la región elegida', function () {
     inscribir()->set('region', 'Valparaíso')->set('comuna', 'Ñuñoa')->call('inscribir')
         ->assertHasErrors('comuna');

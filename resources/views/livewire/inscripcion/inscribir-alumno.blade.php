@@ -89,9 +89,9 @@
             <flux:heading size="lg" class="mb-4">Mensualidad y reglamento</flux:heading>
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:select wire:model="dia_vencimiento" label="Día de vencimiento de la mensualidad *" placeholder="Elegir día">
-                    @for ($dia = 1; $dia <= 31; $dia++)
+                    @foreach ($diasVencimiento as $dia)
                         <flux:select.option value="{{ $dia }}">Día {{ $dia }}</flux:select.option>
-                    @endfor
+                    @endforeach
                 </flux:select>
             </div>
 

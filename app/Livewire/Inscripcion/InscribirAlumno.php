@@ -87,7 +87,7 @@ class InscribirAlumno extends Component
             'telefono_contacto_2' => ['nullable', 'string', 'max:50'],
             'email_contacto' => ['required', 'email', 'max:255'],
             'email_contacto_2' => ['nullable', 'email', 'max:255'],
-            'dia_vencimiento' => ['required', 'integer', 'min:1', 'max:31'],
+            'dia_vencimiento' => ['required', Rule::in($this->diasVencimiento())],
             'acepto_reglamento' => ['accepted'],
         ];
     }
@@ -131,6 +131,16 @@ class InscribirAlumno extends Component
             [GrupoEtario::Tigers->value, GrupoEtario::ForKids->value],
             true,
         );
+    }
+
+    /**
+     * Días permitidos para el vencimiento de la mensualidad.
+     *
+     * @return list<int>
+     */
+    public function diasVencimiento(): array
+    {
+        return [1, 5, 10, 15];
     }
 
     /**
@@ -198,6 +208,7 @@ class InscribirAlumno extends Component
             'generos' => Genero::cases(),
             'regiones' => $this->regiones(),
             'comunasRegion' => $this->comunas(),
+            'diasVencimiento' => $this->diasVencimiento(),
         ]);
     }
 }
