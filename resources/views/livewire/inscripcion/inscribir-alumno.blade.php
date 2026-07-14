@@ -32,7 +32,7 @@
                 <flux:input wire:model="apellido_materno" label="Apellido materno *" required />
                 <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" required />
                 <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento *" required />
-                <flux:select wire:model="grupo_etario" label="Grupo etario *" placeholder="Selecciona">
+                <flux:select wire:model.live="grupo_etario" label="Grupo etario *" placeholder="Selecciona">
                     @foreach ($grupos as $grupo)
                         <flux:select.option value="{{ $grupo->value }}">{{ $grupo->etiqueta() }} ({{ $grupo->rangoEdad() }})</flux:select.option>
                     @endforeach
@@ -72,10 +72,10 @@
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg">Apoderados y contacto</flux:heading>
             <flux:text size="sm" class="mb-4 mt-0.5 text-zinc-500">
-                El apoderado 1 es obligatorio para alumnos menores de edad. El apoderado 2 es opcional.
+                El apoderado 1 es obligatorio para Tigers y For Kids. El apoderado 2 es opcional.
             </flux:text>
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="apoderado_1" :label="$this->esMenor() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" />
+                <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" />
                 <flux:input wire:model="apoderado_2" label="Nombre apoderado 2" />
                 <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" required />
                 <flux:input wire:model="telefono_contacto_2" label="Teléfono 2" placeholder="9xxxxxxxx" />

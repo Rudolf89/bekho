@@ -79,9 +79,9 @@ class InscribirAlumno extends Component
             'direccion' => ['required', 'string', 'max:255'],
             'region' => ['required', 'string', Rule::in($this->regiones())],
             'comuna' => ['required', 'string', Rule::in($this->comunas())],
-            // El apoderado 1 es obligatorio si el alumno es menor de edad; el
-            // apoderado 2 siempre es opcional.
-            'apoderado_1' => [$this->esMenor() ? 'required' : 'nullable', 'string', 'max:255'],
+            // El apoderado 1 es obligatorio según el grupo etario (Tigers y For
+            // Kids); el apoderado 2 siempre es opcional.
+            'apoderado_1' => [$this->requiereApoderado() ? 'required' : 'nullable', 'string', 'max:255'],
             'apoderado_2' => ['nullable', 'string', 'max:255'],
             'telefono_contacto' => ['required', 'string', 'max:50'],
             'telefono_contacto_2' => ['nullable', 'string', 'max:50'],
@@ -120,20 +120,17 @@ class InscribirAlumno extends Component
     }
 
     /**
-     * ¿El alumno es menor de edad (según la fecha de nacimiento)? Determina si
-     * el apoderado 1 es obligatorio.
+     * ¿Se exige apoderado? Según el grupo etario: Tigers y For Kids son siempre
+     * menores (apoderado obligatorio); Jóvenes y Adultos puede ser mayor de edad
+     * (opcional).
      */
-    public function esMenor(): bool
+    public function requiereApoderado(): bool
     {
-        if (! $this->fecha_nacimiento) {
-            return false;
-        }
-
-        try {
-            return Carbon::parse($this->fecha_nacimiento)->age < 18;
-        } catch (\Exception) {
-            return false;
-        }
+        return in_array(
+            $this->grupo_etario,
+            [GrupoEtario::Tigers->value, GrupoEtario::ForKids->value],
+            true,
+        );
     }
 
     /**

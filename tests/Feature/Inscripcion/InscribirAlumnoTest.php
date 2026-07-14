@@ -75,15 +75,21 @@ test('el reglamento debe aceptarse', function () {
     inscribir()->set('acepto_reglamento', false)->call('inscribir')->assertHasErrors('acepto_reglamento');
 });
 
-test('el apoderado 1 es obligatorio para un alumno menor de edad', function () {
+test('el apoderado 1 es obligatorio para Tigers y For Kids', function () {
     inscribir()
-        ->set('fecha_nacimiento', now()->subYears(9)->format('Y-m-d'))
+        ->set('grupo_etario', 'for_kids')
+        ->set('apoderado_1', '')
+        ->call('inscribir')
+        ->assertHasErrors('apoderado_1');
+
+    inscribir()
+        ->set('grupo_etario', 'tigers')
         ->set('apoderado_1', '')
         ->call('inscribir')
         ->assertHasErrors('apoderado_1');
 });
 
-test('el apoderado 1 no es obligatorio para un alumno adulto', function () {
+test('el apoderado 1 no es obligatorio para Jóvenes y Adultos', function () {
     inscribir()
         ->set('fecha_nacimiento', now()->subYears(25)->format('Y-m-d'))
         ->set('grupo_etario', 'jovenes_adultos')
