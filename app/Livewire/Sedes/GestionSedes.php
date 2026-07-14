@@ -75,8 +75,25 @@ class GestionSedes extends Component
         $this->mostrarModal = true;
     }
 
-    public function editar(Sede $sede): void
+    /**
+     * Busca una sede. El super-admin puede gestionar sedes de cualquier
+     * academia, así que ignora el aislamiento por academia.
+     */
+    protected function buscarSede(int $id): Sede
     {
+        $query = Sede::query();
+
+        if ($this->esSuperAdmin()) {
+            $query->withoutGlobalScope('academia');
+        }
+
+        return $query->findOrFail($id);
+    }
+
+    public function editar(int $sedeId): void
+    {
+        $sede = $this->buscarSede($sedeId);
+
         $this->editandoId = $sede->id;
         $this->nombre = $sede->nombre;
         $this->direccion = $sede->direccion;
@@ -103,7 +120,7 @@ class GestionSedes extends Component
         ];
 
         if ($this->editandoId) {
-            $sede = Sede::findOrFail($this->editandoId);
+            $sede = $this->buscarSede($this->editandoId);
             $sede->update($atributos);
             Flux::toast(variant: 'success', text: 'Sede actualizada.');
         } else {
@@ -116,17 +133,28 @@ class GestionSedes extends Component
         $this->mostrarModal = false;
     }
 
-    public function alternarActivo(Sede $sede): void
+    public function alternarActivo(int $sedeId): void
     {
+        $sede = $this->buscarSede($sedeId);
         $sede->update(['activo' => ! $sede->activo]);
     }
 
     public function render()
     {
+        // El super-admin ve TODAS las sedes (y todos los instructores para
+        // asignarlas), no solo las de su academia activa.
+        $consultaSedes = Sede::with('academia');
+        $consultaInstructores = User::role(['instructor', 'maestro']);
+
+        if ($this->esSuperAdmin()) {
+            $consultaSedes->withoutGlobalScope('academia');
+            $consultaInstructores->withoutGlobalScope('academia');
+        }
+
         return view('livewire.sedes.gestion-sedes', [
-            'sedes' => $this->aplicarOrden(Sede::with('academia'), ['nombre', 'comuna', 'activo'], 'nombre')->get(),
+            'sedes' => $this->aplicarOrden($consultaSedes, ['nombre', 'comuna', 'activo'], 'nombre')->get(),
             'academias' => Academia::orderBy('nombre')->get(),
-            'listaInstructores' => User::role(['instructor', 'maestro'])->orderBy('name')->get(),
+            'listaInstructores' => $consultaInstructores->orderBy('name')->get(),
             'comunas' => config('comunas', []),
         ]);
     }

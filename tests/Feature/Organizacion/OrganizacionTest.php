@@ -31,6 +31,37 @@ function actorOrg(string $rol, ?int $academiaId): User
     return $user;
 }
 
+// --- Alcance del super-admin -------------------------------------------------
+
+test('el super-admin ve las sedes de todas las academias (aunque tenga una activa)', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sede BEKHO', 'activo' => true]);
+    Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Norte', 'activo' => true]);
+
+    // Academia activa = BEKHO (como la deja el selector del super-admin).
+    Tenant::set($this->bekho->id);
+
+    // El super-admin ve ambas; el maestro de BEKHO solo la suya.
+    Livewire::actingAs(actorOrg('super-admin', null))->test(GestionSedes::class)
+        ->assertSee('Sede BEKHO')
+        ->assertSee('Sede Norte');
+
+    Livewire::actingAs(actorOrg('maestro', $this->bekho->id))->test(GestionSedes::class)
+        ->assertSee('Sede BEKHO')
+        ->assertDontSee('Sede Norte');
+});
+
+test('los conteos de academias son globales, no de la academia activa', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Norte', 'activo' => true]);
+
+    Tenant::set($this->bekho->id);
+
+    Livewire::actingAs(actorOrg('super-admin', null))->test(GestionAcademias::class)
+        ->assertViewHas('academias', fn ($academias) => $academias
+            ->firstWhere('nombre', 'ATA Norte')?->sedes_count === 1);
+});
+
 // --- Permisos ----------------------------------------------------------------
 
 test('un maestro gestiona sedes pero no academias', function () {
