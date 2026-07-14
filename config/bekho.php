@@ -58,4 +58,16 @@ return [
         'dorado' => null,    // TODO: umbral por confirmar
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Reglamento del alumno
+    |--------------------------------------------------------------------------
+    |
+    | URL al documento del Reglamento del Alumno que se enlaza en la declaración
+    | del formulario de inscripción. Si es null, se muestra solo el texto.
+    |
+    */
+
+    'reglamento_url' => env('BEKHO_REGLAMENTO_URL'),
+
 ];

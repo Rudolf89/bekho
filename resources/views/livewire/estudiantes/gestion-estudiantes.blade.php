@@ -4,7 +4,10 @@
             <flux:heading size="xl">Estudiantes</flux:heading>
             <flux:text class="mt-1">Fichas de alumnos de la escuela</flux:text>
         </div>
-        <flux:button wire:click="nuevo" icon="user-plus" variant="primary">Nuevo estudiante</flux:button>
+        <div class="flex gap-2">
+            <flux:button wire:click="nuevo" icon="plus" variant="ghost">Alta rápida</flux:button>
+            <flux:button :href="route('inscripcion.crear')" icon="user-plus" variant="primary" wire:navigate>Inscribir alumno</flux:button>
+        </div>
     </div>
 
     {{-- Filtros --}}

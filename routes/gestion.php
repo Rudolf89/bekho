@@ -4,6 +4,7 @@ use App\Livewire\Apoderado\MisEstudiantes;
 use App\Livewire\Asistencia\TomarAsistencia;
 use App\Livewire\Clases\GestionClases;
 use App\Livewire\Estudiantes\GestionEstudiantes;
+use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Livewire\Pagos\GestionPagos;
 use App\Models\Estudiante;
 use Illuminate\Support\Facades\Route;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Route;
 // Gestión de estudiantes (permiso "gestionar alumnos").
 Route::middleware(['auth', 'can:gestionar alumnos'])->group(function () {
     Route::livewire('estudiantes', GestionEstudiantes::class)->name('estudiantes.index');
+    Route::livewire('inscripcion', InscribirAlumno::class)->name('inscripcion.crear');
 });
 
 // Clases y horario (permiso "gestionar clases").

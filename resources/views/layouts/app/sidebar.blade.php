@@ -46,6 +46,9 @@
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
                                 Alumnos
                             </flux:sidebar.item>
+                            <flux:sidebar.item icon="user-plus" :href="route('inscripcion.crear')" :current="request()->routeIs('inscripcion.*')" wire:navigate>
+                                Inscribir alumno
+                            </flux:sidebar.item>
                         @endcan
                         @can('gestionar clases')
                             <flux:sidebar.item icon="calendar-days" :href="route('clases.index')" :current="request()->routeIs('clases.*')" wire:navigate>

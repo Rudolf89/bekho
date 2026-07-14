@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EscalaGrado;
+use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Models\Concerns\PerteneceAcademia;
@@ -26,15 +27,27 @@ class Estudiante extends Model
         'academia_id',
         'user_id',
         'sede_id',
+        'instructor_id',
         'grado_id',
         'nombre',
         'rut',
         'fecha_nacimiento',
+        'genero',
+        'direccion',
+        'region',
+        'comuna',
         'grupo_etario',
         'nivel',
+        'apoderado_1',
+        'apoderado_2',
         'telefono_contacto',
+        'telefono_contacto_2',
         'email_contacto',
+        'email_contacto_2',
+        'dia_vencimiento',
         'activo',
+        'acepto_reglamento',
+        'acepto_reglamento_at',
     ];
 
     /**
@@ -44,9 +57,13 @@ class Estudiante extends Model
     {
         return [
             'fecha_nacimiento' => 'date',
+            'genero' => Genero::class,
             'grupo_etario' => GrupoEtario::class,
             'nivel' => NivelEntrenamiento::class,
+            'dia_vencimiento' => 'integer',
             'activo' => 'boolean',
+            'acepto_reglamento' => 'boolean',
+            'acepto_reglamento_at' => 'datetime',
         ];
     }
 
@@ -92,6 +109,16 @@ class Estudiante extends Model
     public function sede(): BelongsTo
     {
         return $this->belongsTo(Sede::class);
+    }
+
+    /**
+     * Instructor a cargo (registrado en la inscripción).
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function instructor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'instructor_id');
     }
 
     /**
