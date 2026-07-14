@@ -77,3 +77,15 @@ select:focus[data-flux-control] {
     padding-top: 0.95rem;
     padding-bottom: 0.95rem;
 }
+
+/* Aire en los márgenes de la tabla: que el contenido no quede pegado a los
+   bordes en la primera y última columna. */
+[data-flux-cell]:first-child,
+[data-flux-column]:first-child {
+    padding-left: 1.5rem;
+}
+
+[data-flux-cell]:last-child,
+[data-flux-column]:last-child {
+    padding-right: 1.5rem;
+}
