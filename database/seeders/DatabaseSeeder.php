@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             GradosSeeder::class,
             RolesPermisosSeeder::class,
             FormacionDemoSeeder::class,
+            // Datos de demostración para ver el panel "vivo"; quitar en producción.
+            DemoBekhoSeeder::class,
         ]);
     }
 }

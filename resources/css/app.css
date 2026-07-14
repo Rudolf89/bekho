@@ -23,16 +23,21 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    /* Marca BEKHO: rojo de acento sobre crema. */
+    --color-bekho: #b01e28;
+    --color-bekho-dark: #8f1820;
+    --color-crema: #f5f2ec;
+
+    --color-accent: #b01e28;
+    --color-accent-content: #b01e28;
     --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: #e2565f;
+        --color-accent-content: #e2565f;
+        --color-accent-foreground: var(--color-white);
     }
 }
 
