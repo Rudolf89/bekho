@@ -4,24 +4,19 @@
 ])
 
 @php
-    // Los PNG de marca se sirven desde public/img. Mientras no existan, se
-    // muestra un logotipo textual de respaldo para no romper la interfaz.
-    $hayHorizontal = file_exists(public_path('img/bekho-horizontal.png'));
+    // Los PNG de marca se sirven desde public/img. Se prefiere la insignia
+    // completa (con contornos) porque se ve bien tanto en tema claro como
+    // oscuro; el logo horizontal pierde su borde blanco sobre fondo claro.
+    // Mientras no exista ningún PNG, se muestra un logotipo textual de respaldo.
     $hayCompleto = file_exists(public_path('img/bekho-logo.png'));
+    $hayHorizontal = file_exists(public_path('img/bekho-horizontal.png'));
 @endphp
 
 <a href="{{ $href ?? route('dashboard') }}" wire:navigate {{ $attributes->merge(['class' => 'flex items-center gap-2.5']) }}>
-    @if ($hayHorizontal || $hayCompleto)
-        {{-- Logo horizontal sobre fondo claro; el completo (con contornos
-             blancos) se ve bien sobre el fondo oscuro del modo nocturno. --}}
-        @if ($hayHorizontal)
-            <img src="{{ asset('img/bekho-horizontal.png') }}" alt="{{ config('app.name', 'BEKHO') }}"
-                 class="h-8 w-auto {{ $hayCompleto ? 'dark:hidden' : '' }}">
-        @endif
-        @if ($hayCompleto)
-            <img src="{{ asset('img/bekho-logo.png') }}" alt="{{ config('app.name', 'BEKHO') }}"
-                 class="h-9 w-auto {{ $hayHorizontal ? 'hidden dark:block' : '' }}">
-        @endif
+    @if ($hayCompleto)
+        <img src="{{ asset('img/bekho-logo.png') }}" alt="{{ config('app.name', 'BEKHO') }}" class="h-11 w-auto">
+    @elseif ($hayHorizontal)
+        <img src="{{ asset('img/bekho-horizontal.png') }}" alt="{{ config('app.name', 'BEKHO') }}" class="h-8 w-auto">
     @else
         {{-- Respaldo textual mientras no se agreguen los PNG en public/img. --}}
         <span class="flex h-8 items-center gap-[3px]">
