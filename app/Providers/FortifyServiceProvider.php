@@ -4,11 +4,14 @@ namespace App\Providers;
 
 use App\Actions\Fortify\CreateNewUser;
 use App\Actions\Fortify\ResetUserPassword;
+use App\Models\User;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -27,6 +30,7 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureActions();
+        $this->configureAuthentication();
         $this->configureViews();
         $this->configureRateLimiting();
     }
@@ -38,6 +42,34 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+    }
+
+    /**
+     * Configure how users are authenticated.
+     *
+     * Además de validar la contraseña, se rechaza el acceso a las cuentas
+     * desactivadas (activo = false): una cuenta inactiva no debe poder entrar.
+     */
+    private function configureAuthentication(): void
+    {
+        Fortify::authenticateUsing(function (Request $request) {
+            $usuario = User::query()
+                ->withoutGlobalScopes()
+                ->where('email', $request->email)
+                ->first();
+
+            if (! $usuario || ! Hash::check($request->password, $usuario->password)) {
+                return null;
+            }
+
+            if (! $usuario->activo) {
+                throw ValidationException::withMessages([
+                    Fortify::username() => __('Tu cuenta está desactivada. Contacta al administrador de la escuela.'),
+                ]);
+            }
+
+            return $usuario;
+        });
     }
 
     /**

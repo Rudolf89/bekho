@@ -9,7 +9,9 @@ use App\Models\CargoRango;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -42,6 +44,13 @@ class GestionUsuarios extends Component
     public bool $activo = true;
 
     public bool $mostrarModal = false;
+
+    // Confirmación de eliminación
+    public bool $mostrarEliminar = false;
+
+    public ?int $eliminandoId = null;
+
+    public string $eliminandoNombre = '';
 
     /**
      * Indica si el usuario autenticado es super-admin (ve/asigna todas las academias).
@@ -200,12 +209,101 @@ class GestionUsuarios extends Component
         Flux::toast(text: "Se envió el enlace de contraseña a {$usuario->email}.");
     }
 
+    /**
+     * Ids de usuarios (dentro de los indicados) con historial en el sistema.
+     *
+     * Un usuario con historial no se puede eliminar sin corromper registros
+     * (pagos/asistencia registrados, graduaciones e inscripciones acreditadas
+     * como instructor, clases a su cargo, o vínculo como apoderado o alumno).
+     * Se consulta con DB directo para ignorar el aislamiento por academia.
+     *
+     * @param  Collection<int, int>  $ids
+     * @return Collection<int, int>
+     */
+    protected function idsConHistorial(Collection $ids): Collection
+    {
+        if ($ids->isEmpty()) {
+            return collect();
+        }
+
+        $fuentes = [
+            ['clases', 'instructor_id'],
+            ['graduaciones', 'instructor_id'],
+            ['inscripciones', 'instructor_id'],
+            ['pagos', 'registrado_por'],
+            ['asistencias', 'registrado_por'],
+            ['estudiantes', 'user_id'],
+            ['apoderado_estudiante', 'user_id'],
+        ];
+
+        return collect($fuentes)
+            ->flatMap(fn (array $f) => DB::table($f[0])->whereIn($f[1], $ids)->pluck($f[1])->all())
+            ->unique()
+            ->values();
+    }
+
+    /**
+     * Abre la confirmación de eliminación, si el usuario se puede eliminar.
+     */
+    public function confirmarEliminar(User $usuario): void
+    {
+        if ($usuario->id === Auth::id()) {
+            Flux::toast(variant: 'danger', text: 'No puedes eliminar tu propia cuenta.');
+
+            return;
+        }
+
+        if ($this->idsConHistorial(collect([$usuario->id]))->isNotEmpty()) {
+            Flux::toast(variant: 'warning', text: 'Este usuario tiene historial en el sistema; solo puede desactivarse.');
+
+            return;
+        }
+
+        $this->eliminandoId = $usuario->id;
+        $this->eliminandoNombre = $usuario->name;
+        $this->mostrarEliminar = true;
+    }
+
+    /**
+     * Elimina definitivamente un usuario sin historial.
+     */
+    public function eliminar(): void
+    {
+        if (! $this->eliminandoId) {
+            return;
+        }
+
+        $usuario = User::findOrFail($this->eliminandoId);
+
+        // Resguardos (revalidados por si algo cambió desde que se abrió el modal).
+        if ($usuario->id === Auth::id() || $this->idsConHistorial(collect([$usuario->id]))->isNotEmpty()) {
+            Flux::toast(variant: 'warning', text: 'Este usuario ya no se puede eliminar; solo puede desactivarse.');
+            $this->mostrarEliminar = false;
+
+            return;
+        }
+
+        // Se limpian vínculos sin valor histórico y se elimina.
+        $usuario->sedes()->detach();
+        $usuario->syncRoles([]);
+        $usuario->progresos()->delete();
+        $usuario->delete();
+
+        Flux::toast(variant: 'success', text: 'Usuario eliminado.');
+        $this->mostrarEliminar = false;
+        $this->reset('eliminandoId', 'eliminandoNombre');
+    }
+
     public function render()
     {
         $academiaFormulario = $this->academiaEfectiva();
 
+        $usuarios = $this->aplicarOrden(User::with('roles'), ['name', 'email', 'activo'], 'name')->get();
+
         return view('livewire.usuarios.gestion-usuarios', [
-            'usuarios' => $this->aplicarOrden(User::with('roles'), ['name', 'email', 'activo'], 'name')->get(),
+            'usuarios' => $usuarios,
+            'idsConHistorial' => $this->idsConHistorial($usuarios->pluck('id')),
+            'usuarioActualId' => Auth::id(),
             'roles' => $this->rolesDisponibles(),
             'rangos' => CargoRango::orderBy('nivel')->get(),
             'academias' => Academia::orderBy('nombre')->get(),

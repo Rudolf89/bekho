@@ -37,7 +37,14 @@
                                     icon="envelope" variant="ghost" size="sm" title="Enviar enlace de contraseña" />
                                 <flux:button wire:click="editar({{ $usuario->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                 <flux:button wire:click="alternarActivo({{ $usuario->id }})"
-                                    :icon="$usuario->activo ? 'user-minus' : 'user'" variant="ghost" size="sm" />
+                                    :icon="$usuario->activo ? 'user-minus' : 'user'" variant="ghost" size="sm"
+                                    :title="$usuario->activo ? 'Desactivar' : 'Activar'" />
+                                @if ($usuario->id !== $usuarioActualId && ! $idsConHistorial->contains($usuario->id))
+                                    {{-- Solo se puede eliminar a usuarios sin historial en el sistema. --}}
+                                    <flux:button wire:click="confirmarEliminar({{ $usuario->id }})"
+                                        icon="trash" variant="ghost" size="sm" title="Eliminar"
+                                        class="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50" />
+                                @endif
                             </div>
                         </flux:table.cell>
                     </flux:table.row>
@@ -101,5 +108,23 @@
                 <flux:button type="submit" variant="primary">Guardar</flux:button>
             </div>
         </form>
+    </flux:modal>
+
+    <flux:modal name="eliminar-usuario" wire:model="mostrarEliminar" class="max-w-md">
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <flux:heading size="lg">¿Eliminar a {{ $eliminandoNombre }}?</flux:heading>
+                <flux:text>
+                    Esta acción es permanente y no se puede deshacer. Solo es posible porque este
+                    usuario no tiene historial (pagos, asistencia, graduaciones ni alumnos asociados).
+                    Si prefieres conservar el registro, mejor desactívalo.
+                </flux:text>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <flux:button type="button" variant="outline" wire:click="$set('mostrarEliminar', false)">Cancelar</flux:button>
+                <flux:button variant="danger" wire:click="eliminar">Eliminar</flux:button>
+            </div>
+        </div>
     </flux:modal>
 </div>

@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EstableceAcademiaActual;
 use App\Http\Middleware\ExigeDosFactores;
+use App\Http\Middleware\VerificaUsuarioActivo;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,9 +15,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        // Corren después de autenticar: primero se fija la academia (tenant)
-        // activa y luego se exige 2FA a los roles que la requieren.
+        // Corren después de autenticar: primero se expulsa a los usuarios
+        // desactivados, luego se fija la academia (tenant) activa y por último
+        // se exige 2FA a los roles que la requieren.
         $middleware->web(append: [
+            VerificaUsuarioActivo::class,
             EstableceAcademiaActual::class,
             ExigeDosFactores::class,
         ]);
