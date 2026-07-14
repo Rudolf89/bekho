@@ -87,7 +87,11 @@
                 </flux:select>
             @endif
 
+            {{-- La dirección administra toda la academia y puede no estar atada a
+                 una sede. La opción explícita "Sin sede" permite dejarla en blanco
+                 (el placeholder de Flux libre no se puede volver a seleccionar). --}}
             <flux:select wire:model="sede_id" label="Sede" placeholder="Sin sede">
+                <flux:select.option value="">Sin sede</flux:select.option>
                 @foreach ($sedes as $sede)
                     <flux:select.option value="{{ $sede->id }}">{{ $sede->nombre }}</flux:select.option>
                 @endforeach
