@@ -48,13 +48,16 @@ class Grado extends Model
      * de aquí: nuevo/sin cinturón (Blanco) => Principiantes.
      *
      * Corte por color: Blanco–Amarillo = Principiantes; Camuflado–Púrpura =
-     * Intermedio; desde Azul en adelante (incluidos Rojo/Negro y danes) = Avanzado.
+     * Intermedio; Azul–Rojo = Avanzado; el Rojo/Negro y los danes (Negro) son
+     * sus propias categorías.
      */
     public function nivelEntrenamiento(): NivelEntrenamiento
     {
         return match ($this->color) {
             'Camuflado', 'Verde', 'Púrpura' => NivelEntrenamiento::Intermedio,
-            'Azul', 'Café', 'Rojo', 'Rojo/Negro', 'Negro' => NivelEntrenamiento::Avanzado,
+            'Azul', 'Café', 'Rojo' => NivelEntrenamiento::Avanzado,
+            'Rojo/Negro' => NivelEntrenamiento::RojoNegro,
+            'Negro' => NivelEntrenamiento::Danes,
             default => NivelEntrenamiento::Principiantes,
         };
     }

@@ -99,7 +99,7 @@
                 <div>
                     <flux:label>Nivel</flux:label>
                     <div class="mt-2 flex h-10 items-center gap-2">
-                        <flux:badge :color="$this->nivelDerivado()->value === 'avanzado' ? 'red' : ($this->nivelDerivado()->value === 'intermedio' ? 'amber' : 'green')">
+                        <flux:badge :color="$this->nivelDerivado()->color()">
                             {{ $this->nivelDerivado()->etiqueta() }}
                         </flux:badge>
                         <flux:text size="sm" class="text-zinc-500">Según el cinturón</flux:text>
