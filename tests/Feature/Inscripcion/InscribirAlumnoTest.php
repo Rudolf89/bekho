@@ -41,6 +41,7 @@ function inscribir(): Testable
         ->set('fecha_nacimiento', now()->subYears(9)->format('Y-m-d'))
         ->set('genero', 'masculino')
         ->set('grupo_etario', 'for_kids')
+        ->set('apoderado_1', 'María Pérez')
         ->set('direccion', 'Av. Siempre Viva 123')
         ->set('region', 'Metropolitana de Santiago')
         ->set('comuna', 'Ñuñoa')
@@ -72,6 +73,23 @@ test('inscribir crea la ficha del alumno con los datos del formulario', function
 
 test('el reglamento debe aceptarse', function () {
     inscribir()->set('acepto_reglamento', false)->call('inscribir')->assertHasErrors('acepto_reglamento');
+});
+
+test('el apoderado 1 es obligatorio para un alumno menor de edad', function () {
+    inscribir()
+        ->set('fecha_nacimiento', now()->subYears(9)->format('Y-m-d'))
+        ->set('apoderado_1', '')
+        ->call('inscribir')
+        ->assertHasErrors('apoderado_1');
+});
+
+test('el apoderado 1 no es obligatorio para un alumno adulto', function () {
+    inscribir()
+        ->set('fecha_nacimiento', now()->subYears(25)->format('Y-m-d'))
+        ->set('grupo_etario', 'jovenes_adultos')
+        ->set('apoderado_1', '')
+        ->call('inscribir')
+        ->assertHasNoErrors();
 });
 
 test('la comuna debe pertenecer a la región elegida', function () {

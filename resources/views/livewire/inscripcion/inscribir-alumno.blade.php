@@ -71,9 +71,11 @@
         {{-- 4. Apoderados y contacto --}}
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg">Apoderados y contacto</flux:heading>
-            <flux:text size="sm" class="mb-4 mt-0.5 text-zinc-500">Los apoderados solo si aplica (alumno menor de edad).</flux:text>
+            <flux:text size="sm" class="mb-4 mt-0.5 text-zinc-500">
+                El apoderado 1 es obligatorio para alumnos menores de edad. El apoderado 2 es opcional.
+            </flux:text>
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="apoderado_1" label="Nombre apoderado 1" />
+                <flux:input wire:model="apoderado_1" :label="$this->esMenor() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" />
                 <flux:input wire:model="apoderado_2" label="Nombre apoderado 2" />
                 <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" required />
                 <flux:input wire:model="telefono_contacto_2" label="Teléfono 2" placeholder="9xxxxxxxx" />
