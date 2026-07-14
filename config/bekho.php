@@ -64,10 +64,11 @@ return [
     |--------------------------------------------------------------------------
     |
     | URL al documento del Reglamento del Alumno que se enlaza en la declaración
-    | del formulario de inscripción. Si es null, se muestra solo el texto.
+    | del formulario de inscripción. Por defecto apunta al PDF incluido en
+    | public/docs; se puede reemplazar por una URL externa con BEKHO_REGLAMENTO_URL.
     |
     */
 
-    'reglamento_url' => env('BEKHO_REGLAMENTO_URL'),
+    'reglamento_url' => env('BEKHO_REGLAMENTO_URL', '/docs/reglamento-alumno.pdf'),
 
 ];

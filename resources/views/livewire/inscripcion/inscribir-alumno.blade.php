@@ -97,14 +97,14 @@
 
             <flux:separator class="my-5" />
 
-            <div class="rounded-lg bg-zinc-50 p-4 dark:bg-zinc-900/50">
+            <div class="space-y-3 rounded-lg bg-zinc-50 p-4 dark:bg-zinc-900/50">
+                @if (config('bekho.reglamento_url'))
+                    <flux:button :href="config('bekho.reglamento_url')" target="_blank" icon="document-text" variant="ghost" size="sm">
+                        Leer el Reglamento del Alumno (PDF)
+                    </flux:button>
+                @endif
                 <flux:checkbox wire:model="acepto_reglamento"
                     label="Declaro haber leído, conocer y aceptar en todas sus partes el «Reglamento del Alumno BEKHO Martial Arts», y me comprometo a cumplir todas sus normas sin excepciones. *" />
-                @if (config('bekho.reglamento_url'))
-                    <flux:link href="{{ config('bekho.reglamento_url') }}" target="_blank" class="mt-2 block ps-7 text-sm">
-                        Leer el Reglamento del Alumno
-                    </flux:link>
-                @endif
                 <flux:error name="acepto_reglamento" />
             </div>
         </section>
