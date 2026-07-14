@@ -10,6 +10,13 @@
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
 
+            @role('super-admin')
+                <div class="mb-2 border-b border-zinc-200 px-2 pb-3 dark:border-zinc-700">
+                    <flux:text size="xs" class="mb-1.5 block font-semibold uppercase tracking-wide text-zinc-400">Academia activa</flux:text>
+                    <livewire:selector-academia />
+                </div>
+            @endrole
+
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
