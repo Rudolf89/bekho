@@ -33,11 +33,11 @@ class GestionUsuarios extends Component
 
     public string $rol = '';
 
-    public ?int $rango_id = null;
+    public ?string $rango_id = '';
 
-    public ?int $sede_id = null;
+    public ?string $sede_id = '';
 
-    public ?int $academia_id = null;
+    public ?string $academia_id = '';
 
     public bool $activo = true;
 
@@ -92,7 +92,9 @@ class GestionUsuarios extends Component
      */
     protected function academiaEfectiva(): ?int
     {
-        return $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+        $id = $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+
+        return $id !== '' && $id !== null ? (int) $id : null;
     }
 
     /**
@@ -104,7 +106,7 @@ class GestionUsuarios extends Component
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
-            $this->academia_id = Auth::user()->academia_id;
+            $this->academia_id = (string) Auth::user()->academia_id;
         }
 
         $this->resetErrorBag();
@@ -121,9 +123,9 @@ class GestionUsuarios extends Component
         $this->email = $usuario->email;
         $this->telefono = $usuario->telefono;
         $this->rol = $usuario->roles->first()?->name ?? '';
-        $this->rango_id = $usuario->rango_id;
-        $this->sede_id = $usuario->sedes->first()?->id;
-        $this->academia_id = $usuario->academia_id;
+        $this->rango_id = (string) ($usuario->rango_id ?? '');
+        $this->sede_id = (string) ($usuario->sedes->first()?->id ?? '');
+        $this->academia_id = (string) ($usuario->academia_id ?? '');
         $this->activo = $usuario->activo;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -135,6 +137,11 @@ class GestionUsuarios extends Component
      */
     public function guardar(): void
     {
+        // Los <select> opcionales devuelven '' cuando no se elige nada; se
+        // normaliza a null antes de validar/guardar.
+        $this->rango_id = $this->rango_id ?: null;
+        $this->sede_id = $this->sede_id ?: null;
+
         $datos = $this->validate();
 
         $academiaId = $this->academiaEfectiva();

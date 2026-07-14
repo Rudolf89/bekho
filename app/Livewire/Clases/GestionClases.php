@@ -23,15 +23,15 @@ class GestionClases extends Component
 
     public string $nombre = '';
 
-    public ?int $sede_id = null;
+    public string $sede_id = '';
 
-    public ?int $instructor_id = null;
+    public ?string $instructor_id = '';
 
-    public ?int $planilla_id = null;
+    public ?string $planilla_id = '';
 
     public string $grupo_etario = '';
 
-    public ?int $dia_semana = null;
+    public string $dia_semana = '';
 
     public ?string $hora_inicio = null;
 
@@ -72,11 +72,11 @@ class GestionClases extends Component
     {
         $this->editandoId = $clase->id;
         $this->nombre = $clase->nombre;
-        $this->sede_id = $clase->sede_id;
-        $this->instructor_id = $clase->instructor_id;
-        $this->planilla_id = $clase->planilla_id;
+        $this->sede_id = (string) $clase->sede_id;
+        $this->instructor_id = (string) ($clase->instructor_id ?? '');
+        $this->planilla_id = (string) ($clase->planilla_id ?? '');
         $this->grupo_etario = $clase->grupo_etario->value;
-        $this->dia_semana = $clase->dia_semana->value;
+        $this->dia_semana = (string) $clase->dia_semana->value;
         $this->hora_inicio = substr((string) $clase->hora_inicio, 0, 5);
         $this->hora_fin = $clase->hora_fin ? substr((string) $clase->hora_fin, 0, 5) : null;
         $this->activo = $clase->activo;
@@ -86,6 +86,12 @@ class GestionClases extends Component
 
     public function guardar(): void
     {
+        // Los <select> opcionales devuelven '' cuando no se elige nada; se
+        // normaliza a null para que la regla nullable omita 'exists' y para
+        // no insertar '' en columnas de llave foránea.
+        $this->instructor_id = $this->instructor_id ?: null;
+        $this->planilla_id = $this->planilla_id ?: null;
+
         $datos = $this->validate();
 
         if ($this->editandoId) {

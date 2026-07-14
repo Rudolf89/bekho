@@ -17,7 +17,7 @@ class GestionConvocatorias extends Component
 
     public string $nombre = '';
 
-    public ?int $sede_id = null;
+    public ?string $sede_id = '';
 
     public ?string $fecha = null;
 
@@ -45,6 +45,8 @@ class GestionConvocatorias extends Component
 
     public function guardar(): void
     {
+        $this->sede_id = $this->sede_id ?: null;
+
         $datos = $this->validate();
 
         Convocatoria::create($datos);

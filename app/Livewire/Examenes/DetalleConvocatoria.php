@@ -23,13 +23,13 @@ class DetalleConvocatoria extends Component
     // Edición de una inscripción
     public ?int $inscripcionEditandoId = null;
 
-    public ?int $ins_grado_destino = null;
+    public ?string $ins_grado_destino = '';
 
-    public ?int $ins_instructor = null;
+    public ?string $ins_instructor = '';
 
     public bool $ins_visto_bueno = false;
 
-    public ?string $ins_resultado = null;
+    public ?string $ins_resultado = '';
 
     public ?float $ins_nota = null;
 
@@ -85,10 +85,10 @@ class DetalleConvocatoria extends Component
     public function abrirEdicion(Inscripcion $inscripcion): void
     {
         $this->inscripcionEditandoId = $inscripcion->id;
-        $this->ins_grado_destino = $inscripcion->grado_destino_id;
-        $this->ins_instructor = $inscripcion->instructor_id;
+        $this->ins_grado_destino = (string) ($inscripcion->grado_destino_id ?? '');
+        $this->ins_instructor = (string) ($inscripcion->instructor_id ?? '');
         $this->ins_visto_bueno = $inscripcion->visto_bueno;
-        $this->ins_resultado = $inscripcion->resultado?->value;
+        $this->ins_resultado = $inscripcion->resultado?->value ?? '';
         $this->ins_nota = $inscripcion->nota !== null ? (float) $inscripcion->nota : null;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -96,6 +96,11 @@ class DetalleConvocatoria extends Component
 
     public function guardarEdicion(ServicioExamenes $servicio): void
     {
+        // Los <select> opcionales devuelven '' cuando no se elige nada.
+        $this->ins_grado_destino = $this->ins_grado_destino ?: null;
+        $this->ins_instructor = $this->ins_instructor ?: null;
+        $this->ins_resultado = $this->ins_resultado ?: null;
+
         $datos = $this->validate([
             'ins_grado_destino' => ['nullable', Rule::exists('grados', 'id')],
             'ins_instructor' => ['nullable', Rule::exists('users', 'id')],

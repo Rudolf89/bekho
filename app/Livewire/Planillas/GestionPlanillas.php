@@ -24,9 +24,9 @@ class GestionPlanillas extends Component
 
     public string $nivel = '';
 
-    public ?int $programa_id = null;
+    public ?string $programa_id = '';
 
-    public ?string $habilidad_vida = null;
+    public ?string $habilidad_vida = '';
 
     public bool $mostrarModal = false;
 
@@ -53,6 +53,10 @@ class GestionPlanillas extends Component
 
     public function guardar()
     {
+        // Los <select> opcionales devuelven '' cuando no se elige nada.
+        $this->programa_id = $this->programa_id ?: null;
+        $this->habilidad_vida = $this->habilidad_vida ?: null;
+
         $datos = $this->validate();
 
         $planilla = Planilla::create($datos);

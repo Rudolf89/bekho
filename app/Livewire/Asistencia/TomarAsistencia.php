@@ -12,7 +12,7 @@ use Livewire\Component;
 #[Title('Tomar asistencia')]
 class TomarAsistencia extends Component
 {
-    public ?int $claseId = null;
+    public ?string $claseId = '';
 
     public string $fecha = '';
 

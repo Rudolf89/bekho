@@ -23,9 +23,9 @@ class GestionSedes extends Component
 
     public ?string $direccion = null;
 
-    public ?string $comuna = null;
+    public ?string $comuna = '';
 
-    public ?int $academia_id = null;
+    public ?string $academia_id = '';
 
     public bool $activo = true;
 
@@ -57,7 +57,9 @@ class GestionSedes extends Component
 
     protected function academiaEfectiva(): ?int
     {
-        return $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+        $id = $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+
+        return $id !== '' && $id !== null ? (int) $id : null;
     }
 
     public function nueva(): void
@@ -66,7 +68,7 @@ class GestionSedes extends Component
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
-            $this->academia_id = Auth::user()->academia_id;
+            $this->academia_id = (string) Auth::user()->academia_id;
         }
 
         $this->resetErrorBag();
@@ -78,8 +80,8 @@ class GestionSedes extends Component
         $this->editandoId = $sede->id;
         $this->nombre = $sede->nombre;
         $this->direccion = $sede->direccion;
-        $this->comuna = $sede->comuna;
-        $this->academia_id = $sede->academia_id;
+        $this->comuna = (string) ($sede->comuna ?? '');
+        $this->academia_id = (string) ($sede->academia_id ?? '');
         $this->activo = $sede->activo;
         $this->instructores = $sede->instructores()->pluck('users.id')->all();
         $this->resetErrorBag();
@@ -88,6 +90,8 @@ class GestionSedes extends Component
 
     public function guardar(): void
     {
+        $this->comuna = $this->comuna ?: null;
+
         $datos = $this->validate();
 
         $atributos = [

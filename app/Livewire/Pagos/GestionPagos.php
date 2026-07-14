@@ -19,7 +19,7 @@ use Livewire\Component;
 class GestionPagos extends Component
 {
     // Formulario de registro de pago
-    public ?int $pagoEstudianteId = null;
+    public ?string $pagoEstudianteId = '';
 
     public string $pagoTipo = 'mensualidad';
 
@@ -83,7 +83,7 @@ class GestionPagos extends Component
     public function abrirRegistro(?int $estudianteId = null): void
     {
         $this->reset('pagoTipo', 'pagoMonto', 'pagoMedio');
-        $this->pagoEstudianteId = $estudianteId;
+        $this->pagoEstudianteId = (string) ($estudianteId ?? '');
         $this->pagoFechaPago = now()->format('Y-m-d');
         $this->resetErrorBag();
         $this->mostrarModal = true;

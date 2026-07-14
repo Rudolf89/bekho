@@ -14,7 +14,7 @@ class EditarPlanilla extends Component
 {
     public Planilla $planilla;
 
-    public ?string $habilidad_vida = null;
+    public ?string $habilidad_vida = '';
 
     /** @var array<int, string|null> contenido por id de bloque */
     public array $contenidos = [];
@@ -25,13 +25,15 @@ class EditarPlanilla extends Component
     public function mount(Planilla $planilla): void
     {
         $this->planilla = $planilla;
-        $this->habilidad_vida = $planilla->habilidad_vida?->value;
+        $this->habilidad_vida = $planilla->habilidad_vida?->value ?? '';
         $this->contenidos = $planilla->bloques->pluck('contenido', 'id')->all();
         $this->notas = $planilla->cuadrantes->pluck('nota', 'id')->all();
     }
 
     public function guardar(): void
     {
+        $this->habilidad_vida = $this->habilidad_vida ?: null;
+
         $this->validate([
             'habilidad_vida' => ['nullable', Rule::enum(HabilidadVida::class)],
             'contenidos.*' => ['nullable', 'string'],

@@ -44,9 +44,9 @@ class GestionEstudiantes extends Component
 
     public string $nivel = '';
 
-    public ?int $grado_id = null;
+    public ?string $grado_id = '';
 
-    public ?int $sede_id = null;
+    public ?string $sede_id = '';
 
     public ?string $telefono_contacto = null;
 
@@ -109,8 +109,8 @@ class GestionEstudiantes extends Component
         $this->fecha_nacimiento = $estudiante->fecha_nacimiento?->format('Y-m-d');
         $this->grupo_etario = $estudiante->grupo_etario->value;
         $this->nivel = $estudiante->nivel->value;
-        $this->grado_id = $estudiante->grado_id;
-        $this->sede_id = $estudiante->sede_id;
+        $this->grado_id = (string) ($estudiante->grado_id ?? '');
+        $this->sede_id = (string) ($estudiante->sede_id ?? '');
         $this->telefono_contacto = $estudiante->telefono_contacto;
         $this->email_contacto = $estudiante->email_contacto;
         $this->activo = $estudiante->activo;
@@ -122,6 +122,10 @@ class GestionEstudiantes extends Component
 
     public function guardar(): void
     {
+        // Los <select> opcionales devuelven '' cuando no se elige nada.
+        $this->grado_id = $this->grado_id ?: null;
+        $this->sede_id = $this->sede_id ?: null;
+
         $datos = $this->validate();
 
         $atributos = collect($datos)->except('programas', 'apoderados')->all();
