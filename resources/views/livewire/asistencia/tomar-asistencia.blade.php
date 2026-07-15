@@ -16,7 +16,7 @@
 
             <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
                 <flux:heading size="lg">{{ $clase->nombre }}</flux:heading>
-                <flux:text size="sm" class="mt-0.5 capitalize">
+                <flux:text size="sm" class="mt-0.5 first-letter:uppercase">
                     {{ $fechaLista }} · {{ substr((string) $clase->hora_inicio, 0, 5) }}
                     · {{ $clase->grupo_etario->etiqueta() }} · {{ $clase->sede?->nombre }}
                 </flux:text>
@@ -56,7 +56,7 @@
                 <flux:button wire:click="irAHoy" variant="outline" size="sm">Hoy</flux:button>
                 <flux:button wire:click="semanaSiguiente" icon="chevron-right" variant="ghost" size="sm" aria-label="Semana siguiente" />
             </div>
-            <flux:text class="font-medium capitalize">{{ $rangoSemana }}</flux:text>
+            <flux:text class="font-medium first-letter:uppercase">{{ $rangoSemana }}</flux:text>
         </div>
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
