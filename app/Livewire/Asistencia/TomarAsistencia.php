@@ -139,11 +139,15 @@ class TomarAsistencia extends Component
                         ->whereDate('fecha', $fecha->toDateString())
                         ->exists();
 
+                    $titular = $c->instructores->firstWhere('pivot.papel', 'titular')
+                        ?? $c->instructores->first();
+
                     return [
                         'clase' => $c,
                         'esperados' => $esperados,
                         'presentes' => $presentes,
                         'tomada' => $tomada,
+                        'titular' => $titular?->name,
                     ];
                 })
                 ->values();
@@ -163,7 +167,7 @@ class TomarAsistencia extends Component
 
     public function render()
     {
-        $clases = Clase::activas()->with('sede')->get();
+        $clases = Clase::activas()->with(['sede', 'instructores'])->get();
 
         $clase = $this->claseSeleccionada();
         $roster = $clase ? $clase->estudiantesEsperados()->get() : collect();

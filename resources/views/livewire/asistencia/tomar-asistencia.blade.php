@@ -61,15 +61,18 @@
 
         <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-7">
             @foreach ($dias as $dia)
-                <div class="flex flex-col rounded-xl border bg-white dark:bg-zinc-800
-                    {{ $dia['esHoy'] ? 'border-red-400 ring-1 ring-red-400 dark:border-red-500' : 'border-zinc-200 dark:border-zinc-700' }}">
+                <div class="flex flex-col overflow-hidden rounded-xl border bg-white dark:bg-zinc-800
+                    {{ $dia['esHoy'] ? 'border-red-300 shadow-sm dark:border-red-500/60' : 'border-zinc-200 dark:border-zinc-700' }}">
                     {{-- Encabezado del día --}}
-                    <div class="flex items-baseline justify-between border-b px-3 py-2
-                        {{ $dia['esHoy'] ? 'border-red-200 dark:border-red-900/50' : 'border-zinc-100 dark:border-zinc-700/60' }}">
-                        <span class="text-sm font-semibold capitalize {{ $dia['esHoy'] ? 'text-red-600 dark:text-red-400' : 'text-zinc-600 dark:text-zinc-300' }}">
+                    <div class="flex items-center justify-between gap-2 px-3 py-2.5
+                        {{ $dia['esHoy'] ? 'bg-red-50 dark:bg-red-950/30' : 'bg-zinc-50 dark:bg-zinc-900/40' }}">
+                        <span class="text-sm font-semibold capitalize {{ $dia['esHoy'] ? 'text-red-700 dark:text-red-300' : 'text-zinc-600 dark:text-zinc-300' }}">
                             {{ $dia['diaNombre'] }}
                         </span>
-                        <span class="text-xs text-zinc-400">{{ $dia['diaNumero'] }} {{ $dia['mes'] }}</span>
+                        <span class="flex h-7 min-w-[1.75rem] items-center justify-center rounded-full px-1.5 text-sm font-semibold
+                            {{ $dia['esHoy'] ? 'bg-red-600 text-white' : 'text-zinc-400' }}">
+                            {{ $dia['diaNumero'] }}
+                        </span>
                     </div>
 
                     {{-- Clases del día --}}
@@ -78,21 +81,26 @@
                             @php($c = $item['clase'])
                             <button type="button" wire:key="cal-{{ $c->id }}-{{ $dia['fecha'] }}"
                                 wire:click="abrirClase({{ $c->id }}, '{{ $dia['fecha'] }}')"
-                                class="group w-full rounded-lg border border-zinc-200 p-2 text-left transition hover:border-red-300 hover:bg-red-50/50 dark:border-zinc-700 dark:hover:border-red-500/60 dark:hover:bg-red-950/20">
+                                class="group w-full rounded-lg border border-zinc-200 bg-white p-2.5 text-left shadow-sm transition hover:-translate-y-px hover:border-red-300 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-red-500/60">
                                 <div class="flex items-center justify-between gap-1">
-                                    <span class="text-xs font-semibold text-zinc-500">{{ substr((string) $c->hora_inicio, 0, 5) }}</span>
+                                    <span class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
+                                        <flux:icon.clock variant="micro" class="text-zinc-400" />
+                                        {{ substr((string) $c->hora_inicio, 0, 5) }}@if ($c->hora_fin)–{{ substr((string) $c->hora_fin, 0, 5) }}@endif
+                                    </span>
                                     @if ($item['tomada'])
-                                        <flux:badge color="green" size="sm">{{ $item['presentes'] }}/{{ $item['esperados'] }}</flux:badge>
+                                        <flux:badge color="green" size="sm" icon="check">{{ $item['presentes'] }}/{{ $item['esperados'] }}</flux:badge>
                                     @else
                                         <flux:badge color="zinc" size="sm">{{ $item['esperados'] }}</flux:badge>
                                     @endif
                                 </div>
-                                <div class="mt-1 truncate text-sm font-medium text-zinc-800 dark:text-zinc-100">{{ $c->nombre }}</div>
-                                <div class="truncate text-xs text-zinc-400">{{ $c->grupo_etario->etiqueta() }}</div>
+                                <div class="mt-1.5 truncate text-sm font-semibold text-zinc-800 dark:text-zinc-100">{{ $c->nombre }}</div>
+                                <div class="mt-0.5 truncate text-xs text-zinc-400">
+                                    {{ $c->grupo_etario->etiqueta() }}@if ($item['titular']) · {{ $item['titular'] }}@endif
+                                </div>
                             </button>
                         @empty
-                            <div class="flex flex-1 items-center justify-center py-6">
-                                <span class="text-xs text-zinc-300 dark:text-zinc-600">—</span>
+                            <div class="flex flex-1 items-center justify-center py-8">
+                                <span class="text-xs text-zinc-300 dark:text-zinc-600">Sin clases</span>
                             </div>
                         @endforelse
                     </div>
@@ -100,9 +108,13 @@
             @endforeach
         </div>
 
-        <flux:text size="sm" class="text-zinc-500">
-            El número indica los alumnos esperados; una vez tomada la lista se muestra en verde
-            como presentes/esperados.
-        </flux:text>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-zinc-500">
+            <span class="inline-flex items-center gap-1.5">
+                <flux:badge color="zinc" size="sm">N</flux:badge> alumnos esperados
+            </span>
+            <span class="inline-flex items-center gap-1.5">
+                <flux:badge color="green" size="sm" icon="check">N</flux:badge> lista ya tomada (presentes/esperados)
+            </span>
+        </div>
     @endif
 </div>
