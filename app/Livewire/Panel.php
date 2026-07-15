@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Enums\EstadoAsistencia;
 use App\Enums\TipoPago;
+use App\Models\Academia;
 use App\Models\Asistencia;
 use App\Models\Clase;
 use App\Models\Convocatoria;
@@ -12,6 +13,7 @@ use App\Models\Pago;
 use App\Models\Sede;
 use App\Services\ServicioExamenes;
 use App\Services\ServicioPagos;
+use App\Support\Tenancy\Academia as Tenant;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -25,11 +27,19 @@ class Panel extends Component
         $hoy = now();
         $diaHoy = (int) $hoy->dayOfWeekIso; // 1 = lunes … 7 = domingo
 
-        // Chip de sede/academia.
-        $sede = Sede::where('activo', true)->orderBy('nombre')->first();
-        $chip = $usuario->academia?->nombre ?? 'BEKHO';
-        if ($sede) {
-            $chip = $sede->nombre.($sede->comuna ? ' · '.$sede->comuna : '');
+        // Chip de academia enfocada. Si el tenant filtra lecturas hay una academia
+        // acotada (la del usuario, o la elegida por el admin-plataforma); si no,
+        // el admin-plataforma está viendo "Todas las academias".
+        $academiaActiva = Tenant::filtraLecturas() && Tenant::id()
+            ? Academia::find(Tenant::id())
+            : null;
+
+        if ($academiaActiva) {
+            // Una sede representativa (ya viene acotada a la academia por el scope).
+            $sede = Sede::where('activo', true)->orderBy('nombre')->first();
+            $chip = $academiaActiva->nombre.($sede && $sede->comuna ? ' · '.$sede->comuna : '');
+        } else {
+            $chip = 'Todas las academias';
         }
 
         // KPIs.

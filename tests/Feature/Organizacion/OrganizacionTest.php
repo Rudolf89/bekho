@@ -90,6 +90,38 @@ test('en una petición real el admin-plataforma ve alumnos de otra academia', fu
         ->assertSee('Alumno Otra Academia');
 });
 
+test('el admin-plataforma enfocado en una academia solo ve los datos de esa academia', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    Tenant::olvidar();
+
+    // Elige BEKHO en el selector (sesión): la vista se acota a esa academia.
+    $this->actingAs(actorOrg('admin-plataforma', null))
+        ->withSession(['academia_activa_id' => $this->bekho->id])
+        ->get(route('estudiantes.index'))
+        ->assertOk()
+        ->assertSee('Alumno BEKHO')
+        ->assertDontSee('Alumno Norte');
+});
+
+test('el admin-plataforma en "Todas las academias" ve los datos de todas', function () {
+    $otra = Academia::create(['nombre' => 'ATA Norte', 'activo' => true]);
+    Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    Estudiante::create(['academia_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+
+    Tenant::olvidar();
+
+    // Sin academia elegida (Todas): ve las de todas las academias.
+    $this->actingAs(actorOrg('admin-plataforma', null))
+        ->withSession(['academia_activa_id' => null])
+        ->get(route('estudiantes.index'))
+        ->assertOk()
+        ->assertSee('Alumno BEKHO')
+        ->assertSee('Alumno Norte');
+});
+
 // --- Permisos ----------------------------------------------------------------
 
 test('un maestro gestiona sedes pero no academias', function () {

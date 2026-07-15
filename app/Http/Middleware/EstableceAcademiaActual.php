@@ -12,10 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * Fija la academia (tenant) activa a partir del usuario autenticado.
  *
- * Debe correr después de la autenticación. El admin-plataforma no está atado a una
- * academia: elige cuál gestionar mediante el selector (se guarda en la sesión).
- * Por defecto toma la primera, para que siempre haya un tenant activo y los
- * formularios puedan crear registros sin fallar.
+ * Debe correr después de la autenticación.
+ *
+ * El admin-plataforma no está atado a una academia: elige en el selector cuál
+ * ver. Si elige una, la vista se ACOTA a esa academia (filtra lecturas y es el
+ * contexto de creación). Si no elige ninguna ("Todas las academias"), ve todo el
+ * sistema y la primera academia queda solo como contexto para crear.
+ *
+ * La federación supervisa todas las academias (solo lectura), siempre en modo
+ * "ver todo".
  */
 class EstableceAcademiaActual
 {
@@ -29,11 +34,18 @@ class EstableceAcademiaActual
         if (Auth::check()) {
             $usuario = Auth::user();
 
-            if ($usuario->hasRole('admin-plataforma') || $usuario->hasRole('federacion')) {
-                // El admin-plataforma y la federación ven TODO el sistema. La academia
-                // activa solo sirve como contexto para crear registros (no filtra
-                // lecturas). La federación además es de solo lectura (ver User).
-                Academia::set($this->academiaActivaSuperAdmin($request), filtraLecturas: false);
+            if ($usuario->hasRole('admin-plataforma')) {
+                $elegida = $this->academiaElegida($request);
+
+                if ($elegida !== null) {
+                    // Academia enfocada: la vista se acota a ella.
+                    Academia::set($elegida, filtraLecturas: true);
+                } else {
+                    // "Todas las academias": ve todo; contexto de creación = la primera.
+                    Academia::set($this->primeraAcademia(), filtraLecturas: false);
+                }
+            } elseif ($usuario->hasRole('federacion')) {
+                Academia::set($this->primeraAcademia(), filtraLecturas: false);
             } else {
                 Academia::set($usuario->academia_id);
             }
@@ -43,26 +55,25 @@ class EstableceAcademiaActual
     }
 
     /**
-     * Academia activa elegida por el admin-plataforma (de la sesión). Si no hay una
-     * elegida, usa la primera academia y la deja fijada.
+     * Academia elegida por el admin-plataforma en el selector (de la sesión), o
+     * null si eligió "Todas" o la elegida ya no existe.
      */
-    protected function academiaActivaSuperAdmin(Request $request): ?int
+    protected function academiaElegida(Request $request): ?int
     {
         $academiaId = $request->session()->get('academia_activa_id');
 
-        // Se valida que siga existiendo (pudo eliminarse la academia elegida).
-        if ($academiaId && ! AcademiaModel::whereKey($academiaId)->exists()) {
-            $academiaId = null;
+        if (! $academiaId || ! AcademiaModel::whereKey($academiaId)->exists()) {
+            return null;
         }
 
-        if (! $academiaId) {
-            $academiaId = AcademiaModel::query()->orderBy('nombre')->value('id');
+        return (int) $academiaId;
+    }
 
-            if ($academiaId) {
-                $request->session()->put('academia_activa_id', $academiaId);
-            }
-        }
-
-        return $academiaId;
+    /**
+     * Primera academia (por nombre), como contexto de creación en modo "Todas".
+     */
+    protected function primeraAcademia(): ?int
+    {
+        return AcademiaModel::query()->orderBy('nombre')->value('id');
     }
 }
