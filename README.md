@@ -1,8 +1,9 @@
 # Sistema BEKHO
 
-Plataforma de **gestión y formación** para una escuela de Taekwondo ATA en Santiago de
-Chile. BEKHO reúne en un solo lugar la administración de la escuela (alumnos, sedes,
-rangos) y la formación en línea de sus miembros (LMS).
+Plataforma de **gestión y formación** para las academias de Taekwondo ATA de la
+**federación BEKHO** en Chile. Reúne en un solo lugar la administración de cada academia
+(alumnos, sedes, clases, asistencia, pagos, exámenes) y la formación en línea de sus
+miembros (LMS).
 
 El código y el dominio están escritos **en español**.
 
@@ -12,9 +13,9 @@ El código y el dominio están escritos **en español**.
 |------|--------|--------|
 | Fase 1 | Núcleo transversal (academias, sedes, rangos, roles/permisos, tenancy) | **Hecho** |
 | Fase 2 | Formación / LMS (niveles → contenidos → progreso por usuario) | **Hecho** |
-| — | Gestión de alumnos, asistencia y pagos | Pendiente |
-| — | Exámenes de grado | Pendiente |
-| — | Planillas de clase | Pendiente |
+| Fase 3 | Gestión de alumnos, clases (multi-instructor), asistencia (calendario) y pagos | **Hecho** |
+| Fase 3 | Exámenes de grado (inscripción, resultados, conteo en cascada) | **Hecho** |
+| Fase 3 | Planillas de clase | **Hecho** |
 
 ---
 
@@ -124,8 +125,11 @@ Esto crea el esquema y siembra:
 
 - El catálogo de **cargos/rangos** (7 rangos ATA).
 - Los **roles y permisos**.
-- La academia **BEKHO**.
-- Un usuario **super administrador** (ver credenciales abajo).
+- La primera academia (grupo): **BEKHO Power Academy**.
+- Un usuario **administrador de plataforma** (ver credenciales abajo).
+- Datos de **demostración** (`DemoBekhoSeeder`): alumnos, clases, asistencia y pagos de
+  ejemplo para que el panel se vea "vivo". Se puede quitar del `DatabaseSeeder` antes de
+  producción.
 
 ### 5. Levantar el frontend
 
@@ -139,49 +143,67 @@ Y sirve la app con Laragon (dominio `bekho.test`) o con `php artisan serve`.
 
 ## Credenciales de desarrollo
 
-El seeder crea un super administrador:
+El seeder crea un administrador de plataforma:
 
 | Campo | Valor |
 |-------|-------|
 | Email | `admin@bekho.cl` |
 | Contraseña | `cambiar-esto` |
-| Rol | `super-admin` |
+| Rol | `admin-plataforma` |
 | `academia_id` | `null` (ve todas las academias) |
 
 > ⚠️ **Cambia esta contraseña de inmediato** en cualquier entorno que no sea tu máquina
 > local. Nunca despliegues con estas credenciales por defecto.
 
+> El rol `admin-plataforma` tiene **2FA obligatoria**. En desarrollo puedes marcar la
+> cuenta como confirmada sin configurar TOTP con un `UPDATE users SET
+> two_factor_confirmed_at = now() WHERE email = 'admin@bekho.cl';`, o iniciar sesión con
+> una cuenta de rol `instructor`/`administrativo` (sin 2FA obligatoria).
+
 ---
 
 ## Arquitectura
 
-### Multi-tenant por diseño, una sola academia en operación
+### Jerarquía organizacional
 
-Casi toda tabla del dominio lleva una columna `academia_id`. **Esto no significa que
-BEKHO sea un SaaS multi-cliente.** En la práctica se opera con **una sola academia**
-(BEKHO); lo que en el mundo real son otras sucursales (por ejemplo **POWER**) se modelan
-como **sedes internas** de la misma academia, no como academias separadas.
+**BEKHO es la federación (la plataforma), no una academia.** La jerarquía real es:
 
-`academia_id` es una **costura para el futuro**: deja lista la separación por academia por
-si algún día se necesita, sin construir hoy el aparato de un SaaS. No hay que activar nada
-extra para operar con una academia.
+```
+BEKHO (federación, no es un registro en la BD)
+ └── Academia   = cada GRUPO (p. ej. "BEKHO Power Academy", "BEKHO Pride Academy")
+      └── Sede  = lugar físico (academia abierta, club, colegio, jardín)
+           └── Clase
+```
+
+El **aislamiento entre grupos es total**: un maestro de un grupo **no** ve los alumnos,
+pagos ni datos de otro grupo. Por eso `academia_id` **no es una costura para el futuro: es
+la frontera real y se usa desde ya**. El seeder crea el primer grupo ("BEKHO Power
+Academy"); los demás (Pride, IV Región, Strike, …) aún no se confirman y se agregan cuando
+existan.
 
 ### Aislamiento por academia (tenancy)
 
 El aislamiento se apoya en tres piezas:
 
 1. **`App\Support\Tenancy\Academia`** — contenedor estático de la academia activa durante
-   la petición (`set()`, `id()`, `hayActiva()`, `olvidar()`).
+   la petición (`set(?int, bool $filtraLecturas = true)`, `id()`, `hayActiva()`,
+   `filtraLecturas()`, `olvidar()`).
 2. **`App\Models\Concerns\PerteneceAcademia`** — trait que se agrega a los modelos con
    `academia_id`. Hace dos cosas:
-   - Añade un **global scope** que filtra `where academia_id = <activa>` **solo si hay una
-     academia activa**.
+   - Añade un **global scope** que filtra `where academia_id = <activa>` **si hay academia
+     activa y `filtraLecturas()` es true**.
    - En `creating`, **autorellena** `academia_id` con la academia activa si el modelo no la
      trae.
    - Expone el scope `sinAcademia()` para saltarse el filtro cuando haga falta.
-3. **`App\Http\Middleware\EstableceAcademiaActual`** — corre después de autenticar
-   (registrado en el grupo `web` con `append`). Fija la academia activa desde
-   `user->academia_id`. **Un `super-admin` no fija ninguna academia y ve todas.**
+3. **`App\Http\Middleware\EstableceAcademiaActual`** — corre después de autenticar. Fija la
+   academia activa según el usuario:
+   - Un rol normal (dirección, instructor, …) queda atado a **su** `academia_id`.
+   - El **`admin-plataforma`** elige academia en el selector del sidebar. Si elige una, la
+     vista se **acota** a ella (`filtraLecturas: true`); si elige **"Todas las academias"**,
+     ve todo el sistema (`filtraLecturas: false`) con la primera academia como contexto de
+     creación.
+   - La **`federacion`** supervisa todas las academias en modo solo lectura
+     (`filtraLecturas: false`).
 
 ### Catálogos compartidos
 
@@ -201,32 +223,58 @@ Los **rangos** sembrados (nivel 1 = más alto):
 | 6 | Instructor | — | Collar Negro/Rojo/Negro |
 | 7 | Legado (Ayudante) | — | Collar Rojo |
 
+### Rol y Rango son ejes independientes
+
+- El **Rango** (`cargos_rangos` → `users.rango_id`) es la **jerarquía marcial** de ATA:
+  "quién eres". **No otorga permisos**; se usa para el escalafón, el conteo en cascada y los
+  distintivos. La tabla anterior es este catálogo (el rango "Legado/Ayudante" sigue vigente).
+- El **Rol** (spatie) son los **permisos en el software**: "qué puedes hacer".
+
+Son independientes: puede haber alguien con rango y **sin** rol operativo (p. ej. un maestro
+que no gestiona en el sistema), y alguien con rol y **sin** rango (una secretaria). En la
+gestión de usuarios se editan como **campos separados**.
+
 ### Roles y permisos
 
-Roles (spatie, sin teams):
+Roles (spatie, **sin teams mode** — los roles son globales):
 
-| Rol | Permisos |
-|-----|----------|
-| `super-admin` | Todos |
-| `maestro` | Todos |
-| `instructor` | `tomar asistencia`, `gestionar planillas`, `ver formacion` |
-| `alumno` | `ver formacion` |
-| `apoderado` | Ninguno |
+| Rol | Quién | Permisos |
+|-----|-------|----------|
+| `admin-plataforma` | Dueño del sistema | Todos, incl. `gestionar academias`; cruza academias |
+| `federacion` | Casa Central | Solo lectura sobre **todas** las academias |
+| `direccion` | Director de un grupo | Todo dentro de **su** academia (usuarios, sedes, alumnos, clases, asistencia, **pagos**, planillas, formación) |
+| `administrativo` | Secretaría / recepción | Alumnos, clases, asistencia. **Sin pagos** |
+| `instructor` | Enseña clases | Asistencia, planillas, **inscribir en exámenes**, ver formación; ve **solo los alumnos de sus clases** |
+| `apoderado` | Apoderado | Ninguno global; ve solo a sus hijos (Policies) |
+| `alumno` | Alumno | `ver formacion` |
 
-Permisos definidos: `gestionar alumnos`, `tomar asistencia`, `registrar pagos`,
-`gestionar examenes`, `gestionar planillas`, `gestionar formacion`, `ver formacion`.
+Permisos definidos: `gestionar academias`, `gestionar usuarios`, `gestionar sedes`,
+`gestionar alumnos`, `gestionar clases`, `tomar asistencia`, `registrar pagos`,
+`gestionar examenes`, `inscribir examenes`, `gestionar planillas`, `gestionar formacion`,
+`ver formacion`.
+
+Reglas clave:
+
+- **Pagos** solo para `direccion` y `admin-plataforma` (los instructores no reciben dinero).
+- **Exámenes**: el `instructor` inscribe; el alumno queda inscrito **sin aprobación** de
+  nadie. Editar resultados/notas y finalizar es de gestión (`gestionar examenes`).
+- La **federación** ve todo pero **no escribe** (helper `User::esSoloLectura()` + guard en
+  los componentes de escritura).
+- El **instructor** ve/edita solo los alumnos de las clases donde está asignado; se resuelve
+  con **Policies** (`EstudiantePolicy` + scope `Estudiante::scopeVisiblePara`), no filtrando
+  en la vista.
 
 ---
 
 ## Módulos
 
-### Hoy (implementado)
-
 **Núcleo (Fase 1)**
-- Academias, sedes (con pivote instructor↔sede), catálogo de rangos.
+- Academias, sedes, catálogo de rangos.
+- **Sedes** con `tipo` (`App\Enums\TipoSede`: academia / club / colegio / jardín) y
+  `privada` (solo miembros de la entidad). Multi-sede por persona vía pivote `sede_user`.
 - Usuarios extendidos: `academia_id`, `rango_id`, `supervisor_id` (jerarquía), `telefono`,
-  `activo`.
-- Tenancy por academia y roles/permisos.
+  `activo`. Rol y rango como ejes independientes.
+- Tenancy por academia, roles/permisos y **2FA obligatoria por rol**.
 
 **Formación / LMS (Fase 2)**
 - Estructura **niveles → contenidos → progreso por usuario**.
@@ -236,11 +284,19 @@ Permisos definidos: `gestionar alumnos`, `tomar asistencia`, `registrar pagos`,
 - Los **videos se alojan externamente** (no se sirven desde la app); el LMS guarda la
   referencia, no el archivo.
 
-### Después (pendiente)
-
-- **Gestión**: alumnos, asistencia, pagos.
-- **Exámenes** de grado.
-- **Planillas** de clase.
+**Gestión (Fase 3)**
+- **Alumnos**: ficha completa, inscripción con validación (apoderado según grupo etario,
+  comuna por región, día de vencimiento). Al elegir sede, los instructores disponibles son
+  los asignados a esa sede.
+- **Clases**: una clase puede tener **varios instructores** con su papel (titular /
+  asistente / ayudante) vía pivote `clase_instructor`. El **nombre** y la **hora de fin**
+  (inicio + 45 min) se **autocompletan** y quedan editables.
+- **Asistencia**: **calendario semanal** con navegación por semanas; cada día muestra sus
+  clases con horario, instructor y avance (presentes/esperados).
+- **Pagos**: mensualidades, morosidad y descuento por hermanos.
+- **Exámenes** de grado: convocatorias, inscripción por el instructor, resultados y
+  **conteo en cascada** por la línea de supervisión (collares de máster).
+- **Planillas** de clase (rutinas por grupo/nivel con estructura de bloques).
 
 ---
 
@@ -252,7 +308,7 @@ código). Varias vienen "andamiadas" pero no todas están activas.
 | Función | Estado hoy | Nota |
 |---------|-----------|------|
 | **Login rate limiting** | **Activo** | 5/min por email+IP; 2FA 5/min; passkeys 10/min |
-| **2FA (TOTP)** | Disponible, **opcional** | Columnas + UI listas; nadie obligado todavía |
+| **2FA (TOTP)** | **Obligatoria por rol** | Exigida a `admin-plataforma` y `direccion` (`config/bekho.php` → `2fa_obligatorio_para`, middleware `ExigeDosFactores`); opcional para el resto |
 | **Passkeys (WebAuthn)** | Disponible, opcional | Alternativa sin contraseña |
 | **Recuperación de contraseña** | Activo | Requiere `MAIL_*` configurado en producción |
 | **Confirmación de contraseña** | Activo | Protege la pantalla de seguridad (timeout 3 h) |
@@ -263,14 +319,15 @@ código). Varias vienen "andamiadas" pero no todas están activas.
 
 ### Pendiente de decidir (antes de producción)
 
-- **2FA obligatoria por rol** para cuentas privilegiadas (`super-admin`, `maestro`), dejando
-  el resto opcional. Hay **datos de menores**, así que proteger esas cuentas sí importa;
-  pero obligar 2FA a un alumno de 12 años es contraproducente.
-- **Cerrar o restringir el auto-registro**: en una escuela las cuentas las crea el
-  maestro/admin.
+- **Cerrar o restringir el auto-registro**: en una escuela las cuentas las crea la
+  dirección/administración.
 - **Forzar la cookie segura** y HTTPS.
 - **Verificación de email**: activarla cuando el flujo de altas lo justifique (no urgente si
   las cuentas las controla la escuela).
+
+> **2FA obligatoria por rol** ya está implementada (`admin-plataforma` y `direccion`),
+> dejando el resto opcional: hay **datos de menores**, así que proteger las cuentas
+> privilegiadas importa, sin obligar 2FA a un alumno de 12 años.
 
 Detalle completo en la auditoría del proyecto.
 
