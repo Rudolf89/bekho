@@ -73,6 +73,9 @@
                             </flux:sidebar.item>
                         @endcan
                         @can('gestionar planillas')
+                            <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
+                                Ciclos
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
                                 Planificador
                             </flux:sidebar.item>

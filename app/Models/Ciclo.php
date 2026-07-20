@@ -44,6 +44,16 @@ class Ciclo extends Model
     }
 
     /**
+     * Celdas del class planner de este ciclo (fila × bloque de semanas).
+     *
+     * @return HasMany<PlannerCiclo, $this>
+     */
+    public function planner(): HasMany
+    {
+        return $this->hasMany(PlannerCiclo::class);
+    }
+
+    /**
      * @param  Builder<Ciclo>  $query
      * @return Builder<Ciclo>
      */
