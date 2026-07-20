@@ -98,7 +98,7 @@ class Planilla extends Model
             'calentamiento_planilla',
             'planilla_id',
             'ejercicio_calentamiento_id',
-        )->withPivot('orden')->orderBy('pivot_orden')->withTimestamps();
+        )->withPivot('orden')->orderByPivot('orden')->withTimestamps();
     }
 
     /**
