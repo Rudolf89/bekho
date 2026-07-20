@@ -19,6 +19,34 @@ currículo de referencia. Secciones:
    alumno/instructor), significado de colores de cinturón.
 4. **Ventas & Marketing / Políticas** (negocio y administración ATA HQ).
 
+## 1b. El set completo de manuales (Google Drive) y la dimensión "Programa"
+
+La carpeta de Drive tiene **todos los manuales ATA**, no solo Legacy. El sistema
+YA tiene el concepto de **Programa** (`App\Models\Programa`, `TipoPrograma`,
+`planillas.programa_id`, `estudiantes` por programa), así que la integración es
+"poblar cada programa con su contenido", no inventar el eje.
+
+| Manual (Drive) | Programa | Qué aporta | Bucket |
+|---|---|---|---|
+| `ata_tigers_manual` | **Tigers** (3–6) | Sistema de grados Tiger, testing/ceremonia, **recompensas (Star Tag, buenas acciones)**, personajes, marketing | Grados + Recompensas (nuevo) + negocio |
+| `ata_mak_manual` | **Karate for Kids / MAK** | Currículo For Kids | Contenido curricular |
+| `ata_legacy_*` | **Legacy** | Track de instructores (N1-3) + currículo + class planners | Legacy operativo + contenido |
+| `ata-max-curriculum` (+ nivel 2) | **ATA MAX (Xtreme)** | Currículo de formas/armas Xtreme (add-on) | Contenido curricular |
+| `leadership-upgrade-script`, `7-step-upgrading-process` | **Leadership** | Scripts de venta/upgrade | Negocio (fuera de alcance) |
+
+**Consecuencia de diseño:** casi todos los catálogos curriculares (formas,
+patadas, armas, class planners) llevan una arista **por programa / grupo etario**.
+Buena parte del currículo técnico ATA es **común** y se diferencia por edad
+(Tigers vs For Kids vs Jóvenes y Adultos) — igual que hoy hacen las planillas.
+Lo específico de cada programa: sistema de grados, recompensas (Tigers) y
+ceremonias.
+
+> **Nota Tigers:** el manual Tigers es sobre todo **operación y negocio** (grados,
+> ceremonia, recompensas Star Tag, mascotas, marketing, "Día del Tigre"). Lo
+> integrable: **grados Tiger** (→ `Grado`/`EscalaGrado`, ya existen) y un posible
+> módulo de **recompensas/gamificación** (Star Tag, hojas de buenas acciones). El
+> resto (marketing, lanzamientos) queda fuera.
+
 ## 2. Los tres "buckets" (así se decide qué entra y dónde)
 
 ### A. Contenido curricular — **transversal** (catálogo compartido, sin `academia_id`)
@@ -100,3 +128,16 @@ Implica un **refactor chico** de lo ya hecho en el planificador.
   primero cargamos todo el **contenido curricular** (buckets A) y dejamos el
   track de instructores para después?
 - **D4 — Prioridad**: ¿por dónde empezamos? (sugerido: 1 → 2 → 3)
+- **D5 — Programas**: ¿cargamos el contenido de **todos** los programas (Tigers,
+  For Kids/MAK, Jóvenes y Adultos, MAX, Legacy) o arrancamos por uno? El currículo
+  técnico es en gran parte común y se diferencia por grupo etario; lo específico
+  por programa es grados, recompensas (Tigers) y ceremonias.
+- **D6 — Recompensas Tigers**: ¿incluimos el módulo de gamificación (Star Tag,
+  buenas acciones) o lo dejamos para una fase posterior?
+
+## 7. Fuentes
+
+Todos los manuales están en Google Drive (carpeta compartida por el dueño). Para
+portar contenido conviene trabajar desde los `.docx` traducidos (texto limpio);
+las grillas de class planner solo están como imagen en los PDF.
+
