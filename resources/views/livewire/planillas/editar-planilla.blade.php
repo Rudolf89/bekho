@@ -33,7 +33,7 @@
                     <div wire:key="bloque-{{ $bloque->id }}">
                         <flux:textarea
                             wire:model="contenidos.{{ $bloque->id }}"
-                            :label="$bloque->tipo->etiqueta()"
+                            :label="$bloque->tituloVisible()"
                             rows="2"
                             placeholder="Contenido del bloque…" />
                     </div>

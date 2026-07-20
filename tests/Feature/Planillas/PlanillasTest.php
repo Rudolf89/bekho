@@ -119,3 +119,17 @@ test('la pantalla de editar planilla renderiza para un instructor', function () 
     Tenant::olvidar();
     $this->actingAs($user)->get(route('planillas.editar', $planilla))->assertOk();
 });
+
+test('editar planilla renderiza con bloques sin tipo (actividad con nombre propio)', function () {
+    Tenant::set($this->bekho->id);
+    $planilla = nuevaPlanilla($this->bekho->id, ['grupo_etario' => 'tigers']);
+    // Bloque con tipo nulo pero título propio (caso Tigers: "Juego de Golpes").
+    $planilla->bloques()->create(['tipo' => null, 'titulo' => '⚔️ Juego de Golpes', 'orden' => 1]);
+
+    $user = usuarioPlanilla('instructor', $this->bekho->id);
+
+    Tenant::olvidar();
+    $this->actingAs($user)->get(route('planillas.editar', $planilla))
+        ->assertOk()
+        ->assertSee('Juego de Golpes');
+});
