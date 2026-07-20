@@ -6,6 +6,7 @@ use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\CategoriaCalentamiento;
+use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
 use App\Models\LeccionVida;
 use App\Models\NotaCalentamiento;
@@ -41,6 +42,9 @@ class Planificador extends Component
 
     public int $lecSemana = 7;
 
+    /** Clase (del horario de la academia activa) a la que se guarda el calentamiento. */
+    public string $claseId = '';
+
     /**
      * Ejercicios elegidos en "Armar calentamiento" (ids como strings).
      *
@@ -51,16 +55,20 @@ class Planificador extends Component
     public function mount(): void
     {
         $this->lecSemana = (int) (LeccionVida::min('semana') ?? 7);
-        $this->cargarSeleccion();
     }
 
-    public function updatedGrupo(): void
+    /**
+     * Al elegir la clase, el catálogo se ajusta a su grupo etario y se carga la
+     * rutina de calentamiento ya guardada para esa clase.
+     */
+    public function updatedClaseId(): void
     {
-        $this->cargarSeleccion();
-    }
+        $clase = $this->claseParaCalentamiento();
 
-    public function updatedNivel(): void
-    {
+        if ($clase) {
+            $this->grupo = $clase->grupo_etario->value;
+        }
+
         $this->cargarSeleccion();
     }
 
@@ -70,7 +78,7 @@ class Planificador extends Component
     }
 
     /**
-     * Planilla (grupo × nivel) de la academia activa, si el nivel no es Cinturón Negro.
+     * Planilla transversal (grupo × nivel), si el nivel no es Cinturón Negro.
      */
     protected function planillaActual(): ?Planilla
     {
@@ -84,14 +92,22 @@ class Planificador extends Component
     }
 
     /**
-     * Carga la rutina de calentamiento guardada en la planilla actual.
+     * Clase del horario (academia activa) elegida para guardar el calentamiento.
+     */
+    protected function claseParaCalentamiento(): ?Clase
+    {
+        return $this->claseId ? Clase::find($this->claseId) : null;
+    }
+
+    /**
+     * Carga la rutina de calentamiento guardada en la clase elegida.
      */
     public function cargarSeleccion(): void
     {
-        $planilla = $this->planillaActual();
+        $clase = $this->claseParaCalentamiento();
 
-        $this->seleccion = $planilla
-            ? $planilla->calentamiento()->pluck('ejercicios_calentamiento.id')->map(fn ($id) => (string) $id)->all()
+        $this->seleccion = $clase
+            ? $clase->calentamiento()->pluck('ejercicios_calentamiento.id')->map(fn ($id) => (string) $id)->all()
             : [];
     }
 
@@ -113,10 +129,10 @@ class Planificador extends Component
     {
         $this->bloqueaSiSoloLectura();
 
-        $planilla = $this->planillaActual();
+        $clase = $this->claseParaCalentamiento();
 
-        if (! $planilla) {
-            Flux::toast(variant: 'warning', text: 'Elige un grupo y un nivel (no Cinturón Negro) con planilla para guardar.');
+        if (! $clase) {
+            Flux::toast(variant: 'warning', text: 'Elige una clase para guardar el calentamiento.');
 
             return;
         }
@@ -125,9 +141,9 @@ class Planificador extends Component
         foreach (array_values($this->seleccion) as $i => $id) {
             $sync[(int) $id] = ['orden' => $i + 1];
         }
-        $planilla->calentamiento()->sync($sync);
+        $clase->calentamiento()->sync($sync);
 
-        Flux::toast(variant: 'success', text: 'Rutina de calentamiento guardada en la planilla.');
+        Flux::toast(variant: 'success', text: 'Rutina de calentamiento guardada en la clase.');
     }
 
     /**
@@ -170,6 +186,7 @@ class Planificador extends Component
         if ($this->tab === 'warmup') {
             $datos['categorias'] = CategoriaCalentamiento::paraGrupo($this->grupo)->ordenadas()->with('ejercicios')->get();
             $datos['nota'] = NotaCalentamiento::where('grupo_etario', $this->grupo)->first();
+            $datos['clases'] = Clase::activas()->orderBy('nombre')->get();
 
             $porId = EjercicioCalentamiento::with('categoria')
                 ->whereIn('id', $this->seleccion)
@@ -179,7 +196,7 @@ class Planificador extends Component
                 ->map(fn ($id) => $porId->get((int) $id))
                 ->filter()
                 ->values();
-            $datos['puedeGuardar'] = $this->planillaActual() !== null;
+            $datos['puedeGuardar'] = $this->claseId !== '';
         }
 
         if ($this->tab === 'leccion') {

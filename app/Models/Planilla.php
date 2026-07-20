@@ -7,26 +7,24 @@ use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoBloque;
-use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Planilla: rutina de una clase (grupo etario × nivel × programa). Combina
  * bloques de actividad, la capa de Cuadrantes de Enseñanza y una Habilidad para
  * la Vida.
+ *
+ * Es TRANSVERSAL: el currículo/rutina es contenido ATA/BEKHO compartido por toda
+ * la federación (sin academia_id), como cargos_rangos.
  */
 class Planilla extends Model
 {
-    use PerteneceAcademia;
-
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
         'programa_id',
         'nombre',
         'grupo_etario',
@@ -87,21 +85,6 @@ class Planilla extends Model
     }
 
     /**
-     * Ejercicios de calentamiento guardados para esta planilla (rutina armada).
-     *
-     * @return BelongsToMany<EjercicioCalentamiento, $this>
-     */
-    public function calentamiento(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            EjercicioCalentamiento::class,
-            'calentamiento_planilla',
-            'planilla_id',
-            'ejercicio_calentamiento_id',
-        )->withPivot('orden')->orderByPivot('orden')->withTimestamps();
-    }
-
-    /**
      * Currículo técnico del nivel de la planilla (fórmula, patadas, etc.).
      *
      * @return BelongsTo<CurriculoNivel, $this>
@@ -119,7 +102,6 @@ class Planilla extends Model
     {
         foreach (TipoBloque::cases() as $orden => $tipo) {
             $this->bloques()->create([
-                'academia_id' => $this->academia_id,
                 'tipo' => $tipo,
                 'orden' => $orden + 1,
             ]);
@@ -127,7 +109,6 @@ class Planilla extends Model
 
         foreach (Cuadrante::cases() as $cuadrante) {
             $this->cuadrantes()->create([
-                'academia_id' => $this->academia_id,
                 'cuadrante' => $cuadrante,
             ]);
         }

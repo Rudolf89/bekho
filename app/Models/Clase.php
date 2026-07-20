@@ -124,13 +124,29 @@ class Clase extends Model
     }
 
     /**
-     * Planilla (rutina) que le corresponde a la clase.
+     * Planilla (rutina) que le corresponde a la clase. La planilla es contenido
+     * transversal compartido; la clase solo la referencia.
      *
      * @return BelongsTo<Planilla, $this>
      */
     public function planilla(): BelongsTo
     {
         return $this->belongsTo(Planilla::class);
+    }
+
+    /**
+     * Ejercicios de calentamiento que el instructor armó para esta clase.
+     *
+     * @return BelongsToMany<EjercicioCalentamiento, $this>
+     */
+    public function calentamiento(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            EjercicioCalentamiento::class,
+            'calentamiento_clase',
+            'clase_id',
+            'ejercicio_calentamiento_id',
+        )->withPivot('orden')->orderByPivot('orden')->withTimestamps();
     }
 
     /**

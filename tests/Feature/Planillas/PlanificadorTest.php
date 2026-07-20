@@ -4,8 +4,10 @@ use App\Enums\TipoBloque;
 use App\Livewire\Planillas\Planificador;
 use App\Models\Academia;
 use App\Models\CategoriaCalentamiento;
+use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
 use App\Models\Planilla;
+use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Academia as Tenant;
 use Database\Seeders\PlanificadorSeeder;
@@ -62,40 +64,40 @@ test('cada grupo × nivel tiene su planilla con bloques', function () {
     Planilla::each(fn ($p) => expect($p->bloques()->count())->toBe(8));
 });
 
-// ── Aislamiento por academia (planillas llevan academia_id) ─────────────────
+// ── Transversalidad (las planillas son contenido compartido) ────────────────
 
-test('las planillas del planificador se aíslan por academia', function () {
+test('las planillas del planificador son transversales (se ven en cualquier academia)', function () {
     $otra = Academia::create(['nombre' => 'Otro Grupo', 'activo' => true]);
-    Planilla::create([
-        'academia_id' => $otra->id, 'nombre' => 'Ajena', 'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes', 'activo' => true,
-    ]);
 
+    // Las 9 planillas sembradas se ven con cualquier academia activa.
     Tenant::set($this->bekho->id);
-    expect(Planilla::count())->toBe(9); // solo las de BEKHO, no la ajena
+    expect(Planilla::count())->toBe(9);
 
     Tenant::set($otra->id);
-    expect(Planilla::count())->toBe(1);
+    expect(Planilla::count())->toBe(9);
 });
 
-// ── Interfaz: armar y guardar calentamiento ─────────────────────────────────
+// ── Interfaz: armar y guardar calentamiento (por clase) ─────────────────────
 
-test('el instructor arma una rutina de calentamiento y se guarda en la planilla', function () {
+test('el instructor arma una rutina de calentamiento y se guarda en la clase', function () {
     $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
-    $planilla = Planilla::where('grupo_etario', 'for_kids')->where('nivel', 'principiantes')->first();
+    $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $clase = Clase::create([
+        'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
+        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+    ]);
     $ejercicio = EjercicioCalentamiento::whereHas('categoria', fn ($q) => $q->where('clave', 'guardia'))->first();
 
     Livewire::actingAs($instructor)->test(Planificador::class)
-        ->set('grupo', 'for_kids')
-        ->set('nivel', 'principiantes')
         ->set('tab', 'warmup')
+        ->set('claseId', (string) $clase->id)
         ->call('alternarEjercicio', $ejercicio->id)
         ->call('guardarCalentamiento');
 
-    expect($planilla->fresh()->calentamiento()->count())->toBe(1)
-        ->and($planilla->fresh()->calentamiento()->first()->id)->toBe($ejercicio->id);
+    expect($clase->fresh()->calentamiento()->count())->toBe(1)
+        ->and($clase->fresh()->calentamiento()->first()->id)->toBe($ejercicio->id);
 });
 
 test('la vista del planificador muestra la rutina del grupo y nivel elegidos', function () {

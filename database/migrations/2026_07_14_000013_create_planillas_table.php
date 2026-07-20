@@ -12,12 +12,14 @@ return new class extends Migration
      * Planilla: rutina de una clase, definida por grupo etario × nivel × programa.
      * El contenido diferenciado por edad se logra con una planilla por grupo.
      * programa_id es opcional (null = clase regular, sin disciplina asociada).
+     *
+     * Es TRANSVERSAL: el currículo/rutina es contenido ATA/BEKHO compartido por
+     * toda la federación (sin academia_id), como cargos_rangos.
      */
     public function up(): void
     {
         Schema::create('planillas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
             $table->foreignId('programa_id')->nullable()->constrained('programas')->nullOnDelete();
             $table->string('nombre');
             $table->string('grupo_etario'); // App\Enums\GrupoEtario
@@ -26,7 +28,6 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->index('academia_id');
             $table->index(['grupo_etario', 'nivel']);
         });
     }

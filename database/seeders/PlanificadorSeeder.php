@@ -2,18 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Enums\Cuadrante;
 use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoBloque;
-use App\Models\Academia;
 use App\Models\CategoriaCalentamiento;
 use App\Models\CurriculoNivel;
 use App\Models\LeccionVida;
 use App\Models\PlanificacionCinturonNegro;
 use App\Models\Planilla;
-use App\Support\Tenancy\Academia as Tenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -264,17 +261,10 @@ class PlanificadorSeeder extends Seeder
         }
     }
 
-    // ── Planillas grupo × nivel (con academia) ──────────────────────────────
+    // ── Planillas grupo × nivel (transversales) ─────────────────────────────
 
     private function sembrarPlanillas(): void
     {
-        $academia = Academia::orderBy('nombre')->first();
-        if (! $academia) {
-            return;
-        }
-
-        Tenant::set($academia->id);
-
         $niveles = [
             NivelEntrenamiento::Principiantes,
             NivelEntrenamiento::Intermedio,
@@ -289,7 +279,7 @@ class PlanificadorSeeder extends Seeder
 
             foreach (GrupoEtario::cases() as $grupo) {
                 $planilla = Planilla::updateOrCreate(
-                    ['academia_id' => $academia->id, 'grupo_etario' => $grupo->value, 'nivel' => $nivel->value, 'programa_id' => null],
+                    ['grupo_etario' => $grupo->value, 'nivel' => $nivel->value, 'programa_id' => null],
                     [
                         'nombre' => $grupo->etiqueta().' · '.$nivel->etiqueta(),
                         'habilidad_vida' => HabilidadVida::Disciplina->value,
@@ -303,7 +293,6 @@ class PlanificadorSeeder extends Seeder
                 $planilla->bloques()->delete();
                 foreach ($bloques as $orden => $bloque) {
                     $planilla->bloques()->create([
-                        'academia_id' => $academia->id,
                         'tipo' => $bloque['tipo']?->value,
                         'tiempo' => $bloque['tiempo'],
                         'titulo' => $bloque['titulo'],
@@ -315,8 +304,6 @@ class PlanificadorSeeder extends Seeder
                 }
             }
         }
-
-        Tenant::olvidar();
     }
 
     /**

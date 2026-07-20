@@ -170,6 +170,18 @@
             </div>
         @endif
 
+        {{-- La rutina de calentamiento se guarda en una clase del horario. --}}
+        <div class="flex flex-wrap items-center gap-2 rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800">
+            <flux:text class="font-medium">Guardar en la clase:</flux:text>
+            <flux:select wire:model.live="claseId" placeholder="Elige una clase" class="max-w-xs">
+                @forelse ($clases as $c)
+                    <flux:select.option value="{{ $c->id }}">{{ $c->nombre }} ({{ $c->grupo_etario->etiqueta() }})</flux:select.option>
+                @empty
+                    <flux:select.option value="" disabled>No hay clases activas en esta academia</flux:select.option>
+                @endforelse
+            </flux:select>
+        </div>
+
         <div class="grid gap-4 lg:grid-cols-3">
             {{-- Catálogo de categorías --}}
             <div class="space-y-3 lg:col-span-2">
@@ -225,10 +237,10 @@
                         </div>
                         <flux:button class="w-full" variant="primary" icon="bookmark" wire:click="guardarCalentamiento"
                             :disabled="! $puedeGuardar">
-                            Guardar en la planilla
+                            Guardar en la clase
                         </flux:button>
                         @unless ($puedeGuardar)
-                            <flux:text size="sm" class="text-center text-zinc-400">Elige un grupo y nivel con planilla (no Cinturón Negro).</flux:text>
+                            <flux:text size="sm" class="text-center text-zinc-400">Elige una clase arriba para guardar la rutina.</flux:text>
                         @endunless
                     @endif
                 </div>

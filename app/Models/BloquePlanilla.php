@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\TipoBloque;
-use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Bloque de una planilla. Transversal (la planilla es contenido compartido).
+ */
 class BloquePlanilla extends Model
 {
-    use PerteneceAcademia;
-
     /**
      * @var string
      */
@@ -20,7 +20,6 @@ class BloquePlanilla extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
         'planilla_id',
         'tipo',
         'tiempo',

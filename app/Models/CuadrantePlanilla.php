@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\Cuadrante;
-use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * Cuadrante de enseñanza de una planilla. Transversal (contenido compartido).
+ */
 class CuadrantePlanilla extends Model
 {
-    use PerteneceAcademia;
-
     /**
      * @var string
      */
@@ -20,7 +20,6 @@ class CuadrantePlanilla extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
         'planilla_id',
         'cuadrante',
         'nota',

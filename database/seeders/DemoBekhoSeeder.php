@@ -120,27 +120,22 @@ class DemoBekhoSeeder extends Seeder
             );
         }
 
-        // Planillas + clases de HOY (una por grupo etario).
+        // Clases de HOY (una por grupo etario), enlazadas a la planilla
+        // transversal (grupo × Principiantes) que siembra el PlanificadorSeeder.
         $diaHoy = (int) now()->dayOfWeekIso;
         $config = [
-            ['tigers', '16:00', '16:45', 'disciplina', $instructores[0]],
-            ['for_kids', '17:00', '18:15', 'respeto', $instructores[1]],
-            ['jovenes_adultos', '18:30', '19:15', 'honestidad', $rodolfo],
+            ['tigers', '16:00', '16:45', $instructores[0]],
+            ['for_kids', '17:00', '18:15', $instructores[1]],
+            ['jovenes_adultos', '18:30', '19:15', $rodolfo],
         ];
 
-        foreach ($config as [$grupo, $ini, $fin, $habilidad, $instructor]) {
-            $planilla = Planilla::updateOrCreate(
-                ['academia_id' => $academia->id, 'nombre' => 'Rutina '.$grupo],
-                ['grupo_etario' => $grupo, 'nivel' => 'principiantes', 'habilidad_vida' => $habilidad, 'activo' => true],
-            );
-            if ($planilla->bloques()->count() === 0) {
-                $planilla->generarEstructura();
-            }
+        foreach ($config as [$grupo, $ini, $fin, $instructor]) {
+            $planilla = Planilla::where('grupo_etario', $grupo)->where('nivel', 'principiantes')->first();
 
             $clase = Clase::updateOrCreate(
                 ['academia_id' => $academia->id, 'nombre' => 'Clase '.$grupo, 'dia_semana' => $diaHoy],
                 [
-                    'sede_id' => $sede->id, 'planilla_id' => $planilla->id,
+                    'sede_id' => $sede->id, 'planilla_id' => $planilla?->id,
                     'grupo_etario' => $grupo, 'hora_inicio' => $ini, 'hora_fin' => $fin, 'activo' => true,
                 ],
             );

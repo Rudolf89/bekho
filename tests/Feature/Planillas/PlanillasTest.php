@@ -32,10 +32,11 @@ function usuarioPlanilla(string $rol, ?int $academiaId): User
     return $user;
 }
 
-function nuevaPlanilla(int $academiaId, array $extra = []): Planilla
+function nuevaPlanilla(?int $academiaId = null, array $extra = []): Planilla
 {
+    // Las planillas son transversales: no llevan academia_id ($academiaId se
+    // ignora; el parámetro se conserva por compatibilidad de las llamadas).
     return Planilla::create(array_merge([
-        'academia_id' => $academiaId,
         'nombre' => 'Rutina',
         'grupo_etario' => 'for_kids',
         'nivel' => 'principiantes',
@@ -58,16 +59,19 @@ test('un instructor sí gestiona planillas', function () {
     $this->actingAs($user)->get(route('planillas.index'))->assertOk();
 });
 
-// --- Scope por academia ------------------------------------------------------
+// --- Transversalidad ---------------------------------------------------------
 
-test('las planillas se aíslan por academia', function () {
+test('las planillas son transversales: se ven desde cualquier academia', function () {
     $otra = Academia::create(['nombre' => 'OTRA', 'activo' => true]);
-    nuevaPlanilla($this->bekho->id, ['nombre' => 'De BEKHO']);
-    nuevaPlanilla($otra->id, ['nombre' => 'De OTRA']);
+    nuevaPlanilla(extra: ['nombre' => 'Compartida A']);
+    nuevaPlanilla(extra: ['nombre' => 'Compartida B']);
 
+    // Con cualquier academia activa se ven todas (contenido compartido ATA).
     Tenant::set($this->bekho->id);
-    expect(Planilla::count())->toBe(1);
-    expect(Planilla::first()->nombre)->toBe('De BEKHO');
+    expect(Planilla::count())->toBe(2);
+
+    Tenant::set($otra->id);
+    expect(Planilla::count())->toBe(2);
 });
 
 // --- Regla central: estructura de la planilla --------------------------------
@@ -84,15 +88,6 @@ test('una planilla nueva genera sus 9 bloques y 4 cuadrantes en orden', function
     $tipos = $planilla->bloques->pluck('tipo');
     expect($tipos->first())->toBe(TipoBloque::Calentamiento);
     expect($tipos->last())->toBe(TipoBloque::AnunciosPremios);
-});
-
-test('los bloques y cuadrantes heredan la academia de la planilla', function () {
-    Tenant::set($this->bekho->id);
-    $planilla = nuevaPlanilla($this->bekho->id);
-    $planilla->generarEstructura();
-
-    expect($planilla->bloques->pluck('academia_id')->unique()->all())->toBe([$this->bekho->id]);
-    expect($planilla->cuadrantes->pluck('academia_id')->unique()->all())->toBe([$this->bekho->id]);
 });
 
 // --- Enlace clase → planilla -------------------------------------------------

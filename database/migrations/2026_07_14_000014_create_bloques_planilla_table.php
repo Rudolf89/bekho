@@ -16,14 +16,12 @@ return new class extends Migration
     {
         Schema::create('bloques_planilla', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
             $table->foreignId('planilla_id')->constrained('planillas')->cascadeOnDelete();
             $table->string('tipo'); // App\Enums\TipoBloque
             $table->text('contenido')->nullable();
             $table->smallInteger('orden')->default(0);
             $table->timestamps();
 
-            $table->index('academia_id');
             $table->index(['planilla_id', 'orden']);
         });
     }

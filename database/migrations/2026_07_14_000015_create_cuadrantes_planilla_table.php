@@ -16,14 +16,12 @@ return new class extends Migration
     {
         Schema::create('cuadrantes_planilla', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
             $table->foreignId('planilla_id')->constrained('planillas')->cascadeOnDelete();
             $table->string('cuadrante'); // App\Enums\Cuadrante
             $table->text('nota')->nullable();
             $table->timestamps();
 
             $table->unique(['planilla_id', 'cuadrante']);
-            $table->index('academia_id');
         });
     }
 
