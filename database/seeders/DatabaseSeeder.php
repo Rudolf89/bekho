@@ -20,6 +20,9 @@ class DatabaseSeeder extends Seeder
             GradosSeeder::class,
             RolesPermisosSeeder::class,
             FormacionDemoSeeder::class,
+            // Contenido pedagógico real del Planificador Unificado (catálogos
+            // compartidos + planillas grupo × nivel de la primera academia).
+            PlanificadorSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);

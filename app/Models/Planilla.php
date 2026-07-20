@@ -10,6 +10,7 @@ use App\Enums\TipoBloque;
 use App\Models\Concerns\PerteneceAcademia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -83,6 +84,31 @@ class Planilla extends Model
     public function clases(): HasMany
     {
         return $this->hasMany(Clase::class);
+    }
+
+    /**
+     * Ejercicios de calentamiento guardados para esta planilla (rutina armada).
+     *
+     * @return BelongsToMany<EjercicioCalentamiento, $this>
+     */
+    public function calentamiento(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            EjercicioCalentamiento::class,
+            'calentamiento_planilla',
+            'planilla_id',
+            'ejercicio_calentamiento_id',
+        )->withPivot('orden')->orderBy('pivot_orden')->withTimestamps();
+    }
+
+    /**
+     * Currículo técnico del nivel de la planilla (fórmula, patadas, etc.).
+     *
+     * @return BelongsTo<CurriculoNivel, $this>
+     */
+    public function curriculo(): BelongsTo
+    {
+        return $this->belongsTo(CurriculoNivel::class, 'nivel', 'nivel');
     }
 
     /**

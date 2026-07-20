@@ -23,7 +23,11 @@ class BloquePlanilla extends Model
         'academia_id',
         'planilla_id',
         'tipo',
+        'tiempo',
+        'titulo',
         'contenido',
+        'cuadrante_texto',
+        'cuadrante_color',
         'orden',
     ];
 
@@ -43,5 +47,15 @@ class BloquePlanilla extends Model
     public function planilla(): BelongsTo
     {
         return $this->belongsTo(Planilla::class);
+    }
+
+    /**
+     * Nombre visible del bloque: el título explícito si lo hay (Tigers/Cinturón
+     * Negro o bloques con nombre propio como "Fórmula: Songahm 3"), o la etiqueta
+     * del tipo estándar.
+     */
+    public function tituloVisible(): string
+    {
+        return $this->titulo ?: ($this->tipo?->etiqueta() ?? '');
     }
 }
