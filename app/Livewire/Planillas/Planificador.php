@@ -200,8 +200,8 @@ class Planificador extends Component
         }
 
         if ($this->tab === 'leccion') {
-            $datos['lecciones'] = LeccionVida::orderBy('semana')->get();
-            $datos['leccion'] = LeccionVida::where('semana', $this->lecSemana)->first();
+            $datos['lecciones'] = LeccionVida::with('ciclo')->orderBy('semana')->get();
+            $datos['leccion'] = LeccionVida::with('ciclo')->where('semana', $this->lecSemana)->first();
         }
 
         return view('livewire.planillas.planificador', $datos);

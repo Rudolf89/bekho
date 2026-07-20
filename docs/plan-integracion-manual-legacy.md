@@ -76,10 +76,12 @@ Legacy. Paralelo al de alumnos/exámenes, pero para desarrollo de instructores.
 
 Se conecta con **roles** (instructor/profesor) y **rangos** ya existentes.
 
-### C. **Fuera de alcance** del sistema (negocio/admin ATA HQ)
-Ventas, marketing, precios, política de parches, formularios de envío a ATA HQ,
-N.º de Seguro Social, verificación de antecedentes. → No como datos del sistema.
-A lo sumo, enlaces/PDF de referencia. **Recomendación: dejar fuera.**
+### C. Material de negocio/administración → **Formación ("Aprender", LMS)**
+Ventas, marketing, precios, lanzamientos, política de parches, scripts de
+Liderazgo, avatares/narrativa, etc. **No** se modela como datos operativos, pero
+**tampoco se descarta**: va al **LMS Formación** (Fase 2: niveles → contenidos →
+progreso) como contenido de "Aprender" para instructores/staff. Los formularios
+de ATA HQ y datos sensibles (N.º de Seguro Social, antecedentes) sí quedan fuera.
 
 ## 3. Modelo propuesto: el backbone `Ciclo`
 
@@ -172,9 +174,11 @@ arquitectura que propongo (de mayor a menor prioridad):
 6. **`Programa` (ya existe)** agrupa, por cada programa (Tigers/MAK/Jóvenes-Adultos/
    MAX/Legacy), qué técnicas, planillas, grados y recompensas aplican.
 
-**Fuera de alcance** (confirmado): Leadership upgrade scripts, 7-step upgrading,
-marketing, precios, políticas de parches, formularios ATA HQ, descuentos de
-proveedores US (Fitnessfinders), avatares/mascotas como narrativa de negocio.
+**A "Aprender" (LMS Formación)**: Leadership upgrade scripts, 7-step upgrading,
+marketing, precios, políticas de parches, lanzamientos, descuentos de proveedores,
+avatares/mascotas como narrativa. Se cargan como contenidos del LMS, no como datos
+operativos. **Fuera del todo**: formularios ATA HQ y datos sensibles (SSN,
+antecedentes).
 
 ### Fases recomendadas (actualizadas)
 1. `Ciclo` (backbone) + reubicar lecciones/planner. 2. **Biblioteca de técnicas**

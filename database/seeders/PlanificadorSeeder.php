@@ -7,6 +7,7 @@ use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoBloque;
 use App\Models\CategoriaCalentamiento;
+use App\Models\Ciclo;
 use App\Models\CurriculoNivel;
 use App\Models\LeccionVida;
 use App\Models\PlanificacionCinturonNegro;
@@ -31,11 +32,29 @@ class PlanificadorSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->sembrarCiclos();
         $this->sembrarCalentamiento();
         $this->sembrarCurriculos();
         $this->sembrarLecciones();
         $this->sembrarCinturonNegro();
         $this->sembrarPlanillas();
+    }
+
+    // ── Ciclos (backbone: 6 Habilidades de Vida) ────────────────────────────
+
+    private function sembrarCiclos(): void
+    {
+        $ciclos = [
+            HabilidadVida::Disciplina, HabilidadVida::Conviccion, HabilidadVida::Comunicacion,
+            HabilidadVida::Respeto, HabilidadVida::Autoestima, HabilidadVida::Honestidad,
+        ];
+
+        foreach ($ciclos as $i => $habilidad) {
+            Ciclo::updateOrCreate(
+                ['habilidad_vida' => $habilidad->value],
+                ['nombre' => 'Ciclo '.($i + 1).' · '.$habilidad->etiqueta(), 'orden' => $i + 1, 'semanas' => 8],
+            );
+        }
     }
 
     // ── Biblioteca de calentamiento ─────────────────────────────────────────
@@ -171,12 +190,16 @@ class PlanificadorSeeder extends Seeder
 
     private function sembrarLecciones(): void
     {
-        // TODO: solo la Semana 7 (Disciplina) viene en el prototipo. El resto de
-        // las semanas queda pendiente: NO se inventan.
+        // TODO: solo la Semana 7 del Ciclo 1 (Disciplina) viene en el prototipo.
+        // El resto de las semanas/ciclos queda pendiente: NO se inventan.
+        $ciclo = Ciclo::where('habilidad_vida', HabilidadVida::Disciplina->value)->first();
+        if (! $ciclo) {
+            return;
+        }
+
         LeccionVida::updateOrCreate(
-            ['semana' => 7],
+            ['ciclo_id' => $ciclo->id, 'semana' => 7],
             [
-                'habilidad' => HabilidadVida::Disciplina->value,
                 'comienzo_texto' => 'VISIÓN es uno de los pilares más importantes de disciplina. Los alumnos disciplinados siempre tendrán presente su visión para alcanzar sus objetivos. ¿Cuál es su objetivo hoy?',
                 'comienzo_frase' => 'VISUALICE SUS OBJETIVOS',
                 'durante_texto' => 'Se acerca el examen, así que visualicemos cómo se ve un campeón durante un examen. Un campeón es fuerte, confiado y tiene un alto nivel de disciplina.',

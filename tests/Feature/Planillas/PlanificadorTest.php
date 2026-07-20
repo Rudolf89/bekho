@@ -1,11 +1,14 @@
 <?php
 
+use App\Enums\HabilidadVida;
 use App\Enums\TipoBloque;
 use App\Livewire\Planillas\Planificador;
 use App\Models\Academia;
 use App\Models\CategoriaCalentamiento;
+use App\Models\Ciclo;
 use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
+use App\Models\LeccionVida;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
@@ -24,6 +27,25 @@ beforeEach(function () {
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
+});
+
+// ── Backbone: ciclos (6 Habilidades de Vida) ────────────────────────────────
+
+test('se siembran los 6 ciclos, uno por Habilidad para la Vida', function () {
+    $ciclos = Ciclo::ordenados()->get();
+
+    expect($ciclos)->toHaveCount(6)
+        ->and($ciclos->first()->habilidad_vida)->toBe(HabilidadVida::Disciplina)
+        ->and($ciclos->last()->habilidad_vida)->toBe(HabilidadVida::Honestidad);
+});
+
+test('la lección de vida cuelga de su ciclo y deriva la habilidad del ciclo', function () {
+    $leccion = LeccionVida::with('ciclo')->first();
+
+    expect($leccion->ciclo)->not->toBeNull()
+        ->and($leccion->semana)->toBe(7)
+        // La habilidad se deriva del ciclo (Disciplina).
+        ->and($leccion->habilidad)->toBe(HabilidadVida::Disciplina);
 });
 
 // ── Biblioteca de calentamiento: filtro por grupo ───────────────────────────

@@ -4,11 +4,12 @@ namespace App\Models;
 
 use App\Enums\HabilidadVida;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Lección de Vida (ATA Legacy): una por semana, con una Habilidad para la Vida y
- * tres momentos (comienzo, durante, fin), cada uno con texto y frase destacada.
- * Catálogo compartido (sin academia_id).
+ * Lección de Vida (ATA Legacy): una por semana DENTRO de un ciclo, con tres
+ * momentos (comienzo, durante, fin), cada uno con texto y frase destacada. La
+ * Habilidad para la Vida se deriva del ciclo. Catálogo compartido (sin academia_id).
  */
 class LeccionVida extends Model
 {
@@ -18,7 +19,7 @@ class LeccionVida extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'semana', 'habilidad',
+        'ciclo_id', 'semana',
         'comienzo_texto', 'comienzo_frase',
         'durante_texto', 'durante_frase',
         'fin_texto', 'fin_frase',
@@ -31,8 +32,23 @@ class LeccionVida extends Model
     {
         return [
             'semana' => 'integer',
-            'habilidad' => HabilidadVida::class,
         ];
+    }
+
+    /**
+     * @return BelongsTo<Ciclo, $this>
+     */
+    public function ciclo(): BelongsTo
+    {
+        return $this->belongsTo(Ciclo::class);
+    }
+
+    /**
+     * Habilidad para la Vida de la lección (la de su ciclo).
+     */
+    public function getHabilidadAttribute(): ?HabilidadVida
+    {
+        return $this->ciclo?->habilidad_vida;
     }
 
     /**
