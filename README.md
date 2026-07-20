@@ -16,6 +16,7 @@ El código y el dominio están escritos **en español**.
 | Fase 3 | Gestión de alumnos, clases (multi-instructor), asistencia (calendario) y pagos | **Hecho** |
 | Fase 3 | Exámenes de grado (inscripción, resultados, conteo en cascada) | **Hecho** |
 | Fase 3 | Planillas de clase | **Hecho** |
+| Fase 4 | Currículo ATA: Ciclos y class planners, biblioteca de técnicas, cuadrantes de enseñanza, significado de cinturones | **Hecho** |
 
 ---
 
@@ -297,6 +298,25 @@ Reglas clave:
 - **Exámenes** de grado: convocatorias, inscripción por el instructor, resultados y
   **conteo en cascada** por la línea de supervisión (collares de máster).
 - **Planillas** de clase (rutinas por grupo/nivel con estructura de bloques).
+
+**Currículo ATA (Fase 4)**
+
+Contenido pedagógico transversal a todas las academias (catálogos compartidos, sin
+`academia_id`), organizado en torno al **Ciclo** = una de las 6 Habilidades para la
+Vida Songahm (Disciplina, Convicción, Comunicación, Respeto, Autoestima, Honestidad),
+de 8 semanas.
+
+- **Ciclos** (`ciclos`, `planner_ciclo`): cada ciclo tiene su **class planner** — una
+  grilla por fila (Warm-Up, Kicks, Forms, Quadrants, Protech, Drills en pareja) y
+  bloque de semanas (`1&2`, `3&4`, `5&6`, `7&8`) — más sus **lecciones de vida** por
+  semana. Transcrito del Manual Legacy.
+- **Planificador**: planilla grupo × nivel (o de Cinturón Negro), con calentamiento
+  por clase y lección de vida.
+- **Biblioteca de técnicas** (`tecnicas`, `pasos_tecnica`): patadas, formas, técnicas
+  de mano, tricks y armas, con sus pasos por segmento y filtros por categoría/modalidad.
+- **Cuadrantes de Enseñanza** (`cuadrante_items`): marco pedagógico ATA con las
+  responsabilidades del alumno y del instructor por cuadrante.
+- **Significado de los cinturones**: el simbolismo de cada grado (filosofía Songahm).
 
 ---
 

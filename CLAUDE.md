@@ -35,10 +35,10 @@ Piezas del tenant:
   todo en **solo lectura**.
 
 **Catálogos compartidos = SIN `academia_id`** (como `cargos_rangos`): `planillas`,
-`bloques_planilla`, `cuadrantes_planilla`, `ciclos`, `tecnicas`, `pasos_tecnica`,
-`cuadrante_items`, `grados`, `curriculos_nivel`, `lecciones_vida`, biblioteca de
-calentamiento, planificador de Cinturón Negro. **Datos operativos = CON
-`academia_id`**: usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes,
+`bloques_planilla`, `cuadrantes_planilla`, `ciclos`, `planner_ciclo`, `tecnicas`,
+`pasos_tecnica`, `cuadrante_items`, `grados`, `curriculos_nivel`, `lecciones_vida`,
+biblioteca de calentamiento, planificador de Cinturón Negro. **Datos operativos =
+CON `academia_id`**: usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes,
 `calentamiento_clase`.
 
 ## Roles y permisos
@@ -66,9 +66,13 @@ formación).
 - **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario.
   Aquí va también el material de negocio/marketing de los manuales ATA.
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
-  Negro, calentamiento por clase, lección de vida), **Biblioteca de técnicas**
-  (patadas/formas/manos/tricks/armas con pasos), **Cuadrantes de Enseñanza**. Eje:
-  `Ciclo` = 6 Habilidades de Vida Songahm × 8 semanas.
+  Negro, calentamiento por clase, lección de vida), **Ciclos** (`PlanCiclos`: class
+  planner de cada ciclo — grilla fila × bloque de semanas — con sus lecciones de
+  vida), **Biblioteca de técnicas** (patadas/formas/manos/tricks/armas con pasos),
+  **Cuadrantes de Enseñanza**. Eje: `Ciclo` = 6 Habilidades de Vida Songahm × 8
+  semanas; cada ciclo tiene su grilla en `planner_ciclo` (filas del enum
+  `FilaPlannerCiclo`: Warm-Up/Kicks/Forms/Quadrants/Protech/Drills × bloques
+  `1&2…7&8`).
 
 ## Convenciones
 
@@ -98,6 +102,7 @@ formación).
 
 Integrando los manuales ATA (Legacy, Tigers, MAK, MAX). Ver
 **`docs/plan-integracion-manual-legacy.md`**. Hecho: backbone Ciclo, biblioteca de
-técnicas, significado de cinturones, Cuadrantes de Enseñanza. Pendiente: class
-planners de los 6 ciclos (imágenes), recompensas/gamificación, track Legacy
-operativo, negocio → "Aprender".
+técnicas, significado de cinturones, Cuadrantes de Enseñanza, **class planners de
+los 6 ciclos** (`planner_ciclo`, vista Ciclos). Pendiente: recompensas/gamificación
+(MAK Knowledge Stripes, Tigers Star Tag), track Legacy operativo (N1-3, 100h,
+requisitos, ascenso), negocio/marketing → "Aprender".
