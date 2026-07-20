@@ -23,6 +23,8 @@ class DatabaseSeeder extends Seeder
             // Contenido pedagógico real del Planificador Unificado (catálogos
             // compartidos + planillas grupo × nivel de la primera academia).
             PlanificadorSeeder::class,
+            // Biblioteca de técnicas del currículo ATA (catálogo compartido).
+            TecnicasSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);

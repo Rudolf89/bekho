@@ -76,6 +76,9 @@
                             <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
                                 Planificador
                             </flux:sidebar.item>
+                            <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
+                                Biblioteca
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="clipboard-document-list" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
                                 Planillas
                             </flux:sidebar.item>
