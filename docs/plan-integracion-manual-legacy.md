@@ -135,6 +135,54 @@ Implica un **refactor chico** de lo ya hecho en el planificador.
 - **D6 — Recompensas Tigers**: ¿incluimos el módulo de gamificación (Star Tag,
   buenas acciones) o lo dejamos para una fase posterior?
 
+## 8. Síntesis tras leer Tigers / MAK / MAX / Legacy — arquitectura recomendada
+
+Leídos los `.docx` traducidos, el patrón es MUY consistente entre programas. La
+arquitectura que propongo (de mayor a menor prioridad):
+
+1. **Backbone = las 6 Habilidades de Vida Songahm** (Disciplina, Convicción,
+   Comunicación, Respeto, Autoestima, Honestidad). Aparecen en TODOS los manuales
+   como eje: Legacy (ciclos), MAK (coleccionables + tarjetas de reporte), MAX
+   ("incorpora las habilidades…"), Tigers (serie de libros). **Es exactamente el
+   enum `HabilidadVida` que ya existe.** → `Ciclo` keyed por habilidad es la
+   decisión correcta (D1 = sí).
+
+2. **Sistema de grados Clásico Songahm** (10 colores × recomendado/decidido +
+   danes), **compartido** por todos los programas. Ya está en `Grado`/`EscalaGrado`
+   (Fase 1). Enriquecer con recomendado/decidido, franjas y significado.
+
+3. **Biblioteca de técnicas (catálogo transversal, nuevo)** — lo más grande. Unifica
+   TODO el currículo técnico disperso en los manuales:
+   - Categorías: **Patadas, Formas, Manos, Tricks, Armas** (Jahng Bong, Ssahng Jeol
+     Bong, Ssahng Nat, Gum Do), **Rompimientos**, Protech.
+   - Etiquetas por técnica: **cinturón/dan**, **modalidad** (Tradicional / Creative /
+     Xtreme / Tricking), **core vs electivo**, **programa(s)** aplicable(s).
+   - Las **planillas** (ya transversales) referencian técnicas y se arman con el
+     enfoque **3-2-1** (3 Core + 2 Electivo + 1 Habilidad de Vida).
+   - Sustituye/ordena lo que hoy es texto libre en `curriculos_nivel.patadas/formula`.
+
+4. **Módulo de progreso / recompensas (operativo, por alumno/academia)** — patrón
+   repetido: **Franjas de conocimiento** (MAK: 3 negras + amarilla/azul/roja/verde),
+   **Star Tag** (Tigers), **Coleccionables** (6, uno por habilidad). Es gamificación
+   por ciclo, ligada a grado y a habilidades de vida. Un solo módulo cubre los tres.
+
+5. **Programa Legacy (operativo, por academia)** — track de instructores N1-3 (100 h,
+   requisitos, ascenso). Subsistema aparte, el más grande del bucket operativo.
+
+6. **`Programa` (ya existe)** agrupa, por cada programa (Tigers/MAK/Jóvenes-Adultos/
+   MAX/Legacy), qué técnicas, planillas, grados y recompensas aplican.
+
+**Fuera de alcance** (confirmado): Leadership upgrade scripts, 7-step upgrading,
+marketing, precios, políticas de parches, formularios ATA HQ, descuentos de
+proveedores US (Fitnessfinders), avatares/mascotas como narrativa de negocio.
+
+### Fases recomendadas (actualizadas)
+1. `Ciclo` (backbone) + reubicar lecciones/planner. 2. **Biblioteca de técnicas**
+(catálogo + etiquetas) — cargar Patadas/Formas/Armas/Tricks desde los `.docx`.
+3. Enriquecer `Grado` (recomendado/decidido, significado). 4. Cuadrantes de
+Enseñanza (items). 5. Class planners de los 6 ciclos (imágenes). 6. Módulo de
+recompensas/progreso. 7. Programa Legacy operativo.
+
 ## 7. Fuentes
 
 Todos los manuales están en Google Drive (carpeta compartida por el dueño). Para
