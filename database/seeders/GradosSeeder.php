@@ -90,8 +90,30 @@ class GradosSeeder extends Seeder
         foreach ($grados as $orden => [$nombre, $color]) {
             Grado::updateOrCreate(
                 ['escala' => $escala->value, 'nombre' => $nombre],
-                ['orden' => $orden + 1, 'color' => $color, 'activo' => true],
+                [
+                    'orden' => $orden + 1,
+                    'color' => $color,
+                    'significado' => self::SIGNIFICADOS[$color] ?? null,
+                    'activo' => true,
+                ],
             );
         }
     }
+
+    /**
+     * Significado del color (filosofía Songahm: el crecimiento del pino).
+     */
+    private const SIGNIFICADOS = [
+        'Blanco' => 'Como ocurre con el pino, ahora debe plantarse la semilla y nutrirse para que desarrolle raíces fuertes.',
+        'Naranjo' => 'El sol comienza a salir. Como en el amanecer, solo se aprecia la belleza de la salida del sol, todavía no su inmenso poder.',
+        'Amarillo' => 'La semilla comienza a ver la luz del sol.',
+        'Camuflado' => 'El retoño se oculta entre los pinos más altos y ahora debe abrirse camino hacia arriba.',
+        'Verde' => 'El pino empieza a desarrollarse y a ganar fuerza.',
+        'Púrpura' => 'Llegando a la montaña. El árbol está a mitad de su crecimiento y ahora el camino se vuelve empinado.',
+        'Azul' => 'El árbol se eleva hacia el cielo, buscando nuevas alturas.',
+        'Café' => 'El árbol está firmemente arraigado en la tierra.',
+        'Rojo' => 'El sol se pone. La primera etapa de crecimiento se ha cumplido.',
+        'Rojo/Negro' => 'El amanecer de un nuevo día. El sol atraviesa la oscuridad.',
+        'Negro' => 'El árbol ha alcanzado la madurez y ha vencido la oscuridad… Ahora debe comenzar a plantar semillas para el futuro.',
+    ];
 }

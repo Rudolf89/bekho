@@ -79,6 +79,9 @@
                             <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
                                 Biblioteca
                             </flux:sidebar.item>
+                            <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
+                                Cuadrantes
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="clipboard-document-list" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
                                 Planillas
                             </flux:sidebar.item>

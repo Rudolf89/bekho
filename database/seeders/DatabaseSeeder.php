@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             PlanificadorSeeder::class,
             // Biblioteca de técnicas del currículo ATA (catálogo compartido).
             TecnicasSeeder::class,
+            // Cuadrantes de Enseñanza (marco pedagógico ATA, catálogo compartido).
+            CuadrantesSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);

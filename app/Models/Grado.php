@@ -26,6 +26,7 @@ class Grado extends Model
         'orden',
         'escala',
         'color',
+        'significado',
         'activo',
     ];
 
