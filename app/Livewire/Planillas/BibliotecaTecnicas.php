@@ -34,7 +34,7 @@ class BibliotecaTecnicas extends Component
                 ->where('nombre', 'ilike', "%{$this->buscar}%")
                 ->orWhere('descripcion', 'ilike', "%{$this->buscar}%")
                 ->orWhere('cinturon', 'ilike', "%{$this->buscar}%")))
-            ->with('pasos')
+            ->with(['pasos', 'grados'])
             ->ordenadas()
             ->get();
 
