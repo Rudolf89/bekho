@@ -176,9 +176,10 @@ arquitectura que propongo (de mayor a menor prioridad):
 
 **A "Aprender" (LMS Formación)**: Leadership upgrade scripts, 7-step upgrading,
 marketing, precios, políticas de parches, lanzamientos, descuentos de proveedores,
-avatares/mascotas como narrativa. Se cargan como contenidos del LMS, no como datos
-operativos. **Fuera del todo**: formularios ATA HQ y datos sensibles (SSN,
-antecedentes).
+avatares/mascotas como narrativa, y **preparación para certificaciones/exámenes de
+juez** (p. ej. "Preparación para examen de juez nivel 1"). Se cargan como contenidos
+del LMS, no como datos operativos. **Fuera del todo**: formularios ATA HQ y datos
+sensibles (SSN, antecedentes).
 
 ### Fases recomendadas (actualizadas)
 1. `Ciclo` (backbone) + reubicar lecciones/planner. 2. **Biblioteca de técnicas**
