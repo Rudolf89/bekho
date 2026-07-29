@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             TecnicasSeeder::class,
             // Enlace técnica ↔ cinturón (requiere grados y técnicas ya sembrados).
             GradoTecnicaSeeder::class,
+            // Patadas detalladas por grado (reemplazan el resumen de esos cinturones).
+            PatadasGradoSeeder::class,
             // Cuadrantes de Enseñanza (marco pedagógico ATA, catálogo compartido).
             CuadrantesSeeder::class,
             // Catálogo de recompensas/gamificación (catálogo compartido).
