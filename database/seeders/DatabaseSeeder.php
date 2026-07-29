@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             GradosSeeder::class,
             RolesPermisosSeeder::class,
             FormacionDemoSeeder::class,
+            // Contenido real de "Aprender": preparación para examen de juez N1.
+            PreparacionJuezSeeder::class,
             // Contenido pedagógico real del Planificador Unificado (catálogos
             // compartidos + planillas grupo × nivel de la primera academia).
             PlanificadorSeeder::class,
