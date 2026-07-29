@@ -22,6 +22,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Sembrar al admin con la 2FA ya confirmada (conveniencia de desarrollo)
+    |--------------------------------------------------------------------------
+    |
+    | Si es true, RolesPermisosSeeder crea admin@bekho.cl con
+    | two_factor_confirmed_at seteado, para no chocar con el muro de activación
+    | de 2FA tras cada `migrate:fresh --seed`. Actívalo/desactívalo con
+    | BEKHO_SEMBRAR_ADMIN_2FA en el .env.
+    |
+    | Por defecto: ON fuera de producción, OFF en producción (ahí se exige 2FA
+    | real). NO afecta el requisito de 2FA en runtime, solo el estado inicial
+    | del admin sembrado.
+    |
+    */
+
+    'sembrar_admin_con_2fa' => (bool) env('BEKHO_SEMBRAR_ADMIN_2FA', env('APP_ENV') !== 'production'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Exámenes de grado — criterios de elegibilidad (sugeridos)
     |--------------------------------------------------------------------------
     |

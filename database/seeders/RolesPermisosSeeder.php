@@ -132,15 +132,23 @@ class RolesPermisosSeeder extends Seeder
         );
 
         // Administrador de plataforma transversal (academia_id null → ve todo).
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@bekho.cl'],
-            [
-                'name' => 'Administrador BEKHO',
-                'password' => Hash::make('cambiar-esto'),
-                'academia_id' => null,
-                'activo' => true,
-            ],
-        );
+        $atributosAdmin = [
+            'name' => 'Administrador BEKHO',
+            'password' => Hash::make('cambiar-esto'),
+            'academia_id' => null,
+            'activo' => true,
+        ];
+
+        // Conveniencia de desarrollo: el admin nace con la 2FA ya "confirmada"
+        // para no quedar bloqueado por el muro de activación tras cada
+        // migrate:fresh --seed. Se controla con BEKHO_SEMBRAR_ADMIN_2FA (por
+        // defecto ON fuera de producción). En producción NO se toca el campo,
+        // así no se pisa una 2FA ya configurada.
+        if (config('bekho.sembrar_admin_con_2fa')) {
+            $atributosAdmin['two_factor_confirmed_at'] = now();
+        }
+
+        $admin = User::updateOrCreate(['email' => 'admin@bekho.cl'], $atributosAdmin);
 
         $admin->syncRoles(['admin-plataforma']);
     }
