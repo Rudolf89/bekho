@@ -3,7 +3,7 @@
         'Blanco' => '#f5f5f4', 'Naranjo' => '#f97316', 'Amarillo' => '#eab308',
         'Camuflado' => '#4d7c0f', 'Verde' => '#16a34a', 'Púrpura' => '#7c3aed',
         'Azul' => '#2563eb', 'Café' => '#78350f', 'Rojo' => '#dc2626',
-        'Rojo/Negro' => '#7f1d1d', 'Negro' => '#18181b',
+        'Rojo/Negro' => 'linear-gradient(#18181b 50%, #dc2626 50%)', 'Negro' => '#18181b',
     ];
     $tipoColor = ['recomendado' => 'sky', 'decidido' => 'indigo', 'dan' => 'zinc'];
 @endphp
