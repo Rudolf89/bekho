@@ -40,6 +40,8 @@ class RolesPermisosSeeder extends Seeder
             'gestionar planillas',
             'gestionar formacion',
             'ver formacion',
+            'gestionar cuestionarios', // examinador: crea/edita evaluaciones
+            'rendir cuestionarios',    // rinde evaluaciones autocorregidas
         ];
 
         foreach ($permisos as $permiso) {
@@ -77,6 +79,8 @@ class RolesPermisosSeeder extends Seeder
             'gestionar planillas',
             'gestionar formacion',
             'ver formacion',
+            'gestionar cuestionarios',
+            'rendir cuestionarios',
         ]);
 
         // administrativo (secretaría/recepción): alumnos, clases, asistencia. SIN pagos.
@@ -85,23 +89,27 @@ class RolesPermisosSeeder extends Seeder
             'gestionar clases',
             'tomar asistencia',
             'ver formacion',
+            'rendir cuestionarios',
         ]);
 
         // instructor: asistencia, planillas, inscribir en exámenes, ver formación.
         // Los alumnos que ve son solo los de SUS clases (EstudiantePolicy), por eso
         // NO tiene "gestionar alumnos" (accede a la vista por la Policy viewAny).
+        // Como examinador puede crear/editar cuestionarios.
         Role::findOrCreate('instructor')->syncPermissions([
             'tomar asistencia',
             'gestionar planillas',
             'inscribir examenes',
             'ver formacion',
+            'gestionar cuestionarios',
+            'rendir cuestionarios',
         ]);
 
         // apoderado: sin permisos globales (ve solo a sus hijos, vía Policies).
         Role::findOrCreate('apoderado');
 
-        // alumno: ver formación.
-        Role::findOrCreate('alumno')->syncPermissions(['ver formacion']);
+        // alumno: ver formación y rendir cuestionarios.
+        Role::findOrCreate('alumno')->syncPermissions(['ver formacion', 'rendir cuestionarios']);
 
         // Grupo principal (una academia = un grupo). BEKHO es la federación, no un grupo.
         $academia = Academia::updateOrCreate(

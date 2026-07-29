@@ -100,11 +100,19 @@
                     </flux:sidebar.group>
                 @endrole
 
-                @can('ver formacion')
+                @canany(['ver formacion', 'rendir cuestionarios'])
                     <flux:sidebar.group heading="Formación" class="grid">
-                        <flux:sidebar.item icon="academic-cap" :href="route('formacion.index')" :current="request()->routeIs('formacion.index') || request()->routeIs('formacion.nivel') || request()->routeIs('formacion.contenido')" wire:navigate>
-                            Aprender
-                        </flux:sidebar.item>
+                        @can('ver formacion')
+                            <flux:sidebar.item icon="academic-cap" :href="route('formacion.index')" :current="request()->routeIs('formacion.index') || request()->routeIs('formacion.nivel') || request()->routeIs('formacion.contenido')" wire:navigate>
+                                Aprender
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('rendir cuestionarios')
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('cuestionarios.index')" :current="request()->routeIs('cuestionarios.*')" wire:navigate>
+                                Cuestionarios
+                            </flux:sidebar.item>
+                        @endcan
 
                         @can('gestionar formacion')
                             <flux:sidebar.item icon="cog-6-tooth" :href="route('formacion.admin.niveles')" :current="request()->routeIs('formacion.admin.*')" wire:navigate>
@@ -112,7 +120,7 @@
                             </flux:sidebar.item>
                         @endcan
                     </flux:sidebar.group>
-                @endcan
+                @endcanany
             </flux:sidebar.nav>
 
             <flux:spacer />

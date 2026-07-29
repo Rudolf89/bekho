@@ -28,11 +28,11 @@ test('la preparación para examen de juez se siembra como nivel de Aprender', fu
     expect($nivel)->not->toBeNull()
         ->and($nivel->academia_id)->toBe($this->bekho->id)
         ->and($nivel->activo)->toBeTrue()
-        // Intro + 18 secciones de manual + 4 cuestionarios + 2 documentos.
-        ->and($nivel->contenidos()->count())->toBe(25);
+        // Intro + 18 secciones de manual + pointer a práctica + 2 documentos.
+        ->and($nivel->contenidos()->count())->toBe(22);
 });
 
-test('incluye el manual, los cuestionarios con respuestas y los documentos', function () {
+test('incluye el manual, el puntero a la práctica y los documentos', function () {
     Tenant::set($this->bekho->id);
 
     $nivel = Nivel::where('nombre', 'Preparación para examen de juez nivel 1')->first();
@@ -41,12 +41,10 @@ test('incluye el manual, los cuestionarios con respuestas y los documentos', fun
     // Manual de referencia: 18 secciones.
     expect($contenidos->filter(fn ($c) => str_starts_with($c->titulo, 'Manual · ')))->toHaveCount(18);
 
-    // Cuestionario N1 con clave de respuestas y explicación.
-    $n1 = $contenidos->firstWhere('titulo', 'Cuestionario · Nivel 1 (con respuestas)');
-    expect($n1)->not->toBeNull()
-        ->and($n1->tipo->value)->toBe('texto')
-        ->and($n1->cuerpo)->toContain('Victoria Súbita')
-        ->and($n1->cuerpo)->toContain('✔ Respuesta:');
+    // Puntero a la práctica interactiva (los cuestionarios viven en su módulo).
+    $practica = $contenidos->firstWhere('titulo', 'Práctica interactiva (autocorregida)');
+    expect($practica)->not->toBeNull()
+        ->and($practica->cuerpo)->toContain('módulo de Cuestionarios');
 
     $documentos = $contenidos->where('tipo', TipoContenido::Documento);
     expect($documentos)->toHaveCount(2)

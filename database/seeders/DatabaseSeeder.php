@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             FormacionDemoSeeder::class,
             // Contenido real de "Aprender": preparación para examen de juez N1.
             PreparacionJuezSeeder::class,
+            // Cuestionarios autocorregidos (catálogo compartido): banco de juez ATA.
+            CuestionariosSeeder::class,
             // Contenido pedagógico real del Planificador Unificado (catálogos
             // compartidos + planillas grupo × nivel de la primera academia).
             PlanificadorSeeder::class,
