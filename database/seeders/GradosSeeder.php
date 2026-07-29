@@ -90,6 +90,7 @@ class GradosSeeder extends Seeder
     {
         foreach ($grados as $orden => [$nombre, $color]) {
             $tipo = TipoGrado::desdeNombre($nombre);
+            [$franjas, $estrellas] = self::insigniasDe($nombre, $tipo);
 
             Grado::updateOrCreate(
                 ['escala' => $escala->value, 'nombre' => $nombre],
@@ -97,7 +98,8 @@ class GradosSeeder extends Seeder
                     'orden' => $orden + 1,
                     'color' => $color,
                     'tipo' => $tipo->value,
-                    'franjas' => self::franjasDe($nombre, $tipo),
+                    'franjas' => $franjas,
+                    'estrellas' => $estrellas,
                     'significado' => self::SIGNIFICADOS[$color] ?? null,
                     'activo' => true,
                 ],
@@ -106,16 +108,21 @@ class GradosSeeder extends Seeder
     }
 
     /**
-     * Franjas/barras del cinturón. Los grados negros llevan una barra por grado
-     * (1º Dan = 1, …, 9º Dan = 9); los cinturones de color no llevan barra.
+     * Insignias del cinturón negro: los danes 1º-4º llevan una franja roja por
+     * grado; desde el 5º Dan se usan estrellas (una por grado sobre el 4º). Los
+     * cinturones de color no llevan ninguna. Devuelve [franjas, estrellas].
+     *
+     * @return array{0: int, 1: int}
      */
-    private static function franjasDe(string $nombre, TipoGrado $tipo): int
+    private static function insigniasDe(string $nombre, TipoGrado $tipo): array
     {
-        if ($tipo === TipoGrado::Dan && preg_match('/^(\d+)/', $nombre, $m)) {
-            return (int) $m[1];
+        if ($tipo !== TipoGrado::Dan || ! preg_match('/^(\d+)/', $nombre, $m)) {
+            return [0, 0];
         }
 
-        return 0;
+        $dan = (int) $m[1];
+
+        return $dan >= 5 ? [0, $dan - 4] : [$dan, 0];
     }
 
     /**

@@ -46,13 +46,21 @@ test('los grados distinguen recomendado, decidido y dan', function () {
 
 // --- Franjas -----------------------------------------------------------------
 
-test('los danes llevan una franja por grado y los colores ninguna', function () {
+test('los danes 1º-4º llevan franjas; desde el 5º, estrellas', function () {
     $tercerDan = Grado::porEscala(EscalaGrado::Adultos)->where('nombre', '3º Dan')->first();
     expect($tercerDan->tipo)->toBe(TipoGrado::Dan)
-        ->and($tercerDan->franjas)->toBe(3);
+        ->and($tercerDan->franjas)->toBe(3)
+        ->and($tercerDan->estrellas)->toBe(0);
+
+    // 5º Dan → 1 estrella, sin franjas; 9º Dan → 5 estrellas.
+    $quintoDan = Grado::porEscala(EscalaGrado::Adultos)->where('nombre', '5º Dan')->first();
+    expect($quintoDan->franjas)->toBe(0)->and($quintoDan->estrellas)->toBe(1);
+
+    $novenoDan = Grado::porEscala(EscalaGrado::Adultos)->where('nombre', '9º Dan')->first();
+    expect($novenoDan->estrellas)->toBe(5);
 
     $blanco = Grado::porEscala(EscalaGrado::Adultos)->where('nombre', 'Blanco')->first();
-    expect($blanco->franjas)->toBe(0);
+    expect($blanco->franjas)->toBe(0)->and($blanco->estrellas)->toBe(0);
 });
 
 // --- Enlace técnica ↔ cinturón ----------------------------------------------

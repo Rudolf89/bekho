@@ -30,6 +30,7 @@ class Grado extends Model
         'color',
         'tipo',
         'franjas',
+        'estrellas',
         'significado',
         'activo',
     ];
@@ -45,6 +46,7 @@ class Grado extends Model
             'escala' => EscalaGrado::class,
             'tipo' => TipoGrado::class,
             'franjas' => 'integer',
+            'estrellas' => 'integer',
             'activo' => 'boolean',
         ];
     }
