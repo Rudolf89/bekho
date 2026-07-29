@@ -18,14 +18,19 @@
     {{-- Resultado --}}
     @if ($finalizado)
         <div class="rounded-xl border p-5 {{ $aprobado ? 'border-green-300 bg-green-50 dark:border-green-800 dark:bg-green-950/40' : 'border-amber-300 bg-amber-50 dark:border-amber-800 dark:bg-amber-950/40' }}">
-            <flux:heading size="lg">{{ $aprobado ? '¡Aprobado!' : 'No alcanzó el mínimo' }}</flux:heading>
+            <flux:heading size="lg">{{ $aprobado ? 'Alcanzaste el puntaje' : 'No alcanzaste el mínimo' }}</flux:heading>
             <flux:text class="mt-1">
                 Obtuviste <span class="font-bold">{{ $correctas }}/{{ $total }}</span> correctas
                 (<span class="font-bold">{{ $porcentaje }}%</span>). Mínimo para aprobar: {{ $cuestionario->umbral_aprobacion }}%.
             </flux:text>
+            <flux:text size="sm" class="mt-2 block text-zinc-500">
+                Tu resultado quedó <span class="font-semibold text-amber-600 dark:text-amber-400">en revisión del examinador</span>.
+                Podrás verlo en “Mis intentos”.
+            </flux:text>
             <div class="mt-3 flex gap-2">
                 <flux:button wire:click="reintentar" icon="arrow-path" size="sm" variant="primary">Reintentar</flux:button>
-                <flux:button :href="route('cuestionarios.index')" size="sm" variant="subtle" wire:navigate>Salir</flux:button>
+                <flux:button :href="route('cuestionarios.mis-intentos')" size="sm" variant="subtle" wire:navigate>Mis intentos</flux:button>
+                <flux:button :href="route('cuestionarios.index')" size="sm" variant="ghost" wire:navigate>Salir</flux:button>
             </div>
         </div>
     @endif

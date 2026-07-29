@@ -4,11 +4,19 @@
             <flux:heading size="xl">Cuestionarios</flux:heading>
             <flux:text class="mt-1">Evaluaciones autocorregidas. Rinde las veces que quieras.</flux:text>
         </div>
-        @if ($puedeGestionar)
-            <flux:button :href="route('cuestionarios.crear')" icon="plus" variant="primary" size="sm" wire:navigate>
-                Nuevo cuestionario
+        <div class="flex flex-wrap items-center gap-2">
+            <flux:button :href="route('cuestionarios.mis-intentos')" icon="clock" variant="subtle" size="sm" wire:navigate>
+                Mis intentos
             </flux:button>
-        @endif
+            @if ($puedeGestionar)
+                <flux:button :href="route('cuestionarios.resultados')" icon="chart-bar" variant="subtle" size="sm" wire:navigate>
+                    Resultados
+                </flux:button>
+                <flux:button :href="route('cuestionarios.crear')" icon="plus" variant="primary" size="sm" wire:navigate>
+                    Nuevo cuestionario
+                </flux:button>
+            @endif
+        </div>
     </div>
 
     @if ($cuestionarios->isEmpty())
@@ -30,6 +38,9 @@
                             @unless ($c->activo)
                                 <flux:badge size="sm" color="zinc">Inactivo</flux:badge>
                             @endunless
+                            @if (in_array($c->id, $aprobados))
+                                <flux:badge size="sm" color="green">Aprobado</flux:badge>
+                            @endif
                         </div>
                         @if ($c->descripcion)
                             <flux:text size="sm" class="mt-1">{{ $c->descripcion }}</flux:text>

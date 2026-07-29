@@ -109,8 +109,14 @@
                         @endcan
 
                         @can('rendir cuestionarios')
-                            <flux:sidebar.item icon="clipboard-document-check" :href="route('cuestionarios.index')" :current="request()->routeIs('cuestionarios.*')" wire:navigate>
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('cuestionarios.index')" :current="request()->routeIs('cuestionarios.index') || request()->routeIs('cuestionarios.rendir') || request()->routeIs('cuestionarios.mis-intentos') || request()->routeIs('cuestionarios.crear') || request()->routeIs('cuestionarios.editar')" wire:navigate>
                                 Cuestionarios
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('gestionar cuestionarios')
+                            <flux:sidebar.item icon="chart-bar" :href="route('cuestionarios.resultados')" :current="request()->routeIs('cuestionarios.resultados')" wire:navigate>
+                                Resultados
                             </flux:sidebar.item>
                         @endcan
 

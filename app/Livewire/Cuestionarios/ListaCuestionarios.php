@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cuestionarios;
 
+use App\Enums\EstadoIntento;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
 use Illuminate\Support\Facades\Auth;
@@ -40,9 +41,17 @@ class ListaCuestionarios extends Component
             ->groupBy('cuestionario_id')
             ->pluck('mejor', 'cuestionario_id');
 
+        // Cuestionarios que el examinador ya aprobó al usuario.
+        $aprobados = IntentoCuestionario::query()
+            ->where('user_id', Auth::id())
+            ->where('estado', EstadoIntento::Aprobado)
+            ->pluck('cuestionario_id')
+            ->all();
+
         return view('livewire.cuestionarios.lista-cuestionarios', [
             'cuestionarios' => $cuestionarios,
             'mejores' => $mejores,
+            'aprobados' => $aprobados,
             'puedeGestionar' => $puedeGestionar,
         ]);
     }

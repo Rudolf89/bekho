@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoIntento;
 use App\Models\Concerns\PerteneceAcademia;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,11 +20,21 @@ class IntentoCuestionario extends Model
     protected $table = 'intentos_cuestionario';
 
     /**
+     * Valores por defecto (el intento nace en revisión).
+     *
+     * @var array<string, mixed>
+     */
+    protected $attributes = [
+        'estado' => 'pendiente',
+    ];
+
+    /**
      * @var list<string>
      */
     protected $fillable = [
         'academia_id', 'user_id', 'cuestionario_id',
         'correctas', 'total', 'porcentaje', 'aprobado', 'finalizado_at',
+        'estado', 'revisado_por', 'revisado_at', 'justificacion',
     ];
 
     /**
@@ -36,6 +48,8 @@ class IntentoCuestionario extends Model
             'porcentaje' => 'integer',
             'aprobado' => 'boolean',
             'finalizado_at' => 'datetime',
+            'estado' => EstadoIntento::class,
+            'revisado_at' => 'datetime',
         ];
     }
 
@@ -61,5 +75,33 @@ class IntentoCuestionario extends Model
     public function respuestas(): HasMany
     {
         return $this->hasMany(RespuestaIntento::class, 'intento_id');
+    }
+
+    /**
+     * Examinador que revisó el intento.
+     *
+     * @return BelongsTo<User, $this>
+     */
+    public function revisor(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'revisado_por');
+    }
+
+    /**
+     * ¿Aprobar este intento sería una excepción (no alcanzó el umbral)? En ese
+     * caso la justificación del examinador es obligatoria.
+     */
+    public function requiereJustificacion(): bool
+    {
+        return ! $this->aprobado;
+    }
+
+    /**
+     * @param  Builder<IntentoCuestionario>  $query
+     * @return Builder<IntentoCuestionario>
+     */
+    public function scopePendientes(Builder $query): Builder
+    {
+        return $query->where('estado', EstadoIntento::Pendiente);
     }
 }
