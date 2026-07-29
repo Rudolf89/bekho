@@ -181,12 +181,26 @@ juez** (p. ej. "Preparación para examen de juez nivel 1"). Se cargan como conte
 del LMS, no como datos operativos. **Fuera del todo**: formularios ATA HQ y datos
 sensibles (SSN, antecedentes).
 
-### Fases recomendadas (actualizadas)
-1. `Ciclo` (backbone) + reubicar lecciones/planner. 2. **Biblioteca de técnicas**
-(catálogo + etiquetas) — cargar Patadas/Formas/Armas/Tricks desde los `.docx`.
-3. Enriquecer `Grado` (recomendado/decidido, significado). 4. Cuadrantes de
-Enseñanza (items). 5. Class planners de los 6 ciclos (imágenes). 6. Módulo de
-recompensas/progreso. 7. Programa Legacy operativo.
+### Fases recomendadas (actualizadas) — TODAS HECHAS ✅
+1. ✅ `Ciclo` (backbone) + reubicar lecciones/planner.
+2. ✅ **Biblioteca de técnicas** (catálogo + etiquetas) — Patadas/Formas/Armas/Tricks.
+3. ✅ Enriquecer `Grado`: recomendado/decidido (`tipo`), `franjas`, significado y
+   enlace técnica↔cinturón (`grado_tecnica`). Vista **Cinturones**.
+4. ✅ Cuadrantes de Enseñanza (items).
+5. ✅ Class planners de los 6 ciclos (`planner_ciclo`, vista Ciclos).
+6. ✅ Módulo de recompensas/progreso (`recompensas`/`logros`): Franjas de
+   Conocimiento, Star Tag, Coleccionables. Panel del instructor + "Mis logros".
+7. ✅ Programa Legacy operativo (`niveles_legacy`/`inscripciones_legacy`/`horas_legacy`):
+   inscripción, 100 h, requisitos, ascenso del licenciatario. La **prueba escrita
+   N3** se resuelve enlazando un requisito a un **cuestionario** (intento aprobado).
+
+**Extra surgido en el camino:** módulo de **Cuestionarios** autocorregidos (banco
+genérico + revisión del examinador, con `EstadoIntento` aprobar/volver a intentar) y
+el **Manual del Juez** (18 secciones) cargado como estudio en "Aprender".
+
+**Pendiente menor:** banco de preguntas real para la prueba escrita Legacy N3
+(el enlace ya existe, falta el contenido); notificar al alumno cuando el examinador
+decide; volcar más negocio/marketing a "Aprender".
 
 ## 7. Fuentes
 

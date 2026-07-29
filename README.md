@@ -16,7 +16,10 @@ El código y el dominio están escritos **en español**.
 | Fase 3 | Gestión de alumnos, clases (multi-instructor), asistencia (calendario) y pagos | **Hecho** |
 | Fase 3 | Exámenes de grado (inscripción, resultados, conteo en cascada) | **Hecho** |
 | Fase 3 | Planillas de clase | **Hecho** |
-| Fase 4 | Currículo ATA: Ciclos y class planners, biblioteca de técnicas, cuadrantes de enseñanza, significado de cinturones | **Hecho** |
+| Fase 4 | Currículo ATA: Ciclos y class planners, biblioteca de técnicas, cuadrantes de enseñanza, cinturones (recomendado/decidido, franjas, significado, técnicas por grado) | **Hecho** |
+| Fase 5 | Cuestionarios autocorregidos (banco genérico, con revisión del examinador) + Manual del Juez en "Aprender" | **Hecho** |
+| Fase 6 | Recompensas / gamificación (Franjas de Conocimiento, Star Tag, Coleccionables) | **Hecho** |
+| Fase 7 | Programa Legacy operativo (Niveles 1-3, 100 h, requisitos, ascenso, prueba escrita) | **Hecho** |
 
 ---
 
@@ -316,7 +319,43 @@ de 8 semanas.
   de mano, tricks y armas, con sus pasos por segmento y filtros por categoría/modalidad.
 - **Cuadrantes de Enseñanza** (`cuadrante_items`): marco pedagógico ATA con las
   responsabilidades del alumno y del instructor por cuadrante.
-- **Significado de los cinturones**: el simbolismo de cada grado (filosofía Songahm).
+- **Cinturones** (`grados`, `grado_tecnica`): escala de grados por programa con su
+  color, `tipo` (recomendado / decidido / dan), `franjas` (barras del cinturón; los
+  danes llevan una por grado), el significado Songahm y las **técnicas enlazadas** a
+  cada cinturón (normalizando grafías: Morado↔Púrpura, Camuflaje↔Camuflado,
+  Marrón↔Café).
+
+**Cuestionarios (Fase 5)**
+
+Módulo de evaluaciones **autocorregidas** y configurable. Catálogo transversal
+(`cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`); los intentos son
+operativos (`intentos_cuestionario`).
+
+- El **examinador** crea bancos genéricos (preguntas de una o varias respuestas
+  correctas). Cualquiera con permiso los **rinde** con puntaje y explicación por
+  pregunta.
+- Cada intento nace **en revisión**; el examinador decide **aprobar** o **volver a
+  intentar** en "Resultados" (aprobar por debajo del umbral exige justificación).
+  El alumno ve su historial en "Mis intentos".
+- Banco base: el **examen de Juez ATA** (N1/N2/N3 + repaso). El **Manual del Juez**
+  (18 secciones) se carga como estudio en "Aprender".
+
+**Recompensas / gamificación (Fase 6)**
+
+Un solo módulo (catálogo transversal `recompensas` + `logros` operativos) cubre los
+tres sistemas de los manuales: **Franjas de Conocimiento** (MAK), **Star Tag**
+(Tigers, acumulable) y **Coleccionables** (6, uno por Habilidad de Vida). El
+instructor otorga/quita logros (catálogo filtrado por el grupo etario del alumno);
+el alumno/apoderado ve su colección en **"Mis logros"**.
+
+**Programa Legacy (Fase 7)**
+
+Track de formación de instructores (Niveles 1-3). Catálogo transversal
+(`niveles_legacy` de 100 h + `requisitos_legacy`) y datos operativos
+(`inscripciones_legacy`, `horas_legacy`). Se registran horas (barra de avance a las
+100 h) y requisitos; el **licenciatario** aprueba el **ascenso** cuando se cumple
+todo. Un requisito puede enlazarse a un **cuestionario**: entonces la **prueba
+escrita** se da por cumplida con un intento aprobado.
 
 ---
 

@@ -36,10 +36,12 @@ Piezas del tenant:
 
 **Catálogos compartidos = SIN `academia_id`** (como `cargos_rangos`): `planillas`,
 `bloques_planilla`, `cuadrantes_planilla`, `ciclos`, `planner_ciclo`, `tecnicas`,
-`pasos_tecnica`, `cuadrante_items`, `grados`, `curriculos_nivel`, `lecciones_vida`,
-biblioteca de calentamiento, planificador de Cinturón Negro. **Datos operativos =
-CON `academia_id`**: usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes,
-`calentamiento_clase`.
+`pasos_tecnica`, `cuadrante_items`, `grados`, `grado_tecnica`, `curriculos_nivel`,
+`lecciones_vida`, biblioteca de calentamiento, planificador de Cinturón Negro,
+`cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`, `recompensas`,
+`niveles_legacy`, `requisitos_legacy`. **Datos operativos = CON `academia_id`**:
+usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
+`intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
 
 ## Roles y permisos
 
@@ -50,6 +52,10 @@ inscribir exámenes; ve **solo alumnos de sus clases** vía `EstudiantePolicy` +
 `Estudiante::scopeVisiblePara`) · `apoderado` (solo sus hijos) · `alumno` (ver
 formación).
 
+- **Permisos extra** (además de gestión/formación): `gestionar cuestionarios`
+  (examinador) · `rendir cuestionarios` · `gestionar recompensas` · `ver recompensas`
+  (alumno/apoderado) · `gestionar legacy` · `aprobar legacy` (licenciatario:
+  admin/dirección).
 - **Rol ≠ Rango**: el rol (spatie) da permisos; el **rango** (`cargos_rangos` →
   `users.rango_id`) es la jerarquía marcial ATA y **no da permisos**. Son ejes
   independientes (puede haber rango sin rol y viceversa).
@@ -64,15 +70,38 @@ formación).
   nombre y hora fin autocompletados), **asistencia como calendario semanal**, pagos,
   exámenes (instructor inscribe; dirección finaliza), planillas.
 - **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario.
-  Aquí va también el material de negocio/marketing de los manuales ATA.
+  Aquí va también el material de negocio/marketing de los manuales ATA y el estudio
+  (p. ej. "Preparación para examen de juez" = Manual del Juez ATA en 18 secciones).
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
   Negro, calentamiento por clase, lección de vida), **Ciclos** (`PlanCiclos`: class
   planner de cada ciclo — grilla fila × bloque de semanas — con sus lecciones de
   vida), **Biblioteca de técnicas** (patadas/formas/manos/tricks/armas con pasos),
-  **Cuadrantes de Enseñanza**. Eje: `Ciclo` = 6 Habilidades de Vida Songahm × 8
-  semanas; cada ciclo tiene su grilla en `planner_ciclo` (filas del enum
-  `FilaPlannerCiclo`: Warm-Up/Kicks/Forms/Quadrants/Protech/Drills × bloques
+  **Cuadrantes de Enseñanza**, **Cinturones** (`Cinturones`: escala de grados con
+  color, `tipo` recomendado/decidido/dan, `franjas`, significado Songahm y las
+  técnicas enlazadas por color vía `grado_tecnica`). Eje: `Ciclo` = 6 Habilidades de
+  Vida Songahm × 8 semanas; cada ciclo tiene su grilla en `planner_ciclo` (filas del
+  enum `FilaPlannerCiclo`: Warm-Up/Kicks/Forms/Quadrants/Protech/Drills × bloques
   `1&2…7&8`).
+- **Cuestionarios** (evaluaciones autocorregidas, catálogo transversal + intentos
+  operativos): el examinador (`gestionar cuestionarios`) crea bancos genéricos
+  (preguntas de una o varias correctas); cualquiera con `rendir cuestionarios` los
+  rinde con puntaje y explicación por pregunta. Cada intento nace **en revisión**
+  (enum `EstadoIntento`); el examinador decide **aprobar / volver a intentar** en
+  "Resultados" (aprobar bajo el umbral exige justificación). Paneles: "Mis intentos"
+  (alumno) y "Resultados" (examinador). Banco base sembrado: examen de Juez ATA
+  (`App\Support\Cuestionarios\BancoJuez`).
+- **Recompensas / gamificación** (catálogo transversal `recompensas` + `logros`
+  operativos): un solo módulo cubre **Franjas de Conocimiento** (MAK), **Star Tag**
+  (Tigers, acumulable) y **Coleccionables** (6, uno por Habilidad de Vida). El
+  instructor (`gestionar recompensas`) otorga/quita en el panel (catálogo filtrado
+  por grupo etario del alumno); alumno/apoderado ven su colección en "Mis logros"
+  (`ver recompensas`).
+- **Programa Legacy** (track de formación de instructores, N1-3): catálogo
+  `niveles_legacy` (100 h c/u) + `requisitos_legacy` (un requisito puede enlazarse a
+  un cuestionario → se cumple con un intento aprobado = prueba escrita). Operativo:
+  `inscripciones_legacy`, `horas_legacy` y cumplimiento por inscripción. El panel
+  registra horas (barra a 100 h) y requisitos; el **licenciatario** (`aprobar
+  legacy`) aprueba el ascenso cuando se cumplen horas y requisitos.
 
 ## Convenciones
 
@@ -100,9 +129,15 @@ formación).
 
 ## Estado y plan
 
-Integrando los manuales ATA (Legacy, Tigers, MAK, MAX). Ver
-**`docs/plan-integracion-manual-legacy.md`**. Hecho: backbone Ciclo, biblioteca de
-técnicas, significado de cinturones, Cuadrantes de Enseñanza, **class planners de
-los 6 ciclos** (`planner_ciclo`, vista Ciclos). Pendiente: recompensas/gamificación
-(MAK Knowledge Stripes, Tigers Star Tag), track Legacy operativo (N1-3, 100h,
-requisitos, ascenso), negocio/marketing → "Aprender".
+Integración de los manuales ATA (Legacy, Tigers, MAK, MAX) **completa** (ver
+**`docs/plan-integracion-manual-legacy.md`**). Hechas las 7 fases: (1) backbone
+Ciclo, (2) biblioteca de técnicas, (3) enriquecer `Grado` (recomendado/decidido,
+franjas, significado, enlace a técnicas), (4) Cuadrantes de Enseñanza, (5) class
+planners de los 6 ciclos, (6) recompensas/gamificación, (7) Programa Legacy
+operativo. Además: módulo de **Cuestionarios** autocorregidos con revisión del
+examinador y el **Manual del Juez** en "Aprender".
+
+Pendiente / ideas: sembrar un banco de preguntas real para la prueba escrita
+Legacy N3 (hoy el requisito es checklist; el enlace a cuestionario ya existe);
+notificar al alumno cuando el examinador decide un intento; volcar más
+negocio/marketing a "Aprender".
