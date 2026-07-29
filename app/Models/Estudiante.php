@@ -192,6 +192,28 @@ class Estudiante extends Model
     }
 
     /**
+     * Logros (recompensas ganadas) del alumno.
+     *
+     * @return HasMany<Logro, $this>
+     */
+    public function logros(): HasMany
+    {
+        return $this->hasMany(Logro::class);
+    }
+
+    /**
+     * Recompensas ganadas (a través de los logros).
+     *
+     * @return BelongsToMany<Recompensa, $this>
+     */
+    public function recompensas(): BelongsToMany
+    {
+        return $this->belongsToMany(Recompensa::class, 'logros')
+            ->withPivot(['otorgado_at', 'otorgado_por', 'nota'])
+            ->withTimestamps();
+    }
+
+    /**
      * Escala de grados (cinturones) que corresponde según el grupo etario.
      */
     public function escalaGrado(): EscalaGrado

@@ -42,6 +42,7 @@ class RolesPermisosSeeder extends Seeder
             'ver formacion',
             'gestionar cuestionarios', // examinador: crea/edita evaluaciones
             'rendir cuestionarios',    // rinde evaluaciones autocorregidas
+            'gestionar recompensas',   // otorga logros/gamificación a los alumnos
         ];
 
         foreach ($permisos as $permiso) {
@@ -81,6 +82,7 @@ class RolesPermisosSeeder extends Seeder
             'ver formacion',
             'gestionar cuestionarios',
             'rendir cuestionarios',
+            'gestionar recompensas',
         ]);
 
         // administrativo (secretaría/recepción): alumnos, clases, asistencia. SIN pagos.
@@ -103,6 +105,7 @@ class RolesPermisosSeeder extends Seeder
             'ver formacion',
             'gestionar cuestionarios',
             'rendir cuestionarios',
+            'gestionar recompensas',
         ]);
 
         // apoderado: sin permisos globales (ve solo a sus hijos, vía Policies).

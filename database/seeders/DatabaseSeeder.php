@@ -35,6 +35,8 @@ class DatabaseSeeder extends Seeder
             GradoTecnicaSeeder::class,
             // Cuadrantes de Enseñanza (marco pedagógico ATA, catálogo compartido).
             CuadrantesSeeder::class,
+            // Catálogo de recompensas/gamificación (catálogo compartido).
+            RecompensasSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);
