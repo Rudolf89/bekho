@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Enums\EscalaGrado;
 use App\Enums\NivelEntrenamiento;
+use App\Enums\TipoGrado;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * Catálogo compartido de grados (cinturones). NO usa el trait PerteneceAcademia:
@@ -26,6 +28,8 @@ class Grado extends Model
         'orden',
         'escala',
         'color',
+        'tipo',
+        'franjas',
         'significado',
         'activo',
     ];
@@ -39,8 +43,36 @@ class Grado extends Model
     {
         return [
             'escala' => EscalaGrado::class,
+            'tipo' => TipoGrado::class,
+            'franjas' => 'integer',
             'activo' => 'boolean',
         ];
+    }
+
+    /**
+     * Técnicas del currículo que corresponden a este cinturón.
+     *
+     * @return BelongsToMany<Tecnica, $this>
+     */
+    public function tecnicas(): BelongsToMany
+    {
+        return $this->belongsToMany(Tecnica::class, 'grado_tecnica');
+    }
+
+    /**
+     * ¿Es el cinturón "recomendado" del par recomendado/decidido (For Kids)?
+     */
+    public function esRecomendado(): bool
+    {
+        return $this->tipo === TipoGrado::Recomendado;
+    }
+
+    /**
+     * ¿Es el cinturón "decidido" del par recomendado/decidido (For Kids)?
+     */
+    public function esDecidido(): bool
+    {
+        return $this->tipo === TipoGrado::Decidido;
     }
 
     /**

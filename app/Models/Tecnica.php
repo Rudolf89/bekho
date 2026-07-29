@@ -7,6 +7,7 @@ use App\Enums\ModalidadTecnica;
 use App\Enums\NivelEntrenamiento;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -46,6 +47,16 @@ class Tecnica extends Model
     public function pasos(): HasMany
     {
         return $this->hasMany(PasoTecnica::class)->orderBy('orden');
+    }
+
+    /**
+     * Grados (cinturones) a los que corresponde esta técnica.
+     *
+     * @return BelongsToMany<Grado, $this>
+     */
+    public function grados(): BelongsToMany
+    {
+        return $this->belongsToMany(Grado::class, 'grado_tecnica');
     }
 
     /**

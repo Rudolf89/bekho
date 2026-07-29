@@ -82,6 +82,9 @@
                             <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
                                 Biblioteca
                             </flux:sidebar.item>
+                            <flux:sidebar.item icon="swatch" :href="route('cinturones.index')" :current="request()->routeIs('cinturones.*')" wire:navigate>
+                                Cinturones
+                            </flux:sidebar.item>
                             <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
                                 Cuadrantes
                             </flux:sidebar.item>

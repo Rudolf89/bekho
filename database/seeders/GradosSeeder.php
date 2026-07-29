@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\EscalaGrado;
+use App\Enums\TipoGrado;
 use App\Models\Grado;
 use Illuminate\Database\Seeder;
 
@@ -88,16 +89,33 @@ class GradosSeeder extends Seeder
     private function sembrarEscala(EscalaGrado $escala, array $grados): void
     {
         foreach ($grados as $orden => [$nombre, $color]) {
+            $tipo = TipoGrado::desdeNombre($nombre);
+
             Grado::updateOrCreate(
                 ['escala' => $escala->value, 'nombre' => $nombre],
                 [
                     'orden' => $orden + 1,
                     'color' => $color,
+                    'tipo' => $tipo->value,
+                    'franjas' => self::franjasDe($nombre, $tipo),
                     'significado' => self::SIGNIFICADOS[$color] ?? null,
                     'activo' => true,
                 ],
             );
         }
+    }
+
+    /**
+     * Franjas/barras del cinturón. Los grados negros llevan una barra por grado
+     * (1º Dan = 1, …, 9º Dan = 9); los cinturones de color no llevan barra.
+     */
+    private static function franjasDe(string $nombre, TipoGrado $tipo): int
+    {
+        if ($tipo === TipoGrado::Dan && preg_match('/^(\d+)/', $nombre, $m)) {
+            return (int) $m[1];
+        }
+
+        return 0;
     }
 
     /**

@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             PlannerCiclosSeeder::class,
             // Biblioteca de técnicas del currículo ATA (catálogo compartido).
             TecnicasSeeder::class,
+            // Enlace técnica ↔ cinturón (requiere grados y técnicas ya sembrados).
+            GradoTecnicaSeeder::class,
             // Cuadrantes de Enseñanza (marco pedagógico ATA, catálogo compartido).
             CuadrantesSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
