@@ -43,6 +43,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar cuestionarios', // examinador: crea/edita evaluaciones
             'rendir cuestionarios',    // rinde evaluaciones autocorregidas
             'gestionar recompensas',   // otorga logros/gamificación a los alumnos
+            'ver recompensas',         // el alumno/apoderado ve su colección de logros
         ];
 
         foreach ($permisos as $permiso) {
@@ -108,11 +109,11 @@ class RolesPermisosSeeder extends Seeder
             'gestionar recompensas',
         ]);
 
-        // apoderado: sin permisos globales (ve solo a sus hijos, vía Policies).
-        Role::findOrCreate('apoderado');
+        // apoderado: ve a sus hijos (vía Policies) y la colección de logros de ellos.
+        Role::findOrCreate('apoderado')->syncPermissions(['ver recompensas']);
 
-        // alumno: ver formación y rendir cuestionarios.
-        Role::findOrCreate('alumno')->syncPermissions(['ver formacion', 'rendir cuestionarios']);
+        // alumno: ver formación, rendir cuestionarios y ver sus logros.
+        Role::findOrCreate('alumno')->syncPermissions(['ver formacion', 'rendir cuestionarios', 'ver recompensas']);
 
         // Grupo principal (una academia = un grupo). BEKHO es la federación, no un grupo.
         $academia = Academia::updateOrCreate(

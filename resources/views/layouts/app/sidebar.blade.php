@@ -105,6 +105,9 @@
                         <flux:sidebar.item icon="users" :href="route('mis-estudiantes.index')" :current="request()->routeIs('mis-estudiantes.*')" wire:navigate>
                             Mis estudiantes
                         </flux:sidebar.item>
+                        <flux:sidebar.item icon="gift" :href="route('recompensas.mis-logros')" :current="request()->routeIs('recompensas.mis-logros')" wire:navigate>
+                            Logros
+                        </flux:sidebar.item>
                     </flux:sidebar.group>
                 @endrole
 
@@ -119,6 +122,12 @@
                         @can('rendir cuestionarios')
                             <flux:sidebar.item icon="clipboard-document-check" :href="route('cuestionarios.index')" :current="request()->routeIs('cuestionarios.index') || request()->routeIs('cuestionarios.rendir') || request()->routeIs('cuestionarios.mis-intentos') || request()->routeIs('cuestionarios.crear') || request()->routeIs('cuestionarios.editar')" wire:navigate>
                                 Cuestionarios
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('ver recompensas')
+                            <flux:sidebar.item icon="gift" :href="route('recompensas.mis-logros')" :current="request()->routeIs('recompensas.mis-logros')" wire:navigate>
+                                Mis logros
                             </flux:sidebar.item>
                         @endcan
 
