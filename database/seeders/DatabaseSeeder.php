@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
             CuadrantesSeeder::class,
             // Catálogo de recompensas/gamificación (catálogo compartido).
             RecompensasSeeder::class,
+            // Programa Legacy: niveles y requisitos (catálogo compartido).
+            LegacySeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);

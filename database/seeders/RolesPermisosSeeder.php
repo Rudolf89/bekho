@@ -44,6 +44,8 @@ class RolesPermisosSeeder extends Seeder
             'rendir cuestionarios',    // rinde evaluaciones autocorregidas
             'gestionar recompensas',   // otorga logros/gamificación a los alumnos
             'ver recompensas',         // el alumno/apoderado ve su colección de logros
+            'gestionar legacy',        // registra horas y requisitos del track Legacy
+            'aprobar legacy',          // el licenciatario aprueba el ascenso de nivel
         ];
 
         foreach ($permisos as $permiso) {
@@ -84,6 +86,8 @@ class RolesPermisosSeeder extends Seeder
             'gestionar cuestionarios',
             'rendir cuestionarios',
             'gestionar recompensas',
+            'gestionar legacy',
+            'aprobar legacy',
         ]);
 
         // administrativo (secretaría/recepción): alumnos, clases, asistencia. SIN pagos.
@@ -107,6 +111,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar cuestionarios',
             'rendir cuestionarios',
             'gestionar recompensas',
+            'gestionar legacy',
         ]);
 
         // apoderado: ve a sus hijos (vía Policies) y la colección de logros de ellos.

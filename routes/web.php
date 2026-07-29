@@ -24,4 +24,5 @@ require __DIR__.'/gestion.php';
 require __DIR__.'/examenes.php';
 require __DIR__.'/planillas.php';
 require __DIR__.'/recompensas.php';
+require __DIR__.'/legacy.php';
 require __DIR__.'/organizacion.php';
