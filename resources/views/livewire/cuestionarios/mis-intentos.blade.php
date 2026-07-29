@@ -19,9 +19,9 @@
     <div class="space-y-3">
         @foreach ($intentos as $intento)
             <div wire:key="int-{{ $intento->id }}" class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <flux:heading size="lg">{{ $intento->cuestionario?->titulo ?? 'Cuestionario' }}</flux:heading>
                             <flux:badge size="sm" :color="$intento->estado->color()">{{ $intento->estado->etiqueta() }}</flux:badge>
                         </div>
@@ -41,7 +41,7 @@
                     </div>
 
                     @if ($intento->estado === \App\Enums\EstadoIntento::Reintentar && $intento->cuestionario)
-                        <flux:button :href="route('cuestionarios.rendir', $intento->cuestionario)" icon="arrow-path" size="sm" variant="primary" wire:navigate>
+                        <flux:button :href="route('cuestionarios.rendir', $intento->cuestionario)" icon="arrow-path" size="sm" variant="primary" class="shrink-0" wire:navigate>
                             Reintentar
                         </flux:button>
                     @endif

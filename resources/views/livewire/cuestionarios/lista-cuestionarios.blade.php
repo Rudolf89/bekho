@@ -28,9 +28,9 @@
     <div class="space-y-3">
         @foreach ($cuestionarios as $c)
             <div wire:key="cu-{{ $c->id }}" class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <flux:heading size="lg">{{ $c->titulo }}</flux:heading>
                             @if ($c->area)
                                 <flux:badge size="sm" color="sky">{{ $c->area }}</flux:badge>

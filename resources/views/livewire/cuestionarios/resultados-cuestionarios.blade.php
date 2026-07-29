@@ -39,9 +39,9 @@
         @foreach ($intentos as $intento)
             @php($umbral = $intento->cuestionario?->umbral_aprobacion ?? 80)
             <div wire:key="res-{{ $intento->id }}" class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
-                        <div class="flex items-center gap-2">
+                        <div class="flex flex-wrap items-center gap-2">
                             <flux:heading size="lg">{{ $intento->user?->name ?? 'Alumno' }}</flux:heading>
                             <flux:badge size="sm" :color="$intento->estado->color()">{{ $intento->estado->etiqueta() }}</flux:badge>
                         </div>
