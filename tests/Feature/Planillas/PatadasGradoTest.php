@@ -31,18 +31,35 @@ test('cada cinturón tiene sus patadas en las dos fuentes (bekho y ata)', functi
     expect($patadas->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral');
 });
 
-test('BEKHO cubre 9→6; ATA cubre 9→1 (referencia completa)', function () {
-    // BEKHO aún no tiene 5→1 (Verde-Rojo).
+test('BEKHO cubre 9→6 por grado y 5→1 por banda; ATA cubre 9→1', function () {
+    // Verde (banda Intermediate): trae la patada de banda del planner.
     $verde = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Verde')->first();
     $patadasVerde = $verde->tecnicas->filter(fn ($t) => $t->categoria === CategoriaTecnica::Patada);
 
-    expect($patadasVerde->where('fuente', 'bekho'))->toHaveCount(0)
+    expect($patadasVerde->where('fuente', 'bekho')->pluck('nombre'))->toContain('Giro circular')
         ->and($patadasVerde->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral en salto');
 
-    // ATA de un cinturón alto (Rojo).
+    // Rojo (banda Advanced): patadas saltando del planner + referencia ATA.
     $rojo = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Rojo')->first();
-    expect($rojo->tecnicas->where('fuente', 'ata')->pluck('nombre'))
+    expect($rojo->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
+        ->toContain('Patada circular saltando (afuera/adentro)', 'Giro circular saltando')
+        ->and($rojo->tecnicas->where('fuente', 'ata')->pluck('nombre'))
         ->toContain('Patada de gancho en salto', 'Patada circular en salto');
+});
+
+test('las patadas de banda se enlazan a todos los colores de la banda', function () {
+    // "Giro circular saltando" (banda Advanced) llega a Azul, Café y Rojo.
+    foreach (['Azul', 'Café', 'Rojo'] as $color) {
+        $grado = Grado::porEscala(EscalaGrado::Adultos)->where('color', $color)->first();
+        expect($grado->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
+            ->toContain('Giro circular saltando');
+    }
+
+    // Camuflado conserva su detalle por grado y NO recibe la patada de banda Verde-Púrpura.
+    $camuflado = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Camuflado')->first();
+    expect($camuflado->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
+        ->toContain('Giro de costado')
+        ->not->toContain('Giro circular');
 });
 
 test('las técnicas-resumen de los cinturones de color se reemplazan', function () {

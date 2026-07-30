@@ -39,6 +39,7 @@ class PatadasGradoSeeder extends Seeder
             ->delete();
 
         $this->sembrar('bekho', $this->bekho());
+        $this->sembrarBandas($this->bekhoBandas());
         $this->sembrar('ata', $this->ata());
     }
 
@@ -75,7 +76,9 @@ class PatadasGradoSeeder extends Seeder
     }
 
     /**
-     * Currículo BEKHO (examen). Grados 5→1 pendientes de aportar.
+     * Currículo BEKHO (examen) por grado exacto: grados 9→6 (Blanco a Camuflado)
+     * dictados uno a uno. Los grados altos (5→1) se cargan por banda desde los
+     * Class Planners en bekhoBandas() hasta tener el detalle por grado.
      *
      * @return array<string, array{nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string}>}>
      */
@@ -104,6 +107,82 @@ class PatadasGradoSeeder extends Seeder
                     .'D = con paso, giro por la espalda cayendo atrás.'],
             ]],
         ];
+    }
+
+    /**
+     * Patadas BEKHO que salen de los Class Planners por NIVEL DE CLASE (banda),
+     * no por grado exacto. Cada planner lista un set de patadas para toda su
+     * banda de cinturones; el grado individual queda por afinar, así que aquí se
+     * enlazan a TODOS los colores de la banda. Los grados con detalle propio
+     * (Camuflado ya trae "Giro de costado") se excluyen para no pisarlos.
+     *
+     * @return list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>
+     */
+    private function bekhoBandas(): array
+    {
+        $notaInter = 'Del Class Planner Intermediate (por banda; grado exacto por afinar).';
+        $notaAvan = 'Del Class Planner Advanced (por banda; grado exacto por afinar).';
+
+        return [
+            // Banda Intermediate → Verde y Púrpura (Camuflado ya tiene su detalle).
+            [
+                'colores' => ['Verde', 'Púrpura'],
+                'nivel' => NivelEntrenamiento::Intermedio,
+                'kicks' => [
+                    ['Giro circular', 'A, B, C, D', $notaInter],
+                ],
+            ],
+            // Banda Advanced → Azul, Café y Rojo.
+            [
+                'colores' => ['Azul', 'Café', 'Rojo'],
+                'nivel' => NivelEntrenamiento::Avanzado,
+                'kicks' => [
+                    ['Patada circular saltando (afuera/adentro)', '1, 2, 3, 4', $notaAvan],
+                    ['Giro circular saltando', 'A, B, C, D', $notaAvan],
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * Siembra patadas BEKHO por banda: una técnica enlazada a todos los colores
+     * de la banda. Idempotente (clave por categoría + fuente + nombre).
+     *
+     * @param  list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>  $bandas
+     */
+    private function sembrarBandas(array $bandas): void
+    {
+        foreach ($bandas as $banda) {
+            $gradoIds = Grado::whereIn('color', $banda['colores'])->pluck('id')->all();
+
+            foreach ($banda['kicks'] as $orden => $kick) {
+                [$nombre, $variantes, $nota] = array_pad($kick, 3, null);
+
+                // "Ejecuciones: A, B, C, D · <nota de banda>" para que la vista
+                // (que corta tras "Ejecuciones: ") muestre variantes y contexto.
+                $descripcion = $variantes ? "Ejecuciones: {$variantes}." : null;
+                if ($nota) {
+                    $descripcion = $descripcion ? "{$descripcion} {$nota}" : "Ejecuciones: {$nota}";
+                }
+
+                $tecnica = Tecnica::updateOrCreate(
+                    [
+                        'categoria' => CategoriaTecnica::Patada->value,
+                        'fuente' => 'bekho',
+                        'nombre' => $nombre,
+                    ],
+                    [
+                        'descripcion' => $descripcion,
+                        'nivel' => $banda['nivel']->value,
+                        'cinturon' => null,
+                        'core' => true,
+                        'orden' => 100 + $orden,
+                    ],
+                );
+
+                $tecnica->grados()->sync($gradoIds);
+            }
+        }
     }
 
     /**
