@@ -1,0 +1,38 @@
+<?php
+
+use App\Models\Tecnica;
+use Database\Seeders\FormasPasosSeeder;
+use Database\Seeders\TecnicasSeeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
+    $this->seed(TecnicasSeeder::class);
+    $this->seed(FormasPasosSeeder::class);
+});
+
+test('todas las formas Songahm reciben su paso a paso', function () {
+    $formas = Tecnica::where('categoria', 'forma')->get();
+
+    expect($formas)->toHaveCount(12);
+    $formas->each(fn ($f) => expect($f->pasos()->count())->toBeGreaterThan(0));
+
+    // Conteos representativos transcritos del Manual Legacy.
+    expect(Tecnica::where('nombre', 'Songahm Il-Jahng n.º 1')->first()->pasos()->count())->toBe(18)
+        ->and(Tecnica::where('nombre', 'Chung San')->first()->pasos()->count())->toBe(119);
+});
+
+test('los pasos conservan su orden y describen técnica/posición', function () {
+    $forma = Tecnica::where('nombre', 'Songahm Il-Jahng n.º 1')->with('pasos')->first();
+    $primero = $forma->pasos->firstWhere('orden', 1);
+
+    expect($primero->texto)->toContain('Bloqueo alto')
+        ->and($forma->descripcion)->toContain('18 movimientos');
+});
+
+test('el seeder es idempotente (no duplica pasos)', function () {
+    $this->seed(FormasPasosSeeder::class);
+
+    expect(Tecnica::where('nombre', 'Songahm Il-Jahng n.º 1')->first()->pasos()->count())->toBe(18);
+});

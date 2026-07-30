@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             PlannerCiclosSeeder::class,
             // Biblioteca de técnicas del currículo ATA (catálogo compartido).
             TecnicasSeeder::class,
+            // Paso a paso de las formas Songahm (Manual Legacy).
+            FormasPasosSeeder::class,
             // Enlace técnica ↔ cinturón (requiere grados y técnicas ya sembrados).
             GradoTecnicaSeeder::class,
             // Patadas detalladas por grado (reemplazan el resumen de esos cinturones).
