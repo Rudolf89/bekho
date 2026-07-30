@@ -56,6 +56,58 @@ class PatadasGradoSeeder extends Seeder
                     ['Giro de costado', 'A, B, C, D'],
                 ],
             ],
+
+            // Grados 5→1 (Verde, Púrpura, Azul, Café, Rojo): tabla oficial del
+            // Manual ATA Legacy ("Patadas del plan de estudios").
+            'Verde' => [
+                'nivel' => NivelEntrenamiento::Intermedio,
+                'resumen' => 'Patadas de cinturón Verde',
+                'kicks' => [
+                    ['Patada lateral', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada lateral en salto', 'n.º 1, n.º 2 y n.º 3'],
+                ],
+            ],
+            'Púrpura' => [
+                'nivel' => NivelEntrenamiento::Intermedio,
+                'resumen' => 'Patadas de cinturón Morado',
+                'kicks' => [
+                    ['Patada creciente interna', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada creciente externa', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada creciente externa con giro', null],
+                    ['Patada creciente externa con giro y paso', null],
+                    ['Patada mariposa', null],
+                ],
+            ],
+            'Azul' => [
+                'nivel' => NivelEntrenamiento::Avanzado,
+                'resumen' => 'Patadas de cinturón Azul',
+                'kicks' => [
+                    ['Patada de talón con giro', null],
+                    ['Patada de talón con giro y paso', null],
+                    ['Patada de hacha', 'n.º 1, n.º 2 y n.º 3'],
+                ],
+            ],
+            'Café' => [
+                'nivel' => NivelEntrenamiento::Avanzado,
+                'resumen' => 'Patadas de cinturón Marrón',
+                'kicks' => [
+                    ['Patada creciente externa en salto', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada creciente externa con giro en salto', null],
+                    ['Patada creciente externa con giro en salto y paso', null],
+                    ['Patada lateral invertida en salto', null],
+                    ['Patada lateral invertida en salto y paso', null],
+                ],
+            ],
+            'Rojo' => [
+                'nivel' => NivelEntrenamiento::Avanzado,
+                'resumen' => 'Patadas de cinturón Rojo',
+                'kicks' => [
+                    ['Patada de gancho en salto', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada circular en salto', 'n.º 1, n.º 2 y n.º 3'],
+                    ['Patada de gancho con giro en salto', null],
+                    ['Patada de gancho con giro en salto y paso', null],
+                ],
+            ],
         ];
     }
 

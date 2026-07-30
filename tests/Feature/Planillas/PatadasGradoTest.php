@@ -31,12 +31,18 @@ test('las patadas detalladas quedan enlazadas a su cinturón', function () {
         ->and($frente->descripcion)->toContain('N1, N2, N3, N4');
 });
 
-test('la técnica-resumen del cinturón se reemplaza por las detalladas', function () {
-    expect(Tecnica::where('nombre', 'Patadas de cinturón Blanco')->exists())->toBeFalse()
-        ->and(Tecnica::where('nombre', 'Patadas de cinturón Camuflaje')->exists())->toBeFalse();
+test('los cinturones de color 9→1 tienen sus patadas detalladas (manual)', function () {
+    $verde = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Verde')->first();
+    $rojo = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Rojo')->first();
 
-    // El resumen de un cinturón NO cubierto (Verde) sigue existiendo.
-    expect(Tecnica::where('nombre', 'Patadas de cinturón Verde')->exists())->toBeTrue();
+    expect($verde->tecnicas->pluck('nombre'))->toContain('Patada lateral', 'Patada lateral en salto')
+        ->and($rojo->tecnicas->pluck('nombre'))->toContain('Patada de gancho en salto', 'Patada circular en salto');
+});
+
+test('las técnicas-resumen de los cinturones de color se reemplazan', function () {
+    foreach (['Blanco', 'Camuflaje', 'Verde', 'Morado', 'Azul', 'Marrón', 'Rojo'] as $c) {
+        expect(Tecnica::where('nombre', "Patadas de cinturón {$c}")->exists())->toBeFalse();
+    }
 });
 
 test('el seeder es idempotente', function () {
