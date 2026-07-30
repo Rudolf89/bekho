@@ -81,7 +81,9 @@ formación).
   técnicas enlazadas por color vía `grado_tecnica`). Eje: `Ciclo` = 6 Habilidades de
   Vida Songahm × 8 semanas; cada ciclo tiene su grilla en `planner_ciclo` (filas del
   enum `FilaPlannerCiclo`: Warm-Up/Kicks/Forms/Quadrants/Protech/Drills × bloques
-  `1&2…7&8`).
+  `1&2…7&8`). **Class Planner** (`ClassPlanners`: reproducción de los tres
+  planificadores de clase oficiales BEKHO — Beginners/Intermediate/Advanced —, cada
+  área × los 4 Cuadrantes de Enseñanza; referencia de solo lectura, sin persistencia).
 - **Cuestionarios** (evaluaciones autocorregidas, catálogo transversal + intentos
   operativos): el examinador (`gestionar cuestionarios`) crea bancos genéricos
   (preguntas de una o varias correctas); cualquiera con `rendir cuestionarios` los
