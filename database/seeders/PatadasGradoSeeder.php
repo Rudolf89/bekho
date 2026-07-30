@@ -50,7 +50,10 @@ class PatadasGradoSeeder extends Seeder
         foreach ($data as $color => $datos) {
             $gradoIds = Grado::where('color', $color)->pluck('id')->all();
 
-            foreach ($datos['kicks'] as $orden => [$nombre, $variantes]) {
+            foreach ($datos['kicks'] as $orden => $kick) {
+                // [nombre, variantes, descripción propia opcional].
+                [$nombre, $variantes, $descripcion] = array_pad($kick, 3, null);
+
                 $tecnica = Tecnica::updateOrCreate(
                     [
                         'categoria' => CategoriaTecnica::Patada->value,
@@ -59,7 +62,7 @@ class PatadasGradoSeeder extends Seeder
                         'cinturon' => $color,
                     ],
                     [
-                        'descripcion' => $variantes ? "Ejecuciones: {$variantes}." : null,
+                        'descripcion' => $descripcion ?? ($variantes ? "Ejecuciones: {$variantes}." : null),
                         'nivel' => $datos['nivel']->value,
                         'core' => true,
                         'orden' => $orden + 1,
@@ -95,7 +98,10 @@ class PatadasGradoSeeder extends Seeder
                 ['Patada de Frente saltando', '1, 2, 3, 4'],
             ]],
             'Camuflado' => ['nivel' => $i, 'kicks' => [
-                ['Giro de costado', 'A, B, C, D'],
+                ['Giro de costado', 'A, B, C, D', 'Variantes: A = giro por la espalda cayendo adelante · '
+                    .'B = con paso, giro por la espalda cayendo adelante · '
+                    .'C = giro por la espalda cayendo atrás · '
+                    .'D = con paso, giro por la espalda cayendo atrás.'],
             ]],
         ];
     }
