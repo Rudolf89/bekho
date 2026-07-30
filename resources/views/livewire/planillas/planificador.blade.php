@@ -295,13 +295,27 @@
 
     {{-- ═══════════ LECCIÓN DE VIDA ═══════════ --}}
     @if ($tab === 'leccion')
+        {{-- Selector de ciclo (mismo eje que la rotación del Planner) --}}
+        @isset($ciclos)
+            <div class="flex flex-wrap justify-center gap-1.5">
+                @foreach ($ciclos as $c)
+                    <flux:button size="xs" wire:click="$set('cicloId', {{ $c->id }})"
+                        :variant="$cicloActual && $cicloActual->id === $c->id ? 'primary' : 'filled'">
+                        {{ $c->orden }}. {{ $c->habilidad_vida->etiqueta() }}
+                    </flux:button>
+                @endforeach
+            </div>
+        @endisset
+
         <div class="flex flex-wrap justify-center gap-2">
-            @foreach ($lecciones as $lec)
+            @forelse ($lecciones as $lec)
                 <flux:button size="sm" wire:click="$set('lecSemana', {{ $lec->semana }})"
                     :variant="$lecSemana === $lec->semana ? 'primary' : 'filled'">
                     Semana {{ $lec->semana }}
                 </flux:button>
-            @endforeach
+            @empty
+                <flux:text size="sm" class="text-zinc-400">Este ciclo aún no tiene lecciones cargadas.</flux:text>
+            @endforelse
         </div>
 
         @if ($leccion)

@@ -110,6 +110,19 @@ class Planificador extends Component
         $this->cargarSeleccion();
     }
 
+    /**
+     * Al cambiar de ciclo, apunta la lección a la primera semana disponible de
+     * ese ciclo (así el tab Lección no queda en vacío por una semana inexistente).
+     */
+    public function updatedCicloId(): void
+    {
+        $primera = LeccionVida::where('ciclo_id', $this->cicloId)->min('semana');
+
+        if ($primera !== null) {
+            $this->lecSemana = (int) $primera;
+        }
+    }
+
     protected function esBlackBelt(): bool
     {
         return $this->nivel === 'blackbelt';
@@ -247,8 +260,18 @@ class Planificador extends Component
         }
 
         if ($this->tab === 'leccion') {
-            $datos['lecciones'] = LeccionVida::with('ciclo')->orderBy('semana')->get();
-            $datos['leccion'] = LeccionVida::with('ciclo')->where('semana', $this->lecSemana)->first();
+            // La lección se acota al ciclo elegido: el mismo eje que la rotación.
+            $ciclos = Ciclo::ordenados()->get();
+            $cicloActual = $ciclos->firstWhere('id', $this->cicloId) ?? $ciclos->first();
+
+            $datos['ciclos'] = $ciclos;
+            $datos['cicloActual'] = $cicloActual;
+            $datos['lecciones'] = $cicloActual
+                ? $cicloActual->lecciones()->with('ciclo')->get()
+                : collect();
+            $datos['leccion'] = $cicloActual
+                ? $cicloActual->lecciones()->with('ciclo')->where('semana', $this->lecSemana)->first()
+                : null;
         }
 
         return view('livewire.planillas.planificador', $datos);

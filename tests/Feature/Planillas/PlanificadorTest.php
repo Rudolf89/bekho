@@ -156,6 +156,24 @@ test('el planner muestra la rotación del ciclo y cambia por bloque de semanas',
         ->assertDontSee('White Belt');
 });
 
+test('la lección de vida se acota al ciclo elegido', function () {
+    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor->assignRole('instructor');
+    $ciclos = Ciclo::ordenados()->get();
+
+    // Ciclo 1 (Disciplina) tiene la lección de la semana 7.
+    $comp = Livewire::actingAs($instructor)->test(Planificador::class)
+        ->set('tab', 'leccion')
+        ->set('cicloId', $ciclos->first()->id)
+        ->assertSee('Disciplina')
+        ->assertSee('VISUALICE SUS OBJETIVOS');
+
+    // Un ciclo sin lecciones sembradas muestra el vacío, no la lección de otro.
+    $comp->set('cicloId', $ciclos->get(1)->id)
+        ->assertSee('Este ciclo aún no tiene lecciones cargadas.')
+        ->assertDontSee('VISUALICE SUS OBJETIVOS');
+});
+
 test('el planificador exige el permiso de gestionar planillas', function () {
     $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
