@@ -7,7 +7,9 @@
     {{-- Nueva inscripción --}}
     <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
         <flux:heading size="lg" class="mb-3">Inscribir en un nivel</flux:heading>
-        <div class="flex flex-wrap items-end gap-3">
+        {{-- El error inline de Flux estira el campo y desalinea la fila; se oculta
+             y el mensaje se muestra estable debajo (@error). --}}
+        <div class="flex flex-wrap items-end gap-3 [&_[data-flux-error]]:hidden">
             <flux:select wire:model="nuevoUserId" label="Usuario" placeholder="Elige…" class="min-w-48 flex-1">
                 <flux:select.option value="">Elige…</flux:select.option>
                 @foreach ($usuarios as $u)
@@ -103,7 +105,7 @@
             <div>
                 <flux:heading size="sm" class="mb-2">Registro de horas</flux:heading>
                 @if ($inscripcion->estado !== \App\Enums\EstadoLegacy::Aprobado)
-                    <div class="mb-3 flex flex-wrap items-end gap-2">
+                    <div class="mb-3 flex flex-wrap items-end gap-2 [&_[data-flux-error]]:hidden">
                         <flux:input type="date" wire:model="horaFecha" label="Fecha" class="w-40" />
                         <flux:input type="number" step="0.5" wire:model="horaCantidad" label="Horas" class="w-24" />
                         <flux:input wire:model="horaDescripcion" label="Descripción" placeholder="Opcional" class="min-w-40 flex-1" />

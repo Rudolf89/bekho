@@ -100,7 +100,7 @@
                 </div>
 
                 @forelse ($asignaciones as $indice => $asignacion)
-                    <div class="flex items-end gap-2" wire:key="asignacion-{{ $indice }}">
+                    <div class="flex items-end gap-2 [&_[data-flux-error]]:hidden" wire:key="asignacion-{{ $indice }}">
                         <flux:select wire:model="asignaciones.{{ $indice }}.user_id" label="Instructor" placeholder="Selecciona" class="flex-1">
                             @foreach ($instructores as $instructor)
                                 <flux:select.option value="{{ $instructor->id }}">{{ $instructor->name }}</flux:select.option>

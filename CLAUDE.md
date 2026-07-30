@@ -112,7 +112,11 @@ formación).
 
 - Español en clases, campos, métodos y comentarios.
 - **Blade + Livewire**; sin SPA ni API. Flux **free** (gotchas: props de `<select>`
-  deben arrancar en `''` no `null`; `flux:checkbox` usa el prop `label`).
+  deben arrancar en `''` no `null`; `flux:checkbox` usa el prop `label`; un
+  `flux:input`/`flux:select` con `label` auto-renderiza su error, y en una **fila
+  horizontal** (`flex … items-end`) ese error estira el campo y desalinea la fila →
+  ocultar el error inline con `[&_[data-flux-error]]:hidden` en la fila y mostrar el
+  mensaje con `@error` debajo).
 - Enums en `App\Enums` (backed string) con método `etiqueta()`.
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `academia_id` + trait `PerteneceAcademia`.
