@@ -73,7 +73,9 @@ formación).
   Aquí va también el material de negocio/marketing de los manuales ATA y el estudio
   (p. ej. "Preparación para examen de juez" = Manual del Juez ATA en 18 secciones).
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
-  Negro, calentamiento por clase, lección de vida), **Ciclos** (`PlanCiclos`: class
+  Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planilla
+  fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
+  leyendo `planner_ciclo`), **Ciclos** (`PlanCiclos`: class
   planner de cada ciclo — grilla fila × bloque de semanas — con sus lecciones de
   vida), **Biblioteca de técnicas** (patadas/formas/manos/tricks/armas con pasos),
   **Cuadrantes de Enseñanza**, **Cinturones** (`Cinturones`: escala de grados con

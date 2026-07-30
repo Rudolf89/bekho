@@ -61,6 +61,51 @@
                 </div>
             </div>
 
+            {{-- ─── Rotación del ciclo: qué contenido toca esta semana ─── --}}
+            @isset($cicloActual)
+                @php($filaIcono = [
+                    'calentamiento' => '🔥', 'patadas' => '🦵', 'formas' => '⭐',
+                    'cuadrantes' => '🧩', 'protech' => '🏹', 'drills_parejas' => '🥊',
+                ])
+                <div class="rounded-xl border border-red-200 bg-red-50/60 p-4 dark:border-red-500/30 dark:bg-red-950/20">
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <flux:text class="font-semibold text-red-700 dark:text-red-300">🔄 Rotación del ciclo · qué toca esta semana</flux:text>
+                        <flux:text size="sm" class="text-zinc-500">El plan de abajo es la estructura fija; esto es el contenido que rota.</flux:text>
+                    </div>
+
+                    {{-- Selector de ciclo (Habilidad para la Vida) --}}
+                    <div class="mt-3 flex flex-wrap gap-1.5">
+                        @foreach ($ciclos as $c)
+                            <flux:button size="xs" wire:click="$set('cicloId', {{ $c->id }})"
+                                :variant="$cicloActual->id === $c->id ? 'primary' : 'filled'">
+                                {{ $c->orden }}. {{ $c->habilidad_vida->etiqueta() }}
+                            </flux:button>
+                        @endforeach
+                    </div>
+
+                    {{-- Selector de bloque de semanas --}}
+                    <div class="mt-2 flex flex-wrap items-center gap-1.5">
+                        <flux:text size="sm" class="mr-1 text-zinc-500">Semanas:</flux:text>
+                        @foreach ($bloquesCiclo as $blo)
+                            <flux:button size="xs" wire:click="$set('bloque', '{{ $blo }}')"
+                                :variant="$bloqueActual === $blo ? 'primary' : 'filled'">
+                                {{ $blo }}
+                            </flux:button>
+                        @endforeach
+                    </div>
+
+                    {{-- Grilla fila × contenido del bloque --}}
+                    <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        @foreach ($filasCiclo as $fila)
+                            <div class="rounded-lg border border-zinc-200 bg-white p-2.5 dark:border-zinc-700 dark:bg-zinc-800" wire:key="rot-{{ $fila->value }}">
+                                <div class="text-xs font-semibold text-zinc-500 dark:text-zinc-400">{{ $filaIcono[$fila->value] ?? '•' }} {{ $fila->etiqueta() }}</div>
+                                <div class="mt-0.5 text-sm text-zinc-800 dark:text-zinc-100">{{ $rotacion[$fila->value]?->contenido ?? '—' }}</div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endisset
+
             {{-- Combinaciones de patadas del nivel --}}
             @if ($curriculo && filled($curriculo->combinaciones))
                 <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">

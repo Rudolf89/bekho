@@ -2,16 +2,19 @@
 
 namespace App\Livewire\Planillas;
 
+use App\Enums\FilaPlannerCiclo;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\CategoriaCalentamiento;
+use App\Models\Ciclo;
 use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
 use App\Models\LeccionVida;
 use App\Models\NotaCalentamiento;
 use App\Models\PlanificacionCinturonNegro;
 use App\Models\Planilla;
+use App\Models\PlannerCiclo;
 use Flux\Flux;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
@@ -21,6 +24,11 @@ use Livewire\Component;
  * Planificador Unificado: en una sola vista, la rutina de la clase (planilla)
  * por grupo × nivel (o el planificador de Cinturón Negro por semanas), el armado
  * de calentamiento y la Lección de Vida.
+ *
+ * Es week-aware: el plan de clase (bloques × cuadrante) es la estructura fija,
+ * y encima se muestra la ROTACIÓN del ciclo elegido (qué cinturón/forma/cuadrante
+ * toca este bloque de semanas), reutilizando el class planner del ciclo
+ * (planner_ciclo) en vez de duplicarlo.
  */
 #[Title('Planificador')]
 class Planificador extends Component
@@ -40,6 +48,14 @@ class Planificador extends Component
 
     public string $bbSemana = 's12';
 
+    /** Ciclo (Habilidad para la Vida) elegido para ver qué contenido rota. */
+    #[Url]
+    public ?int $cicloId = null;
+
+    /** Bloque de semanas del ciclo (1&2 · 3&4 · 5&6 · 7&8). */
+    #[Url]
+    public string $bloque = '1&2';
+
     public int $lecSemana = 7;
 
     /** Clase (del horario de la academia activa) a la que se guarda el calentamiento. */
@@ -55,6 +71,28 @@ class Planificador extends Component
     public function mount(): void
     {
         $this->lecSemana = (int) (LeccionVida::min('semana') ?? 7);
+        $this->cicloId ??= Ciclo::ordenados()->value('id');
+    }
+
+    /**
+     * Rotación del ciclo elegido para el bloque de semanas actual: qué contenido
+     * (Warm-Up/Kicks/Forms/Quadrants/Protech/Drills) toca esta semana, indexado
+     * por fila. Es la capa que hace "cambiar semana a semana" el planificador,
+     * reutilizando el class planner del ciclo (planner_ciclo).
+     *
+     * @return array<string, PlannerCiclo>
+     */
+    protected function rotacionDelCiclo(): array
+    {
+        if (! $this->cicloId) {
+            return [];
+        }
+
+        return PlannerCiclo::where('ciclo_id', $this->cicloId)
+            ->where('bloque', $this->bloque)
+            ->get()
+            ->keyBy(fn (PlannerCiclo $p) => $p->fila->value)
+            ->all();
     }
 
     /**
@@ -174,6 +212,15 @@ class Planificador extends Component
             $planilla = $this->planillaActual()?->load(['bloques', 'curriculo']);
             $datos['planilla'] = $planilla;
             $datos['curriculo'] = $planilla?->curriculo;
+
+            // Capa de rotación: qué toca esta semana según el ciclo elegido.
+            $ciclos = Ciclo::ordenados()->get();
+            $datos['ciclos'] = $ciclos;
+            $datos['cicloActual'] = $ciclos->firstWhere('id', $this->cicloId) ?? $ciclos->first();
+            $datos['filasCiclo'] = FilaPlannerCiclo::cases();
+            $datos['bloquesCiclo'] = FilaPlannerCiclo::bloques();
+            $datos['bloqueActual'] = $this->bloque;
+            $datos['rotacion'] = $this->rotacionDelCiclo();
         }
 
         if ($this->tab === 'planner' && $this->esBlackBelt()) {

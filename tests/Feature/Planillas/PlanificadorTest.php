@@ -14,6 +14,7 @@ use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Academia as Tenant;
 use Database\Seeders\PlanificadorSeeder;
+use Database\Seeders\PlannerCiclosSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -132,6 +133,27 @@ test('la vista del planificador muestra la rutina del grupo y nivel elegidos', f
         ->set('tab', 'planner')
         ->assertSee('Choong Jung 1') // fórmula del nivel avanzado
         ->assertSee('Combat Weapon + Sparring');
+});
+
+test('el planner muestra la rotación del ciclo y cambia por bloque de semanas', function () {
+    $this->seed(PlannerCiclosSeeder::class);
+
+    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor->assignRole('instructor');
+    $ciclo1 = Ciclo::ordenados()->first();
+
+    // Ciclo 1 (Disciplina), semanas 1&2: los Kicks son White Belt.
+    $comp = Livewire::actingAs($instructor)->test(Planificador::class)
+        ->set('tab', 'planner')
+        ->set('cicloId', $ciclo1->id)
+        ->set('bloque', '1&2')
+        ->assertSee('Rotación del ciclo')
+        ->assertSee('White Belt');
+
+    // Al pasar a semanas 3&4, la rotación cambia a Orange Belt.
+    $comp->set('bloque', '3&4')
+        ->assertSee('Orange Belt')
+        ->assertDontSee('White Belt');
 });
 
 test('el planificador exige el permiso de gestionar planillas', function () {
