@@ -110,35 +110,41 @@ class PatadasGradoSeeder extends Seeder
     }
 
     /**
-     * Patadas BEKHO que salen de los Class Planners por NIVEL DE CLASE (banda),
-     * no por grado exacto. Cada planner lista un set de patadas para toda su
-     * banda de cinturones; el grado individual queda por afinar, así que aquí se
-     * enlazan a TODOS los colores de la banda. Los grados con detalle propio
-     * (Camuflado ya trae "Giro de costado") se excluyen para no pisarlos.
+     * Patadas BEKHO que rotan por NIVEL DE CLASE (banda), no por grado exacto.
+     * El Class Planner cambia semana a semana, así que cada nivel acumula varias
+     * patadas a lo largo del ciclo (fuentes: la lámina oficial y el Planificador
+     * Unificado). Como el grado individual queda por afinar, cada patada se enlaza
+     * a TODOS los colores de la banda; los grados con detalle propio (Camuflado ya
+     * trae "Giro de costado") se excluyen para no pisarlos.
      *
      * @return list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>
      */
     private function bekhoBandas(): array
     {
-        $notaInter = 'Del Class Planner Intermediate (por banda; grado exacto por afinar).';
-        $notaAvan = 'Del Class Planner Advanced (por banda; grado exacto por afinar).';
+        $notaInter = 'Nivel Intermedio (rota por semana; grado exacto por afinar).';
+        $notaAvan = 'Nivel Avanzado (rota por semana; grado exacto por afinar).';
 
         return [
-            // Banda Intermediate → Verde y Púrpura (Camuflado ya tiene su detalle).
+            // Banda Intermedio → Verde y Púrpura (Camuflado ya tiene su detalle).
             [
                 'colores' => ['Verde', 'Púrpura'],
                 'nivel' => NivelEntrenamiento::Intermedio,
                 'kicks' => [
                     ['Giro circular', 'A, B, C, D', $notaInter],
+                    ['Patada de Gancho', '1, 2, 3, 4', $notaInter],
+                    ['Giro de Gancho', 'A, B, C, D', $notaInter],
                 ],
             ],
-            // Banda Advanced → Azul, Café y Rojo.
+            // Banda Avanzado → Azul, Café y Rojo.
             [
                 'colores' => ['Azul', 'Café', 'Rojo'],
                 'nivel' => NivelEntrenamiento::Avanzado,
                 'kicks' => [
                     ['Patada circular saltando (afuera/adentro)', '1, 2, 3, 4', $notaAvan],
                     ['Giro circular saltando', 'A, B, C, D', $notaAvan],
+                    ['Patada de Gancho saltando', '1, 2, 3, 4', $notaAvan],
+                    ['Giro de Gancho saltando', 'A, B, C, D', $notaAvan],
+                    ['Giro Mariposa', null, $notaAvan],
                 ],
             ],
         ];

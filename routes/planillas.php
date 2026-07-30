@@ -2,7 +2,6 @@
 
 use App\Livewire\Planillas\BibliotecaTecnicas;
 use App\Livewire\Planillas\Cinturones;
-use App\Livewire\Planillas\ClassPlanners;
 use App\Livewire\Planillas\CuadrantesEnsenanza;
 use App\Livewire\Planillas\EditarPlanilla;
 use App\Livewire\Planillas\GestionPlanillas;
@@ -17,7 +16,6 @@ Route::middleware(['auth', 'can:gestionar planillas'])->group(function () {
     Route::livewire('biblioteca', BibliotecaTecnicas::class)->name('biblioteca.index');
     Route::livewire('cinturones', Cinturones::class)->name('cinturones.index');
     Route::livewire('cuadrantes', CuadrantesEnsenanza::class)->name('cuadrantes.index');
-    Route::livewire('class-planners', ClassPlanners::class)->name('class-planners.index');
     Route::livewire('planillas', GestionPlanillas::class)->name('planillas.index');
     Route::livewire('planillas/{planilla}', EditarPlanilla::class)->name('planillas.editar');
 });

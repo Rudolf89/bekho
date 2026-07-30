@@ -98,9 +98,6 @@
                             <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
                                 Cuadrantes
                             </flux:sidebar.item>
-                            <flux:sidebar.item icon="calendar-days" :href="route('class-planners.index')" :current="request()->routeIs('class-planners.*')" wire:navigate>
-                                Class Planner
-                            </flux:sidebar.item>
                             <flux:sidebar.item icon="clipboard-document-list" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
                                 Planillas
                             </flux:sidebar.item>
