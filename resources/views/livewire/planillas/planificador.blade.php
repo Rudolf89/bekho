@@ -160,10 +160,16 @@
     {{-- ═══════════ PLANNER (Cinturón Negro) ═══════════ --}}
     @if ($tab === 'planner' && $esBlackBelt)
         @if (isset($bb) && $bb)
-            <div class="rounded-xl p-4 text-white" style="background-color: {{ $bb->color ?? '#1a1a2e' }}">
-                <div class="flex flex-wrap items-center justify-between gap-2">
-                    <span class="text-lg font-bold">{{ $bb->icono }} {{ $bb->label }}</span>
-                    <span class="rounded-lg bg-white/15 px-3 py-1 text-sm font-semibold">Tema: {{ $bb->tema }}</span>
+            {{-- Header en el mismo estilo que el planner regular (tarjeta blanca
+                 con acento de color de la semana). --}}
+            <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                <div class="flex items-center gap-2">
+                    <span class="inline-block h-3 w-3 shrink-0 rounded-full" style="background-color: {{ $bb->color ?? '#1a1a2e' }}"></span>
+                    <flux:text class="font-semibold">{{ $bb->icono }} Cinturón Negro · {{ $bb->label }}</flux:text>
+                </div>
+                <div class="flex items-center gap-2">
+                    <flux:badge color="zinc" size="sm">Tema: {{ $bb->tema }}</flux:badge>
+                    <flux:badge color="red" size="sm">⏱ 45 min</flux:badge>
                 </div>
             </div>
 
@@ -185,13 +191,15 @@
                 ])
                 @foreach ($secciones as $clave => $titulo)
                     @php($items = $bb->itemsDe($clave))
+                    @php($acento = $clave === 'anuncios' ? '#6c757d' : ($bb->color ?? '#1a1a2e'))
                     @if (count($items))
-                        <div class="rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-                            <div class="rounded-t-xl px-4 py-2 text-sm font-semibold text-white"
-                                style="background-color: {{ $clave === 'anuncios' ? '#6c757d' : ($bb->color ?? '#1a1a2e') }}">
-                                {{ $titulo }}
+                        {{-- Tarjeta blanca con punto de color, igual que las del planner regular. --}}
+                        <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                            <div class="mb-2 flex items-center gap-2">
+                                <span class="inline-block h-2.5 w-2.5 shrink-0 rounded-full" style="background-color: {{ $acento }}"></span>
+                                <flux:text class="font-semibold">{{ $titulo }}</flux:text>
                             </div>
-                            <ol class="space-y-1.5 p-4 text-sm text-zinc-600 dark:text-zinc-300">
+                            <ol class="space-y-1.5 text-sm text-zinc-600 dark:text-zinc-300">
                                 @foreach ($items as $i => $item)
                                     <li class="flex gap-2">
                                         <span class="font-semibold text-zinc-400">{{ $i + 1 }}.</span>
