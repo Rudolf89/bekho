@@ -15,7 +15,7 @@ class PasoTecnica extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['tecnica_id', 'segmento', 'orden', 'texto'];
+    protected $fillable = ['tecnica_id', 'segmento', 'lado', 'postura', 'seccion', 'orden', 'texto'];
 
     /**
      * @return BelongsTo<Tecnica, $this>

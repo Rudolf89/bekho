@@ -28,7 +28,7 @@ class FormasPasosSeeder extends Seeder
             return;
         }
 
-        /** @var array<string, list<string>> $formas */
+        /** @var array<string, list<array{lado: string, tecnica: string, postura: string, seccion: string}>> $formas */
         $formas = json_decode(File::get($ruta), true);
 
         foreach ($formas as $nombre => $pasos) {
@@ -50,11 +50,13 @@ class FormasPasosSeeder extends Seeder
             // Idempotente: se regeneran los pasos.
             $tecnica->pasos()->delete();
 
-            foreach ($pasos as $orden => $texto) {
+            foreach ($pasos as $orden => $paso) {
                 $tecnica->pasos()->create([
-                    'segmento' => null,
                     'orden' => $orden + 1,
-                    'texto' => $texto,
+                    'texto' => $paso['tecnica'],
+                    'lado' => $paso['lado'] ?: null,
+                    'postura' => $paso['postura'] ?: null,
+                    'seccion' => $paso['seccion'] ?: null,
                 ]);
             }
         }

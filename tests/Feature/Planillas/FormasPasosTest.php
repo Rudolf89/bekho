@@ -23,11 +23,14 @@ test('todas las formas Songahm reciben su paso a paso', function () {
         ->and(Tecnica::where('nombre', 'Chung San')->first()->pasos()->count())->toBe(119);
 });
 
-test('los pasos conservan su orden y describen técnica/posición', function () {
+test('los pasos guardan técnica, lado, postura y sección por columna', function () {
     $forma = Tecnica::where('nombre', 'Songahm Il-Jahng n.º 1')->with('pasos')->first();
     $primero = $forma->pasos->firstWhere('orden', 1);
 
-    expect($primero->texto)->toContain('Bloqueo alto')
+    expect($primero->texto)->toBe('Bloqueo alto')
+        ->and($primero->lado)->toBe('Izq.')
+        ->and($primero->postura)->toBe('Frontal')
+        ->and($primero->seccion)->toBe('Alta')
         ->and($forma->descripcion)->toContain('18 movimientos');
 });
 
