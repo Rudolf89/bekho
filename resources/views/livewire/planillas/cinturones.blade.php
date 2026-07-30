@@ -14,6 +14,12 @@
         <flux:text class="mt-1">Escala de grados: color, tipo, franjas, significado (filosofía Songahm) y técnicas.</flux:text>
     </div>
 
+    {{-- Leyenda de variantes de patada --}}
+    <div class="rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+        <p>Cada patada se ejecuta en <span class="font-semibold">4 variantes</span>: <span class="font-semibold">1</span> pierna delantera · <span class="font-semibold">2</span> pierna trasera · <span class="font-semibold">3</span> con paso, pierna delantera · <span class="font-semibold">4</span> con paso, pierna trasera.</p>
+        <p class="mt-1"><span class="font-semibold text-red-700 dark:text-red-400">BEKHO</span> es lo que se rinde en examen; <span class="font-semibold text-sky-700 dark:text-sky-400">ATA</span> es la referencia del manual.</p>
+    </div>
+
     {{-- Selector de escala --}}
     <div class="flex flex-wrap gap-2">
         @foreach ($escalas as $e)
@@ -68,9 +74,45 @@
                             <flux:text size="sm" class="mt-1 block italic text-zinc-500">{{ $grado->significado }}</flux:text>
                         @endif
 
-                        @if ($grado->tecnicas->isNotEmpty())
+                        @php
+                            $patadas = $grado->tecnicas->filter(fn ($t) => $t->categoria->value === 'patada');
+                            $bekho = $patadas->where('fuente', 'bekho')->values();
+                            $ata = $patadas->where('fuente', 'ata')->values();
+                            $otras = $grado->tecnicas->filter(fn ($t) => $t->categoria->value !== 'patada')->values();
+                        @endphp
+
+                        {{-- Comparativa de patadas: BEKHO (examen) vs ATA (manual) --}}
+                        @if ($bekho->isNotEmpty() || $ata->isNotEmpty())
+                            <div class="mt-3">
+                                <flux:text size="sm" class="mb-1.5 block font-semibold text-zinc-600 dark:text-zinc-300">Patadas del grado</flux:text>
+                                <div class="grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-zinc-200 bg-zinc-200 text-xs dark:border-zinc-700 dark:bg-zinc-700">
+                                    @foreach ([['BEKHO · examen', $bekho, 'text-red-700 dark:text-red-400'], ['ATA · manual', $ata, 'text-sky-700 dark:text-sky-400']] as [$titulo, $lista, $color])
+                                        <div class="bg-white p-2.5 dark:bg-zinc-800">
+                                            <div class="mb-1 font-semibold {{ $color }}">{{ $titulo }}</div>
+                                            @if ($lista->isEmpty())
+                                                <div class="text-zinc-400">— pendiente</div>
+                                            @else
+                                                <ul class="space-y-1">
+                                                    @foreach ($lista as $t)
+                                                        <li class="text-zinc-700 dark:text-zinc-200">
+                                                            {{ $t->nombre }}
+                                                            @if ($t->descripcion)
+                                                                <span class="block text-zinc-400">{{ \Illuminate\Support\Str::after($t->descripcion, 'Ejecuciones: ') }}</span>
+                                                            @endif
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        {{-- Otras técnicas del grado (formas, armas, etc.) --}}
+                        @if ($otras->isNotEmpty())
                             <div class="mt-2 flex flex-wrap gap-1.5">
-                                @foreach ($grado->tecnicas as $tecnica)
+                                @foreach ($otras as $tecnica)
                                     <flux:badge size="sm" color="{{ $tecnica->core ? 'green' : 'amber' }}">{{ $tecnica->nombre }}</flux:badge>
                                 @endforeach
                             </div>

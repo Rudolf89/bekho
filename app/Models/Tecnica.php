@@ -22,7 +22,7 @@ class Tecnica extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'categoria', 'subcategoria', 'nombre', 'descripcion',
+        'categoria', 'fuente', 'subcategoria', 'nombre', 'descripcion',
         'modalidad', 'cinturon', 'nivel', 'core', 'significado', 'orden',
     ];
 

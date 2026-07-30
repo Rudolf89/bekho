@@ -19,24 +19,30 @@ beforeEach(function () {
     $this->seed(PatadasGradoSeeder::class);
 });
 
-test('las patadas detalladas quedan enlazadas a su cinturón', function () {
+test('cada cinturón tiene sus patadas en las dos fuentes (bekho y ata)', function () {
     $blanco = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Blanco')->first();
-    $nombres = $blanco->tecnicas->pluck('nombre');
+    $patadas = $blanco->tecnicas->filter(fn ($t) => $t->categoria === CategoriaTecnica::Patada);
 
-    expect($nombres)->toContain('Patada de Frente', 'Patada de Costado', 'Levantamiento de pierna recto');
+    // BEKHO (examen): la nomenclatura del usuario.
+    expect($patadas->where('fuente', 'bekho')->pluck('nombre'))
+        ->toContain('Patada de Frente', 'Patada de Costado', 'Levantamiento de pierna recto');
 
-    // La patada aplica a los grados Blanco de todas las escalas.
-    $frente = Tecnica::where('nombre', 'Patada de Frente')->first();
-    expect($frente->grados()->count())->toBeGreaterThan(1)
-        ->and($frente->descripcion)->toContain('N1, N2, N3, N4');
+    // ATA (manual): la referencia oficial.
+    expect($patadas->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral');
 });
 
-test('los cinturones de color 9→1 tienen sus patadas detalladas (manual)', function () {
+test('BEKHO cubre 9→6; ATA cubre 9→1 (referencia completa)', function () {
+    // BEKHO aún no tiene 5→1 (Verde-Rojo).
     $verde = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Verde')->first();
-    $rojo = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Rojo')->first();
+    $patadasVerde = $verde->tecnicas->filter(fn ($t) => $t->categoria === CategoriaTecnica::Patada);
 
-    expect($verde->tecnicas->pluck('nombre'))->toContain('Patada lateral', 'Patada lateral en salto')
-        ->and($rojo->tecnicas->pluck('nombre'))->toContain('Patada de gancho en salto', 'Patada circular en salto');
+    expect($patadasVerde->where('fuente', 'bekho'))->toHaveCount(0)
+        ->and($patadasVerde->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral en salto');
+
+    // ATA de un cinturón alto (Rojo).
+    $rojo = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Rojo')->first();
+    expect($rojo->tecnicas->where('fuente', 'ata')->pluck('nombre'))
+        ->toContain('Patada de gancho en salto', 'Patada circular en salto');
 });
 
 test('las técnicas-resumen de los cinturones de color se reemplazan', function () {
