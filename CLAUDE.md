@@ -70,8 +70,11 @@ formación).
   nombre y hora fin autocompletados), **asistencia como calendario semanal**, pagos,
   exámenes (instructor inscribe; dirección finaliza), planillas.
 - **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario.
-  Aquí va también el material de negocio/marketing de los manuales ATA y el estudio
-  (p. ej. "Preparación para examen de juez" = Manual del Juez ATA en 18 secciones).
+  Aquí va el estudio de los manuales ATA: "Preparación para examen de juez" (Manual
+  del Juez ATA en 18 secciones) y los manuales **Legacy, Tigers, MAK y MAX N1/N2**
+  (`ManualesAprenderSeeder`, fuente en `database/data/manuales/*.json`, transcritos de
+  los .docx en español). Cada manual = un Nivel con una lección de texto por sección
+  + el documento oficial en Drive.
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
   Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planilla
   fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
@@ -163,4 +166,4 @@ altos (hoy van por banda Verde/Púrpura y Azul/Café/Rojo); **sembrar más lecci
 de vida** (solo está la Semana 7 del Ciclo 1 Disciplina; el seeder no inventa);
 sembrar un banco de preguntas real para la prueba escrita Legacy N3 (hoy el
 requisito es checklist; el enlace a cuestionario ya existe); notificar al alumno
-cuando el examinador decide un intento; volcar más negocio/marketing a "Aprender".
+cuando el examinador decide un intento.
