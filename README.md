@@ -314,16 +314,22 @@ de 8 semanas.
   bloque de semanas (`1&2`, `3&4`, `5&6`, `7&8`) — más sus **lecciones de vida** por
   semana. Transcrito del Manual Legacy.
 - **Planificador**: planilla grupo × nivel (o de Cinturón Negro), con calentamiento
-  por clase y lección de vida.
+  por clase y lección de vida. Es **week-aware**: sobre la estructura fija de la clase
+  muestra la **rotación del ciclo** elegido (qué cinturón / forma / cuadrante toca ese
+  bloque de semanas, desde `planner_ciclo`) y acota la lección de vida a ese ciclo. El
+  planner regular y el de Cinturón Negro comparten el mismo estilo visual.
 - **Biblioteca de técnicas** (`tecnicas`, `pasos_tecnica`): patadas, formas, técnicas
   de mano, tricks y armas, con sus pasos por segmento y filtros por categoría/modalidad.
 - **Cuadrantes de Enseñanza** (`cuadrante_items`): marco pedagógico ATA con las
   responsabilidades del alumno y del instructor por cuadrante.
 - **Cinturones** (`grados`, `grado_tecnica`): escala de grados por programa con su
   color, `tipo` (recomendado / decidido / dan), `franjas` (barras del cinturón; los
-  danes llevan una por grado), el significado Songahm y las **técnicas enlazadas** a
-  cada cinturón (normalizando grafías: Morado↔Púrpura, Camuflaje↔Camuflado,
-  Marrón↔Café).
+  danes llevan una por grado, y desde el 5º Dan **estrellas** amarillas), el significado
+  Songahm y las **técnicas enlazadas** a cada cinturón (normalizando grafías:
+  Morado↔Púrpura, Camuflaje↔Camuflado, Marrón↔Café). Incluye la **comparativa de
+  patadas BEKHO (lo que se rinde en examen) vs ATA (referencia del manual)** por grado;
+  los cinturones altos (Verde a Rojo) se cargan **por banda de nivel** porque el plan
+  de clase rota semana a semana.
 
 **Cuestionarios (Fase 5)**
 

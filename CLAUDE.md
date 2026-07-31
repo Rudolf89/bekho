@@ -75,12 +75,15 @@ formación).
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
   Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planilla
   fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
-  leyendo `planner_ciclo`), **Ciclos** (`PlanCiclos`: class
+  leyendo `planner_ciclo`, y la lección de vida acotada a ese mismo ciclo. El planner
+  regular y el de Cinturón Negro comparten estilo visual: tarjeta blanca con acento
+  de color, no banners a sangre), **Ciclos** (`PlanCiclos`: class
   planner de cada ciclo — grilla fila × bloque de semanas — con sus lecciones de
   vida), **Biblioteca de técnicas** (patadas/formas/manos/tricks/armas con pasos),
   **Cuadrantes de Enseñanza**, **Cinturones** (`Cinturones`: escala de grados con
-  color, `tipo` recomendado/decidido/dan, `franjas`, significado Songahm y las
-  técnicas enlazadas por color vía `grado_tecnica`). Eje: `Ciclo` = 6 Habilidades de
+  color, `tipo` recomendado/decidido/dan, `franjas`, significado Songahm, las
+  técnicas enlazadas por color vía `grado_tecnica` y la **comparativa de patadas
+  BEKHO (examen) vs ATA (manual)** por grado). Eje: `Ciclo` = 6 Habilidades de
   Vida Songahm × 8 semanas; cada ciclo tiene su grilla en `planner_ciclo` (filas del
   enum `FilaPlannerCiclo`: Warm-Up/Kicks/Forms/Quadrants/Protech/Drills × bloques
   `1&2…7&8`). El **Class Planner físico de BEKHO** (láminas Beginners/Intermediate/
@@ -146,7 +149,18 @@ planners de los 6 ciclos, (6) recompensas/gamificación, (7) Programa Legacy
 operativo. Además: módulo de **Cuestionarios** autocorregidos con revisión del
 examinador y el **Manual del Juez** en "Aprender".
 
-Pendiente / ideas: sembrar un banco de preguntas real para la prueba escrita
-Legacy N3 (hoy el requisito es checklist; el enlace a cuestionario ya existe);
-notificar al alumno cuando el examinador decide un intento; volcar más
-negocio/marketing a "Aprender".
+**Currículo de patadas BEKHO vs ATA** (en Cinturones): grados 9→6 (Blanco a
+Camuflado) dictados por grado; grados altos 5→1 (Verde a Rojo) cargados **por
+banda de nivel** desde los Class Planners (`PatadasGradoSeeder::bekhoBandas`),
+porque el plan de clase rota semana a semana. El **Class Planner físico** (láminas
+Beginners/Intermediate/Advanced) NO tiene página propia: su contenido vive en el
+Planificador (estructura + rotación) y en Cinturones (patadas). El **Planificador
+es week-aware**: sobre la planilla fija muestra la rotación del ciclo elegido
+(`planner_ciclo`) y la Lección de Vida acotada a ese ciclo.
+
+Pendiente / ideas: **afinar las patadas BEKHO por grado exacto** en cinturones
+altos (hoy van por banda Verde/Púrpura y Azul/Café/Rojo); **sembrar más lecciones
+de vida** (solo está la Semana 7 del Ciclo 1 Disciplina; el seeder no inventa);
+sembrar un banco de preguntas real para la prueba escrita Legacy N3 (hoy el
+requisito es checklist; el enlace a cuestionario ya existe); notificar al alumno
+cuando el examinador decide un intento; volcar más negocio/marketing a "Aprender".
