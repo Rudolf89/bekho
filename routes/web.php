@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Notificaciones;
 use App\Livewire\Panel;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -14,6 +15,7 @@ Route::get('/', fn () => Auth::check()
 // que ese middleware no protegía nada (dejaba pasar a todos). Ver nota en User.
 Route::middleware(['auth'])->group(function () {
     Route::livewire('dashboard', Panel::class)->name('dashboard');
+    Route::livewire('notificaciones', Notificaciones::class)->name('notificaciones.index');
 });
 
 require __DIR__.'/settings.php';

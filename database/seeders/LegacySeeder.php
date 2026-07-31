@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Cuestionario;
 use App\Models\NivelLegacy;
 use Illuminate\Database\Seeder;
 
@@ -9,9 +10,9 @@ use Illuminate\Database\Seeder;
  * Catálogo del Programa Legacy: Niveles 1-3 (100 h cada uno) y sus requisitos.
  * Transversal (compartido). Idempotente por nombre de nivel y texto de requisito.
  *
- * Un requisito puede enlazarse a un cuestionario (prueba escrita autocorregida);
- * aquí se dejan como checklist manual y el examinador puede enlazar un
- * cuestionario cuando exista el banco de preguntas correspondiente.
+ * Un requisito puede enlazarse a un cuestionario (prueba escrita autocorregida):
+ * "Prueba escrita de Nivel 3 aprobada" se enlaza al banco de Legacy N3 (sembrado
+ * por CuestionariosSeeder), de modo que se cumple con un intento aprobado.
  */
 class LegacySeeder extends Seeder
 {
@@ -50,6 +51,9 @@ class LegacySeeder extends Seeder
             ],
         ];
 
+        // Prueba escrita N3 → cuestionario del banco de Legacy (si ya se sembró).
+        $pruebaN3 = Cuestionario::where('titulo', 'Examen escrito · Programa Legacy Nivel 3')->first();
+
         foreach ($niveles as $orden => $datos) {
             $nivel = NivelLegacy::updateOrCreate(
                 ['nombre' => $datos['nombre']],
@@ -61,9 +65,14 @@ class LegacySeeder extends Seeder
             );
 
             foreach ($datos['requisitos'] as $ordenReq => $texto) {
+                $esPruebaEscrita = str_contains($texto, 'Prueba escrita');
+
                 $nivel->requisitos()->updateOrCreate(
                     ['texto' => $texto],
-                    ['orden' => $ordenReq + 1],
+                    [
+                        'orden' => $ordenReq + 1,
+                        'cuestionario_id' => $esPruebaEscrita ? $pruebaN3?->id : null,
+                    ],
                 );
             }
         }

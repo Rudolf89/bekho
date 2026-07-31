@@ -39,7 +39,8 @@ function usuarioCuestionario(string $rol, ?int $academiaId): User
 // --- Siembra / transversalidad ----------------------------------------------
 
 test('se siembran los cuestionarios del banco de juez', function () {
-    expect(Cuestionario::count())->toBe(4);
+    // 4 del banco de Juez ATA + 1 de la prueba escrita Legacy N3.
+    expect(Cuestionario::count())->toBe(5);
 
     $n1 = Cuestionario::where('titulo', 'Examen de Juez ATA — Nivel 1')->first();
     expect($n1)->not->toBeNull()
@@ -57,7 +58,7 @@ test('los cuestionarios son transversales (catálogo compartido, sin academia)',
     Tenant::set($otra->id);
     $desdeOtra = Cuestionario::count();
 
-    expect($desdeBekho)->toBe(4)->and($desdeOtra)->toBe(4);
+    expect($desdeBekho)->toBe(5)->and($desdeOtra)->toBe(5);
 });
 
 // --- Autocorrección ----------------------------------------------------------

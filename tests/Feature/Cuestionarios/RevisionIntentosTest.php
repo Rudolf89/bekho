@@ -3,6 +3,7 @@
 use App\Enums\EstadoIntento;
 use App\Livewire\Cuestionarios\MisIntentos;
 use App\Livewire\Cuestionarios\ResultadosCuestionarios;
+use App\Livewire\Notificaciones;
 use App\Models\Academia;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
@@ -132,6 +133,61 @@ test('el examinador puede pedir volver a intentar', function () {
         ->assertHasNoErrors();
 
     expect($intento->refresh()->estado)->toBe(EstadoIntento::Reintentar);
+});
+
+// --- Notificación al alumno --------------------------------------------------
+
+test('al decidir un intento, el alumno recibe una notificación', function () {
+    $examinador = usuarioRev('instructor', $this->bekho->id);
+    $alumno = usuarioRev('alumno', $this->bekho->id);
+    $intento = intentoDe($alumno, $this->cuestionario, 90, $this->bekho->id);
+
+    Livewire::actingAs($examinador)->test(ResultadosCuestionarios::class)
+        ->call('abrirRevision', $intento->id)
+        ->call('aprobar', $intento->id);
+
+    $alumno->refresh();
+    expect($alumno->notifications()->count())->toBe(1);
+
+    $data = $alumno->notifications()->first()->data;
+    expect($data['estado'])->toBe('aprobado')
+        ->and($data['cuestionario'])->toBe('Prueba')
+        ->and($data['titulo'])->toContain('aprobado');
+
+    // El examinador que decide NO se auto-notifica.
+    expect($examinador->notifications()->count())->toBe(0);
+});
+
+test('la notificación de reintento refleja la decisión', function () {
+    $examinador = usuarioRev('instructor', $this->bekho->id);
+    $alumno = usuarioRev('alumno', $this->bekho->id);
+    $intento = intentoDe($alumno, $this->cuestionario, 55, $this->bekho->id);
+
+    Livewire::actingAs($examinador)->test(ResultadosCuestionarios::class)
+        ->call('abrirRevision', $intento->id)
+        ->set('justificacion', 'Repasa el reglamento y vuelve a rendir.')
+        ->call('reintentar', $intento->id);
+
+    $data = $alumno->fresh()->notifications()->first()->data;
+    expect($data['estado'])->toBe('reintentar')
+        ->and($data['justificacion'])->toContain('Repasa');
+});
+
+test('la bandeja muestra la notificación y permite marcarla leída', function () {
+    $alumno = usuarioRev('alumno', $this->bekho->id);
+    $intento = intentoDe($alumno, $this->cuestionario, 90, $this->bekho->id);
+    $examinador = usuarioRev('instructor', $this->bekho->id);
+
+    Livewire::actingAs($examinador)->test(ResultadosCuestionarios::class)
+        ->call('abrirRevision', $intento->id)
+        ->call('aprobar', $intento->id);
+
+    Livewire::actingAs($alumno)->test(Notificaciones::class)
+        ->assertSee('Tu intento fue aprobado')
+        ->call('marcarTodasLeidas')
+        ->assertOk();
+
+    expect($alumno->fresh()->unreadNotifications()->count())->toBe(0);
 });
 
 // --- Permisos ----------------------------------------------------------------

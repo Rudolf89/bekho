@@ -4,14 +4,16 @@ namespace Database\Seeders;
 
 use App\Models\Cuestionario;
 use App\Support\Cuestionarios\BancoJuez;
+use App\Support\Cuestionarios\BancoLegacy;
 use Illuminate\Database\Seeder;
 
 /**
  * Siembra los cuestionarios base del módulo de evaluaciones (catálogo compartido,
- * sin academia_id): el examen de Juez ATA (N1, N2, N3 y repaso de puntuación).
+ * sin academia_id): el examen de Juez ATA (N1, N2, N3 y repaso de puntuación) y la
+ * prueba escrita del Programa Legacy Nivel 3.
  *
  * El módulo es genérico: cualquier examinador puede crear otros cuestionarios
- * desde la interfaz. Este seeder solo carga el banco de juez como punto de partida.
+ * desde la interfaz. Este seeder solo carga los bancos base como punto de partida.
  *
  * Idempotente: reconstruye las preguntas de cada cuestionario en cada corrida.
  */
@@ -19,7 +21,9 @@ class CuestionariosSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (BancoJuez::cuestionarios() as $orden => $datos) {
+        $bancos = [...BancoJuez::cuestionarios(), BancoLegacy::cuestionario()];
+
+        foreach ($bancos as $orden => $datos) {
             $cuestionario = Cuestionario::updateOrCreate(
                 ['titulo' => $datos['titulo']],
                 [

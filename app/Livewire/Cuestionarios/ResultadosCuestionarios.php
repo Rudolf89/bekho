@@ -5,6 +5,7 @@ namespace App\Livewire\Cuestionarios;
 use App\Enums\EstadoIntento;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
+use App\Notifications\IntentoDecidido;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -80,6 +81,9 @@ class ResultadosCuestionarios extends Component
             'revisado_at' => now(),
             'justificacion' => trim($this->justificacion) !== '' ? trim($this->justificacion) : null,
         ]);
+
+        // Avisar al alumno de la decisión (notificación en la app).
+        $intento->user?->notify(new IntentoDecidido($intento));
 
         $this->cerrarRevision();
 

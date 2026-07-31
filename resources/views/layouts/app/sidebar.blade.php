@@ -23,6 +23,14 @@
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
 
+                    @php($noLeidas = auth()->user()->unreadNotifications()->count())
+                    <flux:sidebar.item icon="bell" :href="route('notificaciones.index')" :current="request()->routeIs('notificaciones.*')" wire:navigate>
+                        Notificaciones
+                        @if ($noLeidas > 0)
+                            <flux:badge size="sm" color="red" class="ml-auto">{{ $noLeidas }}</flux:badge>
+                        @endif
+                    </flux:sidebar.item>
+
                     @can('gestionar usuarios')
                         <flux:sidebar.item icon="users" :href="route('usuarios.index')" :current="request()->routeIs('usuarios.*')" wire:navigate>
                             Usuarios

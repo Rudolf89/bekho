@@ -161,9 +161,13 @@ Planificador (estructura + rotación) y en Cinturones (patadas). El **Planificad
 es week-aware**: sobre la planilla fija muestra la rotación del ciclo elegido
 (`planner_ciclo`) y la Lección de Vida acotada a ese ciclo.
 
-Pendiente / ideas: **afinar las patadas BEKHO por grado exacto** en cinturones
-altos (hoy van por banda Verde/Púrpura y Azul/Café/Rojo); **sembrar más lecciones
-de vida** (solo está la Semana 7 del Ciclo 1 Disciplina; el seeder no inventa);
-sembrar un banco de preguntas real para la prueba escrita Legacy N3 (hoy el
-requisito es checklist; el enlace a cuestionario ya existe); notificar al alumno
-cuando el examinador decide un intento.
+Notificaciones **en la app** (canal database, trait `Notifiable`): cuando el
+examinador decide un intento, el alumno recibe `App\Notifications\IntentoDecidido`;
+bandeja en `/notificaciones` (`App\Livewire\Notificaciones`) con badge en el sidebar.
+La **prueba escrita Legacy N3** ya tiene banco real (`App\Support\Cuestionarios\
+BancoLegacy`, fundado en el Manual Legacy) enlazado al requisito automático.
+
+Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
+**afinar las patadas BEKHO por grado exacto** en cinturones altos (hoy van por
+banda Verde/Púrpura y Azul/Café/Rojo); **sembrar más lecciones de vida** (solo está
+la Semana 7 del Ciclo 1 Disciplina).
