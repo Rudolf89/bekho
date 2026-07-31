@@ -12,12 +12,12 @@ El código y el dominio están escritos **en español**.
 | Fase | Módulo | Estado |
 |------|--------|--------|
 | Fase 1 | Núcleo transversal (academias, sedes, rangos, roles/permisos, tenancy) | **Hecho** |
-| Fase 2 | Formación / LMS (niveles → contenidos → progreso por usuario) | **Hecho** |
+| Fase 2 | Formación / LMS (niveles → contenidos → progreso, navegación secuencial, manuales ATA cargados) | **Hecho** |
 | Fase 3 | Gestión de alumnos, clases (multi-instructor), asistencia (calendario) y pagos | **Hecho** |
 | Fase 3 | Exámenes de grado (inscripción, resultados, conteo en cascada) | **Hecho** |
 | Fase 3 | Planillas de clase | **Hecho** |
 | Fase 4 | Currículo ATA: Ciclos y class planners, biblioteca de técnicas, cuadrantes de enseñanza, cinturones (recomendado/decidido, franjas, significado, técnicas por grado) | **Hecho** |
-| Fase 5 | Cuestionarios autocorregidos (banco genérico, con revisión del examinador) + Manual del Juez en "Aprender" | **Hecho** |
+| Fase 5 | Cuestionarios autocorregidos (banco genérico, revisión del examinador, notificación al alumno) + manuales en "Aprender" | **Hecho** |
 | Fase 6 | Recompensas / gamificación (Franjas de Conocimiento, Star Tag, Coleccionables) | **Hecho** |
 | Fase 7 | Programa Legacy operativo (Niveles 1-3, 100 h, requisitos, ascenso, prueba escrita) | **Hecho** |
 
@@ -287,6 +287,12 @@ Reglas clave:
   del contenido.
 - Los **videos se alojan externamente** (no se sirven desde la app); el LMS guarda la
   referencia, no el archivo.
+- **Navegación secuencial** entre capítulos: cada contenido tiene "← Anterior",
+  "Siguiente →" y **"Completar y continuar →"** (marca completado y salta al siguiente,
+  o vuelve al nivel si es el último), con indicador de posición "N de total".
+- **Manuales ATA cargados como estudio**: además del Manual del Juez, están los manuales
+  **Legacy, Tigers, MAK y MAX N1/N2** (un nivel por manual, con una lección por sección y
+  el documento oficial enlazado). Fuente en `database/data/manuales/*.json`.
 
 **Gestión (Fase 3)**
 - **Alumnos**: ficha completa, inscripción con validación (apoderado según grupo etario,
@@ -342,9 +348,11 @@ operativos (`intentos_cuestionario`).
   pregunta.
 - Cada intento nace **en revisión**; el examinador decide **aprobar** o **volver a
   intentar** en "Resultados" (aprobar por debajo del umbral exige justificación).
-  El alumno ve su historial en "Mis intentos".
-- Banco base: el **examen de Juez ATA** (N1/N2/N3 + repaso). El **Manual del Juez**
-  (18 secciones) se carga como estudio en "Aprender".
+  El alumno ve su historial en "Mis intentos" y recibe una **notificación en la app**
+  con la decisión (bandeja en `/notificaciones`, badge de no leídas en el sidebar).
+- Bancos base: el **examen de Juez ATA** (N1/N2/N3 + repaso) y la **prueba escrita del
+  Programa Legacy Nivel 3**. El **Manual del Juez** (18 secciones) se carga como estudio
+  en "Aprender".
 
 **Recompensas / gamificación (Fase 6)**
 
@@ -360,8 +368,9 @@ Track de formación de instructores (Niveles 1-3). Catálogo transversal
 (`niveles_legacy` de 100 h + `requisitos_legacy`) y datos operativos
 (`inscripciones_legacy`, `horas_legacy`). Se registran horas (barra de avance a las
 100 h) y requisitos; el **licenciatario** aprueba el **ascenso** cuando se cumple
-todo. Un requisito puede enlazarse a un **cuestionario**: entonces la **prueba
-escrita** se da por cumplida con un intento aprobado.
+todo. Un requisito puede enlazarse a un **cuestionario**: la **prueba escrita de
+Nivel 3** ya trae un banco real (fundado en el Manual Legacy) y se da por cumplida
+con un intento aprobado.
 
 ---
 
