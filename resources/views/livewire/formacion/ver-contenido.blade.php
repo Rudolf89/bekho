@@ -1,8 +1,13 @@
 <div class="mx-auto w-full max-w-3xl space-y-6">
-    <div>
+    <div class="flex items-center justify-between gap-2">
         <flux:button :href="route('formacion.nivel', $contenido->nivel_id)" icon="arrow-left" variant="ghost" size="sm" wire:navigate>
             Volver al nivel
         </flux:button>
+        @if ($siguiente || $anterior)
+            <flux:text size="sm" class="text-zinc-400">
+                {{ $indice + 1 }} de {{ $total }}
+            </flux:text>
+        @endif
     </div>
 
     <div class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
@@ -55,15 +60,42 @@
         @endif
     </div>
 
-    <div class="flex justify-end">
-        @if ($estado === \App\Enums\EstadoProgreso::Completado)
-            <flux:button icon="check-circle" variant="ghost" disabled>
-                Completado
-            </flux:button>
-        @else
-            <flux:button wire:click="completar" icon="check" variant="primary">
-                Marcar como completado
-            </flux:button>
-        @endif
+    {{-- Navegación entre capítulos del nivel --}}
+    <div class="flex flex-wrap items-center justify-between gap-2">
+        {{-- Anterior --}}
+        <div>
+            @if ($anterior)
+                <flux:button :href="route('formacion.contenido', $anterior)" icon="arrow-left" variant="ghost" size="sm" wire:navigate>
+                    Anterior
+                </flux:button>
+            @endif
+        </div>
+
+        {{-- Acción principal --}}
+        <div class="flex flex-wrap items-center gap-2">
+            @if ($estado === \App\Enums\EstadoProgreso::Completado)
+                <flux:badge color="green" size="sm" icon="check-circle">Completado</flux:badge>
+                @if ($siguiente)
+                    <flux:button :href="route('formacion.contenido', $siguiente)" icon:trailing="arrow-right" variant="primary" wire:navigate>
+                        Siguiente
+                    </flux:button>
+                @else
+                    <flux:button :href="route('formacion.nivel', $contenido->nivel_id)" variant="primary" wire:navigate>
+                        Terminar nivel
+                    </flux:button>
+                @endif
+            @elseif ($siguiente)
+                <flux:button wire:click="completar" icon="check" variant="filled">
+                    Marcar como completado
+                </flux:button>
+                <flux:button wire:click="completarYSeguir" icon:trailing="arrow-right" variant="primary">
+                    Completar y continuar
+                </flux:button>
+            @else
+                <flux:button wire:click="completarYSeguir" icon="check" variant="primary">
+                    Completar y terminar nivel
+                </flux:button>
+            @endif
+        </div>
     </div>
 </div>

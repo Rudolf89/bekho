@@ -47,6 +47,51 @@ class VerContenido extends Component
     }
 
     /**
+     * Marca como completado y navega al siguiente contenido del nivel (o vuelve
+     * al nivel si era el último).
+     */
+    public function completarYSeguir(ServicioFormacion $servicio)
+    {
+        $servicio->marcarContenido(Auth::user(), $this->contenido, EstadoProgreso::Completado);
+
+        $siguiente = $this->siguiente();
+
+        return $this->redirect(
+            $siguiente
+                ? route('formacion.contenido', $siguiente)
+                : route('formacion.nivel', $this->contenido->nivel_id),
+            navigate: true,
+        );
+    }
+
+    /**
+     * Contenido siguiente del mismo nivel (por orden), o null si es el último.
+     */
+    public function siguiente(): ?Contenido
+    {
+        return $this->vecino(1);
+    }
+
+    /**
+     * Contenido anterior del mismo nivel (por orden), o null si es el primero.
+     */
+    public function anterior(): ?Contenido
+    {
+        return $this->vecino(-1);
+    }
+
+    /**
+     * Vecino del contenido actual dentro del nivel (delta -1 anterior, +1 siguiente).
+     */
+    private function vecino(int $delta): ?Contenido
+    {
+        $hermanos = $this->contenido->nivel->contenidos()->where('activo', true)->get();
+        $indice = $hermanos->search(fn (Contenido $c) => $c->id === $this->contenido->id);
+
+        return $indice === false ? null : $hermanos->get($indice + $delta);
+    }
+
+    /**
      * Convierte una URL de video conocida (YouTube/Vimeo) en URL para iframe.
      * Devuelve null si no se reconoce (se mostrará como enlace).
      */
@@ -75,8 +120,16 @@ class VerContenido extends Component
 
     public function render()
     {
+        $hermanos = $this->contenido->nivel->contenidos()->where('activo', true)->get();
+        $indice = $hermanos->search(fn (Contenido $c) => $c->id === $this->contenido->id);
+        $indice = $indice === false ? 0 : $indice;
+
         return view('livewire.formacion.ver-contenido', [
             'urlIncrustada' => $this->urlIncrustada(),
+            'anterior' => $hermanos->get($indice - 1),
+            'siguiente' => $hermanos->get($indice + 1),
+            'indice' => $indice,
+            'total' => $hermanos->count(),
         ]);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\EstadoProgreso;
+use App\Livewire\Formacion\VerContenido;
 use App\Models\Academia;
 use App\Models\Contenido;
 use App\Models\Nivel;
@@ -10,6 +11,7 @@ use App\Services\ServicioFormacion;
 use App\Support\Tenancy\Academia as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 use Spatie\Permission\PermissionRegistrar;
 
 uses(RefreshDatabase::class);
@@ -213,4 +215,33 @@ test('avanceDeNivel calcula el porcentaje de completados', function () {
     expect($avance['total'])->toBe(4);
     expect($avance['completados'])->toBe(1);
     expect($avance['porcentaje'])->toBe(25);
+});
+
+// --- Navegación entre capítulos (VerContenido) -------------------------------
+
+test('la navegación avanza al siguiente capítulo y marca completado', function () {
+    Tenant::set($this->bekho->id);
+
+    $nivel = Nivel::create(['academia_id' => $this->bekho->id, 'nombre' => 'Manual X', 'orden' => 0, 'activo' => true]);
+    $caps = collect(range(0, 2))->map(fn ($i) => Contenido::create([
+        'academia_id' => $this->bekho->id, 'nivel_id' => $nivel->id,
+        'titulo' => "Capítulo {$i}", 'tipo' => 'texto', 'cuerpo' => 'x', 'orden' => $i, 'activo' => true,
+    ]));
+
+    $user = usuarioConRol('alumno', $this->bekho->id);
+
+    // Primer capítulo: sin anterior, con siguiente; "completar y continuar" lleva al 2.º.
+    Livewire::actingAs($user)->test(VerContenido::class, ['contenido' => $caps[0]])
+        ->assertViewHas('anterior', null)
+        ->assertViewHas('siguiente', fn ($s) => $s?->id === $caps[1]->id)
+        ->call('completarYSeguir')
+        ->assertRedirect(route('formacion.contenido', $caps[1]));
+
+    expect($user->progresoEn($caps[0]->fresh()))->toBe(EstadoProgreso::Completado);
+
+    // Último capítulo: "completar y terminar" vuelve al nivel.
+    Livewire::actingAs($user)->test(VerContenido::class, ['contenido' => $caps[2]])
+        ->assertViewHas('siguiente', null)
+        ->call('completarYSeguir')
+        ->assertRedirect(route('formacion.nivel', $nivel->id));
 });
