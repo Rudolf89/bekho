@@ -76,9 +76,9 @@ class PatadasGradoSeeder extends Seeder
     }
 
     /**
-     * Currículo BEKHO (examen) por grado exacto: grados 9→6 (Blanco a Camuflado)
-     * dictados uno a uno. Los grados altos (5→1) se cargan por banda desde los
-     * Class Planners en bekhoBandas() hasta tener el detalle por grado.
+     * Currículo BEKHO (examen) por grado exacto: grados 9→5 (Blanco a Verde)
+     * dictados uno a uno por la escuela. Los grados altos aún sin dictar (4→1:
+     * Púrpura a Rojo) se cargan por banda en bekhoBandas() hasta tener su detalle.
      *
      * @return array<string, array{nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string}>}>
      */
@@ -106,16 +106,19 @@ class PatadasGradoSeeder extends Seeder
                     .'C = giro por la espalda cayendo atrás · '
                     .'D = con paso, giro por la espalda cayendo atrás.'],
             ]],
+            'Verde' => ['nivel' => $i, 'kicks' => [
+                ['Giro circular', 'A, B, C, D'],
+                ['Patada de Costado saltando', '1, 2, 3, 4'],
+            ]],
         ];
     }
 
     /**
-     * Patadas BEKHO que rotan por NIVEL DE CLASE (banda), no por grado exacto.
-     * El Class Planner cambia semana a semana, así que cada nivel acumula varias
-     * patadas a lo largo del ciclo (fuentes: la lámina oficial y el Planificador
-     * Unificado). Como el grado individual queda por afinar, cada patada se enlaza
-     * a TODOS los colores de la banda; los grados con detalle propio (Camuflado ya
-     * trae "Giro de costado") se excluyen para no pisarlos.
+     * Patadas BEKHO de los grados aún sin dictar por la escuela (Púrpura a Rojo),
+     * cargadas por NIVEL DE CLASE (banda) en vez de por grado exacto. El Class
+     * Planner rota semana a semana, así que cada nivel acumula varias patadas
+     * (fuente: el Planificador Unificado). Cada patada se enlaza a TODOS los colores
+     * de la banda; los grados ya dictados con detalle propio (9→5) se excluyen.
      *
      * @return list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>
      */
@@ -125,12 +128,11 @@ class PatadasGradoSeeder extends Seeder
         $notaAvan = 'Nivel Avanzado (rota por semana; grado exacto por afinar).';
 
         return [
-            // Banda Intermedio → Verde y Púrpura (Camuflado ya tiene su detalle).
+            // Banda Intermedio → solo Púrpura (Camuflado y Verde ya tienen su detalle).
             [
-                'colores' => ['Verde', 'Púrpura'],
+                'colores' => ['Púrpura'],
                 'nivel' => NivelEntrenamiento::Intermedio,
                 'kicks' => [
-                    ['Giro circular', 'A, B, C, D', $notaInter],
                     ['Patada de Gancho', '1, 2, 3, 4', $notaInter],
                     ['Giro de Gancho', 'A, B, C, D', $notaInter],
                 ],

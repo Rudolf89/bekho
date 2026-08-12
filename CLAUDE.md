@@ -152,9 +152,9 @@ planners de los 6 ciclos, (6) recompensas/gamificación, (7) Programa Legacy
 operativo. Además: módulo de **Cuestionarios** autocorregidos con revisión del
 examinador y el **Manual del Juez** en "Aprender".
 
-**Currículo de patadas BEKHO vs ATA** (en Cinturones): grados 9→6 (Blanco a
-Camuflado) dictados por grado; grados altos 5→1 (Verde a Rojo) cargados **por
-banda de nivel** desde los Class Planners (`PatadasGradoSeeder::bekhoBandas`),
+**Currículo de patadas BEKHO vs ATA** (en Cinturones): grados 9→5 (Blanco a
+Verde) dictados por grado exacto por la escuela; grados altos aún sin dictar 4→1
+(Púrpura a Rojo) cargados **por banda de nivel** (`PatadasGradoSeeder::bekhoBandas`),
 porque el plan de clase rota semana a semana. El **Class Planner físico** (láminas
 Beginners/Intermediate/Advanced) NO tiene página propia: su contenido vive en el
 Planificador (estructura + rotación) y en Cinturones (patadas). El **Planificador
@@ -168,6 +168,6 @@ La **prueba escrita Legacy N3** ya tiene banco real (`App\Support\Cuestionarios\
 BancoLegacy`, fundado en el Manual Legacy) enlazado al requisito automático.
 
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
-**afinar las patadas BEKHO por grado exacto** en cinturones altos (hoy van por
-banda Verde/Púrpura y Azul/Café/Rojo); **sembrar más lecciones de vida** (solo está
-la Semana 7 del Ciclo 1 Disciplina).
+**afinar las patadas BEKHO por grado exacto** en los cinturones altos que faltan
+(Púrpura, Azul, Café y Rojo; 9→5 ya están dictados); **sembrar más lecciones de
+vida** (solo está la Semana 7 del Ciclo 1 Disciplina).
