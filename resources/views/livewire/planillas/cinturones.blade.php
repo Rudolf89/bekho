@@ -18,7 +18,7 @@
     <div class="rounded-xl border border-zinc-200 bg-white p-3 text-sm text-zinc-600 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
         <p>Cada patada se ejecuta en <span class="font-semibold">4 variantes</span>: <span class="font-semibold">1</span> pierna delantera · <span class="font-semibold">2</span> pierna trasera · <span class="font-semibold">3</span> con paso, pierna delantera · <span class="font-semibold">4</span> con paso, pierna trasera.</p>
         <p class="mt-1"><span class="font-semibold text-red-700 dark:text-red-400">BEKHO</span> es lo que se rinde en examen; <span class="font-semibold text-sky-700 dark:text-sky-400">ATA</span> es la referencia del manual.</p>
-        <p class="mt-1 text-zinc-500 dark:text-zinc-400">Los grados 9→5 (Blanco a Verde) tienen sus patadas BEKHO dictadas por la escuela; los grados altos aún sin dictar (Púrpura a Rojo) se listan <span class="font-semibold">por banda</span> de nivel, con el grado exacto por afinar.</p>
+        <p class="mt-1 text-zinc-500 dark:text-zinc-400">Los 9 grados de color (Blanco a Rojo) tienen sus patadas BEKHO dictadas por la escuela, grado por grado.</p>
     </div>
 
     {{-- Selector de escala --}}

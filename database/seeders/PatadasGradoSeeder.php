@@ -39,7 +39,6 @@ class PatadasGradoSeeder extends Seeder
             ->delete();
 
         $this->sembrar('bekho', $this->bekho());
-        $this->sembrarBandas($this->bekhoBandas());
         $this->sembrar('ata', $this->ata());
     }
 
@@ -76,9 +75,9 @@ class PatadasGradoSeeder extends Seeder
     }
 
     /**
-     * Currículo BEKHO (examen) por grado exacto: grados 9→5 (Blanco a Verde)
-     * dictados uno a uno por la escuela. Los grados altos aún sin dictar (4→1:
-     * Púrpura a Rojo) se cargan por banda en bekhoBandas() hasta tener su detalle.
+     * Currículo BEKHO (examen) por grado exacto, dictado por la escuela: los 9
+     * grados de color (9→1, Blanco a Rojo), cada uno con sus patadas y variantes.
+     * Cada patada se ejecuta en 4 variantes (1-4) o en 4 giros (A-D).
      *
      * @return array<string, array{nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string}>}>
      */
@@ -86,6 +85,7 @@ class PatadasGradoSeeder extends Seeder
     {
         $p = NivelEntrenamiento::Principiantes;
         $i = NivelEntrenamiento::Intermedio;
+        $a = NivelEntrenamiento::Avanzado;
 
         return [
             'Blanco' => ['nivel' => $p, 'kicks' => [
@@ -110,87 +110,25 @@ class PatadasGradoSeeder extends Seeder
                 ['Giro circular', 'A, B, C, D'],
                 ['Patada de Costado saltando', '1, 2, 3, 4'],
             ]],
+            'Púrpura' => ['nivel' => $i, 'kicks' => [
+                ['Patada de Gancho', '1, 2, 3, 4'],
+                ['Giro de Gancho', 'A, B, C, D'],
+                ['Patada de Vuelta saltando', '1, 2, 3, 4'],
+            ]],
+            'Azul' => ['nivel' => $a, 'kicks' => [
+                ['Patada Circular saltando (adentro/afuera)', '1, 2, 3, 4'],
+                ['Giro circular saltando', 'A, B, C, D'],
+            ]],
+            'Café' => ['nivel' => $a, 'kicks' => [
+                ['Patada Circular de talón', '1, 2, 3, 4'],
+                ['Giro de talón', 'A, B, C, D'],
+                ['Giro de costado saltando', 'A, B, C, D'],
+            ]],
+            'Rojo' => ['nivel' => $a, 'kicks' => [
+                ['Patada de Gancho saltando', '1, 2, 3, 4'],
+                ['Giro de Gancho saltando', 'A, B, C, D'],
+            ]],
         ];
-    }
-
-    /**
-     * Patadas BEKHO de los grados aún sin dictar por la escuela (Púrpura a Rojo),
-     * cargadas por NIVEL DE CLASE (banda) en vez de por grado exacto. El Class
-     * Planner rota semana a semana, así que cada nivel acumula varias patadas
-     * (fuente: el Planificador Unificado). Cada patada se enlaza a TODOS los colores
-     * de la banda; los grados ya dictados con detalle propio (9→5) se excluyen.
-     *
-     * @return list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>
-     */
-    private function bekhoBandas(): array
-    {
-        $notaInter = 'Nivel Intermedio (rota por semana; grado exacto por afinar).';
-        $notaAvan = 'Nivel Avanzado (rota por semana; grado exacto por afinar).';
-
-        return [
-            // Banda Intermedio → solo Púrpura (Camuflado y Verde ya tienen su detalle).
-            [
-                'colores' => ['Púrpura'],
-                'nivel' => NivelEntrenamiento::Intermedio,
-                'kicks' => [
-                    ['Patada de Gancho', '1, 2, 3, 4', $notaInter],
-                    ['Giro de Gancho', 'A, B, C, D', $notaInter],
-                ],
-            ],
-            // Banda Avanzado → Azul, Café y Rojo.
-            [
-                'colores' => ['Azul', 'Café', 'Rojo'],
-                'nivel' => NivelEntrenamiento::Avanzado,
-                'kicks' => [
-                    ['Patada circular saltando (afuera/adentro)', '1, 2, 3, 4', $notaAvan],
-                    ['Giro circular saltando', 'A, B, C, D', $notaAvan],
-                    ['Patada de Gancho saltando', '1, 2, 3, 4', $notaAvan],
-                    ['Giro de Gancho saltando', 'A, B, C, D', $notaAvan],
-                    ['Giro Mariposa', null, $notaAvan],
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * Siembra patadas BEKHO por banda: una técnica enlazada a todos los colores
-     * de la banda. Idempotente (clave por categoría + fuente + nombre).
-     *
-     * @param  list<array{colores: list<string>, nivel: NivelEntrenamiento, kicks: list<array{0: string, 1: ?string, 2?: ?string}>}>  $bandas
-     */
-    private function sembrarBandas(array $bandas): void
-    {
-        foreach ($bandas as $banda) {
-            $gradoIds = Grado::whereIn('color', $banda['colores'])->pluck('id')->all();
-
-            foreach ($banda['kicks'] as $orden => $kick) {
-                [$nombre, $variantes, $nota] = array_pad($kick, 3, null);
-
-                // "Ejecuciones: A, B, C, D · <nota de banda>" para que la vista
-                // (que corta tras "Ejecuciones: ") muestre variantes y contexto.
-                $descripcion = $variantes ? "Ejecuciones: {$variantes}." : null;
-                if ($nota) {
-                    $descripcion = $descripcion ? "{$descripcion} {$nota}" : "Ejecuciones: {$nota}";
-                }
-
-                $tecnica = Tecnica::updateOrCreate(
-                    [
-                        'categoria' => CategoriaTecnica::Patada->value,
-                        'fuente' => 'bekho',
-                        'nombre' => $nombre,
-                    ],
-                    [
-                        'descripcion' => $descripcion,
-                        'nivel' => $banda['nivel']->value,
-                        'cinturon' => null,
-                        'core' => true,
-                        'orden' => 100 + $orden,
-                    ],
-                );
-
-                $tecnica->grados()->sync($gradoIds);
-            }
-        }
     }
 
     /**

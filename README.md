@@ -334,9 +334,8 @@ de 8 semanas.
   Songahm y las **técnicas enlazadas** a cada cinturón (normalizando grafías:
   Morado↔Púrpura, Camuflaje↔Camuflado, Marrón↔Café). Incluye la **comparativa de
   patadas BEKHO (lo que se rinde en examen) vs ATA (referencia del manual)** por grado;
-  los grados 9→5 (Blanco a Verde) van dictados por la escuela y los que faltan
-  (Púrpura a Rojo) se cargan **por banda de nivel** porque el plan de clase rota
-  semana a semana.
+  los **9 grados de color (Blanco a Rojo)** van dictados por la escuela grado por grado,
+  cada patada en 4 variantes (1-4) o 4 giros (A-D).
 
 **Cuestionarios (Fase 5)**
 

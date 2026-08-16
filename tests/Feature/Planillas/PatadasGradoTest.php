@@ -31,41 +31,31 @@ test('cada cinturón tiene sus patadas en las dos fuentes (bekho y ata)', functi
     expect($patadas->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral');
 });
 
-test('BEKHO cubre 9→5 por grado exacto y 4→1 por banda; ATA cubre 9→1', function () {
-    // Verde (grado 5): ya viene con su detalle exacto dictado por la escuela.
-    $verde = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Verde')->first();
-    $patadasVerde = $verde->tecnicas->filter(fn ($t) => $t->categoria === CategoriaTecnica::Patada);
+test('BEKHO cubre los 9 grados de color por grado exacto (sin bandas)', function () {
+    // Cada color tiene EXACTAMENTE sus patadas dictadas por la escuela.
+    $esperado = [
+        'Verde' => ['Giro circular', 'Patada de Costado saltando'],
+        'Púrpura' => ['Patada de Gancho', 'Giro de Gancho', 'Patada de Vuelta saltando'],
+        'Azul' => ['Patada Circular saltando (adentro/afuera)', 'Giro circular saltando'],
+        'Café' => ['Patada Circular de talón', 'Giro de talón', 'Giro de costado saltando'],
+        'Rojo' => ['Patada de Gancho saltando', 'Giro de Gancho saltando'],
+    ];
 
-    expect($patadasVerde->where('fuente', 'bekho')->pluck('nombre'))
-        ->toContain('Giro circular', 'Patada de Costado saltando')
-        ->and($patadasVerde->where('fuente', 'ata')->pluck('nombre'))->toContain('Patada lateral en salto');
-
-    // Rojo (banda Avanzado): patadas saltando del planner + referencia ATA.
-    $rojo = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Rojo')->first();
-    expect($rojo->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
-        ->toContain('Patada circular saltando (afuera/adentro)', 'Giro circular saltando')
-        ->and($rojo->tecnicas->where('fuente', 'ata')->pluck('nombre'))
-        ->toContain('Patada de gancho en salto', 'Patada circular en salto');
-});
-
-test('las patadas de banda se enlazan a todos los colores de la banda', function () {
-    // Banda Intermedio → solo Púrpura (grado 4, aún sin dictar).
-    $purpura = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Púrpura')->first();
-    expect($purpura->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
-        ->toContain('Patada de Gancho', 'Giro de Gancho');
-
-    // Banda Avanzado (Azul/Café/Rojo): saltos + gancho saltando + mariposa.
-    foreach (['Azul', 'Café', 'Rojo'] as $color) {
+    foreach ($esperado as $color => $patadas) {
         $grado = Grado::porEscala(EscalaGrado::Adultos)->where('color', $color)->first();
-        expect($grado->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
-            ->toContain('Giro circular saltando', 'Patada de Gancho saltando', 'Giro Mariposa');
+        $bekho = $grado->tecnicas->where('fuente', 'bekho')
+            ->filter(fn ($t) => $t->categoria === CategoriaTecnica::Patada);
+
+        expect($bekho->pluck('nombre')->sort()->values()->all())
+            ->toEqual(collect($patadas)->sort()->values()->all());
     }
 
-    // Verde ya es exacto: NO recibe las patadas de banda (Gancho) que quedan en Púrpura.
-    $verde = Grado::porEscala(EscalaGrado::Adultos)->where('color', 'Verde')->first();
-    expect($verde->tecnicas->where('fuente', 'bekho')->pluck('nombre'))
-        ->toContain('Giro circular')
-        ->not->toContain('Patada de Gancho');
+    // Ya no quedan patadas BEKHO por banda (todas tienen su cinturón).
+    expect(Tecnica::where('fuente', 'bekho')->where('categoria', CategoriaTecnica::Patada->value)
+        ->whereNull('cinturon')->count())->toBe(0);
+
+    // "Giro Mariposa" era una conjetura de banda: ya no existe como patada BEKHO.
+    expect(Tecnica::where('fuente', 'bekho')->where('nombre', 'Giro Mariposa')->exists())->toBeFalse();
 });
 
 test('las técnicas-resumen de los cinturones de color se reemplazan', function () {
