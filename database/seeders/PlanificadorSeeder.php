@@ -190,24 +190,38 @@ class PlanificadorSeeder extends Seeder
 
     private function sembrarLecciones(): void
     {
-        // TODO: solo la Semana 7 del Ciclo 1 (Disciplina) viene en el prototipo.
-        // El resto de las semanas/ciclos queda pendiente: NO se inventan.
-        $ciclo = Ciclo::where('habilidad_vida', HabilidadVida::Disciplina->value)->first();
-        if (! $ciclo) {
-            return;
-        }
-
-        LeccionVida::updateOrCreate(
-            ['ciclo_id' => $ciclo->id, 'semana' => 7],
-            [
+        // Lecciones de vida reales (aportadas por la escuela). El resto de las
+        // semanas/ciclos queda pendiente: NO se inventan.
+        $lecciones = [
+            [HabilidadVida::Disciplina, 7, [
                 'comienzo_texto' => 'VISIÓN es uno de los pilares más importantes de disciplina. Los alumnos disciplinados siempre tendrán presente su visión para alcanzar sus objetivos. ¿Cuál es su objetivo hoy?',
                 'comienzo_frase' => 'VISUALICE SUS OBJETIVOS',
                 'durante_texto' => 'Se acerca el examen, así que visualicemos cómo se ve un campeón durante un examen. Un campeón es fuerte, confiado y tiene un alto nivel de disciplina.',
                 'durante_frase' => 'VISUALICE SUS LOGROS',
                 'fin_texto' => 'Un líder en la casa siempre tiene la visión de cómo debe comportarse, cómo debe lucir su habitación e incluso qué tan bien le va a ir en la escuela. ¿Quién usa visualización en casa?',
                 'fin_frase' => 'PONGA SU VISIÓN EN ACCIÓN',
-            ],
-        );
+            ]],
+            [HabilidadVida::Comunicacion, 6, [
+                'comienzo_texto' => 'Hoy, estamos trabajando en uno de los niveles más importantes de la comunicación que es el hablar. Antes de empezar la clase, giremos hacia la audiencia y digamos un «hola» con confianza a todos los padres.',
+                'comienzo_frase' => 'Saludar con CONFIANZA',
+                'durante_texto' => 'Vamos a trabajar la comunicación entre nosotros, cuidando siempre las palabras que elegimos para comunicarnos. Cuando alguien va a realizar un ejercicio, vamos a alentarlo.',
+                'durante_frase' => 'Usar palabras ALENTADORAS',
+                'fin_texto' => '¡Felicitaciones por ganar su tira esta semana! Otra manera de seguir mejorando en cómo nos comunicamos es usar las palabras apropiadas con nuestros padres. Decir cosas como «por favor», «gracias» y «de nada». ¿Quién está aplicando esto en casa? ¡Genial, a seguir así!',
+                'fin_frase' => 'Usa tus modales.',
+            ]],
+        ];
+
+        foreach ($lecciones as [$habilidad, $semana, $campos]) {
+            $ciclo = Ciclo::where('habilidad_vida', $habilidad->value)->first();
+            if (! $ciclo) {
+                continue;
+            }
+
+            LeccionVida::updateOrCreate(
+                ['ciclo_id' => $ciclo->id, 'semana' => $semana],
+                $campos,
+            );
+        }
     }
 
     // ── Planificador de Cinturón Negro ──────────────────────────────────────

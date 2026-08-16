@@ -41,12 +41,24 @@ test('se siembran los 6 ciclos, uno por Habilidad para la Vida', function () {
 });
 
 test('la lección de vida cuelga de su ciclo y deriva la habilidad del ciclo', function () {
-    $leccion = LeccionVida::with('ciclo')->first();
+    $leccion = LeccionVida::with('ciclo')->where('semana', 7)->first();
 
     expect($leccion->ciclo)->not->toBeNull()
         ->and($leccion->semana)->toBe(7)
         // La habilidad se deriva del ciclo (Disciplina).
         ->and($leccion->habilidad)->toBe(HabilidadVida::Disciplina);
+});
+
+test('la lección de Comunicación (Semana 6) queda cargada en su ciclo', function () {
+    $ciclo = Ciclo::where('habilidad_vida', HabilidadVida::Comunicacion->value)->first();
+    $leccion = $ciclo->lecciones()->where('semana', 6)->first();
+
+    expect($leccion)->not->toBeNull()
+        ->and($leccion->habilidad)->toBe(HabilidadVida::Comunicacion)
+        ->and($leccion->comienzo_frase)->toBe('Saludar con CONFIANZA')
+        ->and($leccion->durante_frase)->toBe('Usar palabras ALENTADORAS')
+        ->and($leccion->fin_frase)->toBe('Usa tus modales.')
+        ->and($leccion->fin_texto)->toContain('por favor', 'gracias', 'de nada');
 });
 
 // ── Biblioteca de calentamiento: filtro por grupo ───────────────────────────
