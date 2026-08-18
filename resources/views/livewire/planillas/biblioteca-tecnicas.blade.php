@@ -29,7 +29,9 @@
                 <flux:text size="sm" class="mt-0.5">{{ $cat->descripcion() }}</flux:text>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2">
+            {{-- items-start: cada tarjeta con su propia altura, así al expandir una
+                 no se estira la vecina a un bloque vacío. --}}
+            <div class="grid items-start gap-3 sm:grid-cols-2">
                 @foreach ($tecnicas as $tecnica)
                     @php($cinturones = $tecnica->grados->pluck('color')->unique()->values())
                     <div class="flex flex-col rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800" wire:key="tec-{{ $tecnica->id }}">
@@ -75,7 +77,7 @@
                                     <span class="text-red-600 dark:text-red-400" x-text="open ? '▾' : '▸'"></span>
                                 </button>
 
-                                <div x-show="open" x-cloak class="mt-2">
+                                <div x-show="open" x-cloak class="mt-2 max-h-[26rem] overflow-y-auto">
                                     @if ($enTabla)
                                         {{-- Formas: tabla escaneable --}}
                                         <div class="overflow-x-auto rounded-lg border border-zinc-200 dark:border-zinc-700">
