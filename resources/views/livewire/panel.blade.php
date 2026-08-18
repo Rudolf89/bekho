@@ -12,7 +12,7 @@
     </div>
 
     {{-- KPIs --}}
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800">
             <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 <flux:icon.users class="size-4" /> Alumnos activos
@@ -53,7 +53,7 @@
     </div>
 
     {{-- Cuerpo: clases de hoy + columna lateral --}}
-    <div class="grid gap-4 lg:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {{-- Clases de hoy --}}
         <div class="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-700 dark:bg-zinc-800 lg:col-span-2">
             <div class="flex items-center justify-between">
