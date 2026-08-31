@@ -69,12 +69,13 @@ formación).
   **multi-instructor** (pivote `clase_instructor`, papel titular/asistente/ayudante;
   nombre y hora fin autocompletados), **asistencia como calendario semanal**, pagos,
   exámenes (instructor inscribe; dirección finaliza), planillas.
-- **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario.
-  Aquí va el estudio de los manuales ATA: "Preparación para examen de juez" (Manual
-  del Juez ATA en 18 secciones) y los manuales **Legacy, Tigers, MAK y MAX N1/N2**
-  (`ManualesAprenderSeeder`, fuente en `database/data/manuales/*.json`, transcritos de
-  los .docx en español). Cada manual = un Nivel con una lección de texto por sección
-  + el documento oficial en Drive.
+- **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario;
+  navegación secuencial entre capítulos en `VerContenido` (Anterior/Siguiente +
+  "Completar y continuar →"). Aquí va el estudio de los manuales ATA: "Preparación
+  para examen de juez" (Manual del Juez ATA en 18 secciones) y los manuales **Legacy,
+  Tigers, MAK y MAX N1/N2** (`ManualesAprenderSeeder`, fuente en
+  `database/data/manuales/*.json`, transcritos de los .docx en español). Cada manual =
+  un Nivel con una lección de texto por sección + el documento oficial en Drive.
 - **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
   Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planilla
   fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
@@ -123,6 +124,11 @@ formación).
   horizontal** (`flex … items-end`) ese error estira el campo y desalinea la fila →
   ocultar el error inline con `[&_[data-flux-error]]:hidden` en la fila y mostrar el
   mensaje con `@error` debajo).
+- **Responsive** (móvil): un `grid … sm:grid-cols-N` **sin `grid-cols-1` base** crea
+  en móvil una columna `auto` (max-content) que ignora `truncate` y desborda a la
+  derecha → siempre declarar `grid-cols-1` explícito. En grids de tarjetas con
+  contenido colapsable usar `items-start` para que expandir una no estire a la vecina;
+  tablas anchas siempre dentro de `overflow-x-auto`.
 - Enums en `App\Enums` (backed string) con método `etiqueta()`.
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `academia_id` + trait `PerteneceAcademia`.
@@ -141,6 +147,12 @@ formación).
   **gitignoreados** → hay que reconstruir para ver cambios (Tailwind v4 genera on-build).
 - Navegador para screenshots: Chromium en `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`,
   Playwright desde `/opt/node22/lib/node_modules/playwright/index.js` (import default).
+- Si el contenedor se reinicia puede borrar `vendor/`, `.env` y `public/build`.
+  Recuperar: `cp .env.example .env && php artisan key:generate`; reconstruir assets;
+  y `composer install` — pero el proxy **bloquea descargas de archivos de GitHub**
+  (solo `git`), así que usar `composer config -g use-github-api false` +
+  `--prefer-source`. `phpstan` es dist-only (sin `source`) → único paquete que no baja;
+  es solo análisis estático (no afecta tests/Pint), se puede omitir temporalmente.
 
 ## Estado y plan
 
@@ -167,5 +179,10 @@ bandeja en `/notificaciones` (`App\Livewire\Notificaciones`) con badge en el sid
 La **prueba escrita Legacy N3** ya tiene banco real (`App\Support\Cuestionarios\
 BancoLegacy`, fundado en el Manual Legacy) enlazado al requisito automático.
 
+Lecciones de vida sembradas (reales, aportadas por la escuela; `PlanificadorSeeder::
+sembrarLecciones`): **Ciclo 1 Disciplina · Semana 7** y **Ciclo 3 Comunicación ·
+Semana 6** (2 de 48). Cada una con los 3 momentos (comienzo/durante/fin + frase).
+
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
-**sembrar más lecciones de vida** (solo está la Semana 7 del Ciclo 1 Disciplina).
+**sembrar el resto de lecciones de vida** (46 semanas · el usuario pasa la lámina y
+se agrega a la lista de `sembrarLecciones`).
