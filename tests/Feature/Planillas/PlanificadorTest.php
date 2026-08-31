@@ -180,10 +180,26 @@ test('la lección de vida se acota al ciclo elegido', function () {
         ->assertSee('Disciplina')
         ->assertSee('VISUALICE SUS OBJETIVOS');
 
-    // Un ciclo sin lecciones sembradas muestra el vacío, no la lección de otro.
+    // Un ciclo sin lecciones sembradas muestra las semanas marcadas como
+    // pendientes, no la lección de otro ciclo.
     $comp->set('cicloId', $ciclos->get(1)->id)
-        ->assertSee('Este ciclo aún no tiene lecciones cargadas.')
+        ->assertSee('Lección pendiente de aportar')
+        ->assertSee('0 de 8 semanas cargadas')
         ->assertDontSee('VISUALICE SUS OBJETIVOS');
+});
+
+test('las 8 semanas se muestran como casilleros (cargadas + pendientes)', function () {
+    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor->assignRole('instructor');
+    $comunicacion = Ciclo::where('habilidad_vida', HabilidadVida::Comunicacion->value)->first();
+
+    // Ciclo Comunicación: 8 casilleros de semana, 1 cargada (S6).
+    Livewire::actingAs($instructor)->test(Planificador::class)
+        ->set('tab', 'leccion')
+        ->set('cicloId', $comunicacion->id)
+        ->assertSee('Semana 1')
+        ->assertSee('Semana 8')
+        ->assertSee('1 de 8 semanas cargadas');
 });
 
 test('el planificador exige el permiso de gestionar planillas', function () {

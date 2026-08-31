@@ -315,16 +315,23 @@
             </div>
         @endisset
 
-        <div class="flex flex-wrap justify-center gap-2">
-            @forelse ($lecciones as $lec)
-                <flux:button size="sm" wire:click="$set('lecSemana', {{ $lec->semana }})"
-                    :variant="$lecSemana === $lec->semana ? 'primary' : 'filled'">
-                    Semana {{ $lec->semana }}
-                </flux:button>
-            @empty
-                <flux:text size="sm" class="text-zinc-400">Este ciclo aún no tiene lecciones cargadas.</flux:text>
-            @endforelse
-        </div>
+        {{-- Las 8 semanas del ciclo como casilleros: cargada (resaltada) o
+             pendiente (atenuada, marcada pero sin contenido aún). --}}
+        @isset($semanasCiclo)
+            <div class="flex flex-wrap justify-center gap-2">
+                @for ($s = 1; $s <= $semanasCiclo; $s++)
+                    @php($cargada = in_array($s, $semanasCargadas, true))
+                    <flux:button size="sm" wire:click="$set('lecSemana', {{ $s }})"
+                        :variant="$lecSemana === $s ? 'primary' : 'filled'"
+                        class="{{ $cargada ? '' : 'opacity-45' }}">
+                        Semana {{ $s }}{{ $cargada ? '' : ' ·' }}
+                    </flux:button>
+                @endfor
+            </div>
+            <p class="text-center text-xs text-zinc-400">
+                {{ count($semanasCargadas) }} de {{ $semanasCiclo }} semanas cargadas en este ciclo · las atenuadas están pendientes de aportar.
+            </p>
+        @endisset
 
         @if ($leccion)
             <div class="rounded-xl bg-zinc-900 p-5 text-center text-white">
@@ -358,7 +365,10 @@
             </div>
         @else
             <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                <flux:text>Aún no hay lecciones cargadas.</flux:text>
+                <flux:text class="font-semibold">
+                    @isset($cicloActual){{ $cicloActual->habilidad_vida->etiqueta() }} · @endisset Semana {{ $lecSemana }}
+                </flux:text>
+                <flux:text size="sm" class="mt-1 block text-zinc-400">Lección pendiente de aportar (la escuela pasa la lámina y se carga).</flux:text>
             </div>
         @endif
     @endif

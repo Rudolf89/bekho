@@ -264,14 +264,18 @@ class Planificador extends Component
             $ciclos = Ciclo::ordenados()->get();
             $cicloActual = $ciclos->firstWhere('id', $this->cicloId) ?? $ciclos->first();
 
-            $datos['ciclos'] = $ciclos;
-            $datos['cicloActual'] = $cicloActual;
-            $datos['lecciones'] = $cicloActual
+            $lecciones = $cicloActual
                 ? $cicloActual->lecciones()->with('ciclo')->get()
                 : collect();
-            $datos['leccion'] = $cicloActual
-                ? $cicloActual->lecciones()->with('ciclo')->where('semana', $this->lecSemana)->first()
-                : null;
+
+            $datos['ciclos'] = $ciclos;
+            $datos['cicloActual'] = $cicloActual;
+            $datos['lecciones'] = $lecciones;
+            // Todas las semanas del ciclo (8) se muestran como casilleros: las
+            // cargadas resaltadas, las pendientes atenuadas.
+            $datos['semanasCiclo'] = $cicloActual?->semanas ?? 8;
+            $datos['semanasCargadas'] = $lecciones->pluck('semana')->all();
+            $datos['leccion'] = $lecciones->firstWhere('semana', $this->lecSemana);
         }
 
         return view('livewire.planillas.planificador', $datos);
