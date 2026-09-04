@@ -41,8 +41,8 @@ class AcademiasBekhoSeeder extends Seeder
         /** @var list<array<string, mixed>> $academias */
         $academias = json_decode((string) file_get_contents($rutaAcademias), true);
 
-        // Campo → nombres de sus integrantes (supervisor + miembros), para enlazar.
-        $integrantesPorCampo = $this->integrantesPorCampo($rutaLinea);
+        // Campo → nombre de su supervisor (raíz del subárbol a enlazar).
+        $supervisorPorCampo = $this->supervisorPorCampo($rutaLinea);
 
         // Mapa nombre normalizado → usuario (una sola pasada).
         $usuariosPorNombre = User::sinAcademia()->get()
@@ -69,24 +69,31 @@ class AcademiasBekhoSeeder extends Seeder
 
             // Enlace academia ↔ campo (solo si el JSON trae un campo con base).
             $campo = $datos['campo'] ?? null;
-            if ($campo === null) {
+            if ($campo === null || ! isset($supervisorPorCampo[$campo])) {
                 continue;
             }
 
-            foreach ($integrantesPorCampo[$campo] ?? [] as $nombre) {
-                $usuario = $usuariosPorNombre->get($this->clave($nombre));
-                $usuario?->update(['academia_id' => $academia->id]);
+            // Se enlaza por el ÁRBOL real de supervisión, no por la lista de
+            // nombres del campo: así una persona que figura en dos campos queda
+            // en la academia de su supervisor canónico (su supervisor_id) y no
+            // se le pisa el academia_id según el orden de los campos.
+            $supervisor = $usuariosPorNombre->get($this->clave($supervisorPorCampo[$campo]));
+            if (! $supervisor) {
+                continue;
             }
+
+            $supervisor->update(['academia_id' => $academia->id]);
+            User::where('supervisor_id', $supervisor->id)->update(['academia_id' => $academia->id]);
         }
     }
 
     /**
-     * Lee la línea de supervisión y devuelve, por número de campo, la lista de
-     * nombres (supervisor + miembros).
+     * Lee la línea de supervisión y devuelve, por número de campo, el nombre de
+     * su supervisor (la raíz del subárbol a enlazar con la academia).
      *
-     * @return array<int, list<string>>
+     * @return array<int, string>
      */
-    private function integrantesPorCampo(string $ruta): array
+    private function supervisorPorCampo(string $ruta): array
     {
         if (! is_file($ruta)) {
             return [];
@@ -97,7 +104,7 @@ class AcademiasBekhoSeeder extends Seeder
 
         $mapa = [];
         foreach ($campos as $campo) {
-            $mapa[$campo['campo']] = array_merge([$campo['supervisor']], $campo['miembros']);
+            $mapa[$campo['campo']] = $campo['supervisor'];
         }
 
         return $mapa;

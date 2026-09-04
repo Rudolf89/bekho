@@ -72,13 +72,36 @@
     "campo": null,
     "confianza": "baja",
     "confirmado": false,
-    "nota": "Red de sedes. La sede de Séptima Avenida usa el Instagram @bekho.ciudaddelnino, distinto al @academiascl de las demás: 'Ciudad del Niño' parece un nombre de academia propio dentro de la red.",
+    "nota": "Red de sedes. La Florida podría ser de SR. ALBERTO CARICEO (122): una foto de la ficha la subió la cuenta 'Ata Cariceo' — solo pista, sin confirmar. Ciudad del Niño se movió a la red Raigán (ver abajo).",
     "sedes": [
       { "nombre": "Santiago Centro", "comuna": "Santiago", "direccion": "Zenteno 1395" },
       { "nombre": "Gran Avenida", "comuna": "San Miguel", "direccion": "Gran Avenida 5116" },
       { "nombre": "San Ignacio", "comuna": "San Miguel", "direccion": "San Ignacio 4815" },
-      { "nombre": "Ciudad del Niño", "comuna": "San Miguel", "direccion": "Séptima Avenida 1261" },
       { "nombre": "La Florida", "comuna": "La Florida", "direccion": "Walker Martínez 2295" }
+    ]
+  },
+  {
+    "nombre": "ATA BEKHO Martínez",
+    "sitio": "ata-martinez.cl",
+    "director": "Pablo Martínez",
+    "campo": 111,
+    "confianza": "alta",
+    "confirmado": false,
+    "nota": "Dos señales independientes: el sitio de la sede de Maipú es ata-martinez.cl, y dos reseñas agradecen a Félix Pérez y a Fernanda (Jeldres), ambos en el campo 111.",
+    "sedes": [
+      { "nombre": "Maipú", "comuna": "Maipú", "direccion": "Luis Gandarillas 395" }
+    ]
+  },
+  {
+    "nombre": "ATA BEKHO Raigán",
+    "sitio": "ATA Raigans",
+    "director": "José Miguel Raigán",
+    "campo": 115,
+    "confianza": "alta",
+    "confirmado": false,
+    "nota": "Ciudad del Niño (San Miguel): una foto de la ficha la subió la cuenta 'ATA Raigans Ciudad del Niño' y su Instagram es @bekho.ciudaddelnino. José Miguel Raigán encabeza el campo 115.",
+    "sedes": [
+      { "nombre": "Ciudad del Niño", "comuna": "San Miguel", "direccion": "Séptima Avenida 1261" }
     ]
   },
   {

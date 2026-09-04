@@ -48,6 +48,20 @@ test('los usuarios de un campo con base quedan enlazados a su academia', functio
     expect($miembro)->not->toBeNull();
 });
 
+test('quien figura en dos campos queda en la academia de su supervisor canónico', function () {
+    // GERALD PEREZ aparece en el campo 134 (Power) y en el 111 (Martínez).
+    // Su supervisor canónico es Victor Rodríguez (134) → debe quedar en Power,
+    // no en Martínez, aunque este se enlace después.
+    $power = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $martinez = Academia::where('nombre', 'ATA BEKHO Martínez')->first();
+
+    $gerald = User::sinAcademia()->get()
+        ->first(fn (User $u) => Str::of($u->name)->ascii()->lower()->squish()->contains('gerald perez'));
+
+    expect($martinez)->not->toBeNull()
+        ->and($gerald->academia_id)->toBe($power->id);
+});
+
 test('un campo sin base no fija academia a sus usuarios', function () {
     // Campo 119 (Herman Bastias) no está enlazado a ninguna academia.
     $bastias = User::sinAcademia()->get()
