@@ -6,6 +6,7 @@ use App\Enums\EscalaGrado;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\SugiereGrupoEtario;
 use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Programa;
@@ -21,7 +22,7 @@ use Livewire\WithPagination;
 #[Title('Estudiantes')]
 class GestionEstudiantes extends Component
 {
-    use AuthorizesRequests, ConOrden, WithPagination;
+    use AuthorizesRequests, ConOrden, SugiereGrupoEtario, WithPagination;
 
     // Filtros
     public string $buscar = '';

@@ -4,11 +4,11 @@ namespace App\Livewire\Inscripcion;
 
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
+use App\Livewire\Concerns\SugiereGrupoEtario;
 use App\Models\Estudiante;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
-use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -16,6 +16,8 @@ use Livewire\Component;
 #[Title('Inscripción de alumno nuevo')]
 class InscribirAlumno extends Component
 {
+    use SugiereGrupoEtario;
+
     // Lugar de entrenamiento e instructor
     public string $sede_id = '';
 
@@ -104,105 +106,6 @@ class InscribirAlumno extends Component
     public function updatedSedeId(): void
     {
         $this->instructor_id = '';
-    }
-
-    /**
-     * Al cambiar la fecha de nacimiento, sugiere el grupo etario por edad
-     * (el instructor lo puede ajustar, por el solapamiento a los 12 años).
-     */
-    public function updatedFechaNacimiento(): void
-    {
-        $edad = $this->edad();
-
-        if ($edad !== null) {
-            $this->grupo_etario = GrupoEtario::sugerirPorEdad($edad)->value;
-        }
-    }
-
-    /**
-     * Edad actual del alumno (años cumplidos) según la fecha de nacimiento, o
-     * null si no hay fecha válida.
-     */
-    public function edad(): ?int
-    {
-        if (! $this->fecha_nacimiento) {
-            return null;
-        }
-
-        try {
-            return (int) Carbon::parse($this->fecha_nacimiento)->age;
-        } catch (\Exception) {
-            return null;
-        }
-    }
-
-    /**
-     * Meses hasta el próximo cumpleaños (0 si es este mes), o null si no hay fecha.
-     */
-    protected function mesesHastaProximoCumple(): ?int
-    {
-        if (! $this->fecha_nacimiento) {
-            return null;
-        }
-
-        try {
-            $nacimiento = Carbon::parse($this->fecha_nacimiento);
-        } catch (\Exception) {
-            return null;
-        }
-
-        $proximo = $nacimiento->copy()->year(now()->year);
-        if ($proximo->lessThan(now()->startOfDay())) {
-            $proximo->addYear();
-        }
-
-        return (int) floor(now()->startOfDay()->diffInMonths($proximo));
-    }
-
-    /**
-     * Si el alumno está por cumplir (dentro de ~4 meses) la edad que lo pasaría
-     * al grupo siguiente, devuelve esa sugerencia para ofrecer el cambio. El
-     * campo sigue siendo editable a mano; esto es solo una ayuda.
-     *
-     * @return array{grupo: GrupoEtario, meses: int, edadProxima: int}|null
-     */
-    public function sugerenciaProximoGrupo(): ?array
-    {
-        $edad = $this->edad();
-
-        if ($edad === null || $this->grupo_etario === '') {
-            return null;
-        }
-
-        $siguiente = GrupoEtario::from($this->grupo_etario)->siguiente();
-        if (! $siguiente) {
-            return null;
-        }
-
-        $meses = $this->mesesHastaProximoCumple();
-        if ($meses === null || $meses > 4) {
-            return null;
-        }
-
-        // Edad que tendrá en el próximo cumpleaños: solo sugiere si con ella
-        // alcanza el piso del grupo siguiente.
-        $edadProxima = $edad + 1;
-        if ($edadProxima < $siguiente->edadMinima()) {
-            return null;
-        }
-
-        return ['grupo' => $siguiente, 'meses' => $meses, 'edadProxima' => $edadProxima];
-    }
-
-    /**
-     * Cambia el grupo etario elegido (usado por la sugerencia de "pasar al
-     * grupo siguiente" cuando el alumno está por cumplir la edad).
-     */
-    public function cambiarGrupo(string $grupo): void
-    {
-        if (GrupoEtario::tryFrom($grupo)) {
-            $this->grupo_etario = $grupo;
-        }
     }
 
     /**

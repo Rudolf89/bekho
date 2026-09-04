@@ -94,7 +94,8 @@
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="nombre" label="Nombre" required />
                 <flux:input wire:model="rut" label="RUT" />
-                <flux:input wire:model="fecha_nacimiento" type="date" label="Fecha de nacimiento" />
+                <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento"
+                    :description="$this->edad() !== null ? 'Edad: '.$this->edad().' '.($this->edad() === 1 ? 'año' : 'años') : null" />
                 <flux:select wire:model.live="grupo_etario" label="Grupo etario" placeholder="Selecciona">
                     @foreach ($grupos as $g)
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }} ({{ $g->rangoEdad() }})</flux:select.option>
@@ -122,6 +123,23 @@
                 <flux:input wire:model="telefono_contacto" label="Teléfono de contacto" />
                 <flux:input wire:model="email_contacto" type="email" label="Correo de contacto" />
             </div>
+
+            {{-- Aviso cuando el alumno está por cumplir la edad del grupo siguiente. --}}
+            @php($sugerencia = $this->sugerenciaProximoGrupo())
+            @if ($sugerencia)
+                <flux:callout size="sm" icon="arrow-trending-up" color="amber">
+                    <flux:callout.text>
+                        Está por cumplir {{ $sugerencia['edadProxima'] }} años{{ $sugerencia['meses'] > 0 ? ' (en ~'.$sugerencia['meses'].' '.($sugerencia['meses'] === 1 ? 'mes' : 'meses').')' : ' este mes' }}.
+                        Si corresponde, puedes moverlo a <strong>{{ $sugerencia['grupo']->etiqueta() }}</strong> ({{ $sugerencia['grupo']->rangoEdad() }}).
+                    </flux:callout.text>
+                    <x-slot name="actions">
+                        <flux:button size="sm" variant="ghost" icon="arrow-up-right"
+                            wire:click="cambiarGrupo('{{ $sugerencia['grupo']->value }}')">
+                            Pasar a {{ $sugerencia['grupo']->etiqueta() }}
+                        </flux:button>
+                    </x-slot>
+                </flux:callout>
+            @endif
 
             <div>
                 <flux:label>Programas</flux:label>
