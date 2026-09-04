@@ -76,6 +76,8 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$inscritos->count()" etiqueta="inscrito" />
     </div>
 
     {{-- Sugeridos --}}
@@ -121,6 +123,8 @@
                     @endforelse
                 </flux:table.rows>
             </flux:table>
+
+            <x-tabla.resumen :total="$sugeridos->count()" etiqueta="sugerido" />
         </div>
     @endunless
 

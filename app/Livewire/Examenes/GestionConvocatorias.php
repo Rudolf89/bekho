@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Examenes;
 
-use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Convocatoria;
 use App\Models\Sede;
@@ -15,7 +15,7 @@ use Livewire\Component;
 #[Title('Exámenes de grado')]
 class GestionConvocatorias extends Component
 {
-    use AuthorizesRequests, ConOrden, SoloLectura;
+    use AuthorizesRequests, ConTabla, SoloLectura;
 
     public string $nombre = '';
 
@@ -66,12 +66,18 @@ class GestionConvocatorias extends Component
 
     public function render()
     {
-        return view('livewire.examenes.gestion-convocatorias', [
-            'convocatorias' => $this->aplicarOrden(
+        $convocatorias = $this->aplicarOrden(
+            $this->aplicarBusqueda(
                 Convocatoria::with('sede')->withCount('inscripciones'),
-                ['fecha', 'nombre', 'estado'],
-                'fecha',
-            )->get(),
+                ['nombre', 'sede.nombre'],
+            ),
+            ['fecha', 'nombre', 'estado'],
+            'fecha',
+        )->get();
+
+        return view('livewire.examenes.gestion-convocatorias', [
+            'convocatorias' => $convocatorias,
+            'totalInscritos' => $convocatorias->sum('inscripciones_count'),
             'sedes' => Sede::orderBy('nombre')->get(),
         ]);
     }

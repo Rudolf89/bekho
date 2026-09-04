@@ -3,6 +3,7 @@
 namespace App\Livewire\Pagos;
 
 use App\Enums\TipoPago;
+use App\Livewire\Concerns\ConTabla;
 use App\Models\ConfiguracionPago;
 use App\Models\Estudiante;
 use App\Models\Pago;
@@ -14,10 +15,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Title('Pagos')]
 class GestionPagos extends Component
 {
+    use ConTabla, WithPagination;
+
+    /** Filtro por tipo de pago (mensualidad/matrícula/…); '' = todos. */
+    public string $filtroTipo = '';
+
     // Formulario de registro de pago
     public ?string $pagoEstudianteId = '';
 
@@ -45,7 +52,17 @@ class GestionPagos extends Component
     public function mount(): void
     {
         $this->pagoFechaPago = now()->format('Y-m-d');
+        // Por defecto la tabla se ordena por fecha de pago, más reciente primero.
+        if ($this->ordenCampo === '') {
+            $this->ordenCampo = 'fecha_pago';
+            $this->ordenDir = 'desc';
+        }
         $this->cargarConfig();
+    }
+
+    public function updatedFiltroTipo(): void
+    {
+        $this->resetPage();
     }
 
     protected function cargarConfig(): void
@@ -130,10 +147,24 @@ class GestionPagos extends Component
 
     public function render(ServicioPagos $servicio)
     {
+        // Consulta base filtrable: búsqueda por alumno/medio + filtro por tipo.
+        $base = $this->aplicarBusqueda(Pago::with('estudiante'), ['estudiante.nombre', 'medio'])
+            ->when($this->filtroTipo !== '', fn ($q) => $q->where('tipo', $this->filtroTipo));
+
+        // El resumen suma TODOS los pagos que calzan con el filtro (no solo la página).
+        $totalPagos = (clone $base)->count();
+        $sumaPagos = (clone $base)->sum('monto');
+
+        $pagos = $this->aplicarOrden($base, ['fecha_pago', 'monto'], 'fecha_pago')
+            ->latest('id')
+            ->paginate(15);
+
         return view('livewire.pagos.gestion-pagos', [
             'morosos' => $servicio->morosos(),
             'periodo' => $servicio->periodo()->translatedFormat('F Y'),
-            'pagosRecientes' => Pago::with('estudiante')->latest('fecha_pago')->latest('id')->limit(15)->get(),
+            'pagos' => $pagos,
+            'totalPagos' => $totalPagos,
+            'sumaPagos' => $sumaPagos,
             'estudiantes' => Estudiante::activos()->orderBy('nombre')->get(),
             'tipos' => TipoPago::cases(),
         ]);

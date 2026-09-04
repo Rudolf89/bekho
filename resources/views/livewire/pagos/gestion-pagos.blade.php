@@ -44,22 +44,34 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$morosos->count()" etiqueta="moroso" />
     </div>
 
-    {{-- Pagos recientes --}}
-    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-        <div class="border-b border-zinc-200 p-4 dark:border-zinc-700">
-            <flux:heading size="lg">Pagos recientes</flux:heading>
+    {{-- Pagos --}}
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <flux:heading size="lg">Pagos</flux:heading>
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-center">
+            <x-tabla.buscador placeholder="Buscar por alumno o medio…" />
+            <flux:select wire:model.live="filtroTipo" placeholder="Todos los tipos" class="w-full sm:w-48">
+                <flux:select.option value="">Todos los tipos</flux:select.option>
+                @foreach ($tipos as $t)
+                    <flux:select.option value="{{ $t->value }}">{{ $t->etiqueta() }}</flux:select.option>
+                @endforeach
+            </flux:select>
         </div>
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Fecha</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'fecha_pago'" :direction="$ordenDir" wire:click="ordenarPor('fecha_pago')">Fecha</flux:table.column>
                 <flux:table.column>Estudiante</flux:table.column>
                 <flux:table.column>Tipo</flux:table.column>
-                <flux:table.column>Monto</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'monto'" :direction="$ordenDir" wire:click="ordenarPor('monto')">Monto</flux:table.column>
             </flux:table.columns>
             <flux:table.rows>
-                @forelse ($pagosRecientes as $pago)
+                @forelse ($pagos as $pago)
                     <flux:table.row wire:key="pago-{{ $pago->id }}">
                         <flux:table.cell>{{ $pago->fecha_pago->format('d-m-Y') }}</flux:table.cell>
                         <flux:table.cell variant="strong">{{ $pago->estudiante?->nombre ?? '—' }}</flux:table.cell>
@@ -69,13 +81,23 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="4">
-                            <flux:text class="py-4 text-center">Aún no hay pagos registrados.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' || $filtroTipo !== '' ? 'Sin resultados para tu filtro.' : 'Aún no hay pagos registrados.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen
+            :total="$totalPagos"
+            etiqueta="pago"
+            :sumas="[['etiqueta' => 'Total recaudado', 'valor' => '$'.number_format($sumaPagos, 0, ',', '.')]]"
+        />
     </div>
+
+    <div>{{ $pagos->links() }}</div>
 
     {{-- Modal registrar pago --}}
     <flux:modal name="pago-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

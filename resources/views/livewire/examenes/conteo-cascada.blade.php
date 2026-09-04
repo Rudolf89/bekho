@@ -19,6 +19,8 @@
         </flux:callout>
     @endunless
 
+    <x-tabla.buscador placeholder="Buscar instructor…" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -42,11 +44,20 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="3">
-                            <flux:text class="py-4 text-center">No hay instructores para mostrar.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'No hay instructores para mostrar.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen
+            :total="$instructores->count()"
+            etiqueta="instructor"
+            plural="instructores"
+            :sumas="[['etiqueta' => 'Graduaciones (cascada)', 'valor' => number_format($totalGraduaciones, 0, ',', '.')]]"
+        />
     </div>
 </div>

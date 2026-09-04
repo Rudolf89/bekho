@@ -12,6 +12,8 @@
         </div>
     </div>
 
+    <x-tabla.buscador placeholder="Buscar por convocatoria o sede…" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -45,12 +47,20 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="6">
-                            <flux:text class="py-4 text-center">Aún no hay convocatorias.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay convocatorias.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen
+            :total="$convocatorias->count()"
+            etiqueta="convocatoria"
+            :sumas="[['etiqueta' => 'Inscritos', 'valor' => number_format($totalInscritos, 0, ',', '.')]]"
+        />
     </div>
 
     <flux:modal name="conv-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">
