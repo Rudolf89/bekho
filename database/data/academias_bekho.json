@@ -1,0 +1,96 @@
+[
+  {
+    "nombre": "Academia Oriente",
+    "sitio": "ataoriente.cl",
+    "director": "Claudio Sotomayor Di-Biaggio",
+    "campo": 108,
+    "confianza": "alta",
+    "confirmado": false,
+    "nota": "Fundador de BEKHO Chile (1989) y presidente de BEKHO Martial Arts; el dominio es su academia.",
+    "sedes": [
+      { "nombre": "Omnium", "comuna": null, "direccion": null }
+    ]
+  },
+  {
+    "nombre": "ATA BEKHO Pride",
+    "sitio": "atapride.cl",
+    "director": "Cristian Nogués Duhartz",
+    "campo": 116,
+    "confianza": "alta",
+    "confirmado": false,
+    "nota": "El sitio lo nombra explícitamente como su director.",
+    "sedes": [
+      { "nombre": "Maipú", "comuna": "Maipú", "direccion": null },
+      { "nombre": "Nos", "comuna": "San Bernardo", "direccion": null },
+      { "nombre": "Calera de Tango", "comuna": "Calera de Tango", "direccion": null },
+      { "nombre": "Peñaflor", "comuna": "Peñaflor", "direccion": null }
+    ]
+  },
+  {
+    "nombre": "BEKHO Power Academy",
+    "sitio": "atapower.cl",
+    "director": null,
+    "campo": 134,
+    "confianza": "alta",
+    "confirmado": false,
+    "nota": "Cuatro nombres del campo 134 figuran en su staff (Cristian Núñez, Mauricio Donoso, Mauricio Pinto, Kevin Suazo). Inconsistencia abierta: el campo lo encabeza Victor Rodríguez, que no aparece en el staff publicado.",
+    "sedes": [
+      { "nombre": "Quilicura", "comuna": "Quilicura", "direccion": null },
+      { "nombre": "Valle Grande", "comuna": "Lampa", "direccion": null },
+      { "nombre": "Pudahuel", "comuna": "Pudahuel", "direccion": null },
+      { "nombre": "Valle del Sol", "comuna": "Padre Hurtado", "direccion": null }
+    ]
+  },
+  {
+    "nombre": "ATA BEKHO IV Región",
+    "sitio": "escueladeartesmarciales.cl",
+    "director": null,
+    "campo": null,
+    "confianza": "baja",
+    "confirmado": false,
+    "nota": "Sin instructor identificado; no se pudo asociar a un campo.",
+    "sedes": [
+      { "nombre": "La Serena", "comuna": "La Serena", "direccion": null }
+    ]
+  },
+  {
+    "nombre": "ATA BEKHO Estoril",
+    "sitio": "ataestoril.cl",
+    "director": null,
+    "campo": null,
+    "confianza": "baja",
+    "confirmado": false,
+    "nota": "Sin instructor identificado; no se pudo asociar a un campo.",
+    "sedes": [
+      { "nombre": "Estoril", "comuna": "Las Condes", "direccion": "Estoril 761" }
+    ]
+  },
+  {
+    "nombre": "BEKHO Academias.cl",
+    "sitio": "academias.cl",
+    "director": null,
+    "campo": null,
+    "confianza": "baja",
+    "confirmado": false,
+    "nota": "Red de sedes. La sede de Séptima Avenida usa el Instagram @bekho.ciudaddelnino, distinto al @academiascl de las demás: 'Ciudad del Niño' parece un nombre de academia propio dentro de la red.",
+    "sedes": [
+      { "nombre": "Santiago Centro", "comuna": "Santiago", "direccion": "Zenteno 1395" },
+      { "nombre": "Gran Avenida", "comuna": "San Miguel", "direccion": "Gran Avenida 5116" },
+      { "nombre": "San Ignacio", "comuna": "San Miguel", "direccion": "San Ignacio 4815" },
+      { "nombre": "Ciudad del Niño", "comuna": "San Miguel", "direccion": "Séptima Avenida 1261" },
+      { "nombre": "La Florida", "comuna": "La Florida", "direccion": "Walker Martínez 2295" }
+    ]
+  },
+  {
+    "nombre": "Casa Central BEKHO",
+    "sitio": "bekhomartialarts.com",
+    "director": null,
+    "campo": null,
+    "confianza": "baja",
+    "confirmado": false,
+    "nota": "Casa Central de la federación (no es un grupo operativo).",
+    "sedes": [
+      { "nombre": "Casa Central", "comuna": "La Reina", "direccion": "Av. Alcalde Fernando Castillo Velasco 7059, Local H" }
+    ]
+  }
+]

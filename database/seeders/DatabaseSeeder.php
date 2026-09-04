@@ -48,6 +48,9 @@ class DatabaseSeeder extends Seeder
             // Línea de supervisión real de la federación (árbol de supervisor_id
             // que alimenta el conteo en cascada del collar de máster).
             LineaSupervisionSeeder::class,
+            // Academias (grupos) de la federación y sus sedes; enlaza cada campo
+            // de la línea con su academia donde hay base (datos NO confirmados).
+            AcademiasBekhoSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);
