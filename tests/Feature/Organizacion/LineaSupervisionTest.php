@@ -79,7 +79,8 @@ test('el rango se deduce del tratamiento marcial', function () {
 
     expect(usuarioPorNombre('CHIEF MASTER SOTOMAYOR')->rango_id)->toBe($jefe->id)
         ->and(usuarioPorNombre('SENIOR MASTER VICTOR RODRIGUEZ')->rango_id)->toBe($senior->id)
-        ->and(usuarioPorNombre('MASTER LUIS VILLANUEVA')->rango_id)->toBe($maestro->id)
+        ->and(usuarioPorNombre('SENIOR MASTER LUIS VILLANUEVA')->rango_id)->toBe($senior->id)
+        ->and(usuarioPorNombre('MASTER ARNALDO CABRERA')->rango_id)->toBe($maestro->id)
         // SR./SRTA. no fija rango.
         ->and(usuarioPorNombre('SR. FRANCO POBLETE')->rango_id)->toBeNull();
 });
