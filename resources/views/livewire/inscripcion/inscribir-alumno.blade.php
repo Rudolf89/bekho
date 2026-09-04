@@ -81,14 +81,14 @@
             <flux:heading size="lg" class="mb-4">Domicilio</flux:heading>
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="direccion" label="Dirección *" placeholder="Calle, número, depto." class="sm:col-span-2" required />
-                <flux:select wire:model.live="region" label="Región *" placeholder="Elegir región">
-                    @foreach ($regiones as $region)
-                        <flux:select.option value="{{ $region }}">{{ $region }}</flux:select.option>
-                    @endforeach
-                </flux:select>
                 <flux:select wire:model="comuna" label="Comuna *" :placeholder="$region ? 'Elegir comuna' : 'Primero elige la región'">
                     @foreach ($comunasRegion as $comuna)
                         <flux:select.option value="{{ $comuna }}">{{ $comuna }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+                <flux:select wire:model.live="region" label="Región *" placeholder="Elegir región">
+                    @foreach ($regiones as $region)
+                        <flux:select.option value="{{ $region }}">{{ $region }}</flux:select.option>
                     @endforeach
                 </flux:select>
             </div>
