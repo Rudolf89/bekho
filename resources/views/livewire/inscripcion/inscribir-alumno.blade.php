@@ -33,13 +33,12 @@
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg" class="mb-4">Datos del alumno</flux:heading>
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" required />
-                <flux:input wire:model="nombres" label="Nombres *" placeholder="Ambos nombres" required />
-                <flux:input wire:model="apellido_paterno" label="Apellido paterno *" required />
-                <flux:input wire:model="apellido_materno" label="Apellido materno *" required />
+                <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" />
+                <flux:input wire:model="nombres" label="Nombres *" placeholder="Ambos nombres" />
+                <flux:input wire:model="apellido_paterno" label="Apellido paterno *" />
+                <flux:input wire:model="apellido_materno" label="Apellido materno *" />
                 <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento *"
-                    :description="$this->edad() !== null ? 'Edad: '.$this->edad().' '.($this->edad() === 1 ? 'año' : 'años') : null"
-                    required />
+                    :description="$this->edad() !== null ? 'Edad: '.$this->edad().' '.($this->edad() === 1 ? 'año' : 'años') : null" />
                 <flux:select wire:model.live="grupo_etario" label="Grupo etario *" placeholder="Selecciona">
                     @foreach ($grupos as $grupo)
                         <flux:select.option value="{{ $grupo->value }}">{{ $grupo->etiqueta() }} ({{ $grupo->rangoEdad() }})</flux:select.option>
@@ -90,7 +89,7 @@
                         <flux:select.option value="{{ $comuna }}">{{ $comuna }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:input wire:model="direccion" label="Dirección *" placeholder="Calle, número, depto." class="sm:col-span-2" required />
+                <flux:input wire:model="direccion" label="Dirección *" placeholder="Calle, número, depto." class="sm:col-span-2" />
             </div>
         </section>
 
@@ -104,8 +103,8 @@
             {{-- Apoderado 1 (obligatorio según grupo) con su contacto. --}}
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" class="sm:col-span-2" />
-                <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" required />
-                <flux:input wire:model="email_contacto" type="email" label="Correo 1 *" placeholder="correo@ejemplo.cl" required />
+                <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" />
+                <flux:input wire:model="email_contacto" type="email" label="Correo 1 *" placeholder="correo@ejemplo.cl" />
             </div>
 
             {{-- Segundo apoderado: opcional, se despliega con la casilla. --}}
