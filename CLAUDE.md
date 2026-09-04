@@ -129,6 +129,16 @@ formación).
   derecha → siempre declarar `grid-cols-1` explícito. En grids de tarjetas con
   contenido colapsable usar `items-start` para que expandir una no estire a la vecina;
   tablas anchas siempre dentro de `overflow-x-auto`.
+- **Tablas** (filtrar/ordenar/totales): trait `App\Livewire\Concerns\ConTabla`
+  (incluye `ConOrden`) da la propiedad `buscar` (#[Url]) + `aplicarBusqueda($query,
+  $columnas)` (LIKE portable; admite relaciones con punto, p. ej. `sede.nombre`) y
+  `aplicarOrden(...)`. En la vista: `<x-tabla.buscador>` para el filtro de texto,
+  columnas `flux:table.column sortable :sorted=... :direction=$ordenDir wire:click="ordenarPor('campo')"`
+  para el orden asc/desc, y `<x-tabla.resumen :total=... etiqueta="…" :plural="…"
+  :sumas="[['etiqueta'=>…, 'valor'=>…]]">` como pie con el conteo de filas y las
+  sumas de montos (el pluralizador automático es inglés → pasar `plural` en palabras
+  españolas terminadas en consonante). En tablas paginadas el resumen usa `->total()`;
+  las sumas se calculan sobre TODO el filtro (no solo la página).
 - Enums en `App\Enums` (backed string) con método `etiqueta()`.
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `academia_id` + trait `PerteneceAcademia`.
