@@ -10,9 +10,12 @@
                 @endif
             </flux:text>
         </div>
-        @if ($noLeidas > 0)
-            <flux:button size="sm" variant="filled" wire:click="marcarTodasLeidas" icon="check">Marcar todas como leídas</flux:button>
-        @endif
+        <div class="flex items-center gap-3">
+            <flux:switch wire:model.live="soloNoLeidas" label="Solo no leídas" />
+            @if ($noLeidas > 0)
+                <flux:button size="sm" variant="filled" wire:click="marcarTodasLeidas" icon="check">Marcar todas como leídas</flux:button>
+            @endif
+        </div>
     </div>
 
     <div class="space-y-2">
@@ -59,8 +62,12 @@
             </div>
         @empty
             <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                <flux:text>No tienes notificaciones.</flux:text>
+                <flux:text>{{ $soloNoLeidas ? 'No tienes notificaciones sin leer.' : 'No tienes notificaciones.' }}</flux:text>
             </div>
         @endforelse
     </div>
+
+    @if ($notificaciones->isNotEmpty())
+        <x-tabla.resumen :total="$notificaciones->count()" etiqueta="notificación" plural="notificaciones" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
+    @endif
 </div>

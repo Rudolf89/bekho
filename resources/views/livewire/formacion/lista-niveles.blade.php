@@ -12,6 +12,8 @@
         @endcan
     </div>
 
+    <x-tabla.buscador placeholder="Buscar nivel…" />
+
     @forelse ($niveles as $item)
         @php($nivel = $item['modelo'])
         @php($avance = $item['avance'])
@@ -39,7 +41,11 @@
         </a>
     @empty
         <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-            <flux:text>Todavía no hay niveles de formación disponibles.</flux:text>
+            <flux:text>{{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Todavía no hay niveles de formación disponibles.' }}</flux:text>
         </div>
     @endforelse
+
+    @if ($niveles->isNotEmpty())
+        <x-tabla.resumen :total="$niveles->count()" etiqueta="nivel" plural="niveles" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
+    @endif
 </div>

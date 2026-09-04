@@ -28,4 +28,8 @@
             <flux:text>No tienes estudiantes asociados. Si crees que es un error, contacta a la escuela.</flux:text>
         </div>
     @endforelse
+
+    @if ($hijos->isNotEmpty())
+        <x-tabla.resumen :total="$hijos->count()" etiqueta="estudiante" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
+    @endif
 </div>

@@ -29,8 +29,10 @@
     </div>
 
     {{-- Inscripciones --}}
+    <x-tabla.buscador placeholder="Buscar por instructor o nivel…" />
+
     <div class="space-y-2">
-        @foreach ($inscripciones as $ins)
+        @forelse ($inscripciones as $ins)
             @php($acumuladas = $ins->horasAcumuladas())
             @php($req = $ins->nivel->horas_requeridas)
             @php($pct = $req > 0 ? min(100, (int) round($acumuladas / $req * 100)) : 0)
@@ -49,8 +51,22 @@
                     </div>
                 </div>
             </button>
-        @endforeach
+        @empty
+            <flux:text class="py-4 text-center text-zinc-500">
+                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay inscripciones en el programa.' }}
+            </flux:text>
+        @endforelse
     </div>
+
+    @if ($inscripciones->isNotEmpty())
+        <x-tabla.resumen
+            :total="$inscripciones->count()"
+            etiqueta="inscripción"
+            plural="inscripciones"
+            :sumas="[['etiqueta' => 'Horas acumuladas', 'valor' => number_format($horasTotales, 0, ',', '.')]]"
+            class="rounded-xl border border-zinc-200 dark:border-zinc-700"
+        />
+    @endif
 
     {{-- Detalle --}}
     @if ($inscripcion)

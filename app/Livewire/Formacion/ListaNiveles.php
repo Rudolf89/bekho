@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Formacion;
 
+use App\Livewire\Concerns\ConTabla;
 use App\Models\Nivel;
 use App\Services\ServicioFormacion;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,8 @@ use Livewire\Component;
 #[Title('Formación')]
 class ListaNiveles extends Component
 {
+    use ConTabla;
+
     /**
      * Renderiza el listado de niveles activos con el avance del usuario.
      */
@@ -18,7 +21,7 @@ class ListaNiveles extends Component
     {
         $usuario = Auth::user();
 
-        $niveles = Nivel::activos()
+        $niveles = $this->aplicarBusqueda(Nivel::activos(), ['nombre', 'descripcion'])
             ->ordenados()
             ->get()
             ->map(function (Nivel $nivel) use ($servicio, $usuario): array {

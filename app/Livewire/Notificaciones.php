@@ -13,6 +13,9 @@ use Livewire\Component;
 #[Title('Notificaciones')]
 class Notificaciones extends Component
 {
+    /** Filtro: mostrar solo las no leídas. */
+    public bool $soloNoLeidas = false;
+
     public function marcarLeida(string $id): void
     {
         Auth::user()->notifications()->where('id', $id)->first()?->markAsRead();
@@ -30,8 +33,14 @@ class Notificaciones extends Component
 
     public function render()
     {
+        $notificaciones = Auth::user()->notifications()
+            ->when($this->soloNoLeidas, fn ($q) => $q->whereNull('read_at'))
+            ->latest()
+            ->limit(50)
+            ->get();
+
         return view('livewire.notificaciones', [
-            'notificaciones' => Auth::user()->notifications()->latest()->limit(50)->get(),
+            'notificaciones' => $notificaciones,
             'noLeidas' => Auth::user()->unreadNotifications()->count(),
         ]);
     }

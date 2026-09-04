@@ -3,6 +3,7 @@
 namespace App\Livewire\Legacy;
 
 use App\Enums\EstadoLegacy;
+use App\Livewire\Concerns\ConTabla;
 use App\Models\InscripcionLegacy;
 use App\Models\NivelLegacy;
 use App\Models\RequisitoLegacy;
@@ -22,6 +23,8 @@ use Livewire\Component;
 #[Title('Programa Legacy')]
 class PanelLegacy extends Component
 {
+    use ConTabla;
+
     // Nueva inscripción.
     public string $nuevoUserId = '';
 
@@ -136,8 +139,14 @@ class PanelLegacy extends Component
 
     public function render()
     {
+        $inscripciones = $this->aplicarBusqueda(
+            InscripcionLegacy::with(['user', 'nivel'])->withSum('horas as horas_total', 'horas'),
+            ['user.name', 'nivel.nombre'],
+        )->latest()->get();
+
         return view('livewire.legacy.panel-legacy', [
-            'inscripciones' => InscripcionLegacy::with(['user', 'nivel'])->latest()->get(),
+            'inscripciones' => $inscripciones,
+            'horasTotales' => $inscripciones->sum('horas_total'),
             'inscripcion' => $this->inscripcion(),
             'usuarios' => User::query()
                 ->when(Tenant::id(), fn ($q, $id) => $q->where('academia_id', $id))
