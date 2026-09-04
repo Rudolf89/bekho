@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\Genero;
+use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Models\Academia;
@@ -150,4 +151,37 @@ test('la fecha de nacimiento sugiere el grupo etario', function () {
         ->assertSet('grupo_etario', 'for_kids')
         ->set('fecha_nacimiento', now()->subYears(20)->format('Y-m-d'))
         ->assertSet('grupo_etario', 'jovenes_adultos');
+});
+
+test('la fecha de nacimiento calcula la edad del alumno', function () {
+    $comp = Livewire::test(InscribirAlumno::class)
+        ->set('fecha_nacimiento', now()->subYears(9)->subMonths(3)->format('Y-m-d'));
+
+    expect($comp->instance()->edad())->toBe(9);
+});
+
+test('sugiere pasar al grupo siguiente si está por cumplir la edad', function () {
+    // 6 años, cumple 7 en ~2 meses → puede pasar de Tigers a For Kids.
+    $comp = Livewire::test(InscribirAlumno::class)
+        ->set('fecha_nacimiento', now()->subYears(7)->addMonths(2)->format('Y-m-d'))
+        ->assertSet('grupo_etario', 'tigers');
+
+    $sugerencia = $comp->instance()->sugerenciaProximoGrupo();
+
+    expect($comp->instance()->edad())->toBe(6)
+        ->and($sugerencia)->not->toBeNull()
+        ->and($sugerencia['grupo'])->toBe(GrupoEtario::ForKids)
+        ->and($sugerencia['edadProxima'])->toBe(7);
+
+    // El botón de la sugerencia cambia el grupo elegido.
+    $comp->call('cambiarGrupo', 'for_kids')->assertSet('grupo_etario', 'for_kids');
+});
+
+test('no sugiere cambio de grupo si el cumpleaños está lejos', function () {
+    // 6 años, cumple 7 recién en ~8 meses → todavía no se sugiere el cambio.
+    $comp = Livewire::test(InscribirAlumno::class)
+        ->set('fecha_nacimiento', now()->subYears(7)->addMonths(8)->format('Y-m-d'));
+
+    expect($comp->instance()->edad())->toBe(6)
+        ->and($comp->instance()->sugerenciaProximoGrupo())->toBeNull();
 });

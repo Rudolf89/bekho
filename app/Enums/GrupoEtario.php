@@ -53,4 +53,29 @@ enum GrupoEtario: string
             default => self::JovenesAdultos,
         };
     }
+
+    /**
+     * Edad mínima de referencia del grupo (el piso de su banda). Sirve para
+     * detectar cuándo un alumno está por cumplir la edad del grupo siguiente.
+     */
+    public function edadMinima(): int
+    {
+        return match ($this) {
+            self::Tigers => 3,
+            self::ForKids => 7,
+            self::JovenesAdultos => 12,
+        };
+    }
+
+    /**
+     * Grupo etario inmediatamente superior (null si ya es el mayor).
+     */
+    public function siguiente(): ?self
+    {
+        return match ($this) {
+            self::Tigers => self::ForKids,
+            self::ForKids => self::JovenesAdultos,
+            self::JovenesAdultos => null,
+        };
+    }
 }

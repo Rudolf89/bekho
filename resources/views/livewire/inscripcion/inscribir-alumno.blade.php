@@ -37,7 +37,9 @@
                 <flux:input wire:model="apellido_paterno" label="Apellido paterno *" required />
                 <flux:input wire:model="apellido_materno" label="Apellido materno *" required />
                 <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" required />
-                <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento *" required />
+                <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento *"
+                    :description="$this->edad() !== null ? 'Edad: '.$this->edad().' '.($this->edad() === 1 ? 'año' : 'años') : null"
+                    required />
                 <flux:select wire:model.live="grupo_etario" label="Grupo etario *" placeholder="Selecciona">
                     @foreach ($grupos as $grupo)
                         <flux:select.option value="{{ $grupo->value }}">{{ $grupo->etiqueta() }} ({{ $grupo->rangoEdad() }})</flux:select.option>
@@ -54,6 +56,24 @@
                 </flux:field>
             </div>
             <flux:text size="sm" class="mt-3 text-zinc-500">El grupo etario se sugiere por la edad al ingresar la fecha de nacimiento; el instructor puede ajustarlo.</flux:text>
+
+            {{-- Aviso cuando el alumno está por cumplir la edad del grupo siguiente:
+                 se ofrece pasarlo de una vez (el campo igual es editable a mano). --}}
+            @php($sugerencia = $this->sugerenciaProximoGrupo())
+            @if ($sugerencia)
+                <flux:callout size="sm" icon="arrow-trending-up" color="amber" class="mt-3">
+                    <flux:callout.text>
+                        Está por cumplir {{ $sugerencia['edadProxima'] }} años{{ $sugerencia['meses'] > 0 ? ' (en ~'.$sugerencia['meses'].' '.($sugerencia['meses'] === 1 ? 'mes' : 'meses').')' : ' este mes' }}.
+                        Si corresponde, puedes inscribirlo directamente en <strong>{{ $sugerencia['grupo']->etiqueta() }}</strong> ({{ $sugerencia['grupo']->rangoEdad() }}).
+                    </flux:callout.text>
+                    <x-slot name="actions">
+                        <flux:button size="sm" variant="ghost" icon="arrow-up-right"
+                            wire:click="cambiarGrupo('{{ $sugerencia['grupo']->value }}')">
+                            Pasar a {{ $sugerencia['grupo']->etiqueta() }}
+                        </flux:button>
+                    </x-slot>
+                </flux:callout>
+            @endif
         </section>
 
         {{-- 3. Domicilio --}}
