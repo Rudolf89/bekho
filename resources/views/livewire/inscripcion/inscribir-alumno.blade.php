@@ -109,7 +109,8 @@
             </div>
 
             {{-- Segundo apoderado: opcional, se despliega con la casilla. --}}
-            <flux:checkbox wire:model.live="agregarApoderado2" label="Agregar un segundo apoderado" class="mt-4" />
+            <flux:separator class="my-5" />
+            <flux:checkbox wire:model.live="agregarApoderado2" label="Agregar un segundo apoderado" />
 
             @if ($agregarApoderado2)
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
