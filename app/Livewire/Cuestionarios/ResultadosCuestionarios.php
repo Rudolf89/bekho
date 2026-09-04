@@ -3,6 +3,7 @@
 namespace App\Livewire\Cuestionarios;
 
 use App\Enums\EstadoIntento;
+use App\Livewire\Concerns\ConTabla;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
 use App\Notifications\IntentoDecidido;
@@ -21,7 +22,7 @@ use Livewire\WithPagination;
 #[Title('Resultados de cuestionarios')]
 class ResultadosCuestionarios extends Component
 {
-    use WithPagination;
+    use ConTabla, WithPagination;
 
     #[Url]
     public string $cuestionarioId = '';
@@ -94,12 +95,13 @@ class ResultadosCuestionarios extends Component
 
     public function render()
     {
-        $intentos = IntentoCuestionario::query()
-            ->with(['user', 'cuestionario', 'revisor'])
-            ->when($this->cuestionarioId !== '', fn ($q) => $q->where('cuestionario_id', $this->cuestionarioId))
-            ->when($this->estado !== '', fn ($q) => $q->where('estado', $this->estado))
-            ->latest('finalizado_at')
-            ->paginate(15);
+        $intentos = $this->aplicarBusqueda(
+            IntentoCuestionario::query()
+                ->with(['user', 'cuestionario', 'revisor'])
+                ->when($this->cuestionarioId !== '', fn ($q) => $q->where('cuestionario_id', $this->cuestionarioId))
+                ->when($this->estado !== '', fn ($q) => $q->where('estado', $this->estado)),
+            ['user.name', 'cuestionario.titulo'],
+        )->latest('finalizado_at')->paginate(15);
 
         return view('livewire.cuestionarios.resultados-cuestionarios', [
             'intentos' => $intentos,

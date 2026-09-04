@@ -5,7 +5,7 @@ namespace App\Livewire\Planillas;
 use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
-use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Planilla;
 use App\Models\Programa;
@@ -17,7 +17,7 @@ use Livewire\Component;
 #[Title('Planillas de clase')]
 class GestionPlanillas extends Component
 {
-    use ConOrden, SoloLectura;
+    use ConTabla, SoloLectura;
 
     public string $nombre = '';
 
@@ -73,8 +73,10 @@ class GestionPlanillas extends Component
     public function render()
     {
         return view('livewire.planillas.gestion-planillas', [
-            'planillas' => $this->aplicarOrden(Planilla::with('programa'), ['nombre', 'grupo_etario', 'nivel'], 'grupo_etario')
-                ->orderBy('nombre')->get(),
+            'planillas' => $this->aplicarOrden(
+                $this->aplicarBusqueda(Planilla::with('programa'), ['nombre', 'programa.nombre']),
+                ['nombre', 'grupo_etario', 'nivel'], 'grupo_etario'
+            )->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),
             'niveles' => NivelEntrenamiento::cases(),
             'programas' => Programa::activos()->ordenados()->get(),

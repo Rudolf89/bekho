@@ -7,6 +7,8 @@
         <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva planilla</flux:button>
     </div>
 
+    <x-tabla.buscador placeholder="Buscar por planilla o programa…" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -34,12 +36,16 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="5">
-                            <flux:text class="py-4 text-center">Aún no hay planillas. Crea la primera.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay planillas. Crea la primera.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$planillas->count()" etiqueta="planilla" />
     </div>
 
     <flux:modal name="planilla-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

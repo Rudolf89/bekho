@@ -19,9 +19,15 @@
         </div>
     </div>
 
+    <x-tabla.buscador placeholder="Buscar por título o área…" />
+
     @if ($cuestionarios->isEmpty())
         <flux:callout icon="clipboard-document-list">
-            Aún no hay cuestionarios. @if ($puedeGestionar) Crea el primero con “Nuevo cuestionario”. @endif
+            @if ($buscar !== '')
+                Sin resultados para tu búsqueda.
+            @else
+                Aún no hay cuestionarios. @if ($puedeGestionar) Crea el primero con “Nuevo cuestionario”. @endif
+            @endif
         </flux:callout>
     @endif
 
@@ -76,4 +82,8 @@
             </div>
         @endforeach
     </div>
+
+    @if ($cuestionarios->isNotEmpty())
+        <x-tabla.resumen :total="$cuestionarios->count()" etiqueta="cuestionario" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
+    @endif
 </div>

@@ -3,6 +3,7 @@
 namespace App\Livewire\Cuestionarios;
 
 use App\Enums\EstadoIntento;
+use App\Livewire\Concerns\ConTabla;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
 use Illuminate\Support\Facades\Auth;
@@ -17,6 +18,8 @@ use Livewire\Component;
 #[Title('Cuestionarios')]
 class ListaCuestionarios extends Component
 {
+    use ConTabla;
+
     public function eliminar(int $id): void
     {
         abort_unless(Auth::user()->can('gestionar cuestionarios'), 403);
@@ -28,11 +31,12 @@ class ListaCuestionarios extends Component
     {
         $puedeGestionar = Auth::user()->can('gestionar cuestionarios');
 
-        $cuestionarios = Cuestionario::query()
-            ->when(! $puedeGestionar, fn ($q) => $q->activos())
-            ->withCount('preguntas')
-            ->ordenados()
-            ->get();
+        $cuestionarios = $this->aplicarBusqueda(
+            Cuestionario::query()
+                ->when(! $puedeGestionar, fn ($q) => $q->activos())
+                ->withCount('preguntas'),
+            ['titulo', 'area'],
+        )->ordenados()->get();
 
         // Mejor porcentaje del usuario por cuestionario.
         $mejores = IntentoCuestionario::query()

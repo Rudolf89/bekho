@@ -16,7 +16,8 @@
     </div>
 
     {{-- Filtros --}}
-    <div class="grid gap-3 sm:grid-cols-2">
+    <div class="grid gap-3 sm:grid-cols-3">
+        <flux:input wire:model.live.debounce.300ms="buscar" placeholder="Buscar por alumno o cuestionario" icon="magnifying-glass" label="Buscar" />
         <flux:select wire:model.live="cuestionarioId" label="Cuestionario" placeholder="Todos">
             <flux:select.option value="">Todos</flux:select.option>
             @foreach ($cuestionarios as $c)
@@ -100,6 +101,10 @@
             </div>
         @endforeach
     </div>
+
+    @if ($intentos->total() > 0)
+        <x-tabla.resumen :total="$intentos->total()" etiqueta="intento" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
+    @endif
 
     {{ $intentos->links() }}
 </div>

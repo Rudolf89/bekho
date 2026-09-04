@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Cuestionarios;
 
+use App\Livewire\Concerns\ConTabla;
 use App\Models\IntentoCuestionario;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -15,15 +16,16 @@ use Livewire\WithPagination;
 #[Title('Mis intentos')]
 class MisIntentos extends Component
 {
-    use WithPagination;
+    use ConTabla, WithPagination;
 
     public function render()
     {
-        $intentos = IntentoCuestionario::query()
-            ->where('user_id', Auth::id())
-            ->with(['cuestionario', 'revisor'])
-            ->latest('finalizado_at')
-            ->paginate(15);
+        $intentos = $this->aplicarBusqueda(
+            IntentoCuestionario::query()
+                ->where('user_id', Auth::id())
+                ->with(['cuestionario', 'revisor']),
+            ['cuestionario.titulo'],
+        )->latest('finalizado_at')->paginate(15);
 
         return view('livewire.cuestionarios.mis-intentos', [
             'intentos' => $intentos,
