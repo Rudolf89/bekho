@@ -139,9 +139,10 @@
                         Leer el Reglamento del Alumno (PDF)
                     </flux:button>
                 @endif
+                {{-- El checkbox con label ya auto-renderiza su error; no se agrega
+                     un <flux:error> aparte para no duplicar el mensaje. --}}
                 <flux:checkbox wire:model="acepto_reglamento"
                     label="Declaro haber leído, conocer y aceptar en todas sus partes el «Reglamento del Alumno BEKHO Martial Arts», y me comprometo a cumplir todas sus normas sin excepciones. *" />
-                <flux:error name="acepto_reglamento" />
             </div>
         </section>
 
