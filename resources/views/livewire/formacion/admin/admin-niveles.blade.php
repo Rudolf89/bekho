@@ -39,10 +39,12 @@
                                     Contenidos
                                 </flux:button>
                                 <flux:button wire:click="editar({{ $nivel->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                <flux:button wire:click="alternarActivo({{ $nivel->id }})"
-                                    :icon="$nivel->activo ? 'eye-slash' : 'eye'" variant="ghost" size="sm"
-                                    :title="$nivel->activo ? 'Desactivar' : 'Activar'"
-                                    @if ($nivel->activo) wire:confirm="¿Desactivar este nivel? Dejará de verse en Aprender." @endif />
+                                @if ($nivel->activo)
+                                    <flux:button wire:click="alternarActivo({{ $nivel->id }})" icon="eye-slash" variant="ghost" size="sm"
+                                        title="Desactivar" wire:confirm="¿Desactivar este nivel? Dejará de verse en Aprender." />
+                                @else
+                                    <flux:button wire:click="alternarActivo({{ $nivel->id }})" icon="eye" variant="ghost" size="sm" title="Activar" />
+                                @endif
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

@@ -67,10 +67,12 @@
                             <div class="flex items-center justify-end gap-1">
                                 @can('update', $estudiante)
                                     <flux:button wire:click="editar({{ $estudiante->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                    <flux:button wire:click="alternarActivo({{ $estudiante->id }})"
-                                        :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm"
-                                        :title="$estudiante->activo ? 'Desactivar' : 'Activar'"
-                                        @if ($estudiante->activo) wire:confirm="¿Desactivar a {{ $estudiante->nombre }}?" @endif />
+                                    @if ($estudiante->activo)
+                                        <flux:button wire:click="alternarActivo({{ $estudiante->id }})" icon="user-minus" variant="ghost" size="sm"
+                                            title="Desactivar" wire:confirm="¿Desactivar a {{ $estudiante->nombre }}?" />
+                                    @else
+                                        <flux:button wire:click="alternarActivo({{ $estudiante->id }})" icon="user" variant="ghost" size="sm" title="Activar" />
+                                    @endif
                                 @endcan
                             </div>
                         </flux:table.cell>

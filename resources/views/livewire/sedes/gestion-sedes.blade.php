@@ -51,10 +51,12 @@
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
                                 <flux:button wire:click="editar({{ $sede->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                <flux:button wire:click="alternarActivo({{ $sede->id }})"
-                                    :icon="$sede->activo ? 'eye-slash' : 'eye'" variant="ghost" size="sm"
-                                    :title="$sede->activo ? 'Desactivar' : 'Activar'"
-                                    @if ($sede->activo) wire:confirm="¿Desactivar la sede {{ $sede->nombre }}?" @endif />
+                                @if ($sede->activo)
+                                    <flux:button wire:click="alternarActivo({{ $sede->id }})" icon="eye-slash" variant="ghost" size="sm"
+                                        title="Desactivar" wire:confirm="¿Desactivar la sede {{ $sede->nombre }}?" />
+                                @else
+                                    <flux:button wire:click="alternarActivo({{ $sede->id }})" icon="eye" variant="ghost" size="sm" title="Activar" />
+                                @endif
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

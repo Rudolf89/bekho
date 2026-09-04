@@ -41,10 +41,12 @@
                                 <flux:button wire:click="enviarEnlaceContrasena({{ $usuario->id }})"
                                     icon="envelope" variant="ghost" size="sm" title="Enviar enlace de contraseña" />
                                 <flux:button wire:click="editar({{ $usuario->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                <flux:button wire:click="alternarActivo({{ $usuario->id }})"
-                                    :icon="$usuario->activo ? 'user-minus' : 'user'" variant="ghost" size="sm"
-                                    :title="$usuario->activo ? 'Desactivar' : 'Activar'"
-                                    @if ($usuario->activo) wire:confirm="¿Desactivar a {{ $usuario->name }}? No podrá iniciar sesión hasta que lo reactives." @endif />
+                                @if ($usuario->activo)
+                                    <flux:button wire:click="alternarActivo({{ $usuario->id }})" icon="user-minus" variant="ghost" size="sm"
+                                        title="Desactivar" wire:confirm="¿Desactivar a {{ $usuario->name }}? No podrá iniciar sesión hasta que lo reactives." />
+                                @else
+                                    <flux:button wire:click="alternarActivo({{ $usuario->id }})" icon="user" variant="ghost" size="sm" title="Activar" />
+                                @endif
                                 @if ($usuario->id !== $usuarioActualId && ! $idsConHistorial->contains($usuario->id))
                                     {{-- Solo se puede eliminar a usuarios sin historial en el sistema. --}}
                                     <flux:button wire:click="confirmarEliminar({{ $usuario->id }})"
