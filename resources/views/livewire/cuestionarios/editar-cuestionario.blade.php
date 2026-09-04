@@ -27,7 +27,8 @@
                 <div wire:key="preg-{{ $i }}" class="space-y-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
                     <div class="flex items-center justify-between">
                         <flux:heading size="sm">Pregunta {{ $i + 1 }}</flux:heading>
-                        <flux:button type="button" icon="trash" size="xs" variant="subtle" wire:click="eliminarPregunta({{ $i }})" />
+                        <flux:button type="button" icon="trash" size="xs" variant="subtle" wire:click="eliminarPregunta({{ $i }})"
+                            title="Eliminar pregunta" wire:confirm="¿Eliminar esta pregunta y sus opciones?" />
                     </div>
 
                     <flux:textarea wire:model="preguntas.{{ $i }}.enunciado" label="Enunciado" rows="2" />

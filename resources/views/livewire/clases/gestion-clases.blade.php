@@ -48,7 +48,9 @@
                             <div class="flex items-center justify-end gap-1">
                                 <flux:button wire:click="editar({{ $clase->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                 <flux:button wire:click="alternarActivo({{ $clase->id }})"
-                                    :icon="$clase->activo ? 'eye-slash' : 'eye'" variant="ghost" size="sm" />
+                                    :icon="$clase->activo ? 'eye-slash' : 'eye'" variant="ghost" size="sm"
+                                    :title="$clase->activo ? 'Desactivar' : 'Activar'"
+                                    @if ($clase->activo) wire:confirm="¿Desactivar esta clase? Dejará de aparecer en el horario." @endif />
                             </div>
                         </flux:table.cell>
                     </flux:table.row>

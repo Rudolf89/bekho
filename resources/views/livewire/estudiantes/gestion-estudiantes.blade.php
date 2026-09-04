@@ -68,7 +68,9 @@
                                 @can('update', $estudiante)
                                     <flux:button wire:click="editar({{ $estudiante->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                     <flux:button wire:click="alternarActivo({{ $estudiante->id }})"
-                                        :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm" />
+                                        :icon="$estudiante->activo ? 'user-minus' : 'user'" variant="ghost" size="sm"
+                                        :title="$estudiante->activo ? 'Desactivar' : 'Activar'"
+                                        @if ($estudiante->activo) wire:confirm="¿Desactivar a {{ $estudiante->nombre }}?" @endif />
                                 @endcan
                             </div>
                         </flux:table.cell>

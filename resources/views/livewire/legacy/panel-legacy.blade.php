@@ -144,7 +144,9 @@
                                     @if ($hora->descripcion) <span class="text-zinc-500">— {{ $hora->descripcion }}</span> @endif
                                 </span>
                                 @if ($inscripcion->estado !== \App\Enums\EstadoLegacy::Aprobado)
-                                    <flux:button wire:click="eliminarHora({{ $hora->id }})" icon="trash" size="xs" variant="subtle" />
+                                    <flux:button wire:click="eliminarHora({{ $hora->id }})" icon="trash" size="xs" variant="subtle"
+                                        title="Eliminar horas"
+                                        wire:confirm="¿Eliminar este registro de {{ $hora->horas }} h?" />
                                 @endif
                             </li>
                         @endforeach

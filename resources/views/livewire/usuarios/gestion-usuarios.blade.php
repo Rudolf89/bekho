@@ -43,7 +43,8 @@
                                 <flux:button wire:click="editar({{ $usuario->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                 <flux:button wire:click="alternarActivo({{ $usuario->id }})"
                                     :icon="$usuario->activo ? 'user-minus' : 'user'" variant="ghost" size="sm"
-                                    :title="$usuario->activo ? 'Desactivar' : 'Activar'" />
+                                    :title="$usuario->activo ? 'Desactivar' : 'Activar'"
+                                    @if ($usuario->activo) wire:confirm="¿Desactivar a {{ $usuario->name }}? No podrá iniciar sesión hasta que lo reactives." @endif />
                                 @if ($usuario->id !== $usuarioActualId && ! $idsConHistorial->contains($usuario->id))
                                     {{-- Solo se puede eliminar a usuarios sin historial en el sistema. --}}
                                     <flux:button wire:click="confirmarEliminar({{ $usuario->id }})"

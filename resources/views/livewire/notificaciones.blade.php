@@ -60,7 +60,7 @@
                         @unless ($leida)
                             <button type="button" wire:click="marcarLeida('{{ $n->id }}')" class="text-xs text-zinc-500 hover:underline">Marcar como leída</button>
                         @endunless
-                        <button type="button" wire:click="eliminar('{{ $n->id }}')" class="text-xs text-zinc-400 hover:text-red-600 hover:underline">Eliminar</button>
+                        <button type="button" wire:click="eliminar('{{ $n->id }}')" wire:confirm="¿Eliminar esta notificación?" class="text-xs text-zinc-400 hover:text-red-600 hover:underline">Eliminar</button>
                     </div>
                 </div>
             </div>

@@ -62,7 +62,9 @@
                                         <flux:button wire:click="abrirEdicion({{ $ins->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                     @endcan
                                     @can('inscribir examenes')
-                                        <flux:button wire:click="eliminar({{ $ins->id }})" icon="trash" variant="ghost" size="sm" />
+                                        <flux:button wire:click="eliminar({{ $ins->id }})" icon="trash" variant="ghost" size="sm"
+                                            title="Quitar inscripción"
+                                            wire:confirm="¿Quitar a {{ $ins->estudiante?->nombre }} de esta convocatoria?" />
                                     @endcan
                                 @endunless
                             </div>
