@@ -5,7 +5,7 @@ namespace App\Livewire\Clases;
 use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
 use App\Enums\PapelEnClase;
-use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Clase;
 use App\Models\Planilla;
@@ -20,7 +20,7 @@ use Livewire\Component;
 #[Title('Clases y horario')]
 class GestionClases extends Component
 {
-    use ConOrden, SoloLectura;
+    use ConTabla, SoloLectura;
 
     public ?int $editandoId = null;
 
@@ -278,8 +278,10 @@ class GestionClases extends Component
     public function render()
     {
         return view('livewire.clases.gestion-clases', [
-            'clases' => $this->aplicarOrden(Clase::with(['sede', 'instructores']), ['dia_semana', 'nombre', 'grupo_etario'], 'dia_semana')
-                ->orderBy('hora_inicio')->get(),
+            'clases' => $this->aplicarOrden(
+                $this->aplicarBusqueda(Clase::with(['sede', 'instructores']), ['nombre', 'sede.nombre']),
+                ['dia_semana', 'nombre', 'grupo_etario'], 'dia_semana'
+            )->orderBy('hora_inicio')->get(),
             'sedes' => Sede::orderBy('nombre')->get(),
             'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'planillas' => Planilla::where('activo', true)->orderBy('nombre')->get(),

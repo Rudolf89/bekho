@@ -23,6 +23,28 @@ beforeEach(function () {
     Tenant::set($this->bekho->id, filtraLecturas: false);
 });
 
+test('el buscador de la tabla filtra por nombre y correo', function () {
+    User::factory()->create(['academia_id' => $this->bekho->id, 'name' => 'Ana Pérez', 'email' => 'ana@bekho.cl']);
+    User::factory()->create(['academia_id' => $this->bekho->id, 'name' => 'Bruno Soto', 'email' => 'bruno@bekho.cl']);
+
+    Livewire::actingAs($this->admin)->test(GestionUsuarios::class)
+        ->set('buscar', 'Ana')
+        ->assertSee('Ana Pérez')
+        ->assertDontSee('Bruno Soto')
+        ->set('buscar', 'bruno@')
+        ->assertSee('Bruno Soto')
+        ->assertDontSee('Ana Pérez');
+});
+
+test('el orden alterna asc/desc al pulsar la columna', function () {
+    Livewire::actingAs($this->admin)->test(GestionUsuarios::class)
+        ->call('ordenarPor', 'name')
+        ->assertSet('ordenCampo', 'name')
+        ->assertSet('ordenDir', 'asc')
+        ->call('ordenarPor', 'name')
+        ->assertSet('ordenDir', 'desc');
+});
+
 test('se puede crear un usuario con rol dirección sin asignar sede', function () {
     Livewire::actingAs($this->admin)->test(GestionUsuarios::class)
         ->call('nuevo')

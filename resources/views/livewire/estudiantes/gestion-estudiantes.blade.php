@@ -80,6 +80,8 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$estudiantes->total()" etiqueta="estudiante" />
     </div>
 
     <div>{{ $estudiantes->links() }}</div>

@@ -7,6 +7,8 @@
         <flux:button wire:click="nuevo" icon="user-plus" variant="primary">Nuevo usuario</flux:button>
     </div>
 
+    <x-tabla.buscador placeholder="Buscar por nombre, correo o teléfono…" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -51,12 +53,16 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="5">
-                            <flux:text class="py-4 text-center">Aún no hay usuarios. Crea el primero.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay usuarios. Crea el primero.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$usuarios->count()" etiqueta="usuario" />
     </div>
 
     <flux:modal name="usuario-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

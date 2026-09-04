@@ -7,6 +7,8 @@
         <flux:button wire:click="nuevo" icon="plus" variant="primary">Nueva clase</flux:button>
     </div>
 
+    <x-tabla.buscador placeholder="Buscar por clase o sede…" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -50,12 +52,16 @@
                 @empty
                     <flux:table.row>
                         <flux:table.cell colspan="6">
-                            <flux:text class="py-4 text-center">Aún no hay clases. Crea la primera.</flux:text>
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay clases. Crea la primera.' }}
+                            </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
                 @endforelse
             </flux:table.rows>
         </flux:table>
+
+        <x-tabla.resumen :total="$clases->count()" etiqueta="clase" />
     </div>
 
     <flux:modal name="clase-modal" wire:model="mostrarModal" class="max-w-xl md:min-w-xl">

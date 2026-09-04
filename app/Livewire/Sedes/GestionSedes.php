@@ -3,7 +3,7 @@
 namespace App\Livewire\Sedes;
 
 use App\Enums\TipoSede;
-use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Academia;
 use App\Models\Sede;
@@ -17,7 +17,7 @@ use Livewire\Component;
 #[Title('Sedes')]
 class GestionSedes extends Component
 {
-    use ConOrden, SoloLectura;
+    use ConTabla, SoloLectura;
 
     public ?int $editandoId = null;
 
@@ -143,7 +143,10 @@ class GestionSedes extends Component
         // no filtra lecturas) ve todas las sedes e instructores; el maestro,
         // solo los de su academia.
         return view('livewire.sedes.gestion-sedes', [
-            'sedes' => $this->aplicarOrden(Sede::with('academia'), ['nombre', 'comuna', 'activo'], 'nombre')->get(),
+            'sedes' => $this->aplicarOrden(
+                $this->aplicarBusqueda(Sede::with('academia'), ['nombre', 'comuna', 'direccion', 'academia.nombre']),
+                ['nombre', 'comuna', 'activo'], 'nombre'
+            )->get(),
             'academias' => Academia::orderBy('nombre')->get(),
             'listaInstructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'comunas' => config('comunas', []),

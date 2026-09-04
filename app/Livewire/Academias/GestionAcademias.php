@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Academias;
 
-use App\Livewire\Concerns\ConOrden;
+use App\Livewire\Concerns\ConTabla;
 use App\Models\Academia;
 use Flux\Flux;
 use Livewire\Attributes\Title;
@@ -11,7 +11,7 @@ use Livewire\Component;
 #[Title('Academias')]
 class GestionAcademias extends Component
 {
-    use ConOrden;
+    use ConTabla;
 
     public ?int $editandoId = null;
 
@@ -86,7 +86,10 @@ class GestionAcademias extends Component
         // El admin-plataforma no filtra lecturas, así que los conteos de sedes y
         // usuarios salen globales (el total real de cada academia).
         return view('livewire.academias.gestion-academias', [
-            'academias' => $this->aplicarOrden(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'activo'], 'nombre')->get(),
+            'academias' => $this->aplicarOrden(
+                $this->aplicarBusqueda(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'email', 'telefono']),
+                ['nombre', 'activo'], 'nombre'
+            )->get(),
         ]);
     }
 }
