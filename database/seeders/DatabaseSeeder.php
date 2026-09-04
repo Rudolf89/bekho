@@ -45,6 +45,9 @@ class DatabaseSeeder extends Seeder
             RecompensasSeeder::class,
             // Programa Legacy: niveles y requisitos (catálogo compartido).
             LegacySeeder::class,
+            // Línea de supervisión real de la federación (árbol de supervisor_id
+            // que alimenta el conteo en cascada del collar de máster).
+            LineaSupervisionSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
         ]);
