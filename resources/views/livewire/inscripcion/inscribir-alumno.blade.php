@@ -98,16 +98,26 @@
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg">Apoderados y contacto</flux:heading>
             <flux:text size="sm" class="mb-4 mt-0.5 text-zinc-500">
-                El apoderado 1 es obligatorio para Tigers y For Kids. El apoderado 2 es opcional.
+                El apoderado 1 es obligatorio para Tigers y For Kids.
             </flux:text>
+
+            {{-- Apoderado 1 (obligatorio según grupo) con su contacto. --}}
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" />
-                <flux:input wire:model="apoderado_2" label="Nombre apoderado 2" />
+                <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" class="sm:col-span-2" />
                 <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" required />
-                <flux:input wire:model="telefono_contacto_2" label="Teléfono 2" placeholder="9xxxxxxxx" />
                 <flux:input wire:model="email_contacto" type="email" label="Correo 1 *" placeholder="correo@ejemplo.cl" required />
-                <flux:input wire:model="email_contacto_2" type="email" label="Correo 2" placeholder="correo@ejemplo.cl" />
             </div>
+
+            {{-- Segundo apoderado: opcional, se despliega con la casilla. --}}
+            <flux:checkbox wire:model.live="agregarApoderado2" label="Agregar un segundo apoderado" class="mt-4" />
+
+            @if ($agregarApoderado2)
+                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                    <flux:input wire:model="apoderado_2" label="Nombre apoderado 2" class="sm:col-span-2" />
+                    <flux:input wire:model="telefono_contacto_2" label="Teléfono 2" placeholder="9xxxxxxxx" />
+                    <flux:input wire:model="email_contacto_2" type="email" label="Correo 2" placeholder="correo@ejemplo.cl" />
+                </div>
+            @endif
         </section>
 
         {{-- 5. Mensualidad y reglamento --}}

@@ -177,6 +177,18 @@ test('sugiere pasar al grupo siguiente si está por cumplir la edad', function (
     $comp->call('cambiarGrupo', 'for_kids')->assertSet('grupo_etario', 'for_kids');
 });
 
+test('desmarcar el segundo apoderado limpia sus datos', function () {
+    Livewire::test(InscribirAlumno::class)
+        ->set('agregarApoderado2', true)
+        ->set('apoderado_2', 'María Soto')
+        ->set('telefono_contacto_2', '987654321')
+        ->set('email_contacto_2', 'maria@ejemplo.cl')
+        ->set('agregarApoderado2', false)
+        ->assertSet('apoderado_2', null)
+        ->assertSet('telefono_contacto_2', null)
+        ->assertSet('email_contacto_2', null);
+});
+
 test('no sugiere cambio de grupo si el cumpleaños está lejos', function () {
     // 6 años, cumple 7 recién en ~8 meses → todavía no se sugiere el cambio.
     $comp = Livewire::test(InscribirAlumno::class)

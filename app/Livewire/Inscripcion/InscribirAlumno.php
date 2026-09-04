@@ -46,6 +46,9 @@ class InscribirAlumno extends Component
     // Apoderados y contacto
     public ?string $apoderado_1 = null;
 
+    /** Muestra/oculta los datos del segundo apoderado (opcional). */
+    public bool $agregarApoderado2 = false;
+
     public ?string $apoderado_2 = null;
 
     public string $telefono_contacto = '';
@@ -208,6 +211,19 @@ class InscribirAlumno extends Component
     public function updatedRegion(): void
     {
         $this->comuna = '';
+    }
+
+    /**
+     * Al desmarcar el segundo apoderado se limpian sus datos, para no enviar
+     * información de un apoderado que ya no se quiere registrar.
+     */
+    public function updatedAgregarApoderado2(bool $value): void
+    {
+        if (! $value) {
+            $this->apoderado_2 = null;
+            $this->telefono_contacto_2 = null;
+            $this->email_contacto_2 = null;
+        }
     }
 
     /**
