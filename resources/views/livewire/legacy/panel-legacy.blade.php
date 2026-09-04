@@ -29,7 +29,18 @@
     </div>
 
     {{-- Inscripciones --}}
-    <x-tabla.buscador placeholder="Buscar por instructor o nivel…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por instructor o nivel…" />
+        @if ($inscripciones->isNotEmpty())
+            <x-tabla.resumen
+                :total="$inscripciones->count()"
+                etiqueta="inscripción"
+                plural="inscripciones"
+                :sumas="[['etiqueta' => 'Horas acumuladas', 'valor' => number_format($horasTotales, 0, ',', '.')]]"
+                class="w-full sm:w-auto"
+            />
+        @endif
+    </div>
 
     <div class="space-y-2">
         @forelse ($inscripciones as $ins)
@@ -57,16 +68,6 @@
             </flux:text>
         @endforelse
     </div>
-
-    @if ($inscripciones->isNotEmpty())
-        <x-tabla.resumen
-            :total="$inscripciones->count()"
-            etiqueta="inscripción"
-            plural="inscripciones"
-            :sumas="[['etiqueta' => 'Horas acumuladas', 'valor' => number_format($horasTotales, 0, ',', '.')]]"
-            class="rounded-xl border border-zinc-200 dark:border-zinc-700"
-        />
-    @endif
 
     {{-- Detalle --}}
     @if ($inscripcion)

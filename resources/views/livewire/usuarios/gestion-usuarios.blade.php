@@ -7,7 +7,10 @@
         <flux:button wire:click="nuevo" icon="user-plus" variant="primary">Nuevo usuario</flux:button>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por nombre, correo o teléfono…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por nombre, correo o teléfono…" />
+        <x-tabla.resumen :total="$usuarios->count()" etiqueta="usuario" class="w-full sm:w-auto" />
+    </div>
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
@@ -61,8 +64,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$usuarios->count()" etiqueta="usuario" />
     </div>
 
     <flux:modal name="usuario-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

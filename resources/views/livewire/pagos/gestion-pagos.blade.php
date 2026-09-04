@@ -44,8 +44,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$morosos->count()" etiqueta="moroso" />
     </div>
 
     {{-- Pagos --}}
@@ -61,6 +59,12 @@
             </flux:select>
         </div>
     </div>
+
+    <x-tabla.resumen
+        :total="$totalPagos"
+        etiqueta="pago"
+        :sumas="[['etiqueta' => 'Total recaudado', 'valor' => '$'.number_format($sumaPagos, 0, ',', '.')]]"
+    />
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
@@ -89,12 +93,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen
-            :total="$totalPagos"
-            etiqueta="pago"
-            :sumas="[['etiqueta' => 'Total recaudado', 'valor' => '$'.number_format($sumaPagos, 0, ',', '.')]]"
-        />
     </div>
 
     <div>{{ $pagos->links() }}</div>

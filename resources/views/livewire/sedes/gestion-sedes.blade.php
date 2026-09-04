@@ -7,7 +7,10 @@
         <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva sede</flux:button>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por nombre, comuna, dirección o academia…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por nombre, comuna, dirección o academia…" />
+        <x-tabla.resumen :total="$sedes->count()" etiqueta="sede" class="w-full sm:w-auto" />
+    </div>
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
@@ -64,8 +67,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$sedes->count()" etiqueta="sede" />
     </div>
 
     <flux:modal name="sede-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

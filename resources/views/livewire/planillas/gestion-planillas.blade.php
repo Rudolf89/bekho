@@ -7,7 +7,10 @@
         <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva planilla</flux:button>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por planilla o programa…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por planilla o programa…" />
+        <x-tabla.resumen :total="$planillas->count()" etiqueta="planilla" class="w-full sm:w-auto" />
+    </div>
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
@@ -44,8 +47,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$planillas->count()" etiqueta="planilla" />
     </div>
 
     <flux:modal name="planilla-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">

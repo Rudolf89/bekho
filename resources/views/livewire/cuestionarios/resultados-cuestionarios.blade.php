@@ -32,6 +32,10 @@
         </flux:select>
     </div>
 
+    @if ($intentos->total() > 0)
+        <x-tabla.resumen :total="$intentos->total()" etiqueta="intento" />
+    @endif
+
     @if ($intentos->isEmpty())
         <flux:callout icon="clipboard-document-check">No hay intentos con esos filtros.</flux:callout>
     @endif
@@ -101,10 +105,6 @@
             </div>
         @endforeach
     </div>
-
-    @if ($intentos->total() > 0)
-        <x-tabla.resumen :total="$intentos->total()" etiqueta="intento" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
-    @endif
 
     {{ $intentos->links() }}
 </div>

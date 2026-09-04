@@ -22,8 +22,9 @@
 
     {{-- Inscritos --}}
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-        <div class="border-b border-zinc-200 p-4 dark:border-zinc-700">
+        <div class="flex items-center gap-2 border-b border-zinc-200 p-4 dark:border-zinc-700">
             <flux:heading size="lg">Inscritos</flux:heading>
+            <flux:badge size="sm" color="zinc">{{ $inscritos->count() }}</flux:badge>
         </div>
         <flux:table>
             <flux:table.columns>
@@ -76,15 +77,16 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$inscritos->count()" etiqueta="inscrito" />
     </div>
 
     {{-- Sugeridos --}}
     @unless ($finalizada)
         <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
             <div class="border-b border-zinc-200 p-4 dark:border-zinc-700">
-                <flux:heading size="lg">Sugeridos</flux:heading>
+                <div class="flex items-center gap-2">
+                    <flux:heading size="lg">Sugeridos</flux:heading>
+                    <flux:badge size="sm" color="zinc">{{ $sugeridos->count() }}</flux:badge>
+                </div>
                 <flux:text size="sm" class="mt-1">Estudiantes activos de la sede. La marca de elegibilidad es orientativa; tú confirmas.</flux:text>
             </div>
             <flux:table>
@@ -123,8 +125,6 @@
                     @endforelse
                 </flux:table.rows>
             </flux:table>
-
-            <x-tabla.resumen :total="$sugeridos->count()" etiqueta="sugerido" />
         </div>
     @endunless
 

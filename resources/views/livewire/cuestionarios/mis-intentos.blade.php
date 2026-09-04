@@ -10,7 +10,12 @@
         <flux:text class="mt-1">Tu historial de evaluaciones y el estado de cada una.</flux:text>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por cuestionario…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por cuestionario…" />
+        @if ($intentos->total() > 0)
+            <x-tabla.resumen :total="$intentos->total()" etiqueta="intento" class="w-full sm:w-auto" />
+        @endif
+    </div>
 
     @if ($intentos->isEmpty())
         <flux:callout icon="clipboard-document-check">
@@ -51,10 +56,6 @@
             </div>
         @endforeach
     </div>
-
-    @if ($intentos->total() > 0)
-        <x-tabla.resumen :total="$intentos->total()" etiqueta="intento" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
-    @endif
 
     {{ $intentos->links() }}
 </div>

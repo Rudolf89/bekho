@@ -4,6 +4,10 @@
         <flux:text class="mt-1">Información de tus hijos en la escuela</flux:text>
     </div>
 
+    @if ($hijos->isNotEmpty())
+        <x-tabla.resumen :total="$hijos->count()" etiqueta="estudiante" />
+    @endif
+
     @forelse ($hijos as $hijo)
         <div wire:key="hijo-{{ $hijo->id }}"
             class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800">
@@ -28,8 +32,4 @@
             <flux:text>No tienes estudiantes asociados. Si crees que es un error, contacta a la escuela.</flux:text>
         </div>
     @endforelse
-
-    @if ($hijos->isNotEmpty())
-        <x-tabla.resumen :total="$hijos->count()" etiqueta="estudiante" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
-    @endif
 </div>

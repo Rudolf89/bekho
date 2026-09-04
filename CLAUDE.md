@@ -135,10 +135,12 @@ formación).
   `aplicarOrden(...)`. En la vista: `<x-tabla.buscador>` para el filtro de texto,
   columnas `flux:table.column sortable :sorted=... :direction=$ordenDir wire:click="ordenarPor('campo')"`
   para el orden asc/desc, y `<x-tabla.resumen :total=... etiqueta="…" :plural="…"
-  :sumas="[['etiqueta'=>…, 'valor'=>…]]">` como pie con el conteo de filas y las
-  sumas de montos (el pluralizador automático es inglés → pasar `plural` en palabras
-  españolas terminadas en consonante). En tablas paginadas el resumen usa `->total()`;
-  las sumas se calculan sobre TODO el filtro (no solo la página).
+  :sumas="[['etiqueta'=>…, 'valor'=>…]]">` con el conteo de filas y las sumas de
+  montos (el pluralizador automático es inglés → pasar `plural` en palabras
+  españolas terminadas en consonante). El resumen va **ARRIBA de la tabla** (junto al
+  buscador en una fila `flex … sm:justify-between`), no al pie, para que sea visible
+  sin bajar toda la lista. En tablas paginadas usa `->total()`; las sumas se calculan
+  sobre TODO el filtro (no solo la página).
 - Enums en `App\Enums` (backed string) con método `etiqueta()`.
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `academia_id` + trait `PerteneceAcademia`.

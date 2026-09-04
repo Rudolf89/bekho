@@ -19,7 +19,12 @@
         </div>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por título o área…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por título o área…" />
+        @if ($cuestionarios->isNotEmpty())
+            <x-tabla.resumen :total="$cuestionarios->count()" etiqueta="cuestionario" class="w-full sm:w-auto" />
+        @endif
+    </div>
 
     @if ($cuestionarios->isEmpty())
         <flux:callout icon="clipboard-document-list">
@@ -82,8 +87,4 @@
             </div>
         @endforeach
     </div>
-
-    @if ($cuestionarios->isNotEmpty())
-        <x-tabla.resumen :total="$cuestionarios->count()" etiqueta="cuestionario" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
-    @endif
 </div>

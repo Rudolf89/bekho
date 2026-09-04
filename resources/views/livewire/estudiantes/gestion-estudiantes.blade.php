@@ -34,6 +34,8 @@
         </flux:select>
     </div>
 
+    <x-tabla.resumen :total="$estudiantes->total()" etiqueta="estudiante" />
+
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
@@ -80,8 +82,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$estudiantes->total()" etiqueta="estudiante" />
     </div>
 
     <div>{{ $estudiantes->links() }}</div>

@@ -7,7 +7,10 @@
         <flux:button wire:click="nuevo" icon="plus" variant="primary">Nueva clase</flux:button>
     </div>
 
-    <x-tabla.buscador placeholder="Buscar por clase o sede…" />
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por clase o sede…" />
+        <x-tabla.resumen :total="$clases->count()" etiqueta="clase" class="w-full sm:w-auto" />
+    </div>
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
@@ -60,8 +63,6 @@
                 @endforelse
             </flux:table.rows>
         </flux:table>
-
-        <x-tabla.resumen :total="$clases->count()" etiqueta="clase" />
     </div>
 
     <flux:modal name="clase-modal" wire:model="mostrarModal" class="max-w-xl md:min-w-xl">

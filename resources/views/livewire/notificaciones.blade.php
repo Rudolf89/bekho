@@ -18,6 +18,10 @@
         </div>
     </div>
 
+    @if ($notificaciones->isNotEmpty())
+        <x-tabla.resumen :total="$notificaciones->count()" etiqueta="notificación" plural="notificaciones" />
+    @endif
+
     <div class="space-y-2">
         @forelse ($notificaciones as $n)
             @php($d = $n->data)
@@ -66,8 +70,4 @@
             </div>
         @endforelse
     </div>
-
-    @if ($notificaciones->isNotEmpty())
-        <x-tabla.resumen :total="$notificaciones->count()" etiqueta="notificación" plural="notificaciones" class="rounded-xl border border-zinc-200 dark:border-zinc-700" />
-    @endif
 </div>
