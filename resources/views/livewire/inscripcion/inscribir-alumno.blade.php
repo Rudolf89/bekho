@@ -33,10 +33,10 @@
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg" class="mb-4">Datos del alumno</flux:heading>
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="nombres" label="Nombres *" placeholder="Ambos nombres" class="sm:col-span-2" required />
+                <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" required />
+                <flux:input wire:model="nombres" label="Nombres *" placeholder="Ambos nombres" required />
                 <flux:input wire:model="apellido_paterno" label="Apellido paterno *" required />
                 <flux:input wire:model="apellido_materno" label="Apellido materno *" required />
-                <flux:input wire:model="rut" label="RUT *" placeholder="12345678-9 (sin puntos)" required />
                 <flux:input wire:model.live="fecha_nacimiento" type="date" label="Fecha de nacimiento *"
                     :description="$this->edad() !== null ? 'Edad: '.$this->edad().' '.($this->edad() === 1 ? 'año' : 'años') : null"
                     required />
