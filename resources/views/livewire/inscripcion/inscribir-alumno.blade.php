@@ -102,7 +102,7 @@
 
             {{-- Apoderado 1 (obligatorio según grupo) con su contacto. --}}
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1'" class="sm:col-span-2" />
+                <flux:input wire:model="apoderado_1" :label="$this->requiereApoderado() ? 'Nombre apoderado 1 *' : 'Nombre apoderado 1 (opcional)'" class="sm:col-span-2" />
                 <flux:input wire:model="telefono_contacto" label="Teléfono 1 *" placeholder="9xxxxxxxx" />
                 <flux:input wire:model="email_contacto" type="email" label="Correo 1 *" placeholder="correo@ejemplo.cl" />
             </div>

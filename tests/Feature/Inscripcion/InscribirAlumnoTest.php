@@ -92,6 +92,16 @@ test('el apoderado 1 es obligatorio para Tigers y For Kids', function () {
         ->assertHasErrors('apoderado_1');
 });
 
+test('el apoderado 1 queda marcado como obligatorio mientras no se elija Jóvenes y Adultos', function () {
+    // Por defecto (sin grupo elegido aún) el apoderado se exige, para que el
+    // campo no quede sin marcar frente al teléfono/correo (siempre obligatorios).
+    $comp = Livewire::test(InscribirAlumno::class);
+    expect($comp->instance()->requiereApoderado())->toBeTrue();
+
+    $comp->set('grupo_etario', 'jovenes_adultos');
+    expect($comp->instance()->requiereApoderado())->toBeFalse();
+});
+
 test('el apoderado 1 no es obligatorio para Jóvenes y Adultos', function () {
     inscribir()
         ->set('fecha_nacimiento', now()->subYears(25)->format('Y-m-d'))

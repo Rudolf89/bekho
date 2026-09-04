@@ -227,17 +227,14 @@ class InscribirAlumno extends Component
     }
 
     /**
-     * ¿Se exige apoderado? Según el grupo etario: Tigers y For Kids son siempre
-     * menores (apoderado obligatorio); Jóvenes y Adultos puede ser mayor de edad
-     * (opcional).
+     * ¿Se exige apoderado? Por defecto sí (la escuela es mayormente de menores):
+     * solo es opcional cuando el alumno es del grupo Jóvenes y Adultos, que puede
+     * ser mayor de edad. Así el campo queda marcado como obligatorio desde el
+     * inicio y no se desalinea con el teléfono/correo, que siempre lo son.
      */
     public function requiereApoderado(): bool
     {
-        return in_array(
-            $this->grupo_etario,
-            [GrupoEtario::Tigers->value, GrupoEtario::ForKids->value],
-            true,
-        );
+        return $this->grupo_etario !== GrupoEtario::JovenesAdultos->value;
     }
 
     /**

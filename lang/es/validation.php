@@ -192,6 +192,7 @@ return [
         'code' => 'código',
         'telefono' => 'teléfono',
         'telefono_contacto' => 'teléfono de contacto',
+        'apoderado_1' => 'nombre del apoderado',
         'rol' => 'rol',
         'rango_id' => 'rango',
         'sede_id' => 'sede',
