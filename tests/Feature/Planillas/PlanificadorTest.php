@@ -61,6 +61,15 @@ test('la lección de Comunicación (Semana 6) queda cargada en su ciclo', functi
         ->and($leccion->fin_texto)->toContain('por favor', 'gracias', 'de nada');
 });
 
+test('el ciclo Comunicación tiene sus 8 semanas de lección sembradas', function () {
+    $ciclo = Ciclo::where('habilidad_vida', HabilidadVida::Comunicacion->value)->first();
+
+    expect($ciclo->lecciones()->count())->toBe(8)
+        ->and($ciclo->lecciones()->pluck('semana')->sort()->values()->all())->toBe([1, 2, 3, 4, 5, 6, 7, 8])
+        ->and($ciclo->lecciones()->where('semana', 1)->first()->comienzo_frase)->toBe('La comunicación es lo que me conecta con el mundo')
+        ->and($ciclo->lecciones()->where('semana', 8)->first()->fin_frase)->toBe('Los líderes ayudan sin que se les pregunte');
+});
+
 // ── Biblioteca de calentamiento: filtro por grupo ───────────────────────────
 
 test('la biblioteca de calentamiento filtra las categorías por grupo etario', function () {
@@ -193,13 +202,13 @@ test('las 8 semanas se muestran como casilleros (cargadas + pendientes)', functi
     $instructor->assignRole('instructor');
     $comunicacion = Ciclo::where('habilidad_vida', HabilidadVida::Comunicacion->value)->first();
 
-    // Ciclo Comunicación: 8 casilleros de semana, 1 cargada (S6).
+    // Ciclo Comunicación: 8 casilleros de semana, las 8 cargadas.
     Livewire::actingAs($instructor)->test(Planificador::class)
         ->set('tab', 'leccion')
         ->set('cicloId', $comunicacion->id)
         ->assertSee('Semana 1')
         ->assertSee('Semana 8')
-        ->assertSee('1 de 8 semanas cargadas');
+        ->assertSee('8 de 8 semanas cargadas');
 });
 
 test('el planificador exige el permiso de gestionar planillas', function () {

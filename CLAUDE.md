@@ -192,8 +192,9 @@ La **prueba escrita Legacy N3** ya tiene banco real (`App\Support\Cuestionarios\
 BancoLegacy`, fundado en el Manual Legacy) enlazado al requisito automático.
 
 Lecciones de vida sembradas (reales, aportadas por la escuela; `PlanificadorSeeder::
-sembrarLecciones`): **Ciclo 1 Disciplina · Semana 7** y **Ciclo 3 Comunicación ·
-Semana 6** (2 de 48). Cada una con los 3 momentos (comienzo/durante/fin + frase).
+sembrarLecciones`): **Ciclo 1 Disciplina · Semana 7** y el **Ciclo 3 Comunicación
+completo (Semanas 1–8)** (9 de 48). Cada una con los 3 momentos (comienzo/durante/
+fin + frase).
 
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
 **sembrar el resto de lecciones de vida** (46 semanas · el usuario pasa la lámina y
