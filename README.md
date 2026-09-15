@@ -127,9 +127,15 @@ php artisan migrate --seed
 
 Esto crea el esquema y siembra:
 
-- El catálogo de **cargos/rangos** (7 rangos ATA).
-- Los **roles y permisos**.
-- La primera academia (grupo): **BEKHO Power Academy**.
+- El catálogo de **cargos/rangos** (7 rangos ATA), **roles y permisos**.
+- Los **catálogos ATA compartidos**: ciclos y class planners, biblioteca de técnicas y
+  pasos, grados y sus patadas por grado, cuadrantes de enseñanza, currículo por nivel,
+  planificador de Cinturón Negro, cuestionarios (banco de Juez y prueba escrita Legacy),
+  recompensas y niveles/requisitos Legacy.
+- La **línea de supervisión real de la federación** (`LineaSupervisionSeeder`): ~185
+  instructores encadenados por `supervisor_id` (árbol que alimenta el conteo en cascada
+  del collar) y las **academias/grupos de BEKHO** con sus sedes (`AcademiasBekhoSeeder`,
+  datos aún **por confirmar** con la escuela — ver `docs/linea-supervision-academias.md`).
 - Un usuario **administrador de plataforma** (ver credenciales abajo).
 - Datos de **demostración** (`DemoBekhoSeeder`): alumnos, clases, asistencia y pagos de
   ejemplo para que el panel se vea "vivo". Se puede quitar del `DatabaseSeeder` antes de
@@ -246,16 +252,17 @@ Roles (spatie, **sin teams mode** — los roles son globales):
 |-----|-------|----------|
 | `admin-plataforma` | Dueño del sistema | Todos, incl. `gestionar academias`; cruza academias |
 | `federacion` | Casa Central | Solo lectura sobre **todas** las academias |
-| `direccion` | Director de un grupo | Todo dentro de **su** academia (usuarios, sedes, alumnos, clases, asistencia, **pagos**, planillas, formación) |
-| `administrativo` | Secretaría / recepción | Alumnos, clases, asistencia. **Sin pagos** |
-| `instructor` | Enseña clases | Asistencia, planillas, **inscribir en exámenes**, ver formación; ve **solo los alumnos de sus clases** |
-| `apoderado` | Apoderado | Ninguno global; ve solo a sus hijos (Policies) |
-| `alumno` | Alumno | `ver formacion` |
+| `direccion` | Director de un grupo | Todo dentro de **su** academia (usuarios, sedes, alumnos, clases, asistencia, **pagos**, planillas, formación, cuestionarios, recompensas, Legacy) |
+| `administrativo` | Secretaría / recepción | Alumnos, clases, asistencia, rendir cuestionarios. **Sin pagos** |
+| `instructor` | Enseña clases | Asistencia, planillas, **inscribir en exámenes**, formación, **cuestionarios** (examinador), **recompensas**, **Legacy**; ve **solo los alumnos de sus clases** |
+| `apoderado` | Apoderado | Ve solo a sus hijos (Policies) y su colección de logros (`ver recompensas`) |
+| `alumno` | Alumno | `ver formacion`, `rendir cuestionarios`, `ver recompensas` |
 
 Permisos definidos: `gestionar academias`, `gestionar usuarios`, `gestionar sedes`,
 `gestionar alumnos`, `gestionar clases`, `tomar asistencia`, `registrar pagos`,
 `gestionar examenes`, `inscribir examenes`, `gestionar planillas`, `gestionar formacion`,
-`ver formacion`.
+`ver formacion`, `gestionar cuestionarios`, `rendir cuestionarios`, `gestionar recompensas`,
+`ver recompensas`, `gestionar legacy`, `aprobar legacy`.
 
 Reglas clave:
 
@@ -442,6 +449,10 @@ npm run build
 
 - **Código y dominio en español**: nombres de clases, campos, métodos y comentarios.
 - **Blade + Livewire** para toda la interfaz. No hay SPA ni API por ahora.
+- **Tablas**: los listados usan el trait `App\Livewire\Concerns\ConTabla` + los componentes
+  `<x-tabla.buscador>` y `<x-tabla.resumen>` para **filtrar** (búsqueda de texto),
+  **ordenar** (columnas asc/desc) y mostrar un **resumen** arriba de la tabla (conteo de
+  filas + sumas de montos donde aplica).
 - **Sin API**: si a futuro se necesita un cliente nativo, se añade **Sanctum** en ese
   momento; no se anticipa.
 - **Migraciones** con clase anónima, `casts()` como método y tipos de retorno (estilo
@@ -449,3 +460,15 @@ npm run build
 - **Tenancy**: cualquier tabla nueva del dominio lleva `academia_id` y su modelo usa el
   trait `PerteneceAcademia`, salvo que sea un **catálogo compartido** (entonces va sin
   `academia_id` y sin el trait).
+
+---
+
+## Documentación
+
+- **[`docs/modelo-datos.md`](docs/modelo-datos.md)** — modelo de datos completo (53 tablas
+  de dominio) con diagramas ER y la referencia de columnas y llaves foráneas.
+- **[`docs/plan-integracion-manual-legacy.md`](docs/plan-integracion-manual-legacy.md)** —
+  integración de los manuales ATA (las 7 fases del currículo).
+- **[`docs/linea-supervision-academias.md`](docs/linea-supervision-academias.md)** — mapeo
+  (por confirmar) de las academias de la federación con la línea de supervisión.
+- **`CLAUDE.md`** — guía técnica para trabajar en el repo (arquitectura, convenciones y estado).
