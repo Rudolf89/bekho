@@ -29,6 +29,14 @@ beforeEach(function () {
 
 afterEach(fn () => Tenant::olvidar());
 
+test('cada nivel Legacy tiene su edad mínima de ascenso (13, 16, 18)', function () {
+    $edades = NivelLegacy::orderBy('orden')->pluck('edad_minima', 'nombre');
+
+    expect($edades['Legacy Nivel 1'])->toBe(13)
+        ->and($edades['Legacy Nivel 2'])->toBe(16)
+        ->and($edades['Legacy Nivel 3'])->toBe(18);
+});
+
 function usuarioLegacy(string $rol, int $academiaId): User
 {
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);

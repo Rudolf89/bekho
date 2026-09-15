@@ -21,6 +21,7 @@ class LegacySeeder extends Seeder
         $niveles = [
             [
                 'nombre' => 'Legacy Nivel 1',
+                'edad_minima' => 13,
                 'descripcion' => 'Primer nivel del track de formación de instructores: fundamentos de enseñanza y asistencia acreditada.',
                 'requisitos' => [
                     'Membresía ATA vigente',
@@ -31,6 +32,7 @@ class LegacySeeder extends Seeder
             ],
             [
                 'nombre' => 'Legacy Nivel 2',
+                'edad_minima' => 16,
                 'descripcion' => 'Segundo nivel: conducción de clase y evaluación de alumnos.',
                 'requisitos' => [
                     'Membresía ATA vigente',
@@ -41,6 +43,7 @@ class LegacySeeder extends Seeder
             ],
             [
                 'nombre' => 'Legacy Nivel 3',
+                'edad_minima' => 18,
                 'descripcion' => 'Tercer nivel: requisito para rendir 4º grado y superior. Incluye prueba escrita.',
                 'requisitos' => [
                     'Membresía ATA vigente',
@@ -60,6 +63,7 @@ class LegacySeeder extends Seeder
                 [
                     'orden' => $orden + 1,
                     'horas_requeridas' => 100,
+                    'edad_minima' => $datos['edad_minima'],
                     'descripcion' => $datos['descripcion'],
                 ],
             );

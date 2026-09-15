@@ -17,7 +17,7 @@ class NivelLegacy extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['nombre', 'orden', 'horas_requeridas', 'descripcion'];
+    protected $fillable = ['nombre', 'orden', 'horas_requeridas', 'edad_minima', 'descripcion'];
 
     /**
      * @return array<string, string>
@@ -27,6 +27,7 @@ class NivelLegacy extends Model
         return [
             'orden' => 'integer',
             'horas_requeridas' => 'integer',
+            'edad_minima' => 'integer',
         ];
     }
 
