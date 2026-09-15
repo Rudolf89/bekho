@@ -58,9 +58,10 @@ test('el rango Profesor abarca de 2º a 5º Dan', function () {
         ->and($profesor->grado_dan_max)->toBe(5)
         ->and($profesor->danEtiqueta())->toBe('2º a 5º Dan');
 
-    // Un rango de Dan único se muestra sin rango, y uno sin Dan como «—».
+    // El Instructor exige 1.er Dan; un rango sin Dan (Legado) se muestra como «—».
     expect(CargoRango::where('nombre', 'Maestro')->first()->danEtiqueta())->toBe('6º Dan')
-        ->and(CargoRango::where('nombre', 'Instructor')->first()->danEtiqueta())->toBe('—');
+        ->and(CargoRango::where('nombre', 'Instructor')->first()->danEtiqueta())->toBe('1º Dan')
+        ->and(CargoRango::where('nombre', 'like', '%Legado%')->first()->danEtiqueta())->toBe('—');
 });
 
 test('el programa Legacy fija el ingreso desde los 9 años', function () {

@@ -230,7 +230,7 @@ Los **rangos** sembrados (nivel 1 = más alto):
 | 3 | Maestro Sénior | 7 | Gala Azul |
 | 4 | Maestro | 6 | Gala Blanco |
 | 5 | Profesor | 2 a 5 | Collar Negro sólido |
-| 6 | Instructor | — | Collar Negro/Rojo/Negro |
+| 6 | Instructor | 1 | Collar Negro/Rojo/Negro |
 | 7 | Legado (Ayudante) | — | Collar Rojo |
 
 ### Rol y Rango son ejes independientes
