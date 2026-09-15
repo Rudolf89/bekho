@@ -50,6 +50,25 @@ test('Leadership y Legacy coexisten como programa y como rango sin fusionarse', 
     expect(CargoRango::count())->toBe(7);
 });
 
+test('el rango Profesor abarca de 2º a 5º Dan', function () {
+    $this->seed(CargosRangosSeeder::class);
+
+    $profesor = CargoRango::where('nombre', 'Profesor')->first();
+    expect($profesor->grado_dan)->toBe(2)
+        ->and($profesor->grado_dan_max)->toBe(5)
+        ->and($profesor->danEtiqueta())->toBe('2º a 5º Dan');
+
+    // Un rango de Dan único se muestra sin rango, y uno sin Dan como «—».
+    expect(CargoRango::where('nombre', 'Maestro')->first()->danEtiqueta())->toBe('6º Dan')
+        ->and(CargoRango::where('nombre', 'Instructor')->first()->danEtiqueta())->toBe('—');
+});
+
+test('el programa Legacy fija el ingreso desde los 9 años', function () {
+    $this->seed(ProgramasSeeder::class);
+
+    expect(Programa::where('nombre', 'Legacy')->first()->edad_minima)->toBe(9);
+});
+
 test('el grupo etario se sugiere pero no es automático en el solapamiento', function () {
     expect(GrupoEtario::sugerirPorEdad(5))->toBe(GrupoEtario::Tigers);
     expect(GrupoEtario::sugerirPorEdad(9))->toBe(GrupoEtario::ForKids);

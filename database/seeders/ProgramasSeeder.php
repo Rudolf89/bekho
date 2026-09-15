@@ -22,7 +22,9 @@ class ProgramasSeeder extends Seeder
             ['nombre' => 'Black Belt Club', 'tipo' => 'progresion', 'edad_minima' => null, 'descripcion' => 'Progresión hacia el cinturón negro.'],
             ['nombre' => 'Master Club', 'tipo' => 'progresion', 'edad_minima' => null, 'descripcion' => 'Progresión hacia maestro.'],
             ['nombre' => 'Leadership', 'tipo' => 'formacion', 'edad_minima' => null, 'descripcion' => 'Formación de instructores.'],
-            ['nombre' => 'Legacy', 'tipo' => 'formacion', 'edad_minima' => null, 'descripcion' => 'Formación de instructores.'],
+            // El Manual Legacy fija el ingreso desde los 9 años ("incorporar a
+            // alumnos de 9 años o más").
+            ['nombre' => 'Legacy', 'tipo' => 'formacion', 'edad_minima' => 9, 'descripcion' => 'Formación de instructores; ingreso desde los 9 años.'],
         ];
 
         foreach ($programas as $orden => $programa) {
