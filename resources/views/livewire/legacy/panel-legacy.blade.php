@@ -19,7 +19,7 @@
             <flux:select wire:model="nuevoNivelId" label="Nivel" placeholder="Elige…" class="min-w-48 flex-1">
                 <flux:select.option value="">Elige…</flux:select.option>
                 @foreach ($niveles as $n)
-                    <flux:select.option value="{{ $n->id }}">{{ $n->nombre }} ({{ $n->horas_requeridas }} h@if ($n->edad_minima) · desde {{ $n->edad_minima }} años@endif)</flux:select.option>
+                    <flux:select.option value="{{ $n->id }}">{{ $n->nombre }} ({{ $n->horas_requeridas }} h{{ $n->edad_minima ? ' · desde '.$n->edad_minima.' años' : '' }})</flux:select.option>
                 @endforeach
             </flux:select>
             <flux:button wire:click="crearInscripcion" variant="primary" icon="plus">Inscribir</flux:button>
