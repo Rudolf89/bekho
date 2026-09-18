@@ -132,10 +132,6 @@ Esto crea el esquema y siembra:
   pasos, grados y sus patadas por grado, cuadrantes de enseñanza, currículo por nivel,
   planificador de Cinturón Negro, cuestionarios (banco de Juez y prueba escrita Legacy),
   recompensas y niveles/requisitos Legacy.
-- La **línea de supervisión real de la federación** (`LineaSupervisionSeeder`): ~185
-  instructores encadenados por `supervisor_id` (árbol que alimenta el conteo en cascada
-  del collar) y las **academias/grupos de BEKHO** con sus sedes (`AcademiasBekhoSeeder`,
-  datos aún **por confirmar** con la escuela — ver `docs/linea-supervision-academias.md`).
 - Un usuario **administrador de plataforma** (ver credenciales abajo).
 - Datos de **demostración** (`DemoBekhoSeeder`): alumnos, clases, asistencia y pagos de
   ejemplo para que el panel se vea "vivo". Se puede quitar del `DatabaseSeeder` antes de
@@ -469,6 +465,4 @@ npm run build
   de dominio) con diagramas ER y la referencia de columnas y llaves foráneas.
 - **[`docs/plan-integracion-manual-legacy.md`](docs/plan-integracion-manual-legacy.md)** —
   integración de los manuales ATA (las 7 fases del currículo).
-- **[`docs/linea-supervision-academias.md`](docs/linea-supervision-academias.md)** — mapeo
-  (por confirmar) de las academias de la federación con la línea de supervisión.
 - **`CLAUDE.md`** — guía técnica para trabajar en el repo (arquitectura, convenciones y estado).
