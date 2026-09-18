@@ -27,6 +27,10 @@ class GestionSedes extends Component
 
     public ?string $comuna = '';
 
+    public ?string $region = '';
+
+    public ?string $capacidad = null;
+
     public string $tipo = 'grupo';
 
     public bool $privada = false;
@@ -53,7 +57,9 @@ class GestionSedes extends Component
         return [
             'nombre' => ['required', 'string', 'max:255'],
             'direccion' => ['nullable', 'string', 'max:255'],
+            'region' => ['nullable', 'string', Rule::in(array_keys(config('regiones', [])))],
             'comuna' => ['nullable', 'string', 'max:255'],
+            'capacidad' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'tipo' => ['required', Rule::enum(TipoSede::class)],
             'privada' => ['boolean'],
             'grupo_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('grupos', 'id')],
@@ -70,9 +76,18 @@ class GestionSedes extends Component
         return $id !== '' && $id !== null ? (int) $id : null;
     }
 
+    /**
+     * Al cambiar de región se limpia la comuna elegida (los selectores son
+     * dependientes: la región filtra las comunas).
+     */
+    public function updatedRegion(): void
+    {
+        $this->comuna = '';
+    }
+
     public function nueva(): void
     {
-        $this->reset('editandoId', 'nombre', 'direccion', 'comuna', 'tipo', 'privada', 'grupo_id', 'instructores');
+        $this->reset('editandoId', 'nombre', 'direccion', 'comuna', 'region', 'capacidad', 'tipo', 'privada', 'grupo_id', 'instructores');
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
@@ -89,6 +104,8 @@ class GestionSedes extends Component
         $this->nombre = $sede->nombre;
         $this->direccion = $sede->direccion;
         $this->comuna = (string) ($sede->comuna ?? '');
+        $this->region = (string) ($sede->region ?? '');
+        $this->capacidad = $sede->capacidad !== null ? (string) $sede->capacidad : null;
         $this->tipo = $sede->tipo->value;
         $this->privada = $sede->privada;
         $this->grupo_id = (string) ($sede->grupo_id ?? '');
@@ -103,6 +120,8 @@ class GestionSedes extends Component
         $this->bloqueaSiSoloLectura();
 
         $this->comuna = $this->comuna ?: null;
+        $this->region = $this->region ?: null;
+        $this->capacidad = $this->capacidad !== null && $this->capacidad !== '' ? $this->capacidad : null;
 
         $datos = $this->validate();
 
@@ -110,6 +129,8 @@ class GestionSedes extends Component
             'nombre' => $datos['nombre'],
             'direccion' => $datos['direccion'],
             'comuna' => $datos['comuna'],
+            'region' => $datos['region'],
+            'capacidad' => $datos['capacidad'],
             'tipo' => $datos['tipo'],
             'privada' => $datos['privada'],
             'grupo_id' => $this->grupoEfectiva(),
@@ -137,6 +158,26 @@ class GestionSedes extends Component
         $sede->update(['activo' => ! $sede->activo]);
     }
 
+    /**
+     * Regiones disponibles (claves del catálogo).
+     *
+     * @return array<int, string>
+     */
+    public function regiones(): array
+    {
+        return array_keys(config('regiones', []));
+    }
+
+    /**
+     * Comunas de la región elegida (selector dependiente).
+     *
+     * @return array<int, string>
+     */
+    public function comunas(): array
+    {
+        return config('regiones.'.$this->region, []);
+    }
+
     public function render()
     {
         // El aislamiento por grupo lo maneja el tenant: el admin-plataforma (que
@@ -149,7 +190,8 @@ class GestionSedes extends Component
             )->get(),
             'grupos' => Grupo::orderBy('nombre')->get(),
             'listaInstructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
-            'comunas' => config('comunas', []),
+            'regiones' => $this->regiones(),
+            'comunasRegion' => $this->comunas(),
             'tipos' => TipoSede::cases(),
         ]);
     }

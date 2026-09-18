@@ -22,6 +22,8 @@ class Sede extends Model
         'nombre',
         'direccion',
         'comuna',
+        'region',
+        'capacidad',
         'tipo',
         'privada',
         'activo',
@@ -36,6 +38,7 @@ class Sede extends Model
     {
         return [
             'tipo' => TipoSede::class,
+            'capacidad' => 'integer',
             'privada' => 'boolean',
             'activo' => 'boolean',
         ];

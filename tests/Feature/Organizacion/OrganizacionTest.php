@@ -77,9 +77,9 @@ test('el alcance del admin-plataforma (no filtrar lecturas) aplica a todo modelo
     expect(Estudiante::count())->toBe(2);
 });
 
-test('en una petición real el admin-plataforma ve alumnos de otra grupo', function () {
+test('en una petición real el admin-plataforma ve alumnos de otro grupo', function () {
     $otra = Grupo::create(['nombre' => 'ATA Norte', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Otra Grupo', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Otro Grupo', 'grupo_etario' => 'for_kids', 'activo' => true]);
 
     Tenant::olvidar();
 
@@ -87,7 +87,7 @@ test('en una petición real el admin-plataforma ve alumnos de otra grupo', funct
     $this->actingAs(actorOrg('admin-plataforma', null))
         ->get(route('estudiantes.index'))
         ->assertOk()
-        ->assertSee('Alumno Otra Grupo');
+        ->assertSee('Alumno Otro Grupo');
 });
 
 test('el admin-plataforma enfocado en un grupo solo ve los datos de ese grupo', function () {
@@ -156,7 +156,7 @@ test('las sedes se aíslan por grupo', function () {
     expect(Sede::first()->nombre)->toBe('De BEKHO');
 });
 
-test('un maestro crea una sede en su propia grupo', function () {
+test('un maestro crea una sede en su propio grupo', function () {
     $maestro = actorOrg('direccion', $this->bekho->id);
 
     Livewire::actingAs($maestro)->test(GestionSedes::class)
@@ -171,9 +171,39 @@ test('un maestro crea una sede en su propia grupo', function () {
     expect($sede->grupo_id)->toBe($this->bekho->id);
 });
 
+test('una sede guarda su región, comuna y capacidad (aforo)', function () {
+    $maestro = actorOrg('direccion', $this->bekho->id);
+
+    Livewire::actingAs($maestro)->test(GestionSedes::class)
+        ->call('nueva')
+        ->set('nombre', 'Sede Centro')
+        ->set('region', 'Metropolitana de Santiago')
+        ->set('comuna', 'Ñuñoa')
+        ->set('capacidad', '45')
+        ->call('guardar')
+        ->assertHasNoErrors();
+
+    $sede = Sede::sinGrupo()->where('nombre', 'Sede Centro')->first();
+
+    expect($sede->region)->toBe('Metropolitana de Santiago')
+        ->and($sede->comuna)->toBe('Ñuñoa')
+        ->and($sede->capacidad)->toBe(45);
+});
+
+test('al cambiar de región se limpia la comuna elegida', function () {
+    $maestro = actorOrg('direccion', $this->bekho->id);
+
+    Livewire::actingAs($maestro)->test(GestionSedes::class)
+        ->call('nueva')
+        ->set('region', 'Metropolitana de Santiago')
+        ->set('comuna', 'Ñuñoa')
+        ->set('region', 'Valparaíso')
+        ->assertSet('comuna', '');
+});
+
 // --- Grupos: creación -----------------------------------------------------
 
-test('el admin-plataforma crea un grupo nueva', function () {
+test('el admin-plataforma crea un grupo nuevo', function () {
     $admin = actorOrg('admin-plataforma', null);
 
     Livewire::actingAs($admin)->test(GestionGrupos::class)

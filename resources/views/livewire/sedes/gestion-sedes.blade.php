@@ -78,18 +78,24 @@
             <flux:heading size="lg">{{ $editandoId ? 'Editar sede' : 'Nueva sede' }}</flux:heading>
 
             <flux:input wire:model="nombre" label="Nombre" required />
+            <flux:input wire:model="direccion" label="Dirección" />
             <div class="grid gap-4 sm:grid-cols-2">
-                <flux:input wire:model="direccion" label="Dirección" />
+                <flux:select wire:model.live="region" label="Región" placeholder="Selecciona una región">
+                    @foreach ($regiones as $r)
+                        <flux:select.option value="{{ $r }}">{{ $r }}</flux:select.option>
+                    @endforeach
+                </flux:select>
                 <flux:select wire:model="comuna" label="Comuna" placeholder="Selecciona una comuna">
                     {{-- Conserva un valor previo que no esté en la lista (p. ej. otra región). --}}
-                    @if ($comuna && ! in_array($comuna, $comunas, true))
+                    @if ($comuna && ! in_array($comuna, $comunasRegion, true))
                         <flux:select.option value="{{ $comuna }}">{{ $comuna }}</flux:select.option>
                     @endif
-                    @foreach ($comunas as $c)
+                    @foreach ($comunasRegion as $c)
                         <flux:select.option value="{{ $c }}">{{ $c }}</flux:select.option>
                     @endforeach
                 </flux:select>
             </div>
+            <flux:input wire:model="capacidad" type="number" min="1" label="Capacidad (aforo)" placeholder="Opcional" />
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:select wire:model="tipo" label="Tipo de sede">

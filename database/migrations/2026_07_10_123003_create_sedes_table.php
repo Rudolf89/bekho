@@ -17,6 +17,8 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('direccion')->nullable();
             $table->string('comuna')->nullable();
+            $table->string('region')->nullable();
+            $table->unsignedInteger('capacidad')->nullable(); // aforo de la sede
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
