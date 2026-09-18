@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Cuestionario (evaluación autocorregida). Catálogo compartido (sin academia_id):
+ * Cuestionario (evaluación autocorregida). Catálogo compartido (sin grupo_id):
  * un examinador lo arma con preguntas y opciones, y cualquiera con permiso lo
  * rinde. El primer banco es el examen de juez ATA, pero el módulo es genérico.
  */

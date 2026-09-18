@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\EstadoProgreso;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProgresoContenido extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * Tabla asociada.
@@ -24,7 +24,7 @@ class ProgresoContenido extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'user_id',
         'contenido_id',
         'estado',

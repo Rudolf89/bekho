@@ -80,7 +80,7 @@ class DetalleConvocatoria extends Component
                 'estudiante_id' => $estudiante->id,
             ],
             [
-                'academia_id' => $this->convocatoria->academia_id,
+                'grupo_id' => $this->convocatoria->grupo_id,
                 'grado_origen_id' => $estudiante->grado_id,
                 'grado_destino_id' => $this->siguienteGrado($estudiante)?->id,
                 'instructor_id' => $servicio->instructorPorDefecto($estudiante)?->id,

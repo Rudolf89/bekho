@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('contenidos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('nivel_id')->constrained('niveles')->cascadeOnDelete();
             $table->string('titulo');
             $table->text('descripcion')->nullable();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->index('academia_id');
+            $table->index('grupo_id');
             $table->index(['nivel_id', 'orden']);
         });
     }

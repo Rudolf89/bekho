@@ -6,7 +6,7 @@ use App\Enums\EscalaGrado;
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,13 +18,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Estudiante extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'user_id',
         'sede_id',
         'instructor_id',
@@ -82,13 +82,13 @@ class Estudiante extends Model
     }
 
     /**
-     * Academia dueña de la ficha.
+     * Grupo dueña de la ficha.
      *
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -262,7 +262,7 @@ class Estudiante extends Model
      * duplicar la lógica entre el listado y la autorización por ficha:
      *
      * - Con "gestionar alumnos" (dirección, administrativo, federación,
-     *   admin-plataforma): todos los de su academia (ya acotada por el tenant).
+     *   admin-plataforma): todos los de su grupo (ya acotada por el tenant).
      * - Instructor: solo los de las clases donde está asignado.
      * - Apoderado: solo sus hijos.
      * - Cualquier otro: ninguno.

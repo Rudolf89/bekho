@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Ciclo del currículo ATA: uno por Habilidad para la Vida Songahm (6 en total),
  * de 8 semanas. Es la columna vertebral que organiza lecciones de vida y class
- * planners. Catálogo compartido (sin academia_id).
+ * planners. Catálogo compartido (sin grupo_id).
  */
 class Ciclo extends Model
 {

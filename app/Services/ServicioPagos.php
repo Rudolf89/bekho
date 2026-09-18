@@ -46,7 +46,7 @@ class ServicioPagos
     }
 
     /**
-     * Estudiantes activos morosos del período (respeta el scope por academia).
+     * Estudiantes activos morosos del período (respeta el scope por grupo).
      *
      * @return Collection<int, Estudiante>
      */
@@ -83,8 +83,8 @@ class ServicioPagos
 
     /**
      * Monto de mensualidad esperado para el estudiante según la configuración de
-     * su academia, aplicando el descuento por hermanos si corresponde.
-     * Devuelve null si la academia aún no fijó el valor de la mensualidad.
+     * su grupo, aplicando el descuento por hermanos si corresponde.
+     * Devuelve null si el grupo aún no fijó el valor de la mensualidad.
      */
     public function montoMensualidadEsperado(Estudiante $estudiante, ConfiguracionPago $config): ?int
     {
@@ -119,7 +119,7 @@ class ServicioPagos
                 'periodo' => $tipo === TipoPago::Mensualidad ? $this->periodo($periodo) : null,
             ],
             [
-                'academia_id' => $estudiante->academia_id,
+                'grupo_id' => $estudiante->grupo_id,
                 'monto' => $monto,
                 'fecha_pago' => $fechaPago,
                 'medio' => $medio,

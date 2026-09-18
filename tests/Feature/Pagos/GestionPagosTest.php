@@ -1,11 +1,11 @@
 <?php
 
 use App\Livewire\Pagos\GestionPagos;
-use App\Models\Academia;
 use App\Models\Estudiante;
+use App\Models\Grupo;
 use App\Models\Pago;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -16,17 +16,17 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 
-    $this->direccion = User::factory()->create(['academia_id' => $this->bekho->id, 'two_factor_confirmed_at' => now()]);
+    $this->direccion = User::factory()->create(['grupo_id' => $this->bekho->id, 'two_factor_confirmed_at' => now()]);
     $this->direccion->assignRole('direccion');
 
-    $this->ana = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Ana Pérez', 'grupo_etario' => 'for_kids', 'activo' => true]);
-    $this->beto = Estudiante::create(['academia_id' => $this->bekho->id, 'nombre' => 'Beto Soto', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    $this->ana = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Ana Pérez', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    $this->beto = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Beto Soto', 'grupo_etario' => 'for_kids', 'activo' => true]);
 
-    Pago::create(['academia_id' => $this->bekho->id, 'estudiante_id' => $this->ana->id, 'tipo' => 'mensualidad', 'periodo' => now()->startOfMonth(), 'monto' => 30000, 'fecha_pago' => now()]);
-    Pago::create(['academia_id' => $this->bekho->id, 'estudiante_id' => $this->beto->id, 'tipo' => 'matricula', 'periodo' => now()->startOfMonth(), 'monto' => 50000, 'fecha_pago' => now()]);
+    Pago::create(['grupo_id' => $this->bekho->id, 'estudiante_id' => $this->ana->id, 'tipo' => 'mensualidad', 'periodo' => now()->startOfMonth(), 'monto' => 30000, 'fecha_pago' => now()]);
+    Pago::create(['grupo_id' => $this->bekho->id, 'estudiante_id' => $this->beto->id, 'tipo' => 'matricula', 'periodo' => now()->startOfMonth(), 'monto' => 50000, 'fecha_pago' => now()]);
 });
 
 test('la tabla de pagos suma el total recaudado del filtro', function () {

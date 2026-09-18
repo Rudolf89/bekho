@@ -17,7 +17,7 @@ return new class extends Migration
     {
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('registrado_por')->nullable()->constrained('users')->nullOnDelete();
             $table->string('tipo'); // App\Enums\TipoPago
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['estudiante_id', 'tipo', 'periodo']);
-            $table->index('academia_id');
+            $table->index('grupo_id');
         });
     }
 

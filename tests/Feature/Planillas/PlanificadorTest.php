@@ -3,16 +3,16 @@
 use App\Enums\HabilidadVida;
 use App\Enums\TipoBloque;
 use App\Livewire\Planillas\Planificador;
-use App\Models\Academia;
 use App\Models\CategoriaCalentamiento;
 use App\Models\Ciclo;
 use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
+use App\Models\Grupo;
 use App\Models\LeccionVida;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\PlanificadorSeeder;
 use Database\Seeders\PlannerCiclosSeeder;
 use Database\Seeders\RolesPermisosSeeder;
@@ -26,7 +26,7 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(PlanificadorSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
@@ -110,10 +110,10 @@ test('cada grupo × nivel tiene su planilla con bloques', function () {
 
 // ── Transversalidad (las planillas son contenido compartido) ────────────────
 
-test('las planillas del planificador son transversales (se ven en cualquier academia)', function () {
-    $otra = Academia::create(['nombre' => 'Otro Grupo', 'activo' => true]);
+test('las planillas del planificador son transversales (se ven en cualquier grupo)', function () {
+    $otra = Grupo::create(['nombre' => 'Otro Grupo', 'activo' => true]);
 
-    // Las 9 planillas sembradas se ven con cualquier academia activa.
+    // Las 9 planillas sembradas se ven con cualquier grupo activo.
     Tenant::set($this->bekho->id);
     expect(Planilla::count())->toBe(9);
 
@@ -124,12 +124,12 @@ test('las planillas del planificador son transversales (se ven en cualquier acad
 // ── Interfaz: armar y guardar calentamiento (por clase) ─────────────────────
 
 test('el instructor arma una rutina de calentamiento y se guarda en la clase', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
-    $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $clase = Clase::create([
-        'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
+        'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
         'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
     ]);
     $ejercicio = EjercicioCalentamiento::whereHas('categoria', fn ($q) => $q->where('clave', 'guardia'))->first();
@@ -145,7 +145,7 @@ test('el instructor arma una rutina de calentamiento y se guarda en la clase', f
 });
 
 test('la vista del planificador muestra la rutina del grupo y nivel elegidos', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
     Livewire::actingAs($instructor)->test(Planificador::class)
@@ -159,7 +159,7 @@ test('la vista del planificador muestra la rutina del grupo y nivel elegidos', f
 test('el planner muestra la rotación del ciclo y cambia por bloque de semanas', function () {
     $this->seed(PlannerCiclosSeeder::class);
 
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $ciclo1 = Ciclo::ordenados()->first();
 
@@ -178,7 +178,7 @@ test('el planner muestra la rotación del ciclo y cambia por bloque de semanas',
 });
 
 test('la lección de vida se acota al ciclo elegido', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $ciclos = Ciclo::ordenados()->get();
 
@@ -198,7 +198,7 @@ test('la lección de vida se acota al ciclo elegido', function () {
 });
 
 test('las 8 semanas se muestran como casilleros (cargadas + pendientes)', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $comunicacion = Ciclo::where('habilidad_vida', HabilidadVida::Comunicacion->value)->first();
 
@@ -212,9 +212,9 @@ test('las 8 semanas se muestran como casilleros (cargadas + pendientes)', functi
 });
 
 test('el planificador exige el permiso de gestionar planillas', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
-    $apoderado = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $apoderado->assignRole('apoderado');
 
     Tenant::olvidar();

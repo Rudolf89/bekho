@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Catálogo compartido de cargos/rangos: NO lleva academia_id.
+     * Catálogo compartido de cargos/rangos: NO lleva grupo_id.
      */
     public function up(): void
     {

@@ -8,7 +8,7 @@ use App\Models\InscripcionLegacy;
 use App\Models\NivelLegacy;
 use App\Models\RequisitoLegacy;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -149,7 +149,7 @@ class PanelLegacy extends Component
             'horasTotales' => $inscripciones->sum('horas_total'),
             'inscripcion' => $this->inscripcion(),
             'usuarios' => User::query()
-                ->when(Tenant::id(), fn ($q, $id) => $q->where('academia_id', $id))
+                ->when(Tenant::id(), fn ($q, $id) => $q->where('grupo_id', $id))
                 ->orderBy('name')->get(),
             'niveles' => NivelLegacy::ordenados()->get(),
             'puedeAprobar' => Auth::user()->can('aprobar legacy'),

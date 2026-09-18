@@ -3,11 +3,11 @@
 use App\Enums\GrupoEtario;
 use App\Enums\TipoRecompensa;
 use App\Livewire\Recompensas\MisLogros;
-use App\Models\Academia;
 use App\Models\Estudiante;
+use App\Models\Grupo;
 use App\Models\Recompensa;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RecompensasSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,21 +20,21 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(RecompensasSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
 afterEach(fn () => Tenant::olvidar());
 
-function estudianteConLogro(Academia $a, TipoRecompensa $tipo): Estudiante
+function estudianteConLogro(Grupo $a, TipoRecompensa $tipo): Estudiante
 {
     $e = Estudiante::create([
-        'academia_id' => $a->id, 'nombre' => 'Hijo '.uniqid(),
+        'grupo_id' => $a->id, 'nombre' => 'Hijo '.uniqid(),
         'grupo_etario' => GrupoEtario::ForKids->value, 'activo' => true,
     ]);
     $recompensa = Recompensa::where('tipo', $tipo)->first();
     $e->logros()->create([
-        'recompensa_id' => $recompensa->id, 'otorgado_at' => now(), 'academia_id' => $a->id,
+        'recompensa_id' => $recompensa->id, 'otorgado_at' => now(), 'grupo_id' => $a->id,
     ]);
 
     return $e;
@@ -43,7 +43,7 @@ function estudianteConLogro(Academia $a, TipoRecompensa $tipo): Estudiante
 // --- Apoderado ---------------------------------------------------------------
 
 test('el apoderado ve la colección de logros de sus hijos', function () {
-    $apoderado = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $apoderado->assignRole('apoderado');
 
     $hijo = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
@@ -61,7 +61,7 @@ test('el apoderado ve la colección de logros de sus hijos', function () {
 // --- Alumno ------------------------------------------------------------------
 
 test('el alumno ve su propia colección', function () {
-    $alumnoUser = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $alumnoUser->assignRole('alumno');
 
     $ficha = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
@@ -72,7 +72,7 @@ test('el alumno ve su propia colección', function () {
 });
 
 test('muestra ganadas y bloqueadas (coleccionables por conseguir)', function () {
-    $alumnoUser = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $alumnoUser->assignRole('alumno');
 
     // Gana solo 1 de los 6 coleccionables.
@@ -87,9 +87,9 @@ test('muestra ganadas y bloqueadas (coleccionables por conseguir)', function () 
 // --- Permisos ----------------------------------------------------------------
 
 test('mis-logros exige el permiso ver recompensas', function () {
-    $alumno = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $alumno = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $alumno->assignRole('alumno');
-    $administrativo = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $administrativo = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $administrativo->assignRole('administrativo'); // no tiene ver recompensas
 
     Tenant::olvidar();

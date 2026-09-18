@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Nivel del Programa Legacy (1, 2 o 3). Catálogo compartido (sin academia_id):
+ * Nivel del Programa Legacy (1, 2 o 3). Catálogo compartido (sin grupo_id):
  * define las horas requeridas y sus requisitos.
  */
 class NivelLegacy extends Model

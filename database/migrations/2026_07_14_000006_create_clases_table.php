@@ -16,7 +16,7 @@ return new class extends Migration
     {
         Schema::create('clases', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('sede_id')->constrained('sedes')->cascadeOnDelete();
             $table->foreignId('instructor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('nombre');
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->index('academia_id');
+            $table->index('grupo_id');
             $table->index(['sede_id', 'dia_semana']);
         });
     }

@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Gamificación / recompensas. El CATÁLOGO de recompensas es transversal
- * (contenido ATA compartido, sin academia_id): franjas de conocimiento (MAK),
+ * (contenido ATA compartido, sin grupo_id): franjas de conocimiento (MAK),
  * Star Tag (Tigers) y coleccionables por Habilidad de Vida. Los LOGROS (qué
- * alumno ganó qué) son datos operativos (con academia_id).
+ * alumno ganó qué) son datos operativos (con grupo_id).
  */
 return new class extends Migration
 {
     public function up(): void
     {
-        // Catálogo compartido (sin academia_id).
+        // Catálogo compartido (sin grupo_id).
         Schema::create('recompensas', function (Blueprint $table) {
             $table->id();
             $table->string('tipo'); // App\Enums\TipoRecompensa
@@ -30,10 +30,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // Logros (operativo, con academia_id).
+        // Logros (operativo, con grupo_id).
         Schema::create('logros', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->nullable()->constrained('academias')->nullOnDelete();
+            $table->foreignId('grupo_id')->nullable()->constrained('grupos')->nullOnDelete();
             $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('recompensa_id')->constrained('recompensas')->cascadeOnDelete();
             $table->foreignId('otorgado_por')->nullable()->constrained('users')->nullOnDelete();

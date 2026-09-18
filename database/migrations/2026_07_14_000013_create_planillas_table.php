@@ -14,7 +14,7 @@ return new class extends Migration
      * programa_id es opcional (null = clase regular, sin disciplina asociada).
      *
      * Es TRANSVERSAL: el currículo/rutina es contenido ATA/BEKHO compartido por
-     * toda la federación (sin academia_id), como cargos_rangos.
+     * toda la federación (sin grupo_id), como cargos_rangos.
      */
     public function up(): void
     {

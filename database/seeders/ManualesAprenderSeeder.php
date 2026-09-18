@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Academia;
 use App\Models\Contenido;
+use App\Models\Grupo;
 use App\Models\Nivel;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 
@@ -18,24 +18,24 @@ use Illuminate\Support\Facades\File;
  *
  * La fuente estructurada vive en database/data/manuales/*.json (transcrita de los
  * manuales, sin inventar). Idempotente (updateOrCreate). Corre DESPUÉS de
- * RolesPermisosSeeder (necesita la academia BEKHO).
+ * RolesPermisosSeeder (necesita el grupo BEKHO).
  */
 class ManualesAprenderSeeder extends Seeder
 {
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
+        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 
-        if (! $academia) {
-            $this->command?->warn('No existe la academia BEKHO; ejecuta antes RolesPermisosSeeder.');
+        if (! $grupo) {
+            $this->command?->warn('No existe el grupo BEKHO; ejecuta antes RolesPermisosSeeder.');
 
             return;
         }
 
-        Tenant::set($academia->id);
+        Tenant::set($grupo->id);
 
         foreach ($this->manuales() as $manual) {
-            $this->sembrarManual($academia, $manual);
+            $this->sembrarManual($grupo, $manual);
         }
 
         Tenant::olvidar();
@@ -68,10 +68,10 @@ class ManualesAprenderSeeder extends Seeder
     /**
      * @param  array<string, mixed>  $manual
      */
-    private function sembrarManual(Academia $academia, array $manual): void
+    private function sembrarManual(Grupo $grupo, array $manual): void
     {
         $nivel = Nivel::updateOrCreate(
-            ['academia_id' => $academia->id, 'nombre' => $manual['nivel']],
+            ['grupo_id' => $grupo->id, 'nombre' => $manual['nivel']],
             [
                 'descripcion' => $manual['descripcion'] ?? null,
                 'orden' => $manual['orden'] ?? 50,
@@ -85,7 +85,7 @@ class ManualesAprenderSeeder extends Seeder
         Contenido::updateOrCreate(
             ['nivel_id' => $nivel->id, 'titulo' => 'Sobre este manual'],
             [
-                'academia_id' => $academia->id,
+                'grupo_id' => $grupo->id,
                 'descripcion' => 'Cómo estudiar este material.',
                 'tipo' => 'texto',
                 'cuerpo' => ($manual['descripcion'] ?? '')."\n\n"
@@ -106,7 +106,7 @@ class ManualesAprenderSeeder extends Seeder
             Contenido::updateOrCreate(
                 ['nivel_id' => $nivel->id, 'titulo' => $seccion['titulo']],
                 [
-                    'academia_id' => $academia->id,
+                    'grupo_id' => $grupo->id,
                     'descripcion' => null,
                     'tipo' => 'texto',
                     'cuerpo' => $cuerpo,
@@ -121,7 +121,7 @@ class ManualesAprenderSeeder extends Seeder
             Contenido::updateOrCreate(
                 ['nivel_id' => $nivel->id, 'titulo' => 'Documento oficial'],
                 [
-                    'academia_id' => $academia->id,
+                    'grupo_id' => $grupo->id,
                     'descripcion' => $manual['doc_titulo'] ?? 'Manual oficial (Google Drive).',
                     'tipo' => 'documento',
                     'url_recurso' => $manual['doc_url'],

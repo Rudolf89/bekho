@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Recompensa/insignia del sistema de gamificación. Catálogo compartido (sin
- * academia_id): define qué se puede ganar. Los logros por alumno cuelgan aparte.
+ * grupo_id): define qué se puede ganar. Los logros por alumno cuelgan aparte.
  */
 class Recompensa extends Model
 {

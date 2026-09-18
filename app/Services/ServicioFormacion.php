@@ -27,10 +27,10 @@ class ServicioFormacion
                 'contenido_id' => $contenido->id,
             ],
             [
-                // El progreso pertenece a la academia del contenido. Se fija de
+                // El progreso pertenece a el grupo del contenido. Se fija de
                 // forma explícita para que también funcione cuando no hay tenant
-                // activo (p. ej. un admin-plataforma, sin academia, revisando).
-                'academia_id' => $contenido->academia_id,
+                // activo (p. ej. un admin-plataforma, sin grupo, revisando).
+                'grupo_id' => $contenido->grupo_id,
                 'estado' => $estado,
                 'visto_en' => $estado === EstadoProgreso::Pendiente ? null : now(),
             ],

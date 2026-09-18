@@ -93,7 +93,7 @@ class TomarAsistencia extends Component
                 'fecha' => $this->fecha,
             ],
             [
-                'academia_id' => $clase->academia_id,
+                'grupo_id' => $clase->grupo_id,
                 'estado' => $estadoEnum,
                 'registrado_por' => Auth::id(),
             ],
@@ -101,7 +101,7 @@ class TomarAsistencia extends Component
     }
 
     /**
-     * Clase seleccionada (respeta el scope por academia).
+     * Clase seleccionada (respeta el scope por grupo).
      */
     protected function claseSeleccionada(): ?Clase
     {

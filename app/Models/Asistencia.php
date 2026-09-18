@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\EstadoAsistencia;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Asistencia extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var string
@@ -20,7 +20,7 @@ class Asistencia extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'clase_id',
         'estudiante_id',
         'registrado_por',

@@ -5,7 +5,7 @@ use App\Enums\GrupoEtario;
 use App\Models\CargoRango;
 use App\Models\Grado;
 use App\Models\Programa;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\CargosRangosSeeder;
 use Database\Seeders\GradosSeeder;
 use Database\Seeders\ProgramasSeeder;
@@ -24,16 +24,16 @@ test('el seeder crea los seis programas y es idempotente', function () {
     );
 });
 
-test('programas y grados son catálogos compartidos sin academia_id', function () {
-    expect(Schema::hasColumn('programas', 'academia_id'))->toBeFalse();
-    expect(Schema::hasColumn('grados', 'academia_id'))->toBeFalse();
+test('programas y grados son catálogos compartidos sin grupo_id', function () {
+    expect(Schema::hasColumn('programas', 'grupo_id'))->toBeFalse();
+    expect(Schema::hasColumn('grados', 'grupo_id'))->toBeFalse();
 });
 
-test('el catálogo de programas no se filtra por academia activa', function () {
+test('el catálogo de programas no se filtra por grupo activo', function () {
     $this->seed(ProgramasSeeder::class);
 
     Tenant::set(1);
-    // Al no usar PerteneceAcademia, el catálogo se ve completo con tenant activo.
+    // Al no usar PerteneceGrupo, el catálogo se ve completo con tenant activo.
     expect(Programa::count())->toBe(6);
 });
 

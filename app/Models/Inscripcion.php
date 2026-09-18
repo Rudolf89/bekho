@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\Enums\ResultadoExamen;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Inscripcion extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var string
@@ -20,7 +20,7 @@ class Inscripcion extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'convocatoria_id',
         'estudiante_id',
         'grado_origen_id',

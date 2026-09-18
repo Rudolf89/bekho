@@ -3,14 +3,14 @@
 use App\Enums\EstadoIntento;
 use App\Enums\EstadoLegacy;
 use App\Livewire\Legacy\PanelLegacy;
-use App\Models\Academia;
 use App\Models\Cuestionario;
+use App\Models\Grupo;
 use App\Models\InscripcionLegacy;
 use App\Models\IntentoCuestionario;
 use App\Models\NivelLegacy;
 use App\Models\RequisitoLegacy;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\LegacySeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -23,7 +23,7 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(LegacySeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
@@ -37,11 +37,11 @@ test('cada nivel Legacy tiene su edad mínima de ascenso (13, 16, 18)', function
         ->and($edades['Legacy Nivel 3'])->toBe(18);
 });
 
-function usuarioLegacy(string $rol, int $academiaId): User
+function usuarioLegacy(string $rol, int $grupoId): User
 {
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
     $u = User::factory()->create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'two_factor_confirmed_at' => $exige2fa ? now() : null,
     ]);
     $u->assignRole($rol);
@@ -63,7 +63,7 @@ test('acumular 100 h marca las horas como completas', function () {
     $formando = usuarioLegacy('instructor', $this->bekho->id);
     $nivel = NivelLegacy::ordenados()->first();
     $inscripcion = InscripcionLegacy::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
         'estado' => EstadoLegacy::EnCurso->value,
     ]);
 
@@ -82,7 +82,7 @@ test('no se puede aprobar sin cumplir 100 h y todos los requisitos', function ()
     $formando = usuarioLegacy('instructor', $this->bekho->id);
     $nivel = NivelLegacy::ordenados()->first();
     $inscripcion = InscripcionLegacy::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
         'estado' => EstadoLegacy::EnCurso->value,
     ]);
     $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100]); // horas ok, requisitos no
@@ -99,7 +99,7 @@ test('el licenciatario aprueba el ascenso cuando todo está cumplido', function 
     $formando = usuarioLegacy('instructor', $this->bekho->id);
     $nivel = NivelLegacy::ordenados()->first();
     $inscripcion = InscripcionLegacy::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
         'estado' => EstadoLegacy::EnCurso->value,
     ]);
     $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100]);
@@ -126,7 +126,7 @@ test('un instructor no puede aprobar el ascenso (solo el licenciatario)', functi
     $formando = usuarioLegacy('instructor', $this->bekho->id);
     $nivel = NivelLegacy::ordenados()->first();
     $inscripcion = InscripcionLegacy::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
         'estado' => EstadoLegacy::EnCurso->value,
     ]);
 
@@ -148,7 +148,7 @@ test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', 
     ]);
 
     $inscripcion = InscripcionLegacy::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
         'estado' => EstadoLegacy::EnCurso->value,
     ]);
 
@@ -157,7 +157,7 @@ test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', 
 
     // Intento aprobado por el examinador: cumple automáticamente.
     IntentoCuestionario::create([
-        'academia_id' => $this->bekho->id, 'user_id' => $formando->id, 'cuestionario_id' => $cuestionario->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'cuestionario_id' => $cuestionario->id,
         'correctas' => 9, 'total' => 10, 'porcentaje' => 90, 'aprobado' => true,
         'estado' => EstadoIntento::Aprobado->value, 'finalizado_at' => now(),
     ]);

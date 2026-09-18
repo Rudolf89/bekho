@@ -9,7 +9,6 @@ use App\Enums\NivelEntrenamiento;
 use App\Enums\PapelEnClase;
 use App\Enums\TipoPago;
 use App\Enums\TipoSede;
-use App\Models\Academia;
 use App\Models\Asistencia;
 use App\Models\CargoRango;
 use App\Models\Clase;
@@ -17,11 +16,12 @@ use App\Models\Convocatoria;
 use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Graduacion;
+use App\Models\Grupo;
 use App\Models\Pago;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -35,14 +35,14 @@ class DemoBekhoSeeder extends Seeder
 {
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
-        if (! $academia) {
+        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
+        if (! $grupo) {
             return;
         }
 
-        Tenant::set($academia->id);
+        Tenant::set($grupo->id);
 
-        $admin = User::sinAcademia()->where('email', 'admin@bekho.cl')->first();
+        $admin = User::sinGrupo()->where('email', 'admin@bekho.cl')->first();
 
         // Jerarquía: Maestro Rodolfo → admin-plataforma; instructores → Rodolfo.
         $rangoMaestro = CargoRango::where('nombre', 'Maestro')->first();
@@ -50,18 +50,18 @@ class DemoBekhoSeeder extends Seeder
             ['email' => 'rodolfo@bekho.cl'],
             [
                 'name' => 'Rodolfo González', 'password' => Hash::make('cambiar-esto'),
-                'academia_id' => $academia->id, 'rango_id' => $rangoMaestro?->id,
+                'grupo_id' => $grupo->id, 'rango_id' => $rangoMaestro?->id,
                 'supervisor_id' => $admin?->id, 'activo' => true,
             ],
         );
         $rodolfo->syncRoles(['direccion']);
 
-        $instructores = collect(['Camila Rojas', 'Diego Soto'])->map(function (string $nombre, int $i) use ($academia, $rodolfo) {
+        $instructores = collect(['Camila Rojas', 'Diego Soto'])->map(function (string $nombre, int $i) use ($grupo, $rodolfo) {
             $u = User::updateOrCreate(
                 ['email' => 'instructor'.($i + 1).'@bekho.cl'],
                 [
                     'name' => $nombre, 'password' => Hash::make('cambiar-esto'),
-                    'academia_id' => $academia->id, 'supervisor_id' => $rodolfo->id, 'activo' => true,
+                    'grupo_id' => $grupo->id, 'supervisor_id' => $rodolfo->id, 'activo' => true,
                 ],
             );
             $u->syncRoles(['instructor']);
@@ -70,10 +70,10 @@ class DemoBekhoSeeder extends Seeder
         });
 
         $sede = Sede::updateOrCreate(
-            ['academia_id' => $academia->id, 'nombre' => 'BEKHO Central'],
+            ['grupo_id' => $grupo->id, 'nombre' => 'BEKHO Central'],
             [
                 'comuna' => 'Santiago', 'direccion' => 'Av. Ejemplo 1234',
-                'tipo' => TipoSede::Academia, 'privada' => false, 'activo' => true,
+                'tipo' => TipoSede::Grupo, 'privada' => false, 'activo' => true,
             ],
         );
 
@@ -85,7 +85,7 @@ class DemoBekhoSeeder extends Seeder
 
         // Alumnos por grupo etario. El nivel se deriva del cinturón, así que se
         // les asigna un grado de cada banda para que la demo muestre variedad.
-        $grupos = ['tigers', 'for_kids', 'jovenes_adultos'];
+        $gruposEtarios = ['tigers', 'for_kids', 'jovenes_adultos'];
         $bandasColores = [
             ['Blanco', 'Naranjo', 'Amarillo'],   // -> Principiantes
             ['Camuflado', 'Verde', 'Púrpura'],   // -> Intermedio
@@ -96,18 +96,18 @@ class DemoBekhoSeeder extends Seeder
             'Renata', 'Sebastián', 'Tamara', 'Vicente', 'Ximena', 'Agustín', 'Florencia', 'Matías'];
 
         foreach ($nombres as $i => $nombre) {
-            $grupo = $grupos[$i % 3];
-            $escala = EscalaGrado::paraGrupo(GrupoEtario::from($grupo));
+            $grupoEtario = $gruposEtarios[$i % 3];
+            $escala = EscalaGrado::paraGrupo(GrupoEtario::from($grupoEtario));
             $grado = Grado::porEscala($escala)
                 ->whereIn('color', $bandasColores[$i % 3])
                 ->ordenados()
                 ->first();
 
             Estudiante::updateOrCreate(
-                ['academia_id' => $academia->id, 'nombre' => $nombre.' '.['Pérez', 'Soto', 'Muñoz', 'Rojas'][$i % 4]],
+                ['grupo_id' => $grupo->id, 'nombre' => $nombre.' '.['Pérez', 'Soto', 'Muñoz', 'Rojas'][$i % 4]],
                 [
                     'sede_id' => $sede->id,
-                    'grupo_etario' => $grupo,
+                    'grupo_etario' => $grupoEtario,
                     'grado_id' => $grado?->id,
                     // El nivel se deriva del cinturón. En la semilla los eventos de
                     // modelo están apagados (WithoutModelEvents), así que se calcula
@@ -129,14 +129,14 @@ class DemoBekhoSeeder extends Seeder
             ['jovenes_adultos', '18:30', '19:15', $rodolfo],
         ];
 
-        foreach ($config as [$grupo, $ini, $fin, $instructor]) {
-            $planilla = Planilla::where('grupo_etario', $grupo)->where('nivel', 'principiantes')->first();
+        foreach ($config as [$grupoEtario, $ini, $fin, $instructor]) {
+            $planilla = Planilla::where('grupo_etario', $grupoEtario)->where('nivel', 'principiantes')->first();
 
             $clase = Clase::updateOrCreate(
-                ['academia_id' => $academia->id, 'nombre' => 'Clase '.$grupo, 'dia_semana' => $diaHoy],
+                ['grupo_id' => $grupo->id, 'nombre' => 'Clase '.$grupoEtario, 'dia_semana' => $diaHoy],
                 [
                     'sede_id' => $sede->id, 'planilla_id' => $planilla?->id,
-                    'grupo_etario' => $grupo, 'hora_inicio' => $ini, 'hora_fin' => $fin, 'activo' => true,
+                    'grupo_etario' => $grupoEtario, 'hora_inicio' => $ini, 'hora_fin' => $fin, 'activo' => true,
                 ],
             );
 
@@ -155,7 +155,7 @@ class DemoBekhoSeeder extends Seeder
             foreach ($clase->estudiantesEsperados()->get() as $j => $est) {
                 Asistencia::updateOrCreate(
                     ['clase_id' => $clase->id, 'estudiante_id' => $est->id, 'fecha' => now()->toDateString()],
-                    ['academia_id' => $academia->id, 'estado' => $j % 2 === 0 ? EstadoAsistencia::Presente : EstadoAsistencia::Ausente],
+                    ['grupo_id' => $grupo->id, 'estado' => $j % 2 === 0 ? EstadoAsistencia::Presente : EstadoAsistencia::Ausente],
                 );
             }
         }
@@ -166,20 +166,20 @@ class DemoBekhoSeeder extends Seeder
             if ($k % 3 !== 0) {
                 Pago::updateOrCreate(
                     ['estudiante_id' => $est->id, 'tipo' => TipoPago::Mensualidad->value, 'periodo' => now()->startOfMonth()->toDateString()],
-                    ['academia_id' => $academia->id, 'monto' => 35000, 'fecha_pago' => now()->toDateString()],
+                    ['grupo_id' => $grupo->id, 'monto' => 35000, 'fecha_pago' => now()->toDateString()],
                 );
             }
         }
 
         // Convocatoria próxima con inscritos.
         $conv = Convocatoria::updateOrCreate(
-            ['academia_id' => $academia->id, 'nombre' => 'Examen de grado'],
+            ['grupo_id' => $grupo->id, 'nombre' => 'Examen de grado'],
             ['sede_id' => $sede->id, 'fecha' => now()->addDays(9)->toDateString(), 'estado' => 'programada'],
         );
         foreach ($alumnos->take(9) as $est) {
             $conv->inscripciones()->updateOrCreate(
                 ['estudiante_id' => $est->id],
-                ['academia_id' => $academia->id, 'grado_origen_id' => $est->grado_id, 'instructor_id' => $rodolfo->id],
+                ['grupo_id' => $grupo->id, 'grado_origen_id' => $est->grado_id, 'instructor_id' => $rodolfo->id],
             );
         }
 
@@ -188,7 +188,7 @@ class DemoBekhoSeeder extends Seeder
         foreach ($alumnos->take(14) as $m => $est) {
             $instructor = $instructores[$m % 2];
             Graduacion::updateOrCreate(
-                ['academia_id' => $academia->id, 'estudiante_id' => $est->id, 'convocatoria_id' => null, 'instructor_id' => $instructor->id],
+                ['grupo_id' => $grupo->id, 'estudiante_id' => $est->id, 'convocatoria_id' => null, 'instructor_id' => $instructor->id],
                 ['grado_destino_id' => $grado?->id, 'fecha' => now()->subMonths($m % 6 + 1)->toDateString(), 'resultado' => 'aprobado'],
             );
         }

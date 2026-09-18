@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\TipoContenido;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contenido extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * Atributos asignables masivamente.
@@ -18,7 +18,7 @@ class Contenido extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'nivel_id',
         'titulo',
         'descripcion',

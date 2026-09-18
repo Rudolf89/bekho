@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
  * Currículo por nivel (contenido técnico que rellena los bloques de la planilla):
  * fórmula, defensa, patadas, combinaciones de patadas (lista) y roturas.
  *
- * Catálogo compartido (currículo ATA) → SIN academia_id. El prototipo cubre
+ * Catálogo compartido (currículo ATA) → SIN grupo_id. El prototipo cubre
  * Principiantes / Intermedio / Avanzado; Rojo-Negro y Danes quedan pendientes.
  */
 return new class extends Migration

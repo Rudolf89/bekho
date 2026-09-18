@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\TipoContenido;
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\Nivel;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\PreparacionJuezSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -15,7 +15,7 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(PreparacionJuezSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 afterEach(fn () => Tenant::olvidar());
@@ -26,7 +26,7 @@ test('la preparación para examen de juez se siembra como nivel de Aprender', fu
     $nivel = Nivel::where('nombre', 'Preparación para examen de juez nivel 1')->first();
 
     expect($nivel)->not->toBeNull()
-        ->and($nivel->academia_id)->toBe($this->bekho->id)
+        ->and($nivel->grupo_id)->toBe($this->bekho->id)
         ->and($nivel->activo)->toBeTrue()
         // Intro + 18 secciones de manual + pointer a práctica + 2 documentos.
         ->and($nivel->contenidos()->count())->toBe(22);

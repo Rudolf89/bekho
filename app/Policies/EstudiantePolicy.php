@@ -8,7 +8,7 @@ use App\Models\User;
 /**
  * Autorización sobre las fichas de estudiantes.
  *
- * - Quien tiene "gestionar alumnos" administra todas las fichas (de su academia).
+ * - Quien tiene "gestionar alumnos" administra todas las fichas (de su grupo).
  * - Un instructor ve y edita solo los alumnos de las clases donde está asignado.
  * - Un apoderado solo puede VER a sus propios hijos (no administrarlos).
  */
@@ -44,7 +44,7 @@ class EstudiantePolicy
 
     public function create(User $user): bool
     {
-        // La federación es solo lectura: ve alumnos de todas las academias pero
+        // La federación es solo lectura: ve alumnos de todos los grupos pero
         // no los administra.
         return ! $user->esSoloLectura() && $user->can('gestionar alumnos');
     }

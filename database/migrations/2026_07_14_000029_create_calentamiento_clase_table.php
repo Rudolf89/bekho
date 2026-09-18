@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Rutina de calentamiento guardada para una CLASE del horario: los ejercicios
  * que el instructor selecciona en "Armar calentamiento" quedan asociados a la
- * clase (dato operativo de cada academia; el catálogo de ejercicios es
- * compartido). La clase ya lleva academia_id, así que el aislamiento por tenant
+ * clase (dato operativo de cada grupo; el catálogo de ejercicios es
+ * compartido). La clase ya lleva grupo_id, así que el aislamiento por tenant
  * se respeta por ahí.
  *
  * Las planillas son transversales (contenido ATA compartido), por eso la rutina

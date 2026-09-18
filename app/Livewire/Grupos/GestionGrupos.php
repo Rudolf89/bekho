@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Livewire\Academias;
+namespace App\Livewire\Grupos;
 
 use App\Livewire\Concerns\ConTabla;
-use App\Models\Academia;
+use App\Models\Grupo;
 use Flux\Flux;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Academias')]
-class GestionAcademias extends Component
+#[Title('Grupos')]
+class GestionGrupos extends Component
 {
     use ConTabla;
 
@@ -49,14 +49,14 @@ class GestionAcademias extends Component
         $this->mostrarModal = true;
     }
 
-    public function editar(Academia $academia): void
+    public function editar(Grupo $grupo): void
     {
-        $this->editandoId = $academia->id;
-        $this->nombre = $academia->nombre;
-        $this->email = $academia->email;
-        $this->telefono = $academia->telefono;
-        $this->logo = $academia->logo;
-        $this->activo = $academia->activo;
+        $this->editandoId = $grupo->id;
+        $this->nombre = $grupo->nombre;
+        $this->email = $grupo->email;
+        $this->telefono = $grupo->telefono;
+        $this->logo = $grupo->logo;
+        $this->activo = $grupo->activo;
         $this->resetErrorBag();
         $this->mostrarModal = true;
     }
@@ -66,28 +66,28 @@ class GestionAcademias extends Component
         $datos = $this->validate();
 
         if ($this->editandoId) {
-            Academia::findOrFail($this->editandoId)->update($datos);
-            Flux::toast(variant: 'success', text: 'Academia actualizada.');
+            Grupo::findOrFail($this->editandoId)->update($datos);
+            Flux::toast(variant: 'success', text: 'Grupo actualizada.');
         } else {
-            Academia::create($datos);
-            Flux::toast(variant: 'success', text: 'Academia creada.');
+            Grupo::create($datos);
+            Flux::toast(variant: 'success', text: 'Grupo creada.');
         }
 
         $this->mostrarModal = false;
     }
 
-    public function alternarActivo(Academia $academia): void
+    public function alternarActivo(Grupo $grupo): void
     {
-        $academia->update(['activo' => ! $academia->activo]);
+        $grupo->update(['activo' => ! $grupo->activo]);
     }
 
     public function render()
     {
         // El admin-plataforma no filtra lecturas, así que los conteos de sedes y
-        // usuarios salen globales (el total real de cada academia).
-        return view('livewire.academias.gestion-academias', [
-            'academias' => $this->aplicarOrden(
-                $this->aplicarBusqueda(Academia::withCount(['sedes', 'usuarios']), ['nombre', 'email', 'telefono']),
+        // usuarios salen globales (el total real de cada grupo).
+        return view('livewire.grupos.gestion-grupos', [
+            'grupos' => $this->aplicarOrden(
+                $this->aplicarBusqueda(Grupo::withCount(['sedes', 'usuarios']), ['nombre', 'email', 'telefono']),
                 ['nombre', 'activo'], 'nombre'
             )->get(),
         ]);

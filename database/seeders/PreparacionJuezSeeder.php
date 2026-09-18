@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Academia;
 use App\Models\Contenido;
+use App\Models\Grupo;
 use App\Models\Nivel;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Database\Seeder;
 
 /**
@@ -34,18 +34,18 @@ class PreparacionJuezSeeder extends Seeder
 
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
+        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 
-        if (! $academia) {
-            $this->command?->warn('No existe la academia BEKHO; ejecuta antes RolesPermisosSeeder.');
+        if (! $grupo) {
+            $this->command?->warn('No existe el grupo BEKHO; ejecuta antes RolesPermisosSeeder.');
 
             return;
         }
 
-        Tenant::set($academia->id);
+        Tenant::set($grupo->id);
 
         $nivel = Nivel::updateOrCreate(
-            ['academia_id' => $academia->id, 'nombre' => 'Preparación para examen de juez nivel 1'],
+            ['grupo_id' => $grupo->id, 'nombre' => 'Preparación para examen de juez nivel 1'],
             [
                 'descripcion' => 'Manual del Juez ATA (reglamento 2025-2026) y práctica de examen para la '
                     .'certificación de jueces BEKHO Chile. Incluye el reglamento por secciones y cuestionarios '
@@ -60,7 +60,7 @@ class PreparacionJuezSeeder extends Seeder
             Contenido::updateOrCreate(
                 ['nivel_id' => $nivel->id, 'titulo' => $c['titulo']],
                 [
-                    'academia_id' => $academia->id,
+                    'grupo_id' => $grupo->id,
                     'descripcion' => $c['descripcion'] ?? null,
                     'tipo' => $c['tipo'],
                     'cuerpo' => $c['cuerpo'] ?? null,

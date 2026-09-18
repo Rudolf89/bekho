@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Bloque de semanas del planificador de Cinturón Negro (con un tema). Catálogo
- * compartido (sin academia_id).
+ * compartido (sin grupo_id).
  */
 class PlanificacionCinturonNegro extends Model
 {

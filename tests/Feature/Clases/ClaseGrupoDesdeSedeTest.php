@@ -1,8 +1,8 @@
 <?php
 
 use App\Livewire\Clases\GestionClases;
-use App\Models\Academia;
 use App\Models\Clase;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
 use Livewire\Livewire;
@@ -16,13 +16,13 @@ beforeEach(function () {
     }
 });
 
-test('el admin-plataforma (sin academia) crea una clase y la academia se toma de la sede', function () {
-    $admin = User::factory()->create(['academia_id' => null]);
+test('el admin-plataforma (sin grupo) crea una clase y el grupo se toma de la sede', function () {
+    $admin = User::factory()->create(['grupo_id' => null]);
     $admin->assignRole('admin-plataforma');
     actingAs($admin);
 
-    $academia = Academia::create(['nombre' => 'ATA', 'activo' => true]);
-    $sede = Sede::create(['academia_id' => $academia->id, 'nombre' => 'Neptuno', 'activo' => true]);
+    $grupo = Grupo::create(['nombre' => 'ATA', 'activo' => true]);
+    $sede = Sede::create(['grupo_id' => $grupo->id, 'nombre' => 'Neptuno', 'activo' => true]);
 
     Livewire::test(GestionClases::class)
         ->call('nuevo')
@@ -35,8 +35,8 @@ test('el admin-plataforma (sin academia) crea una clase y la academia se toma de
         ->call('guardar')
         ->assertHasNoErrors();
 
-    $clase = Clase::sinAcademia()->where('nombre', 'tigers')->first();
+    $clase = Clase::sinGrupo()->where('nombre', 'tigers')->first();
 
     expect($clase)->not->toBeNull()
-        ->and($clase->academia_id)->toBe($academia->id);
+        ->and($clase->grupo_id)->toBe($grupo->id);
 });

@@ -172,12 +172,12 @@ class InscribirAlumno extends Component
     {
         $datos = $this->validate();
 
-        // La academia del alumno es la de su sede (funciona también para el
-        // admin-plataforma, que gestiona por academia).
-        $academiaId = Sede::sinAcademia()->findOrFail($datos['sede_id'])->academia_id;
+        // El grupo del alumno es la de su sede (funciona también para el
+        // admin-plataforma, que gestiona por grupo).
+        $grupoId = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
 
         Estudiante::create([
-            'academia_id' => $academiaId,
+            'grupo_id' => $grupoId,
             'sede_id' => $datos['sede_id'],
             'instructor_id' => $datos['instructor_id'],
             'nombre' => trim("{$datos['nombres']} {$datos['apellido_paterno']} {$datos['apellido_materno']}"),

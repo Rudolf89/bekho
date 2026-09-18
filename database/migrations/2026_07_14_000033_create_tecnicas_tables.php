@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  * (patadas, formas, manos, tricks, armas, rompimientos, protech), etiquetado por
  * cinturón/nivel, modalidad (tradicional/creative/xtreme) y core-vs-electivo.
  *
- * Catálogo compartido → SIN academia_id. Las técnicas con secuencia (formas,
+ * Catálogo compartido → SIN grupo_id. Las técnicas con secuencia (formas,
  * segmentos de armas, combinaciones de manos) guardan sus pasos en pasos_tecnica.
  */
 return new class extends Migration

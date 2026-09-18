@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('clase_id')->constrained('clases')->cascadeOnDelete();
             $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('registrado_por')->nullable()->constrained('users')->nullOnDelete();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['clase_id', 'estudiante_id', 'fecha']);
-            $table->index('academia_id');
+            $table->index('grupo_id');
         });
     }
 

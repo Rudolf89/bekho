@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EstadoIntento;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Intento de un usuario sobre un cuestionario (resultado autocorregido). Dato
- * operativo (con academia_id): pertenece a quien lo rindió.
+ * operativo (con grupo_id): pertenece a quien lo rindió.
  */
 class IntentoCuestionario extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     protected $table = 'intentos_cuestionario';
 
@@ -32,7 +32,7 @@ class IntentoCuestionario extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id', 'user_id', 'cuestionario_id',
+        'grupo_id', 'user_id', 'cuestionario_id',
         'correctas', 'total', 'porcentaje', 'aprobado', 'finalizado_at',
         'estado', 'revisado_por', 'revisado_at', 'justificacion',
     ];

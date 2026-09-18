@@ -1,15 +1,15 @@
 <?php
 
 use App\Enums\ResultadoExamen;
-use App\Models\Academia;
 use App\Models\Convocatoria;
 use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Graduacion;
+use App\Models\Grupo;
 use App\Models\Inscripcion;
 use App\Models\User;
 use App\Services\ServicioExamenes;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\PermissionRegistrar;
@@ -19,15 +19,15 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
-function usuarioExamen(string $rol, ?int $academiaId, ?int $supervisorId = null): User
+function usuarioExamen(string $rol, ?int $grupoId, ?int $supervisorId = null): User
 {
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
     $user = User::factory()->create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'supervisor_id' => $supervisorId,
         'two_factor_confirmed_at' => $exige2fa ? now() : null,
     ]);
@@ -57,19 +57,19 @@ test('un maestro accede a la gestión de exámenes', function () {
 
 test('las pantallas de detalle y conteo renderizan para un maestro', function () {
     $user = usuarioExamen('direccion', $this->bekho->id);
-    $conv = Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
+    $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
 
     Tenant::olvidar();
     $this->actingAs($user)->get(route('examenes.detalle', $conv))->assertOk();
     $this->actingAs($user)->get(route('examenes.conteo'))->assertOk();
 });
 
-// --- Scope por academia ------------------------------------------------------
+// --- Scope por grupo ------------------------------------------------------
 
-test('las convocatorias se aíslan por academia', function () {
-    $otra = Academia::create(['nombre' => 'OTRA', 'activo' => true]);
-    Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'BEKHO', 'fecha' => now(), 'estado' => 'programada']);
-    Convocatoria::create(['academia_id' => $otra->id, 'nombre' => 'OTRA', 'fecha' => now(), 'estado' => 'programada']);
+test('las convocatorias se aíslan por grupo', function () {
+    $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
+    Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'BEKHO', 'fecha' => now(), 'estado' => 'programada']);
+    Convocatoria::create(['grupo_id' => $otra->id, 'nombre' => 'OTRA', 'fecha' => now(), 'estado' => 'programada']);
 
     Tenant::set($this->bekho->id);
     expect(Convocatoria::count())->toBe(1);
@@ -83,14 +83,14 @@ test('aprobar un examen sube el grado del estudiante y crea el historial', funct
     $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
     $estudiante = Estudiante::create([
-        'academia_id' => $this->bekho->id, 'nombre' => 'Carlos', 'grupo_etario' => 'for_kids',
+        'grupo_id' => $this->bekho->id, 'nombre' => 'Carlos', 'grupo_etario' => 'for_kids',
         'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
     ]);
-    $conv = Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
+    $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
     $instructor = usuarioExamen('instructor', $this->bekho->id);
 
     $inscripcion = Inscripcion::create([
-        'academia_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
+        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
         'grado_origen_id' => $amarillo->id, 'grado_destino_id' => $verde->id, 'instructor_id' => $instructor->id,
         'visto_bueno' => true,
     ]);
@@ -111,13 +111,13 @@ test('un examen reprobado no sube el grado ni crea historial', function () {
     $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
     $estudiante = Estudiante::create([
-        'academia_id' => $this->bekho->id, 'nombre' => 'Diego', 'grupo_etario' => 'for_kids',
+        'grupo_id' => $this->bekho->id, 'nombre' => 'Diego', 'grupo_etario' => 'for_kids',
         'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
     ]);
-    $conv = Convocatoria::create(['academia_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
+    $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
 
     $inscripcion = Inscripcion::create([
-        'academia_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
+        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
         'grado_origen_id' => $amarillo->id, 'grado_destino_id' => $verde->id, 'visto_bueno' => true,
     ]);
 
@@ -141,11 +141,11 @@ test('el conteo de graduaciones sube por la línea de supervisión', function ()
     // Dos graduaciones acreditadas a Beto.
     foreach (['Uno', 'Dos'] as $nombre) {
         $est = Estudiante::create([
-            'academia_id' => $this->bekho->id, 'nombre' => $nombre, 'grupo_etario' => 'for_kids',
+            'grupo_id' => $this->bekho->id, 'nombre' => $nombre, 'grupo_etario' => 'for_kids',
             'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
         ]);
         Graduacion::create([
-            'academia_id' => $this->bekho->id, 'estudiante_id' => $est->id, 'grado_origen_id' => $amarillo->id,
+            'grupo_id' => $this->bekho->id, 'estudiante_id' => $est->id, 'grado_origen_id' => $amarillo->id,
             'grado_destino_id' => $verde->id, 'instructor_id' => $beto->id, 'fecha' => now(), 'resultado' => 'aprobado',
         ]);
     }
@@ -163,7 +163,7 @@ test('el conteo de graduaciones sube por la línea de supervisión', function ()
 
 test('sin umbrales configurados, todos los activos cumplen elegibilidad', function () {
     $estudiante = Estudiante::create([
-        'academia_id' => $this->bekho->id, 'nombre' => 'Eva', 'grupo_etario' => 'for_kids',
+        'grupo_id' => $this->bekho->id, 'nombre' => 'Eva', 'grupo_etario' => 'for_kids',
         'nivel' => 'principiantes', 'activo' => true,
     ]);
 
@@ -175,7 +175,7 @@ test('con umbral de meses en grado, un alumno recién ingresado no cumple', func
     config(['bekho.examenes.meses_minimos_en_grado' => 6]);
 
     $estudiante = Estudiante::create([
-        'academia_id' => $this->bekho->id, 'nombre' => 'Nuevo', 'grupo_etario' => 'for_kids',
+        'grupo_id' => $this->bekho->id, 'nombre' => 'Nuevo', 'grupo_etario' => 'for_kids',
         'nivel' => 'principiantes', 'activo' => true,
     ]);
 

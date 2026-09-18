@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * la Vida.
  *
  * Es TRANSVERSAL: el currículo/rutina es contenido ATA/BEKHO compartido por toda
- * la federación (sin academia_id), como cargos_rangos.
+ * la federación (sin grupo_id), como cargos_rangos.
  */
 class Planilla extends Model
 {

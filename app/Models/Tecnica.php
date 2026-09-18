@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Técnica de la biblioteca del currículo ATA (catálogo compartido, sin
- * academia_id). Las técnicas con secuencia guardan sus pasos en pasos_tecnica.
+ * grupo_id). Las técnicas con secuencia guardan sus pasos en pasos_tecnica.
  */
 class Tecnica extends Model
 {

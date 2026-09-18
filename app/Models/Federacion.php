@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Federación: entidad raíz del modelo. BEKHO es una federación. Los grupos
- * (ex «academias») y los catálogos cuelgan de ella (se conectan por fase).
+ * (ex «grupos») y los catálogos cuelgan de ella (se conectan por fase).
  */
 class Federacion extends Model
 {

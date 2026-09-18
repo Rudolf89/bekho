@@ -1,7 +1,7 @@
 <?php
 
 use App\Livewire\Usuarios\GestionUsuarios;
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
@@ -69,11 +69,11 @@ test('no se puede eliminar un usuario con historial; solo desactivar', function 
     adminAutenticado();
 
     $conHistorial = User::factory()->create();
-    $academia = Academia::create(['nombre' => 'ATA', 'activo' => true]);
+    $grupo = Grupo::create(['nombre' => 'ATA', 'activo' => true]);
 
     // Historial: un estudiante vinculado a esa cuenta.
     DB::table('estudiantes')->insert([
-        'academia_id' => $academia->id,
+        'grupo_id' => $grupo->id,
         'user_id' => $conHistorial->id,
         'nombre' => 'Alumno vinculado',
         'grupo_etario' => 'tigers',

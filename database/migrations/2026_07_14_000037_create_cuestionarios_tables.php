@@ -6,15 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Módulo de cuestionarios (evaluaciones autocorregidas). El CATÁLOGO es
- * transversal (contenido compartido por toda la federación, sin academia_id):
+ * transversal (contenido compartido por toda la federación, sin grupo_id):
  * un examinador arma un cuestionario con sus preguntas y opciones. Los INTENTOS
- * son datos operativos (por usuario/academia).
+ * son datos operativos (por usuario/grupo).
  */
 return new class extends Migration
 {
     public function up(): void
     {
-        // --- Catálogo compartido (sin academia_id) -------------------------------
+        // --- Catálogo compartido (sin grupo_id) -------------------------------
         Schema::create('cuestionarios', function (Blueprint $table) {
             $table->id();
             $table->string('titulo');
@@ -45,10 +45,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // --- Intentos (operativo, con academia_id) -------------------------------
+        // --- Intentos (operativo, con grupo_id) -------------------------------
         Schema::create('intentos_cuestionario', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->nullable()->constrained('academias')->nullOnDelete();
+            $table->foreignId('grupo_id')->nullable()->constrained('grupos')->nullOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('cuestionario_id')->constrained('cuestionarios')->cascadeOnDelete();
             $table->unsignedInteger('correctas')->default(0);

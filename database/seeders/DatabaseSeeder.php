@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             // Cuestionarios autocorregidos (catálogo compartido): banco de juez ATA.
             CuestionariosSeeder::class,
             // Contenido pedagógico real del Planificador Unificado (catálogos
-            // compartidos + planillas grupo × nivel de la primera academia).
+            // compartidos + planillas grupo × nivel de la primera grupo).
             PlanificadorSeeder::class,
             // Class planners de los 6 ciclos (grillas del Manual Legacy).
             PlannerCiclosSeeder::class,

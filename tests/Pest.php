@@ -1,6 +1,6 @@
 <?php
 
-use App\Support\Tenancy\Academia;
+use App\Support\Tenancy\Grupo;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,10 +17,10 @@ use Tests\TestCase;
 
 pest()->extend(TestCase::class)
     ->use(RefreshDatabase::class)
-    // Reinicia la academia (tenant) activa entre tests: el contenedor es estático
-    // y el middleware la fija durante las peticiones, así que hay que limpiarla
-    // para no contaminar tests posteriores (global scope + autorelleno).
-    ->beforeEach(fn () => Academia::olvidar())
+    // Reinicia el grupo (tenant) activo entre tests: el contenedor es estático
+    // y el middleware lo fija durante las peticiones, así que hay que limpiarla
+    // para no contaminarlo tests posteriores (global scope + autorelleno).
+    ->beforeEach(fn () => Grupo::olvidar())
     ->in('Feature');
 
 /*

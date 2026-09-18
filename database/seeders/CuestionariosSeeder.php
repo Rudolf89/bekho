@@ -9,7 +9,7 @@ use Illuminate\Database\Seeder;
 
 /**
  * Siembra los cuestionarios base del módulo de evaluaciones (catálogo compartido,
- * sin academia_id): el examen de Juez ATA (N1, N2, N3 y repaso de puntuación) y la
+ * sin grupo_id): el examen de Juez ATA (N1, N2, N3 y repaso de puntuación) y la
  * prueba escrita del Programa Legacy Nivel 3.
  *
  * El módulo es genérico: cualquier examinador puede crear otros cuestionarios

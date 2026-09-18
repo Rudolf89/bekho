@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Academia;
 use App\Models\ConfiguracionPago;
+use App\Models\Federacion;
+use App\Models\Grupo;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -14,8 +15,8 @@ use Spatie\Permission\PermissionRegistrar;
 /**
  * Siembra permisos, roles y el administrador de plataforma.
  *
- * Jerarquía real: BEKHO es la FEDERACIÓN (la plataforma), NO una academia. Cada
- * "academia" del sistema es un GRUPO (p. ej. BEKHO Power Academy). El primer
+ * Jerarquía real: BEKHO es la FEDERACIÓN (la plataforma), NO un grupo. Cada
+ * "grupo" del sistema es un GRUPO (p. ej. BEKHO Power Academy). El primer
  * grupo se crea aquí; el resto (Pride, IV Región, Strike, …) aún no se confirman.
  *
  * Rol (spatie) = permisos en el software. Es un eje INDEPENDIENTE del rango
@@ -28,7 +29,7 @@ class RolesPermisosSeeder extends Seeder
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permisos = [
-            'gestionar academias',
+            'gestionar grupos',
             'gestionar usuarios',
             'gestionar sedes',
             'gestionar alumnos',
@@ -54,12 +55,12 @@ class RolesPermisosSeeder extends Seeder
 
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        // admin-plataforma (dueño del sistema): todos los permisos, cruza academias.
+        // admin-plataforma (dueño del sistema): todos los permisos, cruza grupos.
         Role::findOrCreate('admin-plataforma')->syncPermissions($permisos);
 
-        // federacion (Casa Central): solo lectura sobre todas las academias.
+        // federacion (Casa Central): solo lectura sobre todos los grupos.
         // Se le dan los permisos para ABRIR las pantallas operativas; la escritura
-        // se bloquea (User::esSoloLectura()). No ve usuarios, pagos ni academias.
+        // se bloquea (User::esSoloLectura()). No ve usuarios, pagos ni grupos.
         Role::findOrCreate('federacion')->syncPermissions([
             'gestionar sedes',
             'gestionar alumnos',
@@ -70,7 +71,7 @@ class RolesPermisosSeeder extends Seeder
             'ver formacion',
         ]);
 
-        // direccion (director de un grupo): todo dentro de su academia (menos crear academias).
+        // direccion (director de un grupo): todo dentro de su grupo (menos crear grupos).
         Role::findOrCreate('direccion')->syncPermissions([
             'gestionar usuarios',
             'gestionar sedes',
@@ -120,22 +121,30 @@ class RolesPermisosSeeder extends Seeder
         // alumno: ver formación, rendir cuestionarios y ver sus logros.
         Role::findOrCreate('alumno')->syncPermissions(['ver formacion', 'rendir cuestionarios', 'ver recompensas']);
 
-        // Grupo principal (una academia = un grupo). BEKHO es la federación, no un grupo.
-        $academia = Academia::updateOrCreate(
+        // Federación raíz (BEKHO). Se asegura aquí para que el seeder sea
+        // autónomo en pruebas, aunque FederacionesSeeder ya la siembre en el
+        // arranque completo.
+        $federacion = Federacion::firstOrCreate(
+            ['nombre' => 'BEKHO'],
+            ['razon_social' => 'BEKHO Martial Arts', 'pais' => 'Chile', 'moneda' => 'CLP', 'activo' => true],
+        );
+
+        // Grupo principal. BEKHO es la federación; el grupo es la academia.
+        $grupo = Grupo::updateOrCreate(
             ['nombre' => 'BEKHO Power Academy'],
-            ['activo' => true],
+            ['federacion_id' => $federacion->id, 'activo' => true],
         );
 
         ConfiguracionPago::updateOrCreate(
-            ['academia_id' => $academia->id],
+            ['grupo_id' => $grupo->id],
             ['descuento_hermanos_pct' => 20],
         );
 
-        // Administrador de plataforma transversal (academia_id null → ve todo).
+        // Administrador de plataforma transversal (grupo_id null → ve todo).
         $atributosAdmin = [
             'name' => 'Administrador BEKHO',
             'password' => Hash::make('cambiar-esto'),
-            'academia_id' => null,
+            'grupo_id' => null,
             'activo' => true,
         ];
 

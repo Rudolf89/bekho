@@ -8,7 +8,7 @@ use App\Models\ConfiguracionPago;
 use App\Models\Estudiante;
 use App\Models\Pago;
 use App\Services\ServicioPagos;
-use App\Support\Tenancy\Academia;
+use App\Support\Tenancy\Grupo;
 use Flux\Flux;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -38,7 +38,7 @@ class GestionPagos extends Component
 
     public bool $mostrarModal = false;
 
-    // Configuración de pagos (por academia)
+    // Configuración de pagos (por grupo)
     public ?int $valor_mensualidad = null;
 
     public ?int $valor_matricula = null;
@@ -75,24 +75,24 @@ class GestionPagos extends Component
     }
 
     /**
-     * Configuración de pagos de la academia activa (se crea si no existe).
+     * Configuración de pagos del grupo activo (se crea si no existe).
      *
-     * El admin-plataforma no tiene academia activa (ve todas); en ese caso se usa su
-     * academia o, en su defecto, la primera, para no insertar academia_id nulo.
+     * El admin-plataforma no tiene grupo activo (ve todas); en ese caso se usa su
+     * grupo o, en su defecto, la primera, para no insertar grupo_id nulo.
      */
     protected function config(): ConfiguracionPago
     {
-        $academiaId = Academia::id()
-            ?? Auth::user()?->academia_id
-            ?? \App\Models\Academia::query()->orderBy('id')->value('id');
+        $grupoId = Grupo::id()
+            ?? Auth::user()?->grupo_id
+            ?? \App\Models\Grupo::query()->orderBy('id')->value('id');
 
-        // Si no hay ninguna academia, devuelve una configuración transitoria.
-        if (! $academiaId) {
+        // Si no hay ningun grupo, devuelve una configuración transitoria.
+        if (! $grupoId) {
             return new ConfiguracionPago(['descuento_hermanos_pct' => 20]);
         }
 
         return ConfiguracionPago::firstOrCreate(
-            ['academia_id' => $academiaId],
+            ['grupo_id' => $grupoId],
             ['descuento_hermanos_pct' => 20],
         );
     }

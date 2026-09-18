@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\User;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,16 +11,16 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 /**
- * Crea un usuario con rol, academia y estado de 2FA dados.
+ * Crea un usuario con rol, grupo y estado de 2FA dados.
  */
-function usuario(string $rol, ?int $academiaId, bool $con2fa = false): User
+function usuario(string $rol, ?int $grupoId, bool $con2fa = false): User
 {
     $user = User::factory()->create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'two_factor_confirmed_at' => $con2fa ? now() : null,
     ]);
     $user->assignRole($rol);

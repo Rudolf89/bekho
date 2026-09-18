@@ -1,6 +1,6 @@
 <?php
 
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\User;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -11,7 +11,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 test('el panel (dashboard) renderiza para el admin-plataforma', function () {
@@ -26,7 +26,7 @@ test('el panel (dashboard) renderiza para el admin-plataforma', function () {
 
 test('el panel renderiza para un maestro con 2FA', function () {
     $maestro = User::factory()->create([
-        'academia_id' => $this->bekho->id,
+        'grupo_id' => $this->bekho->id,
         'two_factor_confirmed_at' => now(),
     ]);
     $maestro->assignRole('direccion');

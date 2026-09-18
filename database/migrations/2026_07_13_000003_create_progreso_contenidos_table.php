@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('progreso_contenidos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('contenido_id')->constrained('contenidos')->cascadeOnDelete();
             $table->string('estado')->default('pendiente'); // App\Enums\EstadoProgreso
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['user_id', 'contenido_id']);
-            $table->index('academia_id');
+            $table->index('grupo_id');
         });
     }
 

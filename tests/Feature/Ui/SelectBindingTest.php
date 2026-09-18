@@ -51,7 +51,7 @@ test('los select de sedes arrancan vacíos para admin-plataforma', function () {
     Livewire::test(GestionSedes::class)
         ->call('nueva')
         ->assertSet('comuna', '')
-        ->assertSet('academia_id', '');
+        ->assertSet('grupo_id', '');
 });
 
 test('los select de planillas arrancan vacíos', function () {
@@ -72,5 +72,5 @@ test('los select de usuarios arrancan vacíos para admin-plataforma', function (
         ->call('nuevo')
         ->assertSet('rango_id', '')
         ->assertSet('sedes', [])
-        ->assertSet('academia_id', '');
+        ->assertSet('grupo_id', '');
 });

@@ -2,11 +2,11 @@
 
 use App\Livewire\Cuestionarios\EditarCuestionario;
 use App\Livewire\Cuestionarios\RendirCuestionario;
-use App\Models\Academia;
 use App\Models\Cuestionario;
+use App\Models\Grupo;
 use App\Models\IntentoCuestionario;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\CuestionariosSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -19,16 +19,16 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(CuestionariosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 afterEach(fn () => Tenant::olvidar());
 
-function usuarioCuestionario(string $rol, ?int $academiaId): User
+function usuarioCuestionario(string $rol, ?int $grupoId): User
 {
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
     $user = User::factory()->create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'two_factor_confirmed_at' => $exige2fa ? now() : null,
     ]);
     $user->assignRole($rol);
@@ -49,8 +49,8 @@ test('se siembran los cuestionarios del banco de juez', function () {
         ->and($n1->preguntas->every(fn ($p) => count($p->idsCorrectos()) >= 1))->toBeTrue();
 });
 
-test('los cuestionarios son transversales (catálogo compartido, sin academia)', function () {
-    $otra = Academia::create(['nombre' => 'OTRA', 'activo' => true]);
+test('los cuestionarios son transversales (catálogo compartido, sin grupo)', function () {
+    $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
 
     Tenant::set($this->bekho->id);
     $desdeBekho = Cuestionario::count();

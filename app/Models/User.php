@@ -9,7 +9,7 @@ namespace App\Models;
 // aquí `implements MustVerifyEmail` y volver a poner 'verified' en las rutas.
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\EstadoProgreso;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -38,18 +38,18 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property int|null $academia_id
+ * @property int|null $grupo_id
  * @property int|null $rango_id
  * @property int|null $supervisor_id
  * @property string|null $telefono
  * @property bool $activo
  */
-#[Fillable(['name', 'email', 'password', 'academia_id', 'rango_id', 'supervisor_id', 'telefono', 'activo'])]
+#[Fillable(['name', 'email', 'password', 'grupo_id', 'rango_id', 'supervisor_id', 'telefono', 'activo'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, PerteneceAcademia, TwoFactorAuthenticatable;
+    use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, PerteneceGrupo, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -78,13 +78,13 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
-     * Academia a la que pertenece el usuario.
+     * Grupo a la que pertenece el usuario.
      *
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**
@@ -141,7 +141,7 @@ class User extends Authenticatable implements PasskeyUser
 
     /**
      * Indica si el usuario solo tiene acceso de lectura (federación): puede ver
-     * datos de todas las academias pero no crear ni modificar.
+     * datos de todos los grupos pero no crear ni modificar.
      */
     public function esSoloLectura(): bool
     {

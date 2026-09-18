@@ -1,18 +1,18 @@
 <?php
 
 use App\Enums\NivelEntrenamiento;
-use App\Models\Academia;
 use App\Models\Estudiante;
 use App\Models\Grado;
+use App\Models\Grupo;
 
 beforeEach(function () {
-    $this->academia = Academia::create(['nombre' => 'ATA', 'activo' => true]);
+    $this->grupo = Grupo::create(['nombre' => 'ATA', 'activo' => true]);
 });
 
-function crearEstudiante(int $academiaId, ?int $gradoId): Estudiante
+function crearEstudiante(int $grupoId, ?int $gradoId): Estudiante
 {
     return Estudiante::create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'nombre' => 'Alumno',
         'grupo_etario' => 'jovenes_adultos',
         'grado_id' => $gradoId,
@@ -21,7 +21,7 @@ function crearEstudiante(int $academiaId, ?int $gradoId): Estudiante
 }
 
 test('un alumno sin cinturón queda en Principiantes', function () {
-    $est = crearEstudiante($this->academia->id, null);
+    $est = crearEstudiante($this->grupo->id, null);
 
     expect($est->nivel)->toBe(NivelEntrenamiento::Principiantes);
 });
@@ -34,19 +34,19 @@ test('el nivel se deriva del color del cinturón', function () {
     $rojoNegro = Grado::create(['nombre' => 'Rojo/Negro', 'orden' => 18, 'escala' => 'adultos', 'color' => 'Rojo/Negro', 'activo' => true]);
     $dan = Grado::create(['nombre' => '1º Dan', 'orden' => 19, 'escala' => 'adultos', 'color' => 'Negro', 'activo' => true]);
 
-    expect(crearEstudiante($this->academia->id, $blanco->id)->nivel)->toBe(NivelEntrenamiento::Principiantes)
-        ->and(crearEstudiante($this->academia->id, $verde->id)->nivel)->toBe(NivelEntrenamiento::Intermedio)
-        ->and(crearEstudiante($this->academia->id, $azul->id)->nivel)->toBe(NivelEntrenamiento::Avanzado)
-        ->and(crearEstudiante($this->academia->id, $rojo->id)->nivel)->toBe(NivelEntrenamiento::Avanzado)
-        ->and(crearEstudiante($this->academia->id, $rojoNegro->id)->nivel)->toBe(NivelEntrenamiento::RojoNegro)
-        ->and(crearEstudiante($this->academia->id, $dan->id)->nivel)->toBe(NivelEntrenamiento::Danes);
+    expect(crearEstudiante($this->grupo->id, $blanco->id)->nivel)->toBe(NivelEntrenamiento::Principiantes)
+        ->and(crearEstudiante($this->grupo->id, $verde->id)->nivel)->toBe(NivelEntrenamiento::Intermedio)
+        ->and(crearEstudiante($this->grupo->id, $azul->id)->nivel)->toBe(NivelEntrenamiento::Avanzado)
+        ->and(crearEstudiante($this->grupo->id, $rojo->id)->nivel)->toBe(NivelEntrenamiento::Avanzado)
+        ->and(crearEstudiante($this->grupo->id, $rojoNegro->id)->nivel)->toBe(NivelEntrenamiento::RojoNegro)
+        ->and(crearEstudiante($this->grupo->id, $dan->id)->nivel)->toBe(NivelEntrenamiento::Danes);
 });
 
 test('graduar (cambiar el cinturón) recalcula el nivel', function () {
     $amarillo = Grado::create(['nombre' => 'Amarillo Decidido', 'orden' => 4, 'escala' => 'adultos', 'color' => 'Amarillo', 'activo' => true]);
     $azul = Grado::create(['nombre' => 'Azul Decidido', 'orden' => 10, 'escala' => 'adultos', 'color' => 'Azul', 'activo' => true]);
 
-    $est = crearEstudiante($this->academia->id, $amarillo->id);
+    $est = crearEstudiante($this->grupo->id, $amarillo->id);
     expect($est->nivel)->toBe(NivelEntrenamiento::Principiantes);
 
     // Al graduar se actualiza grado_id; el nivel debe seguir al nuevo cinturón.

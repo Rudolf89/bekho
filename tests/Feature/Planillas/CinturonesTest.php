@@ -3,8 +3,8 @@
 use App\Enums\EscalaGrado;
 use App\Enums\TipoGrado;
 use App\Livewire\Planillas\Cinturones;
-use App\Models\Academia;
 use App\Models\Grado;
+use App\Models\Grupo;
 use App\Models\Tecnica;
 use App\Models\User;
 use Database\Seeders\GradosSeeder;
@@ -24,7 +24,7 @@ beforeEach(function () {
     $this->seed(TecnicasSeeder::class);
     $this->seed(GradoTecnicaSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 // --- Tipo (recomendado / decidido / dan) ------------------------------------
@@ -91,7 +91,7 @@ test('la normalización de grafías enlaza Morado con el grado Púrpura', functi
 // --- Vista -------------------------------------------------------------------
 
 test('la página de cinturones muestra la escala y su significado', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
     Livewire::actingAs($instructor)->test(Cinturones::class)
@@ -101,9 +101,9 @@ test('la página de cinturones muestra la escala y su significado', function () 
 });
 
 test('la página de cinturones exige el permiso de gestionar planillas', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
-    $apoderado = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $apoderado->assignRole('apoderado');
 
     $this->actingAs($instructor)->get(route('cinturones.index'))->assertOk();

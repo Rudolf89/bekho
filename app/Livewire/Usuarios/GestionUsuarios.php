@@ -4,8 +4,8 @@ namespace App\Livewire\Usuarios;
 
 use App\Concerns\ProfileValidationRules;
 use App\Livewire\Concerns\ConTabla;
-use App\Models\Academia;
 use App\Models\CargoRango;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
@@ -44,7 +44,7 @@ class GestionUsuarios extends Component
      */
     public array $sedes = [];
 
-    public ?string $academia_id = '';
+    public ?string $grupo_id = '';
 
     public bool $activo = true;
 
@@ -58,7 +58,7 @@ class GestionUsuarios extends Component
     public string $eliminandoNombre = '';
 
     /**
-     * Indica si el usuario autenticado es admin-plataforma (ve/asigna todas las academias).
+     * Indica si el usuario autenticado es admin-plataforma (ve/asigna todos los grupos).
      */
     public function esSuperAdmin(): bool
     {
@@ -80,8 +80,8 @@ class GestionUsuarios extends Component
             'rango_id' => ['nullable', Rule::exists('cargos_rangos', 'id')],
             'sedes' => ['array'],
             'sedes.*' => [Rule::exists('sedes', 'id')],
-            // La academia solo la elige el admin-plataforma; el resto usa la suya.
-            'academia_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('academias', 'id')],
+            // El grupo solo la elige el admin-plataforma; el resto usa la suya.
+            'grupo_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('grupos', 'id')],
         ];
     }
 
@@ -103,11 +103,11 @@ class GestionUsuarios extends Component
     }
 
     /**
-     * Academia efectiva del formulario (elegida por admin-plataforma o la propia).
+     * Grupo efectiva del formulario (elegida por admin-plataforma o la propia).
      */
-    protected function academiaEfectiva(): ?int
+    protected function grupoEfectiva(): ?int
     {
-        $id = $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+        $id = $this->esSuperAdmin() ? $this->grupo_id : Auth::user()->grupo_id;
 
         return $id !== '' && $id !== null ? (int) $id : null;
     }
@@ -117,11 +117,11 @@ class GestionUsuarios extends Component
      */
     public function nuevo(): void
     {
-        $this->reset('editandoId', 'name', 'email', 'telefono', 'rol', 'rango_id', 'sedes', 'academia_id');
+        $this->reset('editandoId', 'name', 'email', 'telefono', 'rol', 'rango_id', 'sedes', 'grupo_id');
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
-            $this->academia_id = (string) Auth::user()->academia_id;
+            $this->grupo_id = (string) Auth::user()->grupo_id;
         }
 
         $this->resetErrorBag();
@@ -129,10 +129,10 @@ class GestionUsuarios extends Component
     }
 
     /**
-     * Al cambiar de academia (admin-plataforma) se limpian las sedes elegidas:
-     * pertenecen a la academia anterior y ya no serían válidas.
+     * Al cambiar de grupo (admin-plataforma) se limpian las sedes elegidas:
+     * pertenecen a el grupo anterior y ya no serían válidas.
      */
-    public function updatedAcademiaId(): void
+    public function updatedGrupoId(): void
     {
         $this->sedes = [];
     }
@@ -149,7 +149,7 @@ class GestionUsuarios extends Component
         $this->rol = $usuario->roles->first()?->name ?? '';
         $this->rango_id = (string) ($usuario->rango_id ?? '');
         $this->sedes = $usuario->sedes->pluck('id')->map(fn ($id) => (string) $id)->all();
-        $this->academia_id = (string) ($usuario->academia_id ?? '');
+        $this->grupo_id = (string) ($usuario->grupo_id ?? '');
         $this->activo = $usuario->activo;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -167,7 +167,7 @@ class GestionUsuarios extends Component
 
         $datos = $this->validate();
 
-        $academiaId = $this->academiaEfectiva();
+        $grupoId = $this->grupoEfectiva();
 
         if ($this->editandoId) {
             $usuario = User::findOrFail($this->editandoId);
@@ -176,7 +176,7 @@ class GestionUsuarios extends Component
                 'email' => $datos['email'],
                 'telefono' => $datos['telefono'],
                 'rango_id' => $datos['rango_id'],
-                'academia_id' => $academiaId,
+                'grupo_id' => $grupoId,
                 'activo' => $this->activo,
             ]);
 
@@ -187,7 +187,7 @@ class GestionUsuarios extends Component
                 'email' => $datos['email'],
                 'telefono' => $datos['telefono'],
                 'rango_id' => $datos['rango_id'],
-                'academia_id' => $academiaId,
+                'grupo_id' => $grupoId,
                 'activo' => $this->activo,
                 // Contraseña aleatoria inutilizable; el usuario define la suya
                 // con el enlace de restablecimiento que se envía a continuación.
@@ -229,7 +229,7 @@ class GestionUsuarios extends Component
      * Un usuario con historial no se puede eliminar sin corromper registros
      * (pagos/asistencia registrados, graduaciones e inscripciones acreditadas
      * como instructor, clases a su cargo, o vínculo como apoderado o alumno).
-     * Se consulta con DB directo para ignorar el aislamiento por academia.
+     * Se consulta con DB directo para ignorar el aislamiento por grupo.
      *
      * @param  Collection<int, int>  $ids
      * @return Collection<int, int>
@@ -310,7 +310,7 @@ class GestionUsuarios extends Component
 
     public function render()
     {
-        $academiaFormulario = $this->academiaEfectiva();
+        $grupoFormulario = $this->grupoEfectiva();
 
         $consulta = $this->aplicarBusqueda(User::with('roles'), ['name', 'email', 'telefono']);
         $usuarios = $this->aplicarOrden($consulta, ['name', 'email', 'activo'], 'name')->get();
@@ -321,9 +321,9 @@ class GestionUsuarios extends Component
             'usuarioActualId' => Auth::id(),
             'roles' => $this->rolesDisponibles(),
             'rangos' => CargoRango::orderBy('nivel')->get(),
-            'academias' => Academia::orderBy('nombre')->get(),
-            'listaSedes' => $academiaFormulario
-                ? Sede::sinAcademia()->where('academia_id', $academiaFormulario)->orderBy('nombre')->get()
+            'grupos' => Grupo::orderBy('nombre')->get(),
+            'listaSedes' => $grupoFormulario
+                ? Sede::sinGrupo()->where('grupo_id', $grupoFormulario)->orderBy('nombre')->get()
                 : collect(),
         ]);
     }

@@ -130,7 +130,7 @@
     <flux:modal name="config-modal" wire:model="mostrarConfig" class="max-w-lg md:min-w-lg">
         <form wire:submit="guardarConfig" class="space-y-5">
             <flux:heading size="lg">Configuración de pagos</flux:heading>
-            <flux:text>Valores de esta academia. Déjalos en blanco si aún no los defines.</flux:text>
+            <flux:text>Valores de este grupo. Déjalos en blanco si aún no los defines.</flux:text>
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="valor_mensualidad" type="number" label="Mensualidad (CLP)" />

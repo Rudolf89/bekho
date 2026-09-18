@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
- * Catálogo compartido de grados (cinturones). NO usa el trait PerteneceAcademia:
- * es transversal a todas las academias (como cargos_rangos).
+ * Catálogo compartido de grados (cinturones). NO usa el trait PerteneceGrupo:
+ * es transversal a todos los grupos (como cargos_rangos).
  *
  * Soporta múltiples escalas de cinturones: Tigers usa un sistema propio de
  * rangos y parches, distinto al del resto de los grupos. Ver App\Enums\EscalaGrado.

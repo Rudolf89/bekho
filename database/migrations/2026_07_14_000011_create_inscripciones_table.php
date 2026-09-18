@@ -18,7 +18,7 @@ return new class extends Migration
     {
         Schema::create('inscripciones', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('convocatoria_id')->constrained('convocatorias')->cascadeOnDelete();
             $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('grado_origen_id')->nullable()->constrained('grados')->nullOnDelete();
@@ -31,7 +31,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['convocatoria_id', 'estudiante_id']);
-            $table->index('academia_id');
+            $table->index('grupo_id');
         });
     }
 

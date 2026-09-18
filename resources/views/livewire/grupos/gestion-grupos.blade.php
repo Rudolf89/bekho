@@ -1,15 +1,15 @@
 <div class="mx-auto w-full max-w-4xl space-y-6">
     <div class="flex items-center justify-between gap-4">
         <div>
-            <flux:heading size="xl">Academias</flux:heading>
+            <flux:heading size="xl">Grupos</flux:heading>
             <flux:text class="mt-1">Escuelas del sistema (nivel raíz)</flux:text>
         </div>
-        <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva academia</flux:button>
+        <flux:button wire:click="nueva" icon="plus" variant="primary">Nueva grupo</flux:button>
     </div>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <x-tabla.buscador placeholder="Buscar por nombre, correo o teléfono…" />
-        <x-tabla.resumen :total="$academias->count()" etiqueta="academia" class="w-full sm:w-auto" />
+        <x-tabla.resumen :total="$grupos->count()" etiqueta="grupo" class="w-full sm:w-auto" />
     </div>
 
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
@@ -23,30 +23,30 @@
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
             <flux:table.rows>
-                @forelse ($academias as $academia)
-                    <flux:table.row wire:key="aca-{{ $academia->id }}">
-                        <flux:table.cell variant="strong">{{ $academia->nombre }}</flux:table.cell>
+                @forelse ($grupos as $grupo)
+                    <flux:table.row wire:key="aca-{{ $grupo->id }}">
+                        <flux:table.cell variant="strong">{{ $grupo->nombre }}</flux:table.cell>
                         <flux:table.cell>
-                            {{ $academia->email ?? '—' }}
-                            @if ($academia->telefono)
-                                <flux:text size="sm" class="block">{{ $academia->telefono }}</flux:text>
+                            {{ $grupo->email ?? '—' }}
+                            @if ($grupo->telefono)
+                                <flux:text size="sm" class="block">{{ $grupo->telefono }}</flux:text>
                             @endif
                         </flux:table.cell>
-                        <flux:table.cell>{{ $academia->sedes_count }}</flux:table.cell>
-                        <flux:table.cell>{{ $academia->usuarios_count }}</flux:table.cell>
+                        <flux:table.cell>{{ $grupo->sedes_count }}</flux:table.cell>
+                        <flux:table.cell>{{ $grupo->usuarios_count }}</flux:table.cell>
                         <flux:table.cell>
-                            <flux:badge :color="$academia->activo ? 'green' : 'zinc'" size="sm">
-                                {{ $academia->activo ? 'Activa' : 'Inactiva' }}
+                            <flux:badge :color="$grupo->activo ? 'green' : 'zinc'" size="sm">
+                                {{ $grupo->activo ? 'Activa' : 'Inactiva' }}
                             </flux:badge>
                         </flux:table.cell>
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
-                                <flux:button wire:click="editar({{ $academia->id }})" icon="pencil-square" variant="ghost" size="sm" />
-                                @if ($academia->activo)
-                                    <flux:button wire:click="alternarActivo({{ $academia->id }})" icon="eye-slash" variant="ghost" size="sm"
-                                        title="Desactivar" wire:confirm="¿Desactivar la academia {{ $academia->nombre }}?" />
+                                <flux:button wire:click="editar({{ $grupo->id }})" icon="pencil-square" variant="ghost" size="sm" />
+                                @if ($grupo->activo)
+                                    <flux:button wire:click="alternarActivo({{ $grupo->id }})" icon="eye-slash" variant="ghost" size="sm"
+                                        title="Desactivar" wire:confirm="¿Desactivar el grupo {{ $grupo->nombre }}?" />
                                 @else
-                                    <flux:button wire:click="alternarActivo({{ $academia->id }})" icon="eye" variant="ghost" size="sm" title="Activar" />
+                                    <flux:button wire:click="alternarActivo({{ $grupo->id }})" icon="eye" variant="ghost" size="sm" title="Activar" />
                                 @endif
                             </div>
                         </flux:table.cell>
@@ -55,7 +55,7 @@
                     <flux:table.row>
                         <flux:table.cell colspan="6">
                             <flux:text class="py-4 text-center">
-                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay academias.' }}
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay grupos.' }}
                             </flux:text>
                         </flux:table.cell>
                     </flux:table.row>
@@ -64,9 +64,9 @@
         </flux:table>
     </div>
 
-    <flux:modal name="academia-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">
+    <flux:modal name="grupo-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">
         <form wire:submit="guardar" class="space-y-5">
-            <flux:heading size="lg">{{ $editandoId ? 'Editar academia' : 'Nueva academia' }}</flux:heading>
+            <flux:heading size="lg">{{ $editandoId ? 'Editar grupo' : 'Nueva grupo' }}</flux:heading>
 
             <flux:input wire:model="nombre" label="Nombre" required />
             <div class="grid gap-4 sm:grid-cols-2">

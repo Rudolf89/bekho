@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Nota de calentamiento por grupo etario (ajustes específicos). Catálogo
- * compartido (sin academia_id).
+ * compartido (sin grupo_id).
  */
 class NotaCalentamiento extends Model
 {

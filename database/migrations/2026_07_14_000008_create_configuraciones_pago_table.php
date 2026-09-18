@@ -9,14 +9,14 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Configuración de pagos POR academia (cada escuela tiene su propio valor).
-     * Los montos quedan nullable: se cargan por academia, no se inventan.
+     * Configuración de pagos POR grupo (cada escuela tiene su propio valor).
+     * Los montos quedan nullable: se cargan por grupo, no se inventan.
      */
     public function up(): void
     {
         Schema::create('configuraciones_pago', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->unique()->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->unique()->constrained('grupos')->cascadeOnDelete();
             $table->unsignedInteger('valor_mensualidad')->nullable(); // CLP
             $table->unsignedInteger('valor_matricula')->nullable();    // CLP
             $table->unsignedTinyInteger('dia_vencimiento')->nullable();

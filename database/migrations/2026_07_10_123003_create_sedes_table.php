@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('sedes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->constrained('academias')->cascadeOnDelete();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->string('nombre');
             $table->string('direccion')->nullable();
             $table->string('comuna')->nullable();
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
-            $table->index('academia_id');
+            $table->index('grupo_id');
         });
     }
 

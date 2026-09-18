@@ -9,8 +9,8 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Catálogo compartido de programas ATA: NO lleva academia_id (los programas
-     * son de ATA, no de cada academia), igual que cargos_rangos.
+     * Catálogo compartido de programas ATA: NO lleva grupo_id (los programas
+     * son de ATA, no de cada grupo), igual que cargos_rangos.
      */
     public function up(): void
     {

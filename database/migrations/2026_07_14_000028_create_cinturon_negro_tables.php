@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
  * trae varias secciones (Warm Up General/Específico, Básicos, Sparring, Anuncios)
  * y una adaptación por grupo etario.
  *
- * Catálogo compartido → SIN academia_id.
+ * Catálogo compartido → SIN grupo_id.
  */
 return new class extends Migration
 {

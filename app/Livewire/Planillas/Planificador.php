@@ -58,7 +58,7 @@ class Planificador extends Component
 
     public int $lecSemana = 7;
 
-    /** Clase (del horario de la academia activa) a la que se guarda el calentamiento. */
+    /** Clase (del horario del grupo activo) a la que se guarda el calentamiento. */
     public string $claseId = '';
 
     /**
@@ -143,7 +143,7 @@ class Planificador extends Component
     }
 
     /**
-     * Clase del horario (academia activa) elegida para guardar el calentamiento.
+     * Clase del horario (grupo activo) elegida para guardar el calentamiento.
      */
     protected function claseParaCalentamiento(): ?Clase
     {

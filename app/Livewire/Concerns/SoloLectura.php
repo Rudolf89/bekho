@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Auth;
 
 /**
  * Bloquea las acciones de escritura para los usuarios de solo lectura (rol
- * federacion). Estos usuarios ven todas las academias para fines de supervisión,
+ * federacion). Estos usuarios ven todos los grupos para fines de supervisión,
  * pero no pueden crear ni modificar datos. Se llama al inicio de cada método que
  * muta estado.
  */

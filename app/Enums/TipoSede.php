@@ -4,12 +4,12 @@ namespace App\Enums;
 
 /**
  * Tipo de sede. No todas las sedes son iguales: algunas están abiertas al
- * público (academia) y otras funcionan dentro de una entidad (club, colegio,
+ * público (grupo) y otras funcionan dentro de una entidad (club, colegio,
  * jardín), que puede ser privada (solo para quienes pertenecen a ella).
  */
 enum TipoSede: string
 {
-    case Academia = 'academia';
+    case Grupo = 'grupo';
     case Club = 'club';
     case Colegio = 'colegio';
     case Jardin = 'jardin';
@@ -20,7 +20,7 @@ enum TipoSede: string
     public function etiqueta(): string
     {
         return match ($this) {
-            self::Academia => 'Academia',
+            self::Grupo => 'Grupo',
             self::Club => 'Club',
             self::Colegio => 'Colegio',
             self::Jardin => 'Jardín',

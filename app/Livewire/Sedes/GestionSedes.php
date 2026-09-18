@@ -5,7 +5,7 @@ namespace App\Livewire\Sedes;
 use App\Enums\TipoSede;
 use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
@@ -27,11 +27,11 @@ class GestionSedes extends Component
 
     public ?string $comuna = '';
 
-    public string $tipo = 'academia';
+    public string $tipo = 'grupo';
 
     public bool $privada = false;
 
-    public ?string $academia_id = '';
+    public ?string $grupo_id = '';
 
     public bool $activo = true;
 
@@ -56,27 +56,27 @@ class GestionSedes extends Component
             'comuna' => ['nullable', 'string', 'max:255'],
             'tipo' => ['required', Rule::enum(TipoSede::class)],
             'privada' => ['boolean'],
-            'academia_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('academias', 'id')],
+            'grupo_id' => [$this->esSuperAdmin() ? 'required' : 'nullable', Rule::exists('grupos', 'id')],
             'activo' => ['boolean'],
             'instructores' => ['array'],
             'instructores.*' => [Rule::exists('users', 'id')],
         ];
     }
 
-    protected function academiaEfectiva(): ?int
+    protected function grupoEfectiva(): ?int
     {
-        $id = $this->esSuperAdmin() ? $this->academia_id : Auth::user()->academia_id;
+        $id = $this->esSuperAdmin() ? $this->grupo_id : Auth::user()->grupo_id;
 
         return $id !== '' && $id !== null ? (int) $id : null;
     }
 
     public function nueva(): void
     {
-        $this->reset('editandoId', 'nombre', 'direccion', 'comuna', 'tipo', 'privada', 'academia_id', 'instructores');
+        $this->reset('editandoId', 'nombre', 'direccion', 'comuna', 'tipo', 'privada', 'grupo_id', 'instructores');
         $this->activo = true;
 
         if (! $this->esSuperAdmin()) {
-            $this->academia_id = (string) Auth::user()->academia_id;
+            $this->grupo_id = (string) Auth::user()->grupo_id;
         }
 
         $this->resetErrorBag();
@@ -91,7 +91,7 @@ class GestionSedes extends Component
         $this->comuna = (string) ($sede->comuna ?? '');
         $this->tipo = $sede->tipo->value;
         $this->privada = $sede->privada;
-        $this->academia_id = (string) ($sede->academia_id ?? '');
+        $this->grupo_id = (string) ($sede->grupo_id ?? '');
         $this->activo = $sede->activo;
         $this->instructores = $sede->instructores()->pluck('users.id')->all();
         $this->resetErrorBag();
@@ -112,7 +112,7 @@ class GestionSedes extends Component
             'comuna' => $datos['comuna'],
             'tipo' => $datos['tipo'],
             'privada' => $datos['privada'],
-            'academia_id' => $this->academiaEfectiva(),
+            'grupo_id' => $this->grupoEfectiva(),
             'activo' => $this->activo,
         ];
 
@@ -139,15 +139,15 @@ class GestionSedes extends Component
 
     public function render()
     {
-        // El aislamiento por academia lo maneja el tenant: el admin-plataforma (que
+        // El aislamiento por grupo lo maneja el tenant: el admin-plataforma (que
         // no filtra lecturas) ve todas las sedes e instructores; el maestro,
-        // solo los de su academia.
+        // solo los de su grupo.
         return view('livewire.sedes.gestion-sedes', [
             'sedes' => $this->aplicarOrden(
-                $this->aplicarBusqueda(Sede::with('academia'), ['nombre', 'comuna', 'direccion', 'academia.nombre']),
+                $this->aplicarBusqueda(Sede::with('grupo'), ['nombre', 'comuna', 'direccion', 'grupo.nombre']),
                 ['nombre', 'comuna', 'activo'], 'nombre'
             )->get(),
-            'academias' => Academia::orderBy('nombre')->get(),
+            'grupos' => Grupo::orderBy('nombre')->get(),
             'listaInstructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'comunas' => config('comunas', []),
             'tipos' => TipoSede::cases(),

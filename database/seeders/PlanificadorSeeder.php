@@ -19,10 +19,10 @@ use Illuminate\Support\Facades\DB;
  * Contenido pedagógico real del "Planificador Unificado" (fuente:
  * docs/planificador-unificado.tsx). Todo es idempotente.
  *
- * Catálogos compartidos (sin academia_id): biblioteca de calentamiento, currículo
+ * Catálogos compartidos (sin grupo_id): biblioteca de calentamiento, currículo
  * por nivel, lecciones de vida y planificador de Cinturón Negro. Las planillas
- * grupo × nivel (con sus bloques) sí llevan academia_id y se siembran para la
- * primera academia (grupo) existente.
+ * grupo × nivel (con sus bloques) sí llevan grupo_id y se siembran para la
+ * primera grupo (grupo) existente.
  *
  * Correcciones al portar desde el prototipo: kids → For Kids, adults → Jóvenes y
  * Adultos, Tigres → Tigers; "Creencia" → "Convicción". "Combat Weapon" y

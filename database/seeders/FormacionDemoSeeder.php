@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use App\Models\Academia;
 use App\Models\Contenido;
+use App\Models\Grupo;
 use App\Models\Nivel;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Database\Seeder;
 
 /**
- * Datos de demostración del módulo de Formación dentro de la academia BEKHO.
+ * Datos de demostración del módulo de Formación dentro del grupo BEKHO.
  *
  * El contenido es genérico de ejemplo (no material ATA oficial), solo para
  * poder mostrar el módulo funcionando.
@@ -18,16 +18,16 @@ class FormacionDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $academia = Academia::where('nombre', 'BEKHO Power Academy')->first();
+        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 
-        if (! $academia) {
-            $this->command?->warn('No existe la academia BEKHO; ejecuta antes RolesPermisosSeeder.');
+        if (! $grupo) {
+            $this->command?->warn('No existe el grupo BEKHO; ejecuta antes RolesPermisosSeeder.');
 
             return;
         }
 
-        // Fija el tenant activo para que el trait autorelleno de academia_id actúe.
-        Tenant::set($academia->id);
+        // Fija el tenant activo para que el trait autorelleno de grupo_id actúe.
+        Tenant::set($grupo->id);
 
         $niveles = [
             [
@@ -63,7 +63,7 @@ class FormacionDemoSeeder extends Seeder
 
         foreach ($niveles as $ordenNivel => $datosNivel) {
             $nivel = Nivel::updateOrCreate(
-                ['academia_id' => $academia->id, 'nombre' => $datosNivel['nombre']],
+                ['grupo_id' => $grupo->id, 'nombre' => $datosNivel['nombre']],
                 [
                     'descripcion' => $datosNivel['descripcion'],
                     'orden' => $ordenNivel,
@@ -75,7 +75,7 @@ class FormacionDemoSeeder extends Seeder
                 Contenido::updateOrCreate(
                     ['nivel_id' => $nivel->id, 'titulo' => $datosContenido['titulo']],
                     [
-                        'academia_id' => $academia->id,
+                        'grupo_id' => $grupo->id,
                         'tipo' => $datosContenido['tipo'],
                         'cuerpo' => $datosContenido['cuerpo'] ?? null,
                         'url_recurso' => $datosContenido['url_recurso'] ?? null,

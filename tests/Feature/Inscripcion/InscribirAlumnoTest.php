@@ -4,8 +4,8 @@ use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Inscripcion\InscribirAlumno;
-use App\Models\Academia;
 use App\Models\Estudiante;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
 use Livewire\Features\SupportTesting\Testable;
@@ -19,15 +19,15 @@ beforeEach(function () {
         Role::findOrCreate($rol, 'web');
     }
 
-    $this->academia = Academia::create(['nombre' => 'ATA', 'activo' => true]);
-    $this->sede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Neptuno', 'activo' => true]);
+    $this->grupo = Grupo::create(['nombre' => 'ATA', 'activo' => true]);
+    $this->sede = Sede::create(['grupo_id' => $this->grupo->id, 'nombre' => 'Neptuno', 'activo' => true]);
 
-    $this->instructor = User::factory()->create(['academia_id' => $this->academia->id]);
+    $this->instructor = User::factory()->create(['grupo_id' => $this->grupo->id]);
     $this->instructor->assignRole('instructor');
     // El instructor debe estar asignado a la sede para poder elegirlo en la ficha.
     $this->instructor->sedes()->attach($this->sede->id);
 
-    $usuario = User::factory()->create(['academia_id' => $this->academia->id]);
+    $usuario = User::factory()->create(['grupo_id' => $this->grupo->id]);
     $usuario->assignRole('direccion');
     actingAs($usuario);
 });
@@ -57,11 +57,11 @@ function inscribir(): Testable
 test('inscribir crea la ficha del alumno con los datos del formulario', function () {
     inscribir()->call('inscribir')->assertHasNoErrors();
 
-    $est = Estudiante::sinAcademia()->where('rut', '12345678-9')->first();
+    $est = Estudiante::sinGrupo()->where('rut', '12345678-9')->first();
 
     expect($est)->not->toBeNull()
         ->and($est->nombre)->toBe('Juan Andrés Pérez Soto')
-        ->and($est->academia_id)->toBe($this->academia->id)
+        ->and($est->grupo_id)->toBe($this->grupo->id)
         ->and($est->genero)->toBe(Genero::Masculino)
         ->and($est->comuna)->toBe('Ñuñoa')
         ->and($est->region)->toBe('Metropolitana de Santiago')
@@ -122,8 +122,8 @@ test('la comuna debe pertenecer a la región elegida', function () {
 });
 
 test('los instructores disponibles son solo los de la sede elegida', function () {
-    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
-    $instructorOtraSede = User::factory()->create(['academia_id' => $this->academia->id]);
+    $otraSede = Sede::create(['grupo_id' => $this->grupo->id, 'nombre' => 'Marte', 'activo' => true]);
+    $instructorOtraSede = User::factory()->create(['grupo_id' => $this->grupo->id]);
     $instructorOtraSede->assignRole('instructor');
     $instructorOtraSede->sedes()->attach($otraSede->id);
 
@@ -134,7 +134,7 @@ test('los instructores disponibles son solo los de la sede elegida', function ()
 });
 
 test('al cambiar de sede se limpia el instructor elegido', function () {
-    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
+    $otraSede = Sede::create(['grupo_id' => $this->grupo->id, 'nombre' => 'Marte', 'activo' => true]);
 
     Livewire::test(InscribirAlumno::class)
         ->set('sede_id', (string) $this->sede->id)
@@ -144,8 +144,8 @@ test('al cambiar de sede se limpia el instructor elegido', function () {
 });
 
 test('no se puede inscribir con un instructor que no pertenece a la sede', function () {
-    $otraSede = Sede::create(['academia_id' => $this->academia->id, 'nombre' => 'Marte', 'activo' => true]);
-    $ajeno = User::factory()->create(['academia_id' => $this->academia->id]);
+    $otraSede = Sede::create(['grupo_id' => $this->grupo->id, 'nombre' => 'Marte', 'activo' => true]);
+    $ajeno = User::factory()->create(['grupo_id' => $this->grupo->id]);
     $ajeno->assignRole('instructor');
     $ajeno->sedes()->attach($otraSede->id);
 

@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('academias', function (Blueprint $table) {
+        Schema::create('grupos', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('federacion_id')->nullable()->constrained('federaciones')->nullOnDelete();
             $table->string('nombre');
             $table->string('logo')->nullable();
             $table->string('email')->nullable();
@@ -27,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('academias');
+        Schema::dropIfExists('grupos');
     }
 };

@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Biblioteca de calentamiento (catálogo compartido ATA/BEKHO, igual para todas
- * las academias → SIN academia_id, como cargos_rangos).
+ * los grupos → SIN grupo_id, como cargos_rangos).
  *
  * - `categorias_calentamiento`: las 6 categorías (con color y orden).
  * - `categoria_calentamiento_grupo`: qué categorías aplican a cada grupo etario

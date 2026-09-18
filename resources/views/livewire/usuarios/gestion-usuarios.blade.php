@@ -90,15 +90,15 @@
             </flux:select>
 
             @if ($this->esSuperAdmin())
-                <flux:select wire:model.live="academia_id" label="Academia" placeholder="Selecciona una academia">
-                    @foreach ($academias as $academia)
-                        <flux:select.option value="{{ $academia->id }}">{{ $academia->nombre }}</flux:select.option>
+                <flux:select wire:model.live="grupo_id" label="Grupo" placeholder="Selecciona un grupo">
+                    @foreach ($grupos as $grupo)
+                        <flux:select.option value="{{ $grupo->id }}">{{ $grupo->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
             @endif
 
             {{-- Una persona puede estar a cargo de varias sedes (o de ninguna: la
-                 dirección administra toda la academia y puede no estar atada a una
+                 dirección administra todo el grupo y puede no estar atada a una
                  sede). Multiselección con casillas. --}}
             <div>
                 <flux:label>Sedes</flux:label>
@@ -110,7 +110,7 @@
                     </div>
                 @else
                     <flux:text size="sm" class="mt-2 block text-zinc-500">
-                        {{ $this->esSuperAdmin() ? 'Elige una academia para ver sus sedes.' : 'Aún no hay sedes en esta academia.' }}
+                        {{ $this->esSuperAdmin() ? 'Elige un grupo para ver sus sedes.' : 'Aún no hay sedes en este grupo.' }}
                     </flux:text>
                 @endif
             </div>

@@ -3,14 +3,14 @@
 namespace App\Models;
 
 use App\Enums\TipoSede;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Sede extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * Atributos asignables masivamente.
@@ -18,7 +18,7 @@ class Sede extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'nombre',
         'direccion',
         'comuna',
@@ -42,13 +42,13 @@ class Sede extends Model
     }
 
     /**
-     * Academia dueña de la sede.
+     * Grupo dueña de la sede.
      *
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**

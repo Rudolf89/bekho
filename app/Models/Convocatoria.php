@@ -3,20 +3,20 @@
 namespace App\Models;
 
 use App\Enums\EstadoConvocatoria;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Convocatoria extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'sede_id',
         'nombre',
         'fecha',

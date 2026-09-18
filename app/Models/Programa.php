@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Catálogo compartido de programas ATA. NO usa el trait PerteneceAcademia: es
- * transversal a todas las academias (como cargos_rangos).
+ * Catálogo compartido de programas ATA. NO usa el trait PerteneceGrupo: es
+ * transversal a todos los grupos (como cargos_rangos).
  *
  * Un alumno puede inscribirse en VARIOS programas, además de su grupo etario.
  * Los programas no son grupos de edad (p. ej. Xtreme cruza todas las edades).

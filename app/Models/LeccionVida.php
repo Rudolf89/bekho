@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * Lección de Vida (ATA Legacy): una por semana DENTRO de un ciclo, con tres
  * momentos (comienzo, durante, fin), cada uno con texto y frase destacada. La
- * Habilidad para la Vida se deriva del ciclo. Catálogo compartido (sin academia_id).
+ * Habilidad para la Vida se deriva del ciclo. Catálogo compartido (sin grupo_id).
  */
 class LeccionVida extends Model
 {

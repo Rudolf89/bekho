@@ -5,7 +5,7 @@ Guía para trabajar en este repo. **Todo el código y el dominio están en espa�
 ## Qué es
 
 Plataforma de **gestión + formación** para la **federación BEKHO** de Taekwondo ATA
-(Chile). Administra cada academia (alumnos, sedes, clases, asistencia, pagos,
+(Chile). Administra cada grupo/academia (alumnos, sedes, clases, asistencia, pagos,
 exámenes, planillas) y ofrece formación en línea (LMS) + el currículo ATA.
 
 ## Stack
@@ -18,35 +18,36 @@ exámenes, planillas) y ofrece formación en línea (LMS) + el currículo ATA.
 
 ## Jerarquía y tenancy (clave)
 
-**BEKHO es la FEDERACIÓN (la plataforma), no una academia.** Jerarquía real:
-`BEKHO (federación) → Academia = GRUPO (p. ej. "BEKHO Power Academy") → Sede → Clase`.
-El **aislamiento entre grupos es total**: `academia_id` **es la frontera real**, no
+**BEKHO es la FEDERACIÓN (la plataforma), no un grupo.** Jerarquía real:
+`BEKHO (federación) → GRUPO (p. ej. "BEKHO Power Academy") → Sede → Clase`. La
+tabla `federaciones` es la entidad raíz y `grupos.federacion_id` la ancla. El
+**aislamiento entre grupos es total**: `grupo_id` **es la frontera real**, no
 una costura futura.
 
 Piezas del tenant:
-- `App\Support\Tenancy\Academia` — holder estático: `set(?int $id, bool $filtraLecturas = true)`, `id()`, `hayActiva()`, `filtraLecturas()`, `olvidar()`.
-- `App\Models\Concerns\PerteneceAcademia` — trait: global scope que filtra por
-  `academia_id` **si hay academia activa y `filtraLecturas()`**; autorellena
-  `academia_id` al crear; scope `sinAcademia()`.
-- `App\Http\Middleware\EstableceAcademiaActual` — fija el tenant. Un rol normal
-  queda atado a su `academia_id`. El **`admin-plataforma`** elige academia en el
-  selector: si elige una, la vista se **acota** (`filtraLecturas: true`); si elige
-  "Todas las academias", ve todo (`filtraLecturas: false`). La **`federacion`** ve
+- `App\Support\Tenancy\Grupo` — holder estático: `set(?int $id, bool $filtraLecturas = true)`, `id()`, `hayActiva()`, `filtraLecturas()`, `olvidar()`.
+- `App\Models\Concerns\PerteneceGrupo` — trait: global scope que filtra por
+  `grupo_id` **si hay grupo activo y `filtraLecturas()`**; autorellena
+  `grupo_id` al crear; scope `sinGrupo()`.
+- `App\Http\Middleware\EstableceGrupoActual` — fija el tenant. Un rol normal
+  queda atado a su `grupo_id`. El **`admin-plataforma`** elige grupo en el
+  selector: si elige uno, la vista se **acota** (`filtraLecturas: true`); si elige
+  "Todos los grupos", ve todo (`filtraLecturas: false`). La **`federacion`** ve
   todo en **solo lectura**.
 
-**Catálogos compartidos = SIN `academia_id`** (como `cargos_rangos`): `planillas`,
+**Catálogos compartidos = SIN `grupo_id`** (como `cargos_rangos`): `planillas`,
 `bloques_planilla`, `cuadrantes_planilla`, `ciclos`, `planner_ciclo`, `tecnicas`,
 `pasos_tecnica`, `cuadrante_items`, `grados`, `grado_tecnica`, `curriculos_nivel`,
 `lecciones_vida`, biblioteca de calentamiento, planificador de Cinturón Negro,
 `cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`, `recompensas`,
-`niveles_legacy`, `requisitos_legacy`. **Datos operativos = CON `academia_id`**:
+`niveles_legacy`, `requisitos_legacy`. **Datos operativos = CON `grupo_id`**:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
 `intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
 
 ## Roles y permisos
 
-`admin-plataforma` (todo, cruza academias) · `federacion` (solo lectura sobre
-todas) · `direccion` (todo en su academia, incl. pagos) · `administrativo`
+`admin-plataforma` (todo, cruza grupos) · `federacion` (solo lectura sobre
+todos) · `direccion` (todo en su grupo, incl. pagos) · `administrativo`
 (alumnos/clases/asistencia, **sin pagos**) · `instructor` (asistencia, planillas,
 inscribir exámenes; ve **solo alumnos de sus clases** vía `EstudiantePolicy` +
 `Estudiante::scopeVisiblePara`) · `apoderado` (solo sus hijos) · `alumno` (ver
@@ -143,11 +144,11 @@ formación).
   sobre TODO el filtro (no solo la página).
 - Enums en `App\Enums` (backed string) con método `etiqueta()`.
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
-- **Tabla nueva**: ¿operativa? → `academia_id` + trait `PerteneceAcademia`.
-  ¿Contenido ATA compartido? → **sin** `academia_id` (catálogo).
+- **Tabla nueva**: ¿operativa? → `grupo_id` + trait `PerteneceGrupo`.
+  ¿Contenido ATA compartido? → **sin** `grupo_id` (catálogo).
 - Tests **Pest** + `RefreshDatabase`; `beforeEach` siembra los seeders necesarios
   (`RolesPermisosSeeder`, etc.) + `app(PermissionRegistrar::class)->forgetCachedPermissions()`;
-  `Academia` tenant con `Tenant::set()/olvidar()`.
+  `Grupo` tenant con `Tenant::set()/olvidar()`.
 - Seeders **idempotentes** (`updateOrCreate`).
 
 ## Entorno y comandos

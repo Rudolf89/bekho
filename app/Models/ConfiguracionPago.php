@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Configuración de pagos por academia (cada escuela tiene sus valores).
+ * Configuración de pagos por grupo (cada escuela tiene sus valores).
  */
 class ConfiguracionPago extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var string
@@ -22,7 +22,7 @@ class ConfiguracionPago extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'valor_mensualidad',
         'valor_matricula',
         'dia_vencimiento',
@@ -43,10 +43,10 @@ class ConfiguracionPago extends Model
     }
 
     /**
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 }

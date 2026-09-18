@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Ítem (responsabilidad) de un Cuadrante de Enseñanza, para el alumno o el
- * instructor. Catálogo compartido (sin academia_id).
+ * instructor. Catálogo compartido (sin grupo_id).
  */
 class CuadranteItem extends Model
 {

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Schema;
  * Programa Legacy operativo: track de formación de instructores (Niveles 1-3,
  * 100 h cada uno, requisitos y ascenso).
  *
- * Catálogo compartido (sin academia_id): niveles_legacy y requisitos_legacy.
- * Operativo (con academia_id): inscripciones_legacy, horas_legacy y el
+ * Catálogo compartido (sin grupo_id): niveles_legacy y requisitos_legacy.
+ * Operativo (con grupo_id): inscripciones_legacy, horas_legacy y el
  * cumplimiento de requisitos por inscripción.
  */
 return new class extends Migration
@@ -37,10 +37,10 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        // --- Operativo (con academia_id) ----------------------------------------
+        // --- Operativo (con grupo_id) ----------------------------------------
         Schema::create('inscripciones_legacy', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('academia_id')->nullable()->constrained('academias')->nullOnDelete();
+            $table->foreignId('grupo_id')->nullable()->constrained('grupos')->nullOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('nivel_legacy_id')->constrained('niveles_legacy')->cascadeOnDelete();
             $table->string('estado')->default('en_curso'); // App\Enums\EstadoLegacy

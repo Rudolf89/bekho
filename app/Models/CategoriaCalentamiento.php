@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 
 /**
  * Categoría de la biblioteca de calentamiento. Catálogo compartido (sin
- * academia_id). No todas las categorías aplican a todos los grupos etarios: la
+ * grupo_id). No todas las categorías aplican a todos los grupos etarios: la
  * restricción se guarda en el pivote `categoria_calentamiento_grupo`.
  */
 class CategoriaCalentamiento extends Model

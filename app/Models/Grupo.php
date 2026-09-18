@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Academia extends Model
+class Grupo extends Model
 {
     /**
      * Atributos asignables masivamente.
@@ -13,6 +14,7 @@ class Academia extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'federacion_id',
         'nombre',
         'logo',
         'email',
@@ -33,7 +35,17 @@ class Academia extends Model
     }
 
     /**
-     * Sedes de la academia.
+     * Federación a la que pertenece el grupo.
+     *
+     * @return BelongsTo<Federacion, $this>
+     */
+    public function federacion(): BelongsTo
+    {
+        return $this->belongsTo(Federacion::class);
+    }
+
+    /**
+     * Sedes del grupo.
      *
      * @return HasMany<Sede, $this>
      */
@@ -43,7 +55,7 @@ class Academia extends Model
     }
 
     /**
-     * Usuarios de la academia.
+     * Usuarios del grupo.
      *
      * @return HasMany<User, $this>
      */

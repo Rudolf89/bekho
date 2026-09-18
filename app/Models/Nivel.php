@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Nivel extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * Tabla asociada (plural irregular en español).
@@ -25,7 +25,7 @@ class Nivel extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'nombre',
         'descripcion',
         'orden',
@@ -45,13 +45,13 @@ class Nivel extends Model
     }
 
     /**
-     * Academia dueña del nivel.
+     * Grupo dueña del nivel.
      *
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**

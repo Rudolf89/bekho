@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * Currículo técnico de un nivel (fórmula, defensa, patadas, combinaciones y
  * roturas). Es el contenido que rellena los bloques de la planilla. Catálogo
- * compartido (sin academia_id).
+ * compartido (sin grupo_id).
  */
 class CurriculoNivel extends Model
 {

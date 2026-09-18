@@ -164,7 +164,7 @@ class GestionClases extends Component
         }
 
         if ($this->sede_id !== '') {
-            $partes[] = Sede::sinAcademia()->find($this->sede_id)?->nombre;
+            $partes[] = Sede::sinGrupo()->find($this->sede_id)?->nombre;
         }
 
         return implode(' · ', array_filter($partes));
@@ -241,10 +241,10 @@ class GestionClases extends Component
 
         $datos = $this->validate();
 
-        // La clase pertenece a la academia de su sede. Así queda bien también
-        // cuando la crea el admin-plataforma, que no tiene academia activa (y por
+        // La clase pertenece a el grupo de su sede. Así queda bien también
+        // cuando la crea el admin-plataforma, que no tiene grupo activo (y por
         // tanto el relleno automático del tenant no aplica).
-        $datos['academia_id'] = Sede::sinAcademia()->findOrFail($datos['sede_id'])->academia_id;
+        $datos['grupo_id'] = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
 
         $asignaciones = $datos['asignaciones'] ?? [];
         unset($datos['asignaciones']);

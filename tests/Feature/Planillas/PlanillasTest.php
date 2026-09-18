@@ -2,12 +2,12 @@
 
 use App\Enums\Cuadrante;
 use App\Enums\TipoBloque;
-use App\Models\Academia;
 use App\Models\Clase;
+use App\Models\Grupo;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\PermissionRegistrar;
@@ -17,14 +17,14 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
-function usuarioPlanilla(string $rol, ?int $academiaId): User
+function usuarioPlanilla(string $rol, ?int $grupoId): User
 {
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
     $user = User::factory()->create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'two_factor_confirmed_at' => $exige2fa ? now() : null,
     ]);
     $user->assignRole($rol);
@@ -32,9 +32,9 @@ function usuarioPlanilla(string $rol, ?int $academiaId): User
     return $user;
 }
 
-function nuevaPlanilla(?int $academiaId = null, array $extra = []): Planilla
+function nuevaPlanilla(?int $grupoId = null, array $extra = []): Planilla
 {
-    // Las planillas son transversales: no llevan academia_id ($academiaId se
+    // Las planillas son transversales: no llevan grupo_id ($grupoId se
     // ignora; el parámetro se conserva por compatibilidad de las llamadas).
     return Planilla::create(array_merge([
         'nombre' => 'Rutina',
@@ -61,12 +61,12 @@ test('un instructor sí gestiona planillas', function () {
 
 // --- Transversalidad ---------------------------------------------------------
 
-test('las planillas son transversales: se ven desde cualquier academia', function () {
-    $otra = Academia::create(['nombre' => 'OTRA', 'activo' => true]);
+test('las planillas son transversales: se ven desde cualquier grupo', function () {
+    $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
     nuevaPlanilla(extra: ['nombre' => 'Compartida A']);
     nuevaPlanilla(extra: ['nombre' => 'Compartida B']);
 
-    // Con cualquier academia activa se ven todas (contenido compartido ATA).
+    // Con cualquier grupo activo se ven todas (contenido compartido ATA).
     Tenant::set($this->bekho->id);
     expect(Planilla::count())->toBe(2);
 
@@ -94,11 +94,11 @@ test('una planilla nueva genera sus 9 bloques y 4 cuadrantes en orden', function
 
 test('una clase puede apuntar a su planilla', function () {
     Tenant::set($this->bekho->id);
-    $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $planilla = nuevaPlanilla($this->bekho->id, ['nombre' => 'Rutina Kids']);
 
     $clase = Clase::create([
-        'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'planilla_id' => $planilla->id,
+        'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'planilla_id' => $planilla->id,
         'nombre' => 'Kids AM', 'grupo_etario' => 'for_kids',
         'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
     ]);

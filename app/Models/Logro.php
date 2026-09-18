@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Logro: una recompensa ganada por un alumno. Dato operativo (con academia_id).
+ * Logro: una recompensa ganada por un alumno. Dato operativo (con grupo_id).
  */
 class Logro extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     protected $table = 'logros';
 
@@ -19,7 +19,7 @@ class Logro extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id', 'estudiante_id', 'recompensa_id', 'otorgado_por', 'nota', 'otorgado_at',
+        'grupo_id', 'estudiante_id', 'recompensa_id', 'otorgado_por', 'nota', 'otorgado_at',
     ];
 
     /**

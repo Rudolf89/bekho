@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Schema;
  * Habilidad para la Vida, y se presenta en 3 momentos de la clase (comienzo,
  * durante, fin), cada uno con un texto y una frase destacada.
  *
- * Catálogo compartido → SIN academia_id. Se siembra la única cargada en el
+ * Catálogo compartido → SIN grupo_id. Se siembra la única cargada en el
  * prototipo (Semana 7 – Disciplina); el resto de las semanas queda pendiente.
  */
 return new class extends Migration

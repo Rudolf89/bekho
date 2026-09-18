@@ -9,7 +9,7 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Catálogo compartido de grados (cinturones): NO lleva academia_id. Soporta
+     * Catálogo compartido de grados (cinturones): NO lleva grupo_id. Soporta
      * múltiples escalas: 'tigers', 'for_kids' y 'adultos'. Ver App\Enums\EscalaGrado.
      */
     public function up(): void

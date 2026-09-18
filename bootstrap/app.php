@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Middleware\EstableceAcademiaActual;
+use App\Http\Middleware\EstableceGrupoActual;
 use App\Http\Middleware\ExigeDosFactores;
 use App\Http\Middleware\VerificaUsuarioActivo;
 use Illuminate\Foundation\Application;
@@ -16,11 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         // Corren después de autenticar: primero se expulsa a los usuarios
-        // desactivados, luego se fija la academia (tenant) activa y por último
+        // desactivados, luego se fija el grupo (tenant) activa y por último
         // se exige 2FA a los roles que la requieren.
         $middleware->web(append: [
             VerificaUsuarioActivo::class,
-            EstableceAcademiaActual::class,
+            EstableceGrupoActual::class,
             ExigeDosFactores::class,
         ]);
     })

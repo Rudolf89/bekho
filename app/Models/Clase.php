@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
 use App\Enums\PapelEnClase;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Clase extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var string
@@ -28,7 +28,7 @@ class Clase extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'sede_id',
         'instructor_id',
         'planilla_id',
@@ -53,11 +53,11 @@ class Clase extends Model
     }
 
     /**
-     * @return BelongsTo<Academia, $this>
+     * @return BelongsTo<Grupo, $this>
      */
-    public function academia(): BelongsTo
+    public function grupo(): BelongsTo
     {
-        return $this->belongsTo(Academia::class);
+        return $this->belongsTo(Grupo::class);
     }
 
     /**

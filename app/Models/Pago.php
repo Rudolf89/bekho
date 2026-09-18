@@ -3,19 +3,19 @@
 namespace App\Models;
 
 use App\Enums\TipoPago;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Pago extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id',
+        'grupo_id',
         'estudiante_id',
         'registrado_por',
         'tipo',

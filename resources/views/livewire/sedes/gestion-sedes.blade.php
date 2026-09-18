@@ -8,7 +8,7 @@
     </div>
 
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <x-tabla.buscador placeholder="Buscar por nombre, comuna, dirección o academia…" />
+        <x-tabla.buscador placeholder="Buscar por nombre, comuna, dirección o grupo…" />
         <x-tabla.resumen :total="$sedes->count()" etiqueta="sede" class="w-full sm:w-auto" />
     </div>
 
@@ -19,7 +19,7 @@
                 <flux:table.column sortable :sorted="$ordenCampo === 'comuna'" :direction="$ordenDir" wire:click="ordenarPor('comuna')">Comuna</flux:table.column>
                 <flux:table.column>Tipo</flux:table.column>
                 @if ($this->esSuperAdmin())
-                    <flux:table.column>Academia</flux:table.column>
+                    <flux:table.column>Grupo</flux:table.column>
                 @endif
                 <flux:table.column sortable :sorted="$ordenCampo === 'activo'" :direction="$ordenDir" wire:click="ordenarPor('activo')">Estado</flux:table.column>
                 <flux:table.column></flux:table.column>
@@ -41,7 +41,7 @@
                             @endif
                         </flux:table.cell>
                         @if ($this->esSuperAdmin())
-                            <flux:table.cell>{{ $sede->academia?->nombre ?? '—' }}</flux:table.cell>
+                            <flux:table.cell>{{ $sede->grupo?->nombre ?? '—' }}</flux:table.cell>
                         @endif
                         <flux:table.cell>
                             <flux:badge :color="$sede->activo ? 'green' : 'zinc'" size="sm">
@@ -103,9 +103,9 @@
             </div>
 
             @if ($this->esSuperAdmin())
-                <flux:select wire:model="academia_id" label="Academia" placeholder="Selecciona una academia">
-                    @foreach ($academias as $academia)
-                        <flux:select.option value="{{ $academia->id }}">{{ $academia->nombre }}</flux:select.option>
+                <flux:select wire:model="grupo_id" label="Grupo" placeholder="Selecciona un grupo">
+                    @foreach ($grupos as $grupo)
+                        <flux:select.option value="{{ $grupo->id }}">{{ $grupo->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
             @endif

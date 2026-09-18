@@ -3,9 +3,9 @@
 use App\Enums\Cuadrante;
 use App\Enums\RolCuadrante;
 use App\Livewire\Planillas\CuadrantesEnsenanza;
-use App\Models\Academia;
 use App\Models\CuadranteItem;
 use App\Models\Grado;
+use App\Models\Grupo;
 use App\Models\User;
 use Database\Seeders\CuadrantesSeeder;
 use Database\Seeders\GradosSeeder;
@@ -21,7 +21,7 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(CuadrantesSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 // ── Fase 3: significado del cinturón ────────────────────────────────────────
@@ -53,7 +53,7 @@ test('los items de Estructura traen su detalle', function () {
 });
 
 test('la página de cuadrantes renderiza para un instructor', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
     Livewire::actingAs($instructor)->test(CuadrantesEnsenanza::class)

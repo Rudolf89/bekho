@@ -152,7 +152,7 @@
             </div>
         @else
             <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                <flux:text>No hay una planilla cargada para este grupo y nivel en la academia activa.</flux:text>
+                <flux:text>No hay una planilla cargada para este grupo y nivel en el grupo activo.</flux:text>
             </div>
         @endif
     @endif
@@ -230,7 +230,7 @@
                 @forelse ($clases as $c)
                     <flux:select.option value="{{ $c->id }}">{{ $c->nombre }} ({{ $c->grupo_etario->etiqueta() }})</flux:select.option>
                 @empty
-                    <flux:select.option value="" disabled>No hay clases activas en esta academia</flux:select.option>
+                    <flux:select.option value="" disabled>No hay clases activas en este grupo</flux:select.option>
                 @endforelse
             </flux:select>
         </div>

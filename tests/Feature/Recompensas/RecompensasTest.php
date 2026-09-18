@@ -3,13 +3,13 @@
 use App\Enums\GrupoEtario;
 use App\Enums\TipoRecompensa;
 use App\Livewire\Recompensas\PanelRecompensas;
-use App\Models\Academia;
 use App\Models\Clase;
 use App\Models\Estudiante;
+use App\Models\Grupo;
 use App\Models\Recompensa;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RecompensasSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,16 +22,16 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(RecompensasSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 });
 
 afterEach(fn () => Tenant::olvidar());
 
-function alumnoDe(Academia $a, GrupoEtario $grupo = GrupoEtario::ForKids): Estudiante
+function alumnoDe(Grupo $a, GrupoEtario $grupo = GrupoEtario::ForKids): Estudiante
 {
     return Estudiante::create([
-        'academia_id' => $a->id, 'nombre' => 'Alumno '.uniqid(),
+        'grupo_id' => $a->id, 'nombre' => 'Alumno '.uniqid(),
         'grupo_etario' => $grupo->value, 'activo' => true,
     ]);
 }
@@ -47,8 +47,8 @@ test('el catálogo de recompensas cubre los tres sistemas', function () {
     expect(Recompensa::where('tipo', TipoRecompensa::Coleccionable)->whereNotNull('grupo_etario')->count())->toBe(0);
 });
 
-test('el catálogo es transversal (compartido, sin academia)', function () {
-    $otra = Academia::create(['nombre' => 'OTRA', 'activo' => true]);
+test('el catálogo es transversal (compartido, sin grupo)', function () {
+    $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
 
     Tenant::set($this->bekho->id);
     $a = Recompensa::count();
@@ -61,11 +61,11 @@ test('el catálogo es transversal (compartido, sin academia)', function () {
 // --- Otorgar / quitar --------------------------------------------------------
 
 test('el instructor otorga una recompensa a un alumno de sus clases', function () {
-    $sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $clase = Clase::create([
-        'academia_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids', 'grupo_etario' => 'for_kids',
+        'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids', 'grupo_etario' => 'for_kids',
         'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
     ]);
     $clase->instructores()->attach($instructor->id, ['papel' => 'titular']);
@@ -83,7 +83,7 @@ test('el instructor otorga una recompensa a un alumno de sus clases', function (
 });
 
 test('una recompensa no repetible solo se gana una vez; Star Tag se acumula', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('direccion'); // ve todos los alumnos
     $instructor->forceFill(['two_factor_confirmed_at' => now()])->save();
 
@@ -109,7 +109,7 @@ test('una recompensa no repetible solo se gana una vez; Star Tag se acumula', fu
 // --- Aplicabilidad por grupo -------------------------------------------------
 
 test('el panel solo ofrece recompensas aplicables al grupo del alumno', function () {
-    $direccion = User::factory()->create(['academia_id' => $this->bekho->id, 'two_factor_confirmed_at' => now()]);
+    $direccion = User::factory()->create(['grupo_id' => $this->bekho->id, 'two_factor_confirmed_at' => now()]);
     $direccion->assignRole('direccion');
 
     $tiger = alumnoDe($this->bekho, GrupoEtario::Tigers);
@@ -125,9 +125,9 @@ test('el panel solo ofrece recompensas aplicables al grupo del alumno', function
 // --- Permisos ----------------------------------------------------------------
 
 test('el panel de recompensas exige el permiso', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
-    $apoderado = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $apoderado->assignRole('apoderado');
 
     Tenant::olvidar();

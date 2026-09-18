@@ -2,13 +2,13 @@
 
 use App\Enums\EstadoAsistencia;
 use App\Livewire\Asistencia\TomarAsistencia;
-use App\Models\Academia;
 use App\Models\Asistencia;
 use App\Models\Clase;
 use App\Models\Estudiante;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
@@ -20,20 +20,20 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 
-    $this->sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $this->sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $this->clase = Clase::create([
-        'academia_id' => $this->bekho->id, 'sede_id' => $this->sede->id, 'nombre' => 'Kids Lunes',
+        'grupo_id' => $this->bekho->id, 'sede_id' => $this->sede->id, 'nombre' => 'Kids Lunes',
         'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '18:00', 'activo' => true,
     ]);
     $this->alumno = Estudiante::create([
-        'academia_id' => $this->bekho->id, 'nombre' => 'Pedrito', 'sede_id' => $this->sede->id,
+        'grupo_id' => $this->bekho->id, 'nombre' => 'Pedrito', 'sede_id' => $this->sede->id,
         'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
 
-    $this->instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $this->instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $this->instructor->assignRole('instructor');
 });
 

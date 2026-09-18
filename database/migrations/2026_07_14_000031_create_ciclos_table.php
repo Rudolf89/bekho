@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Schema;
  * Comunicación, Respeto, Autoestima, Honestidad), cada uno de 8 semanas. De cada
  * ciclo cuelgan las lecciones de vida (y, más adelante, los class planners).
  *
- * Catálogo compartido (contenido ATA) → SIN academia_id.
+ * Catálogo compartido (contenido ATA) → SIN grupo_id.
  */
 return new class extends Migration
 {

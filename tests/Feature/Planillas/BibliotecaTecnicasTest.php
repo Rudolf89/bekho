@@ -2,7 +2,7 @@
 
 use App\Enums\CategoriaTecnica;
 use App\Livewire\Planillas\BibliotecaTecnicas;
-use App\Models\Academia;
+use App\Models\Grupo;
 use App\Models\Tecnica;
 use App\Models\User;
 use Database\Seeders\RolesPermisosSeeder;
@@ -17,7 +17,7 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     $this->seed(TecnicasSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
 test('la biblioteca de técnicas se siembra con todas las categorías', function () {
@@ -37,13 +37,13 @@ test('las técnicas con secuencia guardan sus pasos por segmento', function () {
         ->and($jahngBong->pasos->pluck('segmento')->unique()->all())->toContain('Segmento 1', 'Segmento 2', 'Segmento 3');
 });
 
-test('las técnicas son transversales (contenido compartido, sin academia)', function () {
-    // La tabla no tiene academia_id: se ven igual con o sin tenant.
+test('las técnicas son transversales (contenido compartido, sin grupo)', function () {
+    // La tabla no tiene grupo_id: se ven igual con o sin tenant.
     expect(Tecnica::count())->toBeGreaterThan(50);
 });
 
 test('la biblioteca filtra por categoría y modalidad', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
 
     Livewire::actingAs($instructor)->test(BibliotecaTecnicas::class)
@@ -54,9 +54,9 @@ test('la biblioteca filtra por categoría y modalidad', function () {
 });
 
 test('la biblioteca exige el permiso de gestionar planillas', function () {
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
-    $apoderado = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $apoderado->assignRole('apoderado');
 
     $this->actingAs($instructor)->get(route('biblioteca.index'))->assertOk();

@@ -12,8 +12,8 @@
 
             @role('admin-plataforma')
                 <div class="mb-2 border-b border-zinc-200 px-2 pb-3 dark:border-zinc-700">
-                    <flux:text size="xs" class="mb-1.5 block font-semibold uppercase tracking-wide text-zinc-400">Academia activa</flux:text>
-                    <livewire:selector-academia />
+                    <flux:text size="xs" class="mb-1.5 block font-semibold uppercase tracking-wide text-zinc-400">Grupo activo</flux:text>
+                    <livewire:selector-grupo />
                 </div>
             @endrole
 
@@ -41,9 +41,9 @@
                             Sedes
                         </flux:sidebar.item>
                     @endcan
-                    @can('gestionar academias')
-                        <flux:sidebar.item icon="building-library" :href="route('academias.index')" :current="request()->routeIs('academias.*')" wire:navigate>
-                            Academias
+                    @can('gestionar grupos')
+                        <flux:sidebar.item icon="building-library" :href="route('grupos.index')" :current="request()->routeIs('grupos.*')" wire:navigate>
+                            Grupos
                         </flux:sidebar.item>
                     @endcan
                 </flux:sidebar.group>

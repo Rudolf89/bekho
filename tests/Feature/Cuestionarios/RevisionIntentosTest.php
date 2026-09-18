@@ -4,11 +4,11 @@ use App\Enums\EstadoIntento;
 use App\Livewire\Cuestionarios\MisIntentos;
 use App\Livewire\Cuestionarios\ResultadosCuestionarios;
 use App\Livewire\Notificaciones;
-use App\Models\Academia;
 use App\Models\Cuestionario;
+use App\Models\Grupo;
 use App\Models\IntentoCuestionario;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -19,7 +19,7 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 
     $this->cuestionario = Cuestionario::create(['titulo' => 'Prueba', 'activo' => true, 'umbral_aprobacion' => 80]);
@@ -27,18 +27,18 @@ beforeEach(function () {
 
 afterEach(fn () => Tenant::olvidar());
 
-function usuarioRev(string $rol, int $academiaId): User
+function usuarioRev(string $rol, int $grupoId): User
 {
-    $u = User::factory()->create(['academia_id' => $academiaId]);
+    $u = User::factory()->create(['grupo_id' => $grupoId]);
     $u->assignRole($rol);
 
     return $u;
 }
 
-function intentoDe(User $user, Cuestionario $c, int $porcentaje, int $academiaId): IntentoCuestionario
+function intentoDe(User $user, Cuestionario $c, int $porcentaje, int $grupoId): IntentoCuestionario
 {
     return IntentoCuestionario::create([
-        'academia_id' => $academiaId,
+        'grupo_id' => $grupoId,
         'user_id' => $user->id,
         'cuestionario_id' => $c->id,
         'correctas' => $porcentaje,

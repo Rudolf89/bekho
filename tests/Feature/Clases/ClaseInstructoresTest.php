@@ -2,11 +2,11 @@
 
 use App\Livewire\Clases\GestionClases;
 use App\Livewire\Sedes\GestionSedes;
-use App\Models\Academia;
 use App\Models\Clase;
+use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
-use App\Support\Tenancy\Academia as Tenant;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -17,20 +17,20 @@ uses(RefreshDatabase::class);
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Academia::where('nombre', 'BEKHO Power Academy')->first();
+    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::set($this->bekho->id);
 
-    $this->sede = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+    $this->sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $this->direccion = User::factory()->create([
-        'academia_id' => $this->bekho->id, 'two_factor_confirmed_at' => now(),
+        'grupo_id' => $this->bekho->id, 'two_factor_confirmed_at' => now(),
     ]);
     $this->direccion->assignRole('direccion');
 });
 
 test('una clase puede tener varios instructores con su papel', function () {
-    $titular = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $titular = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $titular->assignRole('instructor');
-    $ayudante = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $ayudante = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $ayudante->assignRole('instructor');
 
     Livewire::actingAs($this->direccion)->test(GestionClases::class)
@@ -89,7 +89,7 @@ test('si el usuario escribe un nombre, deja de autocompletarse', function () {
 });
 
 test('la federación es de solo lectura: no puede crear una sede', function () {
-    $federacion = User::factory()->create(['academia_id' => null]);
+    $federacion = User::factory()->create(['grupo_id' => null]);
     $federacion->assignRole('federacion');
 
     // La federación ve todo (no filtra lecturas) pero no escribe.
@@ -98,17 +98,17 @@ test('la federación es de solo lectura: no puede crear una sede', function () {
     Livewire::actingAs($federacion)->test(GestionSedes::class)
         ->call('nueva')
         ->set('nombre', 'No debería crearse')
-        ->set('academia_id', (string) $this->bekho->id)
+        ->set('grupo_id', (string) $this->bekho->id)
         ->call('guardar')
         ->assertForbidden();
 
-    expect(Sede::sinAcademia()->where('nombre', 'No debería crearse')->exists())->toBeFalse();
+    expect(Sede::sinGrupo()->where('nombre', 'No debería crearse')->exists())->toBeFalse();
 });
 
 test('una persona puede estar a cargo de varias sedes (pivote sede_user)', function () {
-    $sedeB = Sede::create(['academia_id' => $this->bekho->id, 'nombre' => 'Sur', 'activo' => true]);
+    $sedeB = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Sur', 'activo' => true]);
 
-    $instructor = User::factory()->create(['academia_id' => $this->bekho->id]);
+    $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $instructor->sedes()->sync([$this->sede->id, $sedeB->id]);
 
@@ -118,11 +118,11 @@ test('una persona puede estar a cargo de varias sedes (pivote sede_user)', funct
     expect($sedeB->instructores()->whereKey($instructor->id)->exists())->toBeTrue();
 });
 
-test('la federación accede al listado de sedes de todas las academias', function () {
-    $otra = Academia::create(['nombre' => 'Otro Grupo', 'activo' => true]);
-    Sede::create(['academia_id' => $otra->id, 'nombre' => 'Sede Ajena', 'activo' => true]);
+test('la federación accede al listado de sedes de todos los grupos', function () {
+    $otra = Grupo::create(['nombre' => 'Otro Grupo', 'activo' => true]);
+    Sede::create(['grupo_id' => $otra->id, 'nombre' => 'Sede Ajena', 'activo' => true]);
 
-    $federacion = User::factory()->create(['academia_id' => null]);
+    $federacion = User::factory()->create(['grupo_id' => null]);
     $federacion->assignRole('federacion');
 
     Tenant::olvidar();

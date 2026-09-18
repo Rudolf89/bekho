@@ -4,7 +4,7 @@ namespace App\Models;
 
 use App\Enums\EstadoIntento;
 use App\Enums\EstadoLegacy;
-use App\Models\Concerns\PerteneceAcademia;
+use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -12,12 +12,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Inscripción de un usuario (instructor en formación) en un nivel del Programa
- * Legacy. Dato operativo (con academia_id). Acumula horas y el cumplimiento de
+ * Legacy. Dato operativo (con grupo_id). Acumula horas y el cumplimiento de
  * requisitos; el ascenso lo aprueba el licenciatario.
  */
 class InscripcionLegacy extends Model
 {
-    use PerteneceAcademia;
+    use PerteneceGrupo;
 
     protected $table = 'inscripciones_legacy';
 
@@ -25,7 +25,7 @@ class InscripcionLegacy extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'academia_id', 'user_id', 'nivel_legacy_id', 'estado',
+        'grupo_id', 'user_id', 'nivel_legacy_id', 'estado',
         'fecha_inicio', 'fecha_aprobacion', 'aprobado_por', 'nota',
     ];
 

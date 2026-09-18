@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Catálogo compartido de cargos/rangos. NO usa el trait PerteneceAcademia:
- * es transversal a todas las academias.
+ * Catálogo compartido de cargos/rangos. NO usa el trait PerteneceGrupo:
+ * es transversal a todos los grupos.
  */
 class CargoRango extends Model
 {

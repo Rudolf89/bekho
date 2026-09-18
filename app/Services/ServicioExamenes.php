@@ -146,7 +146,7 @@ class ServicioExamenes
         }
 
         $graduacion = Graduacion::create([
-            'academia_id' => $inscripcion->academia_id,
+            'grupo_id' => $inscripcion->grupo_id,
             'estudiante_id' => $inscripcion->estudiante_id,
             'convocatoria_id' => $inscripcion->convocatoria_id,
             'grado_origen_id' => $inscripcion->grado_origen_id,
@@ -186,7 +186,7 @@ class ServicioExamenes
         $pendientes = [$instructor->id];
 
         while ($pendientes !== []) {
-            $hijos = User::sinAcademia()
+            $hijos = User::sinGrupo()
                 ->whereIn('supervisor_id', $pendientes)
                 ->whereNotIn('id', $ids)
                 ->pluck('id')
