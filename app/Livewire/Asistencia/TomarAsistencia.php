@@ -119,7 +119,12 @@ class TomarAsistencia extends Component
     {
         $lunes = Carbon::parse($this->semanaInicio);
         $hoy = now()->toDateString();
-        $porDia = $clases->groupBy(fn (Clase $c) => $c->dia_semana->value);
+
+        // Cada clase aparece en cada día en que tiene un horario: se aplanan las
+        // clases en pares (clase, horario) agrupados por día de la semana.
+        $porDia = $clases
+            ->flatMap(fn (Clase $c) => $c->horarios->map(fn ($h) => ['clase' => $c, 'horario' => $h]))
+            ->groupBy(fn (array $par) => $par['horario']->dia_semana->value);
 
         $dias = [];
 
@@ -128,8 +133,10 @@ class TomarAsistencia extends Component
             $diaSemana = (int) $fecha->dayOfWeekIso; // 1 = lunes … 7 = domingo
 
             $clasesDelDia = ($porDia[$diaSemana] ?? collect())
-                ->sortBy('hora_inicio')
-                ->map(function (Clase $c) use ($fecha) {
+                ->sortBy(fn (array $par) => (string) $par['horario']->hora_inicio)
+                ->map(function (array $par) use ($fecha) {
+                    $c = $par['clase'];
+                    $horario = $par['horario'];
                     $esperados = $c->estudiantesEsperados()->count();
                     $presentes = Asistencia::where('clase_id', $c->id)
                         ->whereDate('fecha', $fecha->toDateString())
@@ -144,6 +151,8 @@ class TomarAsistencia extends Component
 
                     return [
                         'clase' => $c,
+                        'horaInicio' => substr((string) $horario->hora_inicio, 0, 5),
+                        'horaFin' => substr((string) $horario->hora_fin, 0, 5),
                         'esperados' => $esperados,
                         'presentes' => $presentes,
                         'tomada' => $tomada,
@@ -167,10 +176,21 @@ class TomarAsistencia extends Component
 
     public function render()
     {
-        $clases = Clase::activas()->with(['sede', 'instructores'])->get();
+        $clases = Clase::activas()->with(['sede', 'instructores', 'horarios'])->get();
 
         $clase = $this->claseSeleccionada();
         $roster = $clase ? $clase->estudiantesEsperados()->get() : collect();
+
+        // Horario de la clase abierta que corresponde al día de la fecha elegida.
+        $horarioLista = null;
+        if ($clase) {
+            $diaFecha = (int) Carbon::parse($this->fecha)->dayOfWeekIso;
+            $h = $clase->horarios->firstWhere(fn ($h) => $h->dia_semana->value === $diaFecha)
+                ?? $clase->horarios->first();
+            if ($h) {
+                $horarioLista = substr((string) $h->hora_inicio, 0, 5).' – '.substr((string) $h->hora_fin, 0, 5);
+            }
+        }
 
         // Mapa estudiante_id => estado, para la clase y fecha actuales.
         $estados = [];
@@ -190,6 +210,7 @@ class TomarAsistencia extends Component
             'dias' => $this->armarDias($clases),
             'rangoSemana' => $lunes->locale('es')->isoFormat('D [de] MMMM').' – '.$lunes->copy()->addDays(6)->locale('es')->isoFormat('D [de] MMMM'),
             'clase' => $clase,
+            'horarioLista' => $horarioLista,
             'fechaLista' => Carbon::parse($this->fecha)->locale('es')->isoFormat('dddd D [de] MMMM'),
             'roster' => $roster,
             'estados' => $estados,

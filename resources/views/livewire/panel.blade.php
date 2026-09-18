@@ -67,7 +67,7 @@
                 @forelse ($clasesHoy as $clase)
                     <div class="flex items-center justify-between gap-4 py-3">
                         <div class="flex min-w-0 items-center gap-4">
-                            <span class="shrink-0 font-mono text-sm font-semibold tabular-nums text-zinc-900 dark:text-white">{{ substr((string) $clase->hora_inicio, 0, 5) }}</span>
+                            <span class="shrink-0 font-mono text-sm font-semibold tabular-nums text-zinc-900 dark:text-white">{{ $clase->hora_hoy }}</span>
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-zinc-900 dark:text-white">{{ $clase->grupo_etario->etiqueta() }}</p>
                                 <p class="truncate text-sm text-zinc-500">

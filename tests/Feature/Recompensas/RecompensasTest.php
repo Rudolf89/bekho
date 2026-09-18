@@ -66,7 +66,7 @@ test('el instructor otorga una recompensa a un alumno de sus clases', function (
     $instructor->assignRole('instructor');
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids', 'grupo_etario' => 'for_kids',
-        'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+        'activo' => true,
     ]);
     $clase->instructores()->attach($instructor->id, ['papel' => 'titular']);
 

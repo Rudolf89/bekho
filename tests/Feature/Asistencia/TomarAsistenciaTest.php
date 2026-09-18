@@ -26,8 +26,10 @@ beforeEach(function () {
     $this->sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $this->clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $this->sede->id, 'nombre' => 'Kids Lunes',
-        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '18:00', 'activo' => true,
+        'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
+    // La clase se reúne los lunes (día 1).
+    $this->clase->horarios()->create(['dia_semana' => 1, 'hora_inicio' => '18:00', 'hora_fin' => '18:45']);
     $this->alumno = Estudiante::create([
         'grupo_id' => $this->bekho->id, 'nombre' => 'Pedrito', 'sede_id' => $this->sede->id,
         'grupo_etario' => 'for_kids', 'activo' => true,

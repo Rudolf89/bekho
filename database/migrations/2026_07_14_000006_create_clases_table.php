@@ -9,27 +9,28 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Clase recurrente del horario: sede + grupo etario + nivel + día + hora e
-     * instructor a cargo.
+     * Clase recurrente: sede + grupo etario + instructores. Los días y horas
+     * viven en horarios_clase (una clase de lunes y miércoles = una clase con
+     * dos horarios). La FK compuesta (sede_id, grupo_id) hacia sedes garantiza
+     * que la clase pertenezca al mismo grupo que su sede.
      */
     public function up(): void
     {
         Schema::create('clases', function (Blueprint $table) {
             $table->id();
             $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
-            $table->foreignId('sede_id')->constrained('sedes')->cascadeOnDelete();
+            $table->foreignId('sede_id');
             $table->foreignId('instructor_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('nombre');
             $table->string('grupo_etario'); // App\Enums\GrupoEtario
-            $table->string('nivel'); // App\Enums\NivelEntrenamiento
-            $table->unsignedTinyInteger('dia_semana'); // App\Enums\DiaSemana (1-7)
-            $table->time('hora_inicio');
-            $table->time('hora_fin')->nullable();
+            $table->unsignedInteger('cupo_maximo')->nullable(); // aforo de la clase (solo advierte)
             $table->boolean('activo')->default(true);
             $table->timestamps();
 
             $table->index('grupo_id');
-            $table->index(['sede_id', 'dia_semana']);
+            $table->index('sede_id');
+            $table->foreign(['sede_id', 'grupo_id'])
+                ->references(['id', 'grupo_id'])->on('sedes')->cascadeOnDelete();
         });
     }
 

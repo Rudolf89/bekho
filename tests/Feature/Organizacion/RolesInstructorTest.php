@@ -76,7 +76,7 @@ test('un instructor ve solo los alumnos de sus clases y no los de otra', functio
     // El instructor está asignado a una clase For Kids en la Sede A.
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sedeA->id, 'nombre' => 'Kids A',
-        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+        'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
     $clase->sincronizarInstructores([$instructor->id => 'titular']);
 
@@ -137,7 +137,7 @@ test('un instructor de un grupo no ve alumnos de otra grupo', function () {
     $instructor = usuarioRol('instructor', $this->bekho->id);
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
-        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+        'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
     $clase->sincronizarInstructores([$instructor->id => 'titular']);
 

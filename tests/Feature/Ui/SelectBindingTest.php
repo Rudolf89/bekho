@@ -36,7 +36,7 @@ test('los select de clases arrancan vacíos, no en null', function () {
         ->call('nuevo')
         ->assertSet('sede_id', '')
         ->assertSet('grupo_etario', '')
-        ->assertSet('dia_semana', '')
+        ->assertSet('horarios.0.dia_semana', '')
         ->assertSet('planilla_id', '');
 });
 

@@ -15,7 +15,7 @@
     <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
         <flux:table>
             <flux:table.columns>
-                <flux:table.column sortable :sorted="$ordenCampo === 'dia_semana'" :direction="$ordenDir" wire:click="ordenarPor('dia_semana')">Día / Hora</flux:table.column>
+                <flux:table.column>Días / Horario</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'nombre'" :direction="$ordenDir" wire:click="ordenarPor('nombre')">Clase</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'grupo_etario'" :direction="$ordenDir" wire:click="ordenarPor('grupo_etario')">Grupo</flux:table.column>
                 <flux:table.column>Sede</flux:table.column>
@@ -26,10 +26,14 @@
                 @forelse ($clases as $clase)
                     <flux:table.row wire:key="clase-{{ $clase->id }}">
                         <flux:table.cell variant="strong">
-                            {{ $clase->dia_semana->etiqueta() }}
-                            <flux:text size="sm" class="block">
-                                {{ substr((string) $clase->hora_inicio, 0, 5) }}{{ $clase->hora_fin ? ' – '.substr((string) $clase->hora_fin, 0, 5) : '' }}
-                            </flux:text>
+                            @forelse ($clase->horarios as $horario)
+                                <flux:text size="sm" class="block">
+                                    {{ $horario->dia_semana->etiqueta() }}
+                                    {{ substr((string) $horario->hora_inicio, 0, 5) }} – {{ substr((string) $horario->hora_fin, 0, 5) }}
+                                </flux:text>
+                            @empty
+                                <flux:text size="sm" class="text-zinc-400">Sin horario</flux:text>
+                            @endforelse
                         </flux:table.cell>
                         <flux:table.cell>{{ $clase->nombre }}</flux:table.cell>
                         <flux:table.cell>{{ $clase->grupo_etario->etiqueta() }}</flux:table.cell>
@@ -74,7 +78,7 @@
             <flux:heading size="lg">{{ $editandoId ? 'Editar clase' : 'Nueva clase' }}</flux:heading>
 
             <flux:input wire:model.live.debounce.400ms="nombre" label="Nombre de la clase"
-                description="Se completa solo con el grupo, día, hora y sede; puedes editarlo." required />
+                description="Se completa solo con el grupo y la sede; puedes editarlo." required />
 
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:select wire:model.live="sede_id" label="Sede" placeholder="Selecciona">
@@ -87,20 +91,49 @@
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model.live="dia_semana" label="Día" placeholder="Selecciona">
-                    @foreach ($dias as $d)
-                        <flux:select.option value="{{ $d->value }}">{{ $d->etiqueta() }}</flux:select.option>
-                    @endforeach
-                </flux:select>
-                <div class="grid grid-cols-2 gap-2">
-                    <flux:input wire:model.live="hora_inicio" type="time" label="Inicio" />
-                    <flux:input wire:model.live="hora_fin" type="time" label="Fin" />
-                </div>
                 <flux:select wire:model="planilla_id" label="Planilla (rutina)" placeholder="Sin planilla">
                     @foreach ($planillas as $planilla)
                         <flux:select.option value="{{ $planilla->id }}">{{ $planilla->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
+                <flux:input wire:model="cupo_maximo" type="number" min="1" label="Cupo máximo" placeholder="Opcional" />
+            </div>
+
+            {{-- Horarios: una clase puede reunirse varios días (lunes y miércoles
+                 = dos horarios). --}}
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <flux:label>Horarios (día y hora)</flux:label>
+                    <flux:button type="button" wire:click="agregarHorario" icon="plus" variant="ghost" size="sm">Agregar</flux:button>
+                </div>
+
+                @forelse ($horarios as $indice => $horario)
+                    <div class="flex items-end gap-2 [&_[data-flux-error]]:hidden" wire:key="horario-{{ $indice }}">
+                        <flux:select wire:model="horarios.{{ $indice }}.dia_semana" label="Día" placeholder="Selecciona" class="flex-1">
+                            @foreach ($dias as $d)
+                                <flux:select.option value="{{ $d->value }}">{{ $d->etiqueta() }}</flux:select.option>
+                            @endforeach
+                        </flux:select>
+                        <flux:input wire:model.live="horarios.{{ $indice }}.hora_inicio" type="time" label="Inicio" class="w-32" />
+                        <flux:input wire:model="horarios.{{ $indice }}.hora_fin" type="time" label="Fin" class="w-32" />
+                        <flux:button type="button" wire:click="quitarHorario({{ $indice }})" icon="trash" variant="ghost" size="sm" />
+                    </div>
+                @empty
+                    <flux:text size="sm" class="text-zinc-500">Sin horarios. Agrega al menos uno.</flux:text>
+                @endforelse
+
+                @error('horarios')
+                    <flux:text size="sm" class="text-red-500">{{ $message }}</flux:text>
+                @enderror
+                @error('horarios.*.dia_semana')
+                    <flux:text size="sm" class="text-red-500">{{ $message }}</flux:text>
+                @enderror
+                @error('horarios.*.hora_inicio')
+                    <flux:text size="sm" class="text-red-500">{{ $message }}</flux:text>
+                @enderror
+                @error('horarios.*.hora_fin')
+                    <flux:text size="sm" class="text-red-500">{{ $message }}</flux:text>
+                @enderror
             </div>
 
             {{-- Instructores: una clase puede tener varios, cada uno con su papel. --}}

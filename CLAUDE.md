@@ -68,7 +68,10 @@ formación).
 
 - **Gestión**: alumnos (inscripción, instructor por sede), clases
   **multi-instructor** (pivote `clase_instructor`, papel titular/asistente/ayudante;
-  nombre y hora fin autocompletados), **asistencia como calendario semanal**, pagos,
+  nombre autocompletado) y **multi-horario** (`horarios_clase`: una clase de lunes y
+  miércoles = una clase con dos horarios; `hora_fin` obligatoria y autocompletada a
+  inicio+45; `cupo_maximo` como aforo que solo advierte), **asistencia como
+  calendario semanal** (cada clase aparece en cada día en que tiene horario), pagos,
   exámenes (instructor inscribe; dirección finaliza), planillas.
 - **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario;
   navegación secuencial entre capítulos en `VerContenido` (Anterior/Siguiente +

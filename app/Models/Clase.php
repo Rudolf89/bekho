@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\DiaSemana;
 use App\Enums\GrupoEtario;
 use App\Enums\PapelEnClase;
 use App\Models\Concerns\PerteneceGrupo;
@@ -34,9 +33,7 @@ class Clase extends Model
         'planilla_id',
         'nombre',
         'grupo_etario',
-        'dia_semana',
-        'hora_inicio',
-        'hora_fin',
+        'cupo_maximo',
         'activo',
     ];
 
@@ -47,7 +44,7 @@ class Clase extends Model
     {
         return [
             'grupo_etario' => GrupoEtario::class,
-            'dia_semana' => DiaSemana::class,
+            'cupo_maximo' => 'integer',
             'activo' => 'boolean',
         ];
     }
@@ -66,6 +63,18 @@ class Clase extends Model
     public function sede(): BelongsTo
     {
         return $this->belongsTo(Sede::class);
+    }
+
+    /**
+     * Horarios (día + hora) de la clase. Una clase puede reunirse varios días.
+     *
+     * @return HasMany<HorarioClase, $this>
+     */
+    public function horarios(): HasMany
+    {
+        return $this->hasMany(HorarioClase::class)
+            ->orderBy('dia_semana')
+            ->orderBy('hora_inicio');
     }
 
     /**

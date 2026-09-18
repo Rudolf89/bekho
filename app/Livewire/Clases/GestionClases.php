@@ -32,26 +32,24 @@ class GestionClases extends Component
 
     public string $grupo_etario = '';
 
-    public string $dia_semana = '';
-
-    public ?string $hora_inicio = null;
-
-    public ?string $hora_fin = null;
+    public ?string $cupo_maximo = null;
 
     public bool $activo = true;
 
     /**
-     * El nombre se autogenera a partir de grupo etario, día, hora y sede
-     * mientras el usuario no lo escriba a mano. Si lo edita (o al editar una
-     * clase existente) se respeta lo que haya puesto.
+     * Horarios de la clase: una fila por día + hora. Una clase puede reunirse
+     * varios días (p. ej. lunes y miércoles).
+     *
+     * @var array<int, array{dia_semana: string, hora_inicio: string, hora_fin: string}>
      */
-    public bool $nombreAuto = true;
+    public array $horarios = [];
 
     /**
-     * La hora de fin se autocompleta a inicio + 45 min mientras no se edite a
-     * mano; queda editable (no se limita a esa duración).
+     * El nombre se autogenera a partir del grupo etario y la sede mientras el
+     * usuario no lo escriba a mano. Si lo edita (o al editar una clase existente)
+     * se respeta lo que haya puesto.
      */
-    public bool $finAuto = true;
+    public bool $nombreAuto = true;
 
     /** Duración por defecto de una clase, en minutos. */
     public const DURACION_MINUTOS = 45;
@@ -76,21 +74,39 @@ class GestionClases extends Component
             'sede_id' => ['required', Rule::exists('sedes', 'id')],
             'planilla_id' => ['nullable', Rule::exists('planillas', 'id')],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
-            'dia_semana' => ['required', Rule::enum(DiaSemana::class)],
-            'hora_inicio' => ['required', 'date_format:H:i'],
-            'hora_fin' => ['nullable', 'date_format:H:i', 'after:hora_inicio'],
+            'cupo_maximo' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'activo' => ['boolean'],
+            'horarios' => ['required', 'array', 'min:1'],
+            'horarios.*.dia_semana' => ['required', Rule::enum(DiaSemana::class)],
+            'horarios.*.hora_inicio' => ['required', 'date_format:H:i'],
+            'horarios.*.hora_fin' => ['required', 'date_format:H:i', 'after:horarios.*.hora_inicio'],
             'asignaciones' => ['array'],
             'asignaciones.*.user_id' => ['required', Rule::exists('users', 'id')],
             'asignaciones.*.papel' => ['required', Rule::enum(PapelEnClase::class)],
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
+    protected function messages(): array
+    {
+        return [
+            'horarios.required' => 'Agrega al menos un horario.',
+            'horarios.min' => 'Agrega al menos un horario.',
+            'horarios.*.dia_semana.required' => 'Elige el día.',
+            'horarios.*.hora_inicio.required' => 'Indica la hora de inicio.',
+            'horarios.*.hora_fin.required' => 'Indica la hora de fin.',
+            'horarios.*.hora_fin.after' => 'La hora de fin debe ser posterior al inicio.',
+        ];
+    }
+
     public function nuevo(): void
     {
         $this->reset('editandoId', 'nombre', 'sede_id', 'planilla_id', 'grupo_etario',
-            'dia_semana', 'hora_inicio', 'hora_fin', 'asignaciones', 'nombreAuto', 'finAuto');
+            'cupo_maximo', 'horarios', 'asignaciones', 'nombreAuto');
         $this->activo = true;
+        $this->agregarHorario();
         $this->resetErrorBag();
         $this->mostrarModal = true;
     }
@@ -114,23 +130,29 @@ class GestionClases extends Component
         $this->regenerarNombre();
     }
 
-    public function updatedDiaSemana(): void
+    /**
+     * Al cambiar la hora de inicio de un horario, autocompleta su hora de fin a
+     * inicio + 45 min si aún está vacía (queda editable).
+     */
+    public function updatedHorarios(mixed $value, ?string $key = null): void
     {
-        $this->regenerarNombre();
-    }
+        if ($key === null || ! str_ends_with($key, '.hora_inicio')) {
+            return;
+        }
 
-    public function updatedHoraInicio(): void
-    {
-        $this->regenerarNombre();
-        $this->autocompletarFin();
-    }
+        $indice = (int) explode('.', $key)[0];
 
-    public function updatedHoraFin(?string $value): void
-    {
-        // Si el usuario ajusta la hora de fin, se deja de autocompletar; si la
-        // vacía, se retoma (se recalculará a inicio + 45 min).
-        $this->finAuto = trim((string) $value) === '';
-        $this->autocompletarFin();
+        if (($this->horarios[$indice]['hora_fin'] ?? '') !== '') {
+            return;
+        }
+
+        try {
+            $this->horarios[$indice]['hora_fin'] = Carbon::createFromFormat('H:i', (string) $value)
+                ->addMinutes(self::DURACION_MINUTOS)
+                ->format('H:i');
+        } catch (\Exception) {
+            // Hora de inicio incompleta o inválida: no se autocompleta todavía.
+        }
     }
 
     /**
@@ -145,7 +167,7 @@ class GestionClases extends Component
     }
 
     /**
-     * Nombre sugerido: "Grupo · Día HH:MM · Sede" con las partes ya elegidas.
+     * Nombre sugerido: "Grupo · Sede" con las partes ya elegidas.
      */
     protected function nombreSugerido(): string
     {
@@ -155,14 +177,6 @@ class GestionClases extends Component
             $partes[] = GrupoEtario::tryFrom($this->grupo_etario)?->etiqueta();
         }
 
-        $dia = $this->dia_semana !== ''
-            ? DiaSemana::tryFrom((int) $this->dia_semana)?->etiqueta()
-            : null;
-        $diaHora = trim(($dia ?? '').' '.($this->hora_inicio ?? ''));
-        if ($diaHora !== '') {
-            $partes[] = $diaHora;
-        }
-
         if ($this->sede_id !== '') {
             $partes[] = Sede::sinGrupo()->find($this->sede_id)?->nombre;
         }
@@ -170,39 +184,43 @@ class GestionClases extends Component
         return implode(' · ', array_filter($partes));
     }
 
-    /**
-     * Autocompleta la hora de fin a inicio + 45 min (editable) si no se fijó a mano.
-     */
-    protected function autocompletarFin(): void
-    {
-        if (! $this->finAuto || ! $this->hora_inicio) {
-            return;
-        }
+    // --- Horarios ------------------------------------------------------------
 
-        try {
-            $this->hora_fin = Carbon::createFromFormat('H:i', $this->hora_inicio)
-                ->addMinutes(self::DURACION_MINUTOS)
-                ->format('H:i');
-        } catch (\Exception) {
-            // Hora de inicio incompleta o inválida: no se autocompleta todavía.
-        }
+    public function agregarHorario(): void
+    {
+        $this->horarios[] = ['dia_semana' => '', 'hora_inicio' => '', 'hora_fin' => ''];
+    }
+
+    public function quitarHorario(int $indice): void
+    {
+        unset($this->horarios[$indice]);
+        $this->horarios = array_values($this->horarios);
     }
 
     public function editar(Clase $clase): void
     {
-        // Se respeta lo guardado: no se autogenera nombre ni fin al editar.
+        // Se respeta lo guardado: no se autogenera el nombre al editar.
         $this->nombreAuto = false;
-        $this->finAuto = false;
 
         $this->editandoId = $clase->id;
         $this->nombre = $clase->nombre;
         $this->sede_id = (string) $clase->sede_id;
         $this->planilla_id = (string) ($clase->planilla_id ?? '');
         $this->grupo_etario = $clase->grupo_etario->value;
-        $this->dia_semana = (string) $clase->dia_semana->value;
-        $this->hora_inicio = substr((string) $clase->hora_inicio, 0, 5);
-        $this->hora_fin = $clase->hora_fin ? substr((string) $clase->hora_fin, 0, 5) : null;
+        $this->cupo_maximo = $clase->cupo_maximo !== null ? (string) $clase->cupo_maximo : null;
         $this->activo = $clase->activo;
+        $this->horarios = $clase->horarios
+            ->map(fn ($h) => [
+                'dia_semana' => (string) $h->dia_semana->value,
+                'hora_inicio' => substr((string) $h->hora_inicio, 0, 5),
+                'hora_fin' => substr((string) $h->hora_fin, 0, 5),
+            ])
+            ->all();
+
+        if ($this->horarios === []) {
+            $this->agregarHorario();
+        }
+
         $this->asignaciones = $clase->instructores
             ->map(fn (User $u) => ['user_id' => (string) $u->id, 'papel' => $u->pivot->papel])
             ->all();
@@ -232,6 +250,7 @@ class GestionClases extends Component
         // normaliza a null para que la regla nullable omita 'exists' y para
         // no insertar '' en columnas de llave foránea.
         $this->planilla_id = $this->planilla_id ?: null;
+        $this->cupo_maximo = $this->cupo_maximo !== null && $this->cupo_maximo !== '' ? $this->cupo_maximo : null;
 
         // Se descartan las filas de instructor sin usuario elegido.
         $this->asignaciones = array_values(array_filter(
@@ -241,13 +260,14 @@ class GestionClases extends Component
 
         $datos = $this->validate();
 
-        // La clase pertenece a el grupo de su sede. Así queda bien también
-        // cuando la crea el admin-plataforma, que no tiene grupo activo (y por
-        // tanto el relleno automático del tenant no aplica).
+        // La clase pertenece al grupo de su sede. Así queda bien también cuando
+        // la crea el admin-plataforma, que no tiene grupo activo (y por tanto el
+        // relleno automático del tenant no aplica).
         $datos['grupo_id'] = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
 
         $asignaciones = $datos['asignaciones'] ?? [];
-        unset($datos['asignaciones']);
+        $horarios = $datos['horarios'];
+        unset($datos['asignaciones'], $datos['horarios']);
 
         if ($this->editandoId) {
             $clase = Clase::findOrFail($this->editandoId);
@@ -258,6 +278,8 @@ class GestionClases extends Component
             Flux::toast(variant: 'success', text: 'Clase creada.');
         }
 
+        $this->sincronizarHorarios($clase, $horarios);
+
         // [user_id => papel]; si se repite un instructor, prevalece el último papel.
         $papeles = [];
         foreach ($asignaciones as $fila) {
@@ -266,6 +288,32 @@ class GestionClases extends Component
         $clase->sincronizarInstructores($papeles);
 
         $this->mostrarModal = false;
+    }
+
+    /**
+     * Reemplaza los horarios de la clase por los del formulario (deduplicando
+     * por día + hora de inicio, que es la clave única en la base).
+     *
+     * @param  array<int, array{dia_semana: string, hora_inicio: string, hora_fin: string}>  $horarios
+     */
+    protected function sincronizarHorarios(Clase $clase, array $horarios): void
+    {
+        $clase->horarios()->delete();
+
+        $vistos = [];
+        foreach ($horarios as $h) {
+            $clave = $h['dia_semana'].'|'.$h['hora_inicio'];
+            if (isset($vistos[$clave])) {
+                continue;
+            }
+            $vistos[$clave] = true;
+
+            $clase->horarios()->create([
+                'dia_semana' => (int) $h['dia_semana'],
+                'hora_inicio' => $h['hora_inicio'],
+                'hora_fin' => $h['hora_fin'],
+            ]);
+        }
     }
 
     public function alternarActivo(Clase $clase): void
@@ -279,9 +327,9 @@ class GestionClases extends Component
     {
         return view('livewire.clases.gestion-clases', [
             'clases' => $this->aplicarOrden(
-                $this->aplicarBusqueda(Clase::with(['sede', 'instructores']), ['nombre', 'sede.nombre']),
-                ['dia_semana', 'nombre', 'grupo_etario'], 'dia_semana'
-            )->orderBy('hora_inicio')->get(),
+                $this->aplicarBusqueda(Clase::with(['sede', 'instructores', 'horarios']), ['nombre', 'sede.nombre']),
+                ['nombre', 'grupo_etario'], 'nombre'
+            )->get(),
             'sedes' => Sede::orderBy('nombre')->get(),
             'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
             'planillas' => Planilla::where('activo', true)->orderBy('nombre')->get(),

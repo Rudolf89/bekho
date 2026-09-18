@@ -29,9 +29,9 @@ test('el admin-plataforma (sin grupo) crea una clase y el grupo se toma de la se
         ->set('nombre', 'tigers')
         ->set('sede_id', (string) $sede->id)
         ->set('grupo_etario', 'tigers')
-        ->set('dia_semana', '1')
-        ->set('hora_inicio', '18:30')
-        ->set('hora_fin', '19:15')
+        ->set('horarios', [
+            ['dia_semana' => '1', 'hora_inicio' => '18:30', 'hora_fin' => '19:15'],
+        ])
         ->call('guardar')
         ->assertHasNoErrors();
 

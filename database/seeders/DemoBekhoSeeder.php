@@ -133,11 +133,17 @@ class DemoBekhoSeeder extends Seeder
             $planilla = Planilla::where('grupo_etario', $grupoEtario)->where('nivel', 'principiantes')->first();
 
             $clase = Clase::updateOrCreate(
-                ['grupo_id' => $grupo->id, 'nombre' => 'Clase '.$grupoEtario, 'dia_semana' => $diaHoy],
+                ['grupo_id' => $grupo->id, 'nombre' => 'Clase '.$grupoEtario],
                 [
                     'sede_id' => $sede->id, 'planilla_id' => $planilla?->id,
-                    'grupo_etario' => $grupoEtario, 'hora_inicio' => $ini, 'hora_fin' => $fin, 'activo' => true,
+                    'grupo_etario' => $grupoEtario, 'activo' => true,
                 ],
+            );
+
+            // La clase se reúne hoy (una sola sesión en la demo).
+            $clase->horarios()->updateOrCreate(
+                ['dia_semana' => $diaHoy, 'hora_inicio' => $ini],
+                ['hora_fin' => $fin],
             );
 
             // El instructor configurado queda como titular; Rodolfo apoya como
@@ -150,7 +156,7 @@ class DemoBekhoSeeder extends Seeder
         }
 
         // Asistencia de hoy (marca presentes a la mitad).
-        $clasesHoy = Clase::where('dia_semana', $diaHoy)->get();
+        $clasesHoy = Clase::whereHas('horarios', fn ($q) => $q->where('dia_semana', $diaHoy))->get();
         foreach ($clasesHoy as $clase) {
             foreach ($clase->estudiantesEsperados()->get() as $j => $est) {
                 Asistencia::updateOrCreate(

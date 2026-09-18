@@ -186,8 +186,7 @@ test('el roster de una clase son los estudiantes activos de su sede y grupo etar
 
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
-        'grupo_etario' => 'for_kids', 'dia_semana' => 1,
-        'hora_inicio' => '10:00', 'activo' => true,
+        'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
 
     $roster = $clase->estudiantesEsperados()->get();

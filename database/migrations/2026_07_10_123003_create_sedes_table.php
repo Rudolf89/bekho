@@ -23,6 +23,9 @@ return new class extends Migration
             $table->timestamps();
 
             $table->index('grupo_id');
+            // Índice único compuesto para que las clases puedan referenciar
+            // (sede_id, grupo_id) y así una clase nunca quede en otro grupo.
+            $table->unique(['id', 'grupo_id']);
         });
     }
 

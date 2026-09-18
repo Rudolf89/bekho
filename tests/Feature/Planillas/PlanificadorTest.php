@@ -130,7 +130,7 @@ test('el instructor arma una rutina de calentamiento y se guarda en la clase', f
     $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
-        'grupo_etario' => 'for_kids', 'dia_semana' => 1, 'hora_inicio' => '10:00', 'activo' => true,
+        'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
     $ejercicio = EjercicioCalentamiento::whereHas('categoria', fn ($q) => $q->where('clave', 'guardia'))->first();
 

@@ -17,7 +17,7 @@
             <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
                 <flux:heading size="lg">{{ $clase->nombre }}</flux:heading>
                 <flux:text size="sm" class="mt-0.5 first-letter:uppercase">
-                    {{ $fechaLista }} · {{ substr((string) $clase->hora_inicio, 0, 5) }}
+                    {{ $fechaLista }}@if ($horarioLista) · {{ $horarioLista }}@endif
                     · {{ $clase->grupo_etario->etiqueta() }} · {{ $clase->sede?->nombre }}
                 </flux:text>
             </div>
@@ -79,13 +79,13 @@
                     <div class="flex flex-1 flex-col gap-2 p-2">
                         @forelse ($dia['clases'] as $item)
                             @php($c = $item['clase'])
-                            <button type="button" wire:key="cal-{{ $c->id }}-{{ $dia['fecha'] }}"
+                            <button type="button" wire:key="cal-{{ $c->id }}-{{ $dia['fecha'] }}-{{ $item['horaInicio'] }}"
                                 wire:click="abrirClase({{ $c->id }}, '{{ $dia['fecha'] }}')"
                                 class="group w-full rounded-lg border border-zinc-200 bg-white p-2.5 text-left shadow-sm transition hover:-translate-y-px hover:border-red-300 hover:shadow-md dark:border-zinc-700 dark:bg-zinc-800 dark:hover:border-red-500/60">
                                 <div class="flex items-center justify-between gap-1">
                                     <span class="inline-flex items-center gap-1 text-xs font-semibold text-zinc-500 dark:text-zinc-400">
                                         <flux:icon.clock variant="micro" class="text-zinc-400" />
-                                        {{ substr((string) $c->hora_inicio, 0, 5) }}@if ($c->hora_fin)–{{ substr((string) $c->hora_fin, 0, 5) }}@endif
+                                        {{ $item['horaInicio'] }}–{{ $item['horaFin'] }}
                                     </span>
                                     @if ($item['tomada'])
                                         <flux:badge color="green" size="sm" icon="check">{{ $item['presentes'] }}/{{ $item['esperados'] }}</flux:badge>

@@ -47,9 +47,19 @@ class Panel extends Component
         $alumnosNuevosMes = Estudiante::activos()
             ->where('created_at', '>=', $hoy->copy()->startOfMonth())->count();
 
-        $clasesHoy = Clase::activas()->with(['sede', 'planilla'])
-            ->where('dia_semana', $diaHoy)
-            ->orderBy('hora_inicio')->get();
+        // Clases con un horario hoy; se anota la hora de inicio de ese día para
+        // mostrarla y ordenar la agenda.
+        $clasesHoy = Clase::activas()->with(['sede', 'planilla', 'horarios'])
+            ->whereHas('horarios', fn ($q) => $q->where('dia_semana', $diaHoy))
+            ->get()
+            ->map(function (Clase $c) use ($diaHoy) {
+                $h = $c->horarios->firstWhere(fn ($h) => $h->dia_semana->value === $diaHoy);
+                $c->setAttribute('hora_hoy', $h ? substr((string) $h->hora_inicio, 0, 5) : null);
+
+                return $c;
+            })
+            ->sortBy('hora_hoy')
+            ->values();
 
         $esperadosHoy = $clasesHoy->sum(fn (Clase $c) => $c->estudiantesEsperados()->count());
         $presentesHoy = Asistencia::whereDate('fecha', $hoy->toDateString())

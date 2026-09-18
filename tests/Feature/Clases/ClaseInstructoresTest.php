@@ -38,8 +38,9 @@ test('una clase puede tener varios instructores con su papel', function () {
         ->set('nombre', 'Kids')
         ->set('sede_id', (string) $this->sede->id)
         ->set('grupo_etario', 'for_kids')
-        ->set('dia_semana', '1')
-        ->set('hora_inicio', '10:00')
+        ->set('horarios', [
+            ['dia_semana' => '1', 'hora_inicio' => '10:00', 'hora_fin' => '10:45'],
+        ])
         ->set('asignaciones', [
             ['user_id' => (string) $titular->id, 'papel' => 'titular'],
             ['user_id' => (string) $ayudante->id, 'papel' => 'ayudante'],
@@ -58,25 +59,55 @@ test('una clase puede tener varios instructores con su papel', function () {
         ->and($papeles[$ayudante->id])->toBe('ayudante');
 });
 
-test('el nombre de la clase se autocompleta con grupo, día, hora y sede', function () {
+test('el nombre de la clase se autocompleta con grupo y sede', function () {
     Livewire::actingAs($this->direccion)->test(GestionClases::class)
         ->call('nuevo')
         ->set('grupo_etario', 'tigers')
-        ->set('dia_semana', '1')
-        ->set('hora_inicio', '18:10')
         ->set('sede_id', (string) $this->sede->id)
-        ->assertSet('nombre', 'Tigers · Lunes 18:10 · Central');
+        ->assertSet('nombre', 'Tigers · Central');
 });
 
-test('la hora de fin se autocompleta a inicio + 45 min pero es editable', function () {
+test('la hora de fin de un horario se autocompleta a inicio + 45 min pero es editable', function () {
+    Livewire::actingAs($this->direccion)->test(GestionClases::class)
+        ->call('nuevo') // arranca con un horario vacío (índice 0)
+        ->set('horarios.0.hora_inicio', '18:10')
+        ->assertSet('horarios.0.hora_fin', '18:55')
+        // El usuario la puede cambiar y no se vuelve a sobrescribir.
+        ->set('horarios.0.hora_fin', '20:00')
+        ->set('horarios.0.hora_inicio', '19:00')
+        ->assertSet('horarios.0.hora_fin', '20:00');
+});
+
+test('una clase puede tener varios horarios (lunes y miércoles)', function () {
     Livewire::actingAs($this->direccion)->test(GestionClases::class)
         ->call('nuevo')
-        ->set('hora_inicio', '18:10')
-        ->assertSet('hora_fin', '18:55')
-        // El usuario la puede cambiar y no se vuelve a sobrescribir.
-        ->set('hora_fin', '20:00')
-        ->set('hora_inicio', '19:00')
-        ->assertSet('hora_fin', '20:00');
+        ->set('nombre', 'Kids')
+        ->set('sede_id', (string) $this->sede->id)
+        ->set('grupo_etario', 'for_kids')
+        ->set('horarios', [
+            ['dia_semana' => '1', 'hora_inicio' => '18:00', 'hora_fin' => '18:45'],
+            ['dia_semana' => '3', 'hora_inicio' => '18:00', 'hora_fin' => '18:45'],
+        ])
+        ->call('guardar')
+        ->assertHasNoErrors();
+
+    $clase = Clase::where('nombre', 'Kids')->first();
+
+    expect($clase->horarios()->count())->toBe(2)
+        ->and($clase->horarios->map(fn ($h) => $h->dia_semana->value)->sort()->values()->all())->toBe([1, 3]);
+});
+
+test('una clase exige al menos un horario', function () {
+    Livewire::actingAs($this->direccion)->test(GestionClases::class)
+        ->call('nuevo')
+        ->set('nombre', 'Sin horario')
+        ->set('sede_id', (string) $this->sede->id)
+        ->set('grupo_etario', 'for_kids')
+        ->set('horarios', [])
+        ->call('guardar')
+        ->assertHasErrors('horarios');
+
+    expect(Clase::where('nombre', 'Sin horario')->exists())->toBeFalse();
 });
 
 test('si el usuario escribe un nombre, deja de autocompletarse', function () {
@@ -84,7 +115,7 @@ test('si el usuario escribe un nombre, deja de autocompletarse', function () {
         ->call('nuevo')
         ->set('grupo_etario', 'tigers')
         ->set('nombre', 'Clase de los pequeños')
-        ->set('dia_semana', '1')
+        ->set('sede_id', (string) $this->sede->id)
         ->assertSet('nombre', 'Clase de los pequeños');
 });
 
