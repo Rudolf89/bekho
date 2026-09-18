@@ -18,9 +18,11 @@ test('todas las formas Songahm reciben su paso a paso', function () {
     expect($formas)->toHaveCount(12);
     $formas->each(fn ($f) => expect($f->pasos()->count())->toBeGreaterThan(0));
 
-    // Conteos representativos transcritos del Manual Legacy.
+    // Conteos representativos transcritos del Manual Legacy. Chung San son 83
+    // pasos: los 36 «extra» de la transcripción original eran las tablas de los
+    // Cuadrantes de Enseñanza, arrastradas por error (se corrigieron).
     expect(Tecnica::where('nombre', 'Songahm Il-Jahng n.º 1')->first()->pasos()->count())->toBe(18)
-        ->and(Tecnica::where('nombre', 'Chung San')->first()->pasos()->count())->toBe(119);
+        ->and(Tecnica::where('nombre', 'Chung San')->first()->pasos()->count())->toBe(83);
 });
 
 test('los pasos guardan técnica, lado, postura y sección por columna', function () {
