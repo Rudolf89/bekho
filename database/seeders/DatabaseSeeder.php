@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             FederacionesSeeder::class,
             TramosEntrenamientoSeeder::class,
             CatalogosFederacionSeeder::class,
+            CompetenciaSeeder::class,
             CargosRangosSeeder::class,
             ProgramasSeeder::class,
             GradosSeeder::class,
