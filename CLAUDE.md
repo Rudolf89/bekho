@@ -44,47 +44,57 @@ Piezas del tenant:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
 `intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
 
-## Personas, matrículas e identidad (rediseño en curso)
+## Personas, matrículas e identidad (rediseño completo)
 
-**En construcción (Fase 2 del rediseño).** La identidad se está separando de la
-operación: `personas` (identidad única de la federación, **sin `grupo_id`**, fecha
-de nacimiento obligatoria, `grado_id` = caché del último grado, `documentos_persona`
-para RUT/pasaporte validado con `App\Support\Rut`); `users` gana `persona_id` (la
-cuenta pasa a ser solo acceso); `tutelas` (apoderado↔alumno, cruza grupos);
-`instructores` (faceta marcial transversal: rango, supervisor por persona,
-certificación); `personal_grupo` (trabajo en un grupo, operativo); `matriculas`
-(alumno↔grupo, operativo, **una sola activa por persona** vía índice parcial, FK
-compuesta `(sede_id, grupo_id)`). `MigraPersonasSeeder` deriva esta capa desde la
-operación actual (`estudiantes`/`users`) — **aditivo**: `estudiantes` sigue mandando
-en la operación hasta el recableo final.
+**El corte de identidad está hecho.** La identidad está separada de la operación:
+`personas` (identidad única de la federación, **sin `grupo_id`**, fecha de nacimiento
+obligatoria, `grado_id` = caché del último grado, `documentos_persona` para
+RUT/pasaporte validado con `App\Support\Rut`); `users` tiene `persona_id` (la cuenta
+es solo acceso); `tutelas` (apoderado↔alumno, cruza grupos); `instructores` (faceta
+marcial transversal: rango, supervisor por persona, certificación); `personal_grupo`
+(trabajo en un grupo, operativo) con `personal_grupo_rol` (roles por grupo, con
+`sede_id` opcional para acotar a una sede); `matriculas` (alumno↔grupo, operativo,
+**una sola activa por persona** vía índice parcial, FK compuesta `(sede_id, grupo_id)`).
+**`estudiantes`, `apoderado_estudiante` y `estudiante_programa` fueron RETIRADOS**
+(junto al modelo `Estudiante`, la `EstudiantePolicy` y el `MigraPersonasSeeder`): la
+operación corre 100 % sobre persona/matrícula. `DemoBekhoSeeder` crea directamente la
+capa de identidad (personas, matrículas, personal_grupo, instructores, personal_grupo_rol).
 
-**Operación ya sobre matrícula (Fase 4 del rediseño):** asistencia
-(`asistencias.matricula_id`, `Clase::matriculasEsperadas()`), pagos y morosidad
-(`ServicioPagos` sobre matrícula; hermanos vía tutelas), logros
-(`Matricula::visiblePara` para instructor/apoderado), exámenes y graduaciones
-(el grado se cachea en la persona), **suspensiones** (congelan la morosidad) y
-**traslados** entre grupos (`ServicioTraslados`: consentimiento + deuda + ejecución).
-`Estudiante` conserva relaciones-puente (`asistencias/pagos/logros/…`) enrutadas por
-la matrícula. Falta el **corte de identidad** (rediseñar inscripción a
-persona/tutela/documento y **retirar `estudiantes`/`apoderado_estudiante`**).
+**Operación sobre matrícula (Fase 4):** asistencia (`asistencias.matricula_id`,
+`Clase::matriculasEsperadas()`), pagos y morosidad (`ServicioPagos` sobre cargos;
+hermanos vía tutelas), logros (`Matricula::visiblePara` para instructor/apoderado),
+exámenes y graduaciones (el grado se cachea en la persona), **suspensiones** (congelan
+la morosidad) y **traslados** entre grupos (`ServicioTraslados`: consentimiento +
+deuda + ejecución). La inscripción (`InscribirAlumno`) y la gestión de alumnos crean
+persona + matrícula (+ documento RUT); no queda ninguna `Estudiante`.
 
 **Catálogos de la federación (Fase 3/5/6):** `tramos_entrenamiento`, `grados`
 (con `tramo_id`, `meses_sugeridos`, `requiere_nominacion`), `escalas_puntaje`,
 `tipos_cargo`, y competencia (`grupos_edad`, `categorias_competencia`, `pruebas`,
-`criterios_prueba`, `tabla_libres`). **Cobros (Fase 5a):** `tarifas_grupo`, `becas`,
-`cargos` (`ServicioCargos` genera mensualidades por tramo de familia + beca).
-**Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por documento).
-Pendiente: pagos con verificación + `pago_cargo` (5b), planillas operativas de
-competencia (6b), *teams* de spatie + roles por sede (7b).
+`criterios_prueba`, `tabla_libres`). **Cobros (Fase 5):** `tarifas_grupo`, `becas`,
+`cargos` (`ServicioCargos` genera mensualidades por tramo de familia + beca) y
+**pagos con verificación** (`EstadoPago` por_verificar/verificado/anulado, comprobante,
+`pago_cargo` para abonos que cubren varios cargos; `ServicioPagos` registra/verifica/
+anula y aplica montos a los cargos; el apoderado sube comprobante desde su portal).
+**Competencia operativa (Fase 6b):** `planillas_competencia`, `jueces_planilla`,
+`competidores_planilla`, `puntajes_planilla` (`ServicioPlanillaCompetencia`, permiso
+`gestionar competencia`) para la certificación de planillero con competidores y jueces
+ficticios. **Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por
+documento). **Roles por sede (Fase 7b):** `personal_grupo_rol` + rol `direccion-sede`;
+el alcance por sede se aplica en las policies vía `User::sedesRestringidas()` (leyendo
+`personal_grupo_rol`), **sin** activar el modo *teams* de spatie — el aislamiento por
+grupo lo sigue dando la capa de tenancy. Pendiente (opcional): *teams* de spatie si
+alguna vez se decide mover la autorización allí (hoy no es necesario).
 
 ## Roles y permisos
 
 `admin-plataforma` (todo, cruza grupos) · `federacion` (solo lectura sobre
-todos) · `direccion` (todo en su grupo, incl. pagos) · `administrativo`
-(alumnos/clases/asistencia, **sin pagos**) · `instructor` (asistencia, planillas,
-inscribir exámenes; ve **solo alumnos de sus clases** vía `EstudiantePolicy` +
-`Estudiante::scopeVisiblePara`) · `apoderado` (solo sus hijos) · `alumno` (ver
-formación).
+todos) · `direccion` (todo en su grupo, incl. pagos) · `direccion-sede` (lo
+operativo de **su sede**, con pagos; acotado vía `personal_grupo_rol.sede_id` +
+`User::sedesRestringidas()`) · `administrativo` (alumnos/clases/asistencia, **sin
+pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámenes; ve
+**solo alumnos de sus clases** vía `MatriculaPolicy` + `Matricula::scopeVisiblePara`) ·
+`apoderado` (solo sus hijos, por tutela) · `alumno` (ver formación).
 
 - **Permisos extra** (además de gestión/formación): `gestionar cuestionarios`
   (examinador) · `rendir cuestionarios` · `gestionar recompensas` · `ver recompensas`
