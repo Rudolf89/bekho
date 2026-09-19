@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('apellido_paterno')->nullable();
             $table->string('apellido_materno')->nullable();
             $table->date('fecha_nacimiento');
+            $table->string('genero')->nullable(); // App\Enums\Genero
             $table->string('telefono')->nullable();
             $table->string('email')->nullable();
             $table->string('direccion')->nullable();

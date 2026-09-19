@@ -2,9 +2,9 @@
 
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
-use App\Enums\NivelEntrenamiento;
+use App\Enums\TipoDocumento;
 use App\Livewire\Inscripcion\InscribirAlumno;
-use App\Models\Estudiante;
+use App\Models\DocumentoPersona;
 use App\Models\Grupo;
 use App\Models\Sede;
 use App\Models\User;
@@ -54,24 +54,26 @@ function inscribir(): Testable
         ->set('acepto_reglamento', true);
 }
 
-test('inscribir crea la ficha del alumno con los datos del formulario', function () {
+test('inscribir crea la persona, su documento y la matrícula', function () {
     inscribir()->call('inscribir')->assertHasNoErrors();
 
-    $est = Estudiante::sinGrupo()->where('rut', '12345678-9')->first();
+    $documento = DocumentoPersona::where('numero', '12345678-9')->first();
+    expect($documento)->not->toBeNull()->and($documento->tipo)->toBe(TipoDocumento::Rut);
 
-    expect($est)->not->toBeNull()
-        ->and($est->nombre)->toBe('Juan Andrés Pérez Soto')
-        ->and($est->grupo_id)->toBe($this->grupo->id)
-        ->and($est->genero)->toBe(Genero::Masculino)
-        ->and($est->comuna)->toBe('Ñuñoa')
-        ->and($est->region)->toBe('Metropolitana de Santiago')
-        ->and($est->dia_vencimiento)->toBe(5)
-        ->and($est->instructor_id)->toBe($this->instructor->id)
-        ->and($est->acepto_reglamento)->toBeTrue()
-        ->and($est->acepto_reglamento_at)->not->toBeNull()
-        ->and($est->activo)->toBeTrue()
-        // Alumno nuevo sin cinturón => Principiantes.
-        ->and($est->nivel)->toBe(NivelEntrenamiento::Principiantes);
+    $persona = $documento->persona;
+    expect($persona->nombreCompleto())->toBe('Juan Andrés Pérez Soto')
+        ->and($persona->genero)->toBe(Genero::Masculino)
+        ->and($persona->comuna)->toBe('Ñuñoa')
+        ->and($persona->region)->toBe('Metropolitana de Santiago')
+        // El apoderado queda como contacto de emergencia de la persona.
+        ->and($persona->contacto_emergencia_nombre)->toBe('María Pérez');
+
+    $matricula = $persona->matriculaActiva;
+    expect($matricula)->not->toBeNull()
+        ->and($matricula->grupo_id)->toBe($this->grupo->id)
+        ->and($matricula->grupo_etario)->toBe(GrupoEtario::ForKids)
+        ->and($matricula->dia_vencimiento)->toBe(5)
+        ->and($matricula->acepto_reglamento_at)->not->toBeNull();
 });
 
 test('el reglamento debe aceptarse', function () {

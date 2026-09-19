@@ -2,13 +2,17 @@
 
 namespace App\Livewire\Inscripcion;
 
+use App\Enums\EstadoMatricula;
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Livewire\Concerns\SugiereGrupoEtario;
-use App\Models\Estudiante;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
 use App\Models\User;
+use App\Support\Rut;
 use Flux\Flux;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -172,33 +176,49 @@ class InscribirAlumno extends Component
     {
         $datos = $this->validate();
 
-        // El grupo del alumno es la de su sede (funciona también para el
+        // El grupo del alumno es el de su sede (funciona también para el
         // admin-plataforma, que gestiona por grupo).
         $grupoId = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
 
-        Estudiante::create([
-            'grupo_id' => $grupoId,
-            'sede_id' => $datos['sede_id'],
-            'instructor_id' => $datos['instructor_id'],
-            'nombre' => trim("{$datos['nombres']} {$datos['apellido_paterno']} {$datos['apellido_materno']}"),
-            'rut' => $datos['rut'],
+        // 1) Persona (identidad): datos personales + apoderado como contacto de
+        //    emergencia. El vínculo formal con un apoderado va por tutelas.
+        $persona = Persona::create([
+            'nombres' => $datos['nombres'],
+            'apellido_paterno' => $datos['apellido_paterno'],
+            'apellido_materno' => $datos['apellido_materno'],
             'fecha_nacimiento' => $datos['fecha_nacimiento'],
             'genero' => $datos['genero'],
-            'grupo_etario' => $datos['grupo_etario'],
+            'telefono' => $datos['telefono_contacto'],
+            'email' => $datos['email_contacto'],
             'direccion' => $datos['direccion'],
             'region' => $datos['region'],
             'comuna' => $datos['comuna'],
-            'apoderado_1' => $datos['apoderado_1'] ?: null,
-            'apoderado_2' => $datos['apoderado_2'] ?: null,
-            'telefono_contacto' => $datos['telefono_contacto'],
-            'telefono_contacto_2' => $datos['telefono_contacto_2'] ?: null,
-            'email_contacto' => $datos['email_contacto'],
-            'email_contacto_2' => $datos['email_contacto_2'] ?: null,
-            'dia_vencimiento' => $datos['dia_vencimiento'],
-            'activo' => true,
-            'acepto_reglamento' => true,
-            'acepto_reglamento_at' => now(),
+            'contacto_emergencia_nombre' => $datos['apoderado_1'] ?: null,
+            'contacto_emergencia_telefono' => ($datos['telefono_contacto_2'] ?? null) ?: $datos['telefono_contacto'],
+            'contacto_emergencia_relacion' => ($datos['apoderado_1'] ?? null) ? 'Apoderado' : null,
             // grado_id queda nulo: alumno nuevo => Blanco => Principiantes.
+        ]);
+
+        // 2) Documento (RUT normalizado).
+        $persona->documentos()->create([
+            'tipo' => 'rut',
+            'numero' => Rut::normalizar($datos['rut']) ?? $datos['rut'],
+            'pais' => 'CL',
+            'principal' => true,
+        ]);
+
+        // 3) Matrícula (vínculo con el grupo).
+        Matricula::create([
+            'grupo_id' => $grupoId,
+            'persona_id' => $persona->id,
+            'sede_id' => $datos['sede_id'],
+            'grupo_etario' => $datos['grupo_etario'],
+            'estado' => EstadoMatricula::Activa->value,
+            'fecha_ingreso' => now()->toDateString(),
+            'instructor_persona_id' => User::find($datos['instructor_id'])?->persona_id,
+            'dia_vencimiento' => $datos['dia_vencimiento'],
+            'acepto_reglamento_at' => now(),
+            'aceptado_por_user_id' => Auth::id(),
         ]);
 
         Flux::toast(variant: 'success', text: 'Alumno inscrito correctamente.');

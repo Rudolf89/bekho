@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoMatricula;
+use App\Enums\Genero;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,6 +26,7 @@ class Persona extends Model
         'apellido_paterno',
         'apellido_materno',
         'fecha_nacimiento',
+        'genero',
         'telefono',
         'email',
         'direccion',
@@ -42,6 +45,7 @@ class Persona extends Model
     {
         return [
             'fecha_nacimiento' => 'date',
+            'genero' => Genero::class,
         ];
     }
 
@@ -102,5 +106,25 @@ class Persona extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class);
+    }
+
+    /**
+     * Matrículas (vínculos con grupos) de la persona a lo largo del tiempo.
+     *
+     * @return HasMany<Matricula, $this>
+     */
+    public function matriculas(): HasMany
+    {
+        return $this->hasMany(Matricula::class);
+    }
+
+    /**
+     * Matrícula activa de la persona (solo puede haber una en la federación).
+     *
+     * @return HasOne<Matricula, $this>
+     */
+    public function matriculaActiva(): HasOne
+    {
+        return $this->hasOne(Matricula::class)->where('estado', EstadoMatricula::Activa->value);
     }
 }
