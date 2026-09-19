@@ -56,7 +56,26 @@ certificación); `personal_grupo` (trabajo en un grupo, operativo); `matriculas`
 (alumno↔grupo, operativo, **una sola activa por persona** vía índice parcial, FK
 compuesta `(sede_id, grupo_id)`). `MigraPersonasSeeder` deriva esta capa desde la
 operación actual (`estudiantes`/`users`) — **aditivo**: `estudiantes` sigue mandando
-en la operación hasta el recableo de la Fase 4.
+en la operación hasta el recableo final.
+
+**Operación ya sobre matrícula (Fase 4 del rediseño):** asistencia
+(`asistencias.matricula_id`, `Clase::matriculasEsperadas()`), pagos y morosidad
+(`ServicioPagos` sobre matrícula; hermanos vía tutelas), logros
+(`Matricula::visiblePara` para instructor/apoderado), exámenes y graduaciones
+(el grado se cachea en la persona), **suspensiones** (congelan la morosidad) y
+**traslados** entre grupos (`ServicioTraslados`: consentimiento + deuda + ejecución).
+`Estudiante` conserva relaciones-puente (`asistencias/pagos/logros/…`) enrutadas por
+la matrícula. Falta el **corte de identidad** (rediseñar inscripción a
+persona/tutela/documento y **retirar `estudiantes`/`apoderado_estudiante`**).
+
+**Catálogos de la federación (Fase 3/5/6):** `tramos_entrenamiento`, `grados`
+(con `tramo_id`, `meses_sugeridos`, `requiere_nominacion`), `escalas_puntaje`,
+`tipos_cargo`, y competencia (`grupos_edad`, `categorias_competencia`, `pruebas`,
+`criterios_prueba`, `tabla_libres`). **Cobros (Fase 5a):** `tarifas_grupo`, `becas`,
+`cargos` (`ServicioCargos` genera mensualidades por tramo de familia + beca).
+**Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por documento).
+Pendiente: pagos con verificación + `pago_cargo` (5b), planillas operativas de
+competencia (6b), *teams* de spatie + roles por sede (7b).
 
 ## Roles y permisos
 
