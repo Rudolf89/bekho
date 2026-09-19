@@ -57,6 +57,8 @@ class DatabaseSeeder extends Seeder
             DemoAsistenciaSeeder::class,
             DemoPagosSeeder::class,
             DemoExamenesSeeder::class,
+            // Planilla de competencia de demostración (competidores ficticios).
+            DemoCompetenciaSeeder::class,
         ]);
     }
 }

@@ -39,6 +39,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar examenes',
             'inscribir examenes',
             'gestionar planillas',
+            'gestionar competencia', // planillas de competencia (certificación de planillero)
             'gestionar formacion',
             'ver formacion',
             'gestionar cuestionarios', // examinador: crea/edita evaluaciones
@@ -67,6 +68,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar clases',
             'gestionar examenes',
             'gestionar planillas',
+            'gestionar competencia',
             'gestionar formacion',
             'ver formacion',
         ]);
@@ -82,6 +84,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar examenes',
             'inscribir examenes',
             'gestionar planillas',
+            'gestionar competencia',
             'gestionar formacion',
             'ver formacion',
             'gestionar cuestionarios',
@@ -107,6 +110,7 @@ class RolesPermisosSeeder extends Seeder
         Role::findOrCreate('instructor')->syncPermissions([
             'tomar asistencia',
             'gestionar planillas',
+            'gestionar competencia',
             'inscribir examenes',
             'ver formacion',
             'gestionar cuestionarios',
