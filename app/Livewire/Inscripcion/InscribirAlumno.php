@@ -218,6 +218,9 @@ class InscribirAlumno extends Component
             'instructor_persona_id' => User::find($datos['instructor_id'])?->persona_id,
             'dia_vencimiento' => $datos['dia_vencimiento'],
             'acepto_reglamento_at' => now(),
+            // Quién acepta: la persona del alumno (cuando la inscripción cree la
+            // persona del apoderado y su tutela, apuntará al responsable del menor).
+            'acepto_reglamento_persona_id' => $persona->id,
             'aceptado_por_user_id' => Auth::id(),
         ]);
 

@@ -38,6 +38,7 @@ class Matricula extends Model
         'instructor_persona_id',
         'dia_vencimiento',
         'acepto_reglamento_at',
+        'acepto_reglamento_persona_id',
         'aceptado_por_user_id',
         'matricula_origen_id',
     ];
@@ -235,7 +236,17 @@ class Matricula extends Model
     }
 
     /**
-     * Usuario que aceptó el reglamento en nombre del alumno (o su apoderado).
+     * Persona que aceptó el reglamento (alumno adulto o apoderado responsable).
+     *
+     * @return BelongsTo<Persona, $this>
+     */
+    public function aceptoReglamentoPersona(): BelongsTo
+    {
+        return $this->belongsTo(Persona::class, 'acepto_reglamento_persona_id');
+    }
+
+    /**
+     * Cuenta de personal que REGISTRÓ la aceptación del reglamento.
      *
      * @return BelongsTo<User, $this>
      */
