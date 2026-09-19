@@ -205,10 +205,16 @@ class DemoBekhoSeeder extends Seeder
             $user->forceFill(['persona_id' => $persona->id])->save();
 
             if ($user->grupo_id) {
-                PersonalGrupo::updateOrCreate(
+                $personal = PersonalGrupo::updateOrCreate(
                     ['persona_id' => $persona->id, 'grupo_id' => $user->grupo_id],
                     ['activo' => $user->activo],
                 );
+
+                // Refleja los roles del usuario como roles del personal en el grupo
+                // (sin sede acotada por ahora).
+                foreach ($user->roles as $role) {
+                    $personal->otorgarRol($role);
+                }
             }
 
             if ($user->rango_id) {

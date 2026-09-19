@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Permission\Models\Role;
 
 /**
  * Persona que trabaja en un grupo. Dato operativo del grupo (aislado por
- * grupo_id). Los roles concretos por grupo/sede llegarán en personal_grupo_rol.
+ * grupo_id). Sus roles concretos por grupo/sede viven en personal_grupo_rol.
  */
 class PersonalGrupo extends Model
 {
@@ -54,5 +56,28 @@ class PersonalGrupo extends Model
     public function grupo(): BelongsTo
     {
         return $this->belongsTo(Grupo::class);
+    }
+
+    /**
+     * Roles del personal en este grupo (con o sin sede acotada).
+     *
+     * @return HasMany<PersonalGrupoRol, $this>
+     */
+    public function roles(): HasMany
+    {
+        return $this->hasMany(PersonalGrupoRol::class);
+    }
+
+    /**
+     * Otorga un rol al personal, opcionalmente acotado a una sede. Idempotente.
+     */
+    public function otorgarRol(string|Role $rol, ?int $sedeId = null): PersonalGrupoRol
+    {
+        $role = $rol instanceof Role ? $rol : Role::findByName($rol);
+
+        return $this->roles()->updateOrCreate(
+            ['role_id' => $role->id, 'sede_id' => $sedeId],
+            [],
+        );
     }
 }

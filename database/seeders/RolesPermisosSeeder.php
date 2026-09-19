@@ -94,6 +94,18 @@ class RolesPermisosSeeder extends Seeder
             'aprobar legacy',
         ]);
 
+        // direccion-sede (director de una sede): lo operativo de SU sede, con pagos.
+        // El alcance por sede se apoya en personal_grupo_rol.sede_id; la aplicación
+        // por sede vía spatie teams se resolverá aparte (documento de decisiones).
+        Role::findOrCreate('direccion-sede')->syncPermissions([
+            'gestionar alumnos',
+            'gestionar clases',
+            'tomar asistencia',
+            'registrar pagos',
+            'gestionar competencia',
+            'ver formacion',
+        ]);
+
         // administrativo (secretaría/recepción): alumnos, clases, asistencia. SIN pagos.
         Role::findOrCreate('administrativo')->syncPermissions([
             'gestionar alumnos',
