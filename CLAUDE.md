@@ -44,6 +44,20 @@ Piezas del tenant:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
 `intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
 
+## Personas, matrículas e identidad (rediseño en curso)
+
+**En construcción (Fase 2 del rediseño).** La identidad se está separando de la
+operación: `personas` (identidad única de la federación, **sin `grupo_id`**, fecha
+de nacimiento obligatoria, `grado_id` = caché del último grado, `documentos_persona`
+para RUT/pasaporte validado con `App\Support\Rut`); `users` gana `persona_id` (la
+cuenta pasa a ser solo acceso); `tutelas` (apoderado↔alumno, cruza grupos);
+`instructores` (faceta marcial transversal: rango, supervisor por persona,
+certificación); `personal_grupo` (trabajo en un grupo, operativo); `matriculas`
+(alumno↔grupo, operativo, **una sola activa por persona** vía índice parcial, FK
+compuesta `(sede_id, grupo_id)`). `MigraPersonasSeeder` deriva esta capa desde la
+operación actual (`estudiantes`/`users`) — **aditivo**: `estudiantes` sigue mandando
+en la operación hasta el recableo de la Fase 4.
+
 ## Roles y permisos
 
 `admin-plataforma` (todo, cruza grupos) · `federacion` (solo lectura sobre

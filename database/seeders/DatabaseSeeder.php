@@ -49,6 +49,9 @@ class DatabaseSeeder extends Seeder
             LegacySeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             DemoBekhoSeeder::class,
+            // Rediseño Fase 2: deriva la capa de identidad (personas/matrículas)
+            // desde la operación actual. Aditivo; el recableo llega en la Fase 4.
+            MigraPersonasSeeder::class,
         ]);
     }
 }
