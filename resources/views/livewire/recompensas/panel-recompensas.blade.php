@@ -5,14 +5,14 @@
     </div>
 
     {{-- Selección de alumno --}}
-    <flux:select wire:model.live="estudianteId" label="Alumno" placeholder="Elige un alumno…">
+    <flux:select wire:model.live="matriculaId" label="Alumno" placeholder="Elige un alumno…">
         <flux:select.option value="">Elige un alumno…</flux:select.option>
-        @foreach ($estudiantes as $e)
-            <flux:select.option value="{{ $e->id }}">{{ $e->nombre }} · {{ $e->grupo_etario?->etiqueta() }}</flux:select.option>
+        @foreach ($matriculas as $m)
+            <flux:select.option value="{{ $m->id }}">{{ $m->persona?->nombreCompleto() }} · {{ $m->grupo_etario?->etiqueta() }}</flux:select.option>
         @endforeach
     </flux:select>
 
-    @if (! $estudiante)
+    @if (! $matricula)
         <flux:callout icon="gift">Elige un alumno para ver y otorgar sus recompensas.</flux:callout>
     @else
         @foreach ($tipos as $tipo)

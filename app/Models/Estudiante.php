@@ -210,13 +210,22 @@ class Estudiante extends Model
     }
 
     /**
-     * Logros (recompensas ganadas) del alumno.
+     * Logros (recompensas ganadas) del alumno, a través de su matrícula.
+     * Puente transitorio mientras vive Estudiante.
      *
-     * @return HasMany<Logro, $this>
+     * @return HasManyThrough<Logro, Matricula, $this>
      */
-    public function logros(): HasMany
+    public function logros(): HasManyThrough
     {
-        return $this->hasMany(Logro::class);
+        // A través de la matrícula (los logros van por matrícula desde la Fase 4).
+        return $this->hasManyThrough(
+            Logro::class,
+            Matricula::class,
+            'estudiante_id', // FK en matriculas → estudiantes
+            'matricula_id',  // FK en logros → matriculas
+            'id',
+            'id',
+        );
     }
 
     /**

@@ -3,8 +3,7 @@
 namespace App\Livewire\Recompensas;
 
 use App\Enums\TipoRecompensa;
-use App\Models\Estudiante;
-use App\Models\Logro;
+use App\Models\Matricula;
 use App\Models\Recompensa;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
@@ -13,68 +12,69 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 /**
- * Panel de recompensas (gamificación): el instructor elige un alumno y otorga o
- * quita logros. El catálogo aplicable depende del grupo etario del alumno (Star
- * Tag es de Tigers, Franjas de For Kids; los coleccionables, de todos).
+ * Panel de recompensas (gamificación): el instructor elige una matrícula (alumno)
+ * y otorga o quita logros. El catálogo aplicable depende del grupo etario del
+ * alumno (Star Tag es de Tigers, Franjas de For Kids; los coleccionables, de todos).
  */
 #[Title('Recompensas')]
 class PanelRecompensas extends Component
 {
     #[Url]
-    public ?int $estudianteId = null;
+    public ?int $matriculaId = null;
 
-    public function updatedEstudianteId(): void
+    public function updatedMatriculaId(): void
     {
         $this->resetErrorBag();
     }
 
     /**
-     * Alumno seleccionado, si es visible para el usuario.
+     * Matrícula seleccionada, si es visible para el usuario.
      */
-    private function estudiante(): ?Estudiante
+    private function matricula(): ?Matricula
     {
-        if (! $this->estudianteId) {
+        if (! $this->matriculaId) {
             return null;
         }
 
-        return Estudiante::visiblePara(Auth::user())->find($this->estudianteId);
+        return Matricula::visiblePara(Auth::user())->with('persona')->find($this->matriculaId);
     }
 
     public function otorgar(int $recompensaId): void
     {
         abort_unless(Auth::user()->can('gestionar recompensas'), 403);
 
-        $estudiante = $this->estudiante();
+        $matricula = $this->matricula();
         $recompensa = Recompensa::activas()->find($recompensaId);
-        if (! $estudiante || ! $recompensa) {
+        if (! $matricula || ! $recompensa) {
             return;
         }
 
         // Las no repetibles se ganan una sola vez.
-        if (! $recompensa->repetible && $estudiante->logros()->where('recompensa_id', $recompensa->id)->exists()) {
+        if (! $recompensa->repetible && $matricula->logros()->where('recompensa_id', $recompensa->id)->exists()) {
             return;
         }
 
-        $estudiante->logros()->create([
+        $matricula->logros()->create([
+            'grupo_id' => $matricula->grupo_id,
             'recompensa_id' => $recompensa->id,
             'otorgado_por' => Auth::id(),
             'otorgado_at' => now(),
         ]);
 
-        Flux::toast(variant: 'success', text: "Se otorgó “{$recompensa->nombre}” a {$estudiante->nombre}.");
+        Flux::toast(variant: 'success', text: "Se otorgó “{$recompensa->nombre}” a {$matricula->persona?->nombreCompleto()}.");
     }
 
     public function quitar(int $recompensaId): void
     {
         abort_unless(Auth::user()->can('gestionar recompensas'), 403);
 
-        $estudiante = $this->estudiante();
-        if (! $estudiante) {
+        $matricula = $this->matricula();
+        if (! $matricula) {
             return;
         }
 
         // Quita el último logro de esa recompensa (para Star Tag, resta uno).
-        $logro = $estudiante->logros()
+        $logro = $matricula->logros()
             ->where('recompensa_id', $recompensaId)
             ->latest('id')
             ->first();
@@ -84,25 +84,26 @@ class PanelRecompensas extends Component
 
     public function render()
     {
-        $estudiante = $this->estudiante();
+        $matricula = $this->matricula();
 
         $recompensas = Recompensa::activas()
-            ->when($estudiante, fn ($q) => $q->paraGrupo($estudiante->grupo_etario))
+            ->when($matricula, fn ($q) => $q->paraGrupo($matricula->grupo_etario))
             ->ordenadas()
             ->get()
             ->groupBy(fn (Recompensa $r) => $r->tipo->value);
 
-        // Conteo de logros del alumno por recompensa.
-        $conteo = $estudiante
-            ? $estudiante->logros()
+        // Conteo de logros de la matrícula por recompensa.
+        $conteo = $matricula
+            ? $matricula->logros()
                 ->selectRaw('recompensa_id, count(*) as total')
                 ->groupBy('recompensa_id')
                 ->pluck('total', 'recompensa_id')
             : collect();
 
         return view('livewire.recompensas.panel-recompensas', [
-            'estudiantes' => Estudiante::visiblePara(Auth::user())->activos()->orderBy('nombre')->get(),
-            'estudiante' => $estudiante,
+            'matriculas' => Matricula::visiblePara(Auth::user())->activas()->with('persona')->get()
+                ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())->values(),
+            'matricula' => $matricula,
             'recompensasPorTipo' => $recompensas,
             'tipos' => TipoRecompensa::cases(),
             'conteo' => $conteo,

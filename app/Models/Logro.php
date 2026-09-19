@@ -19,7 +19,7 @@ class Logro extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'grupo_id', 'estudiante_id', 'recompensa_id', 'otorgado_por', 'nota', 'otorgado_at',
+        'grupo_id', 'matricula_id', 'recompensa_id', 'otorgado_por', 'nota', 'otorgado_at',
     ];
 
     /**
@@ -31,11 +31,11 @@ class Logro extends Model
     }
 
     /**
-     * @return BelongsTo<Estudiante, $this>
+     * @return BelongsTo<Matricula, $this>
      */
-    public function estudiante(): BelongsTo
+    public function matricula(): BelongsTo
     {
-        return $this->belongsTo(Estudiante::class);
+        return $this->belongsTo(Matricula::class);
     }
 
     /**

@@ -4,8 +4,9 @@ use App\Enums\GrupoEtario;
 use App\Enums\TipoRecompensa;
 use App\Livewire\Recompensas\PanelRecompensas;
 use App\Models\Clase;
-use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Recompensa;
 use App\Models\Sede;
 use App\Models\User;
@@ -28,11 +29,13 @@ beforeEach(function () {
 
 afterEach(fn () => Tenant::olvidar());
 
-function alumnoDe(Grupo $a, GrupoEtario $grupo = GrupoEtario::ForKids): Estudiante
+function alumnoDe(Grupo $a, GrupoEtario $grupo = GrupoEtario::ForKids): Matricula
 {
-    return Estudiante::create([
-        'grupo_id' => $a->id, 'nombre' => 'Alumno '.uniqid(),
-        'grupo_etario' => $grupo->value, 'activo' => true,
+    $persona = Persona::create(['nombres' => 'Alumno '.uniqid(), 'fecha_nacimiento' => now()->subYears(9)]);
+
+    return Matricula::create([
+        'grupo_id' => $a->id, 'persona_id' => $persona->id,
+        'grupo_etario' => $grupo->value, 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]);
 }
 
@@ -76,7 +79,7 @@ test('el instructor otorga una recompensa a un alumno de sus clases', function (
     $coleccionable = Recompensa::where('tipo', TipoRecompensa::Coleccionable)->first();
 
     Livewire::actingAs($instructor)->test(PanelRecompensas::class)
-        ->set('estudianteId', $alumno->id)
+        ->set('matriculaId', $alumno->id)
         ->call('otorgar', $coleccionable->id);
 
     expect($alumno->logros()->where('recompensa_id', $coleccionable->id)->count())->toBe(1);
@@ -92,7 +95,7 @@ test('una recompensa no repetible solo se gana una vez; Star Tag se acumula', fu
     $estrella = Recompensa::where('tipo', TipoRecompensa::StarTag)->first();
 
     $panel = Livewire::actingAs($instructor)->test(PanelRecompensas::class)
-        ->set('estudianteId', $alumno->id)
+        ->set('matriculaId', $alumno->id)
         ->call('otorgar', $coleccionable->id)
         ->call('otorgar', $coleccionable->id) // segundo intento: no duplica
         ->call('otorgar', $estrella->id)
@@ -116,7 +119,7 @@ test('el panel solo ofrece recompensas aplicables al grupo del alumno', function
 
     // Un alumno Tigers ve Star Tag y coleccionables, pero NO las franjas de For Kids.
     Livewire::actingAs($direccion)->test(PanelRecompensas::class)
-        ->set('estudianteId', $tiger->id)
+        ->set('matriculaId', $tiger->id)
         ->assertSee('Estrella Tigre')
         ->assertSee('Coleccionable: Disciplina')
         ->assertDontSee('Franja Amarilla');

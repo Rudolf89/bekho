@@ -31,17 +31,16 @@ return new class extends Migration
         });
 
         // Logros (operativo, con grupo_id).
+        // matricula_id (y su índice) se añade en una migración posterior, porque
+        // la tabla matriculas se crea después (rediseño Fase 2/4).
         Schema::create('logros', function (Blueprint $table) {
             $table->id();
             $table->foreignId('grupo_id')->nullable()->constrained('grupos')->nullOnDelete();
-            $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('recompensa_id')->constrained('recompensas')->cascadeOnDelete();
             $table->foreignId('otorgado_por')->nullable()->constrained('users')->nullOnDelete();
             $table->text('nota')->nullable();
             $table->timestamp('otorgado_at')->nullable();
             $table->timestamps();
-
-            $table->index(['estudiante_id', 'recompensa_id']);
         });
     }
 

@@ -5,6 +5,8 @@ use App\Enums\TipoRecompensa;
 use App\Livewire\Recompensas\MisLogros;
 use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Recompensa;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -32,8 +34,16 @@ function estudianteConLogro(Grupo $a, TipoRecompensa $tipo): Estudiante
         'grupo_id' => $a->id, 'nombre' => 'Hijo '.uniqid(),
         'grupo_etario' => GrupoEtario::ForKids->value, 'activo' => true,
     ]);
+
+    // El alumno es una persona con matrícula; el logro se otorga a la matrícula.
+    $persona = Persona::create(['nombres' => $e->nombre, 'fecha_nacimiento' => now()->subYears(9)]);
+    $matricula = Matricula::create([
+        'grupo_id' => $a->id, 'persona_id' => $persona->id, 'estudiante_id' => $e->id,
+        'grupo_etario' => GrupoEtario::ForKids->value, 'estado' => 'activa', 'fecha_ingreso' => now(),
+    ]);
+
     $recompensa = Recompensa::where('tipo', $tipo)->first();
-    $e->logros()->create([
+    $matricula->logros()->create([
         'recompensa_id' => $recompensa->id, 'otorgado_at' => now(), 'grupo_id' => $a->id,
     ]);
 

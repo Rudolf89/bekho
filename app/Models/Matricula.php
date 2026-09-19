@@ -95,6 +95,59 @@ class Matricula extends Model
     }
 
     /**
+     * Logros (gamificación) ganados por esta matrícula.
+     *
+     * @return HasMany<Logro, $this>
+     */
+    public function logros(): HasMany
+    {
+        return $this->hasMany(Logro::class);
+    }
+
+    /**
+     * Acota las matrículas a las visibles para el usuario: dirección/administración
+     * ve todas; el instructor solo las de sus clases (misma sede y grupo etario);
+     * el apoderado solo las de las personas que tutela; el resto, ninguna.
+     *
+     * @param  Builder<Matricula>  $query
+     * @return Builder<Matricula>
+     */
+    public function scopeVisiblePara(Builder $query, User $usuario): Builder
+    {
+        if ($usuario->can('gestionar alumnos')) {
+            return $query;
+        }
+
+        if ($usuario->hasRole('instructor')) {
+            $clases = $usuario->clases()->get(['sede_id', 'grupo_etario']);
+
+            if ($clases->isEmpty()) {
+                return $query->whereRaw('1 = 0');
+            }
+
+            return $query->where(function (Builder $q) use ($clases): void {
+                foreach ($clases as $clase) {
+                    $q->orWhere(fn (Builder $sub) => $sub
+                        ->where('sede_id', $clase->sede_id)
+                        ->where('grupo_etario', $clase->grupo_etario->value));
+                }
+            });
+        }
+
+        if ($usuario->hasRole('apoderado')) {
+            if (! $usuario->persona_id) {
+                return $query->whereRaw('1 = 0');
+            }
+
+            return $query->whereIn('persona_id', Tutela::query()
+                ->where('apoderado_persona_id', $usuario->persona_id)
+                ->pluck('alumno_persona_id'));
+        }
+
+        return $query->whereRaw('1 = 0');
+    }
+
+    /**
      * @return BelongsTo<Grupo, $this>
      */
     public function grupo(): BelongsTo
