@@ -38,7 +38,7 @@
             <flux:table.rows>
                 @forelse ($inscritos as $ins)
                     <flux:table.row wire:key="ins-{{ $ins->id }}">
-                        <flux:table.cell variant="strong">{{ $ins->estudiante?->nombre }}</flux:table.cell>
+                        <flux:table.cell variant="strong">{{ $ins->matricula?->persona?->nombreCompleto() }}</flux:table.cell>
                         <flux:table.cell>
                             {{ $ins->gradoOrigen?->nombre ?? '—' }} → {{ $ins->gradoDestino?->nombre ?? '—' }}
                         </flux:table.cell>
@@ -64,7 +64,7 @@
                                     @can('inscribir examenes')
                                         <flux:button wire:click="eliminar({{ $ins->id }})" icon="trash" variant="ghost" size="sm"
                                             title="Quitar inscripción"
-                                            wire:confirm="¿Quitar a {{ $ins->estudiante?->nombre }} de esta convocatoria?" />
+                                            wire:confirm="¿Quitar a {{ $ins->matricula?->persona?->nombreCompleto() }} de esta convocatoria?" />
                                     @endcan
                                 @endunless
                             </div>
@@ -101,8 +101,8 @@
                 </flux:table.columns>
                 <flux:table.rows>
                     @forelse ($sugeridos as $s)
-                        <flux:table.row wire:key="sug-{{ $s['estudiante']->id }}">
-                            <flux:table.cell variant="strong">{{ $s['estudiante']->nombre }}</flux:table.cell>
+                        <flux:table.row wire:key="sug-{{ $s['matricula']->id }}">
+                            <flux:table.cell variant="strong">{{ $s['matricula']->persona?->nombreCompleto() }}</flux:table.cell>
                             <flux:table.cell>{{ $s['meses'] }}</flux:table.cell>
                             <flux:table.cell>{{ $s['asistencia'] !== null ? $s['asistencia'].'%' : '—' }}</flux:table.cell>
                             <flux:table.cell>
@@ -112,7 +112,7 @@
                             </flux:table.cell>
                             <flux:table.cell>
                                 <div class="flex justify-end">
-                                    <flux:button wire:click="inscribir({{ $s['estudiante']->id }})" size="sm" variant="ghost" icon="plus">
+                                    <flux:button wire:click="inscribir({{ $s['matricula']->id }})" size="sm" variant="ghost" icon="plus">
                                         Inscribir
                                     </flux:button>
                                 </div>

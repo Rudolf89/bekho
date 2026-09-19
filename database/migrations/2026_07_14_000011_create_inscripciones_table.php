@@ -16,11 +16,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+        // matricula_id (y su único) se añade en una migración posterior, porque
+        // la tabla matriculas se crea después (rediseño Fase 2/4).
         Schema::create('inscripciones', function (Blueprint $table) {
             $table->id();
             $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('convocatoria_id')->constrained('convocatorias')->cascadeOnDelete();
-            $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('grado_origen_id')->nullable()->constrained('grados')->nullOnDelete();
             $table->foreignId('grado_destino_id')->nullable()->constrained('grados')->nullOnDelete();
             $table->foreignId('instructor_id')->nullable()->constrained('users')->nullOnDelete();
@@ -30,7 +31,6 @@ return new class extends Migration
             $table->text('observaciones')->nullable();
             $table->timestamps();
 
-            $table->unique(['convocatoria_id', 'estudiante_id']);
             $table->index('grupo_id');
         });
     }

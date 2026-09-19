@@ -2,11 +2,12 @@
 
 use App\Enums\ResultadoExamen;
 use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Graduacion;
 use App\Models\Grupo;
 use App\Models\Inscripcion;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\User;
 use App\Services\ServicioExamenes;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -34,6 +35,19 @@ function usuarioExamen(string $rol, ?int $grupoId, ?int $supervisorId = null): U
     $user->assignRole($rol);
 
     return $user;
+}
+
+/**
+ * Matrícula activa (alumno) con una persona que puede llevar un grado.
+ */
+function matriculaExamen(int $grupoId, ?int $gradoId = null, string $nombre = 'Alumno', string $etario = 'for_kids'): Matricula
+{
+    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(12), 'grado_id' => $gradoId]);
+
+    return Matricula::create([
+        'grupo_id' => $grupoId, 'persona_id' => $persona->id,
+        'grupo_etario' => $etario, 'estado' => 'activa', 'fecha_ingreso' => now(),
+    ]);
 }
 
 // --- Permisos ----------------------------------------------------------------
@@ -82,15 +96,12 @@ test('aprobar un examen sube el grado del estudiante y crea el historial', funct
     $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
     $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
-    $estudiante = Estudiante::create([
-        'grupo_id' => $this->bekho->id, 'nombre' => 'Carlos', 'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
-    ]);
+    $matricula = matriculaExamen($this->bekho->id, $amarillo->id, 'Carlos');
     $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
     $instructor = usuarioExamen('instructor', $this->bekho->id);
 
     $inscripcion = Inscripcion::create([
-        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
+        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'matricula_id' => $matricula->id,
         'grado_origen_id' => $amarillo->id, 'grado_destino_id' => $verde->id, 'instructor_id' => $instructor->id,
         'visto_bueno' => true,
     ]);
@@ -99,7 +110,7 @@ test('aprobar un examen sube el grado del estudiante y crea el historial', funct
     $servicio->registrarResultado($inscripcion, ResultadoExamen::Aprobado, 9.3);
     $servicio->finalizar($conv);
 
-    expect($estudiante->fresh()->grado_id)->toBe($verde->id);
+    expect($matricula->persona->fresh()->grado_id)->toBe($verde->id);
     expect(Graduacion::count())->toBe(1);
     // Idempotente: finalizar de nuevo no duplica.
     $servicio->finalizar($conv->fresh());
@@ -110,14 +121,11 @@ test('un examen reprobado no sube el grado ni crea historial', function () {
     $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
     $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
 
-    $estudiante = Estudiante::create([
-        'grupo_id' => $this->bekho->id, 'nombre' => 'Diego', 'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
-    ]);
+    $matricula = matriculaExamen($this->bekho->id, $amarillo->id, 'Diego');
     $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen', 'fecha' => now(), 'estado' => 'programada']);
 
     $inscripcion = Inscripcion::create([
-        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'estudiante_id' => $estudiante->id,
+        'grupo_id' => $this->bekho->id, 'convocatoria_id' => $conv->id, 'matricula_id' => $matricula->id,
         'grado_origen_id' => $amarillo->id, 'grado_destino_id' => $verde->id, 'visto_bueno' => true,
     ]);
 
@@ -125,7 +133,7 @@ test('un examen reprobado no sube el grado ni crea historial', function () {
     $servicio->registrarResultado($inscripcion, ResultadoExamen::Reprobado);
     $servicio->finalizar($conv);
 
-    expect($estudiante->fresh()->grado_id)->toBe($amarillo->id);
+    expect($matricula->persona->fresh()->grado_id)->toBe($amarillo->id);
     expect(Graduacion::count())->toBe(0);
 });
 
@@ -140,12 +148,9 @@ test('el conteo de graduaciones sube por la línea de supervisión', function ()
 
     // Dos graduaciones acreditadas a Beto.
     foreach (['Uno', 'Dos'] as $nombre) {
-        $est = Estudiante::create([
-            'grupo_id' => $this->bekho->id, 'nombre' => $nombre, 'grupo_etario' => 'for_kids',
-            'nivel' => 'principiantes', 'grado_id' => $amarillo->id, 'activo' => true,
-        ]);
+        $matricula = matriculaExamen($this->bekho->id, $amarillo->id, $nombre);
         Graduacion::create([
-            'grupo_id' => $this->bekho->id, 'estudiante_id' => $est->id, 'grado_origen_id' => $amarillo->id,
+            'grupo_id' => $this->bekho->id, 'matricula_id' => $matricula->id, 'grado_origen_id' => $amarillo->id,
             'grado_destino_id' => $verde->id, 'instructor_id' => $beto->id, 'fecha' => now(), 'resultado' => 'aprobado',
         ]);
     }
@@ -162,23 +167,17 @@ test('el conteo de graduaciones sube por la línea de supervisión', function ()
 // --- Elegibilidad ------------------------------------------------------------
 
 test('sin umbrales configurados, todos los activos cumplen elegibilidad', function () {
-    $estudiante = Estudiante::create([
-        'grupo_id' => $this->bekho->id, 'nombre' => 'Eva', 'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes', 'activo' => true,
-    ]);
+    $matricula = matriculaExamen($this->bekho->id, nombre: 'Eva');
 
     // Config por defecto: umbrales null → no filtran.
-    expect(app(ServicioExamenes::class)->cumpleElegibilidad($estudiante))->toBeTrue();
+    expect(app(ServicioExamenes::class)->cumpleElegibilidad($matricula))->toBeTrue();
 });
 
 test('con umbral de meses en grado, un alumno recién ingresado no cumple', function () {
     config(['bekho.examenes.meses_minimos_en_grado' => 6]);
 
-    $estudiante = Estudiante::create([
-        'grupo_id' => $this->bekho->id, 'nombre' => 'Nuevo', 'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes', 'activo' => true,
-    ]);
+    $matricula = matriculaExamen($this->bekho->id, nombre: 'Nuevo');
 
-    // Recién creado: 0 meses en grado < 6 → no cumple.
-    expect(app(ServicioExamenes::class)->cumpleElegibilidad($estudiante))->toBeFalse();
+    // Recién creada: 0 meses en grado < 6 → no cumple.
+    expect(app(ServicioExamenes::class)->cumpleElegibilidad($matricula))->toBeFalse();
 });

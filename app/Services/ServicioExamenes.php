@@ -7,9 +7,9 @@ use App\Enums\EstadoConvocatoria;
 use App\Enums\ResultadoExamen;
 use App\Models\Clase;
 use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Graduacion;
 use App\Models\Inscripcion;
+use App\Models\Matricula;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
@@ -21,14 +21,14 @@ use Illuminate\Support\Collection;
 class ServicioExamenes
 {
     /**
-     * Instructor a quien se acredita por defecto la graduación del estudiante:
+     * Instructor a quien se acredita por defecto la graduación de la matrícula:
      * el instructor de su clase (misma sede y grupo etario).
      */
-    public function instructorPorDefecto(Estudiante $estudiante): ?User
+    public function instructorPorDefecto(Matricula $matricula): ?User
     {
         $clase = Clase::activas()
-            ->where('sede_id', $estudiante->sede_id)
-            ->where('grupo_etario', $estudiante->grupo_etario->value)
+            ->where('sede_id', $matricula->sede_id)
+            ->where('grupo_etario', $matricula->grupo_etario->value)
             ->whereNotNull('instructor_id')
             ->first();
 
@@ -36,39 +36,39 @@ class ServicioExamenes
     }
 
     /**
-     * Fecha desde la que el estudiante está en su grado actual (última
-     * graduación, o su fecha de alta si nunca se ha graduado).
+     * Fecha desde la que la matrícula está en su grado actual (última graduación,
+     * o su fecha de ingreso si nunca se ha graduado).
      */
-    public function fechaDesdeGradoActual(Estudiante $estudiante): CarbonInterface
+    public function fechaDesdeGradoActual(Matricula $matricula): CarbonInterface
     {
-        $ultima = $estudiante->graduaciones()->latest('fecha')->first();
+        $ultima = $matricula->graduaciones()->latest('fecha')->first();
 
-        return $ultima?->fecha ?? $estudiante->created_at;
+        return $ultima?->fecha ?? $matricula->fecha_ingreso ?? $matricula->created_at;
     }
 
     /**
-     * Meses que el estudiante lleva en su grado actual.
+     * Meses que la matrícula lleva en su grado actual.
      */
-    public function mesesEnGradoActual(Estudiante $estudiante): int
+    public function mesesEnGradoActual(Matricula $matricula): int
     {
-        return (int) $this->fechaDesdeGradoActual($estudiante)->diffInMonths(now());
+        return (int) $this->fechaDesdeGradoActual($matricula)->diffInMonths(now());
     }
 
     /**
-     * Porcentaje de asistencia del estudiante desde que está en su grado actual.
+     * Porcentaje de asistencia de la matrícula desde que está en su grado actual.
      * Devuelve null si no hay asistencias registradas.
      */
-    public function porcentajeAsistencia(Estudiante $estudiante): ?int
+    public function porcentajeAsistencia(Matricula $matricula): ?int
     {
-        $desde = $this->fechaDesdeGradoActual($estudiante);
+        $desde = $this->fechaDesdeGradoActual($matricula);
 
-        $total = $estudiante->asistencias()->whereDate('fecha', '>=', $desde)->count();
+        $total = $matricula->asistencias()->whereDate('fecha', '>=', $desde)->count();
 
         if ($total === 0) {
             return null;
         }
 
-        $presentes = $estudiante->asistencias()
+        $presentes = $matricula->asistencias()
             ->whereDate('fecha', '>=', $desde)
             ->where('estado', EstadoAsistencia::Presente->value)
             ->count();
@@ -77,40 +77,42 @@ class ServicioExamenes
     }
 
     /**
-     * Indica si el estudiante cumple los criterios automáticos de elegibilidad.
+     * Indica si la matrícula cumple los criterios automáticos de elegibilidad.
      * Un umbral null en config no filtra (queda a criterio del instructor).
      */
-    public function cumpleElegibilidad(Estudiante $estudiante): bool
+    public function cumpleElegibilidad(Matricula $matricula): bool
     {
         $minAsistencia = config('bekho.examenes.asistencia_minima_pct');
         $minMeses = config('bekho.examenes.meses_minimos_en_grado');
 
         $asistenciaOk = $minAsistencia === null
-            || (($pct = $this->porcentajeAsistencia($estudiante)) !== null && $pct >= $minAsistencia);
+            || (($pct = $this->porcentajeAsistencia($matricula)) !== null && $pct >= $minAsistencia);
 
         $mesesOk = $minMeses === null
-            || $this->mesesEnGradoActual($estudiante) >= $minMeses;
+            || $this->mesesEnGradoActual($matricula) >= $minMeses;
 
         return $asistenciaOk && $mesesOk;
     }
 
     /**
-     * Estudiantes activos sugeridos para una convocatoria (de su sede), con las
+     * Matrículas activas sugeridas para una convocatoria (de su sede), con las
      * métricas de elegibilidad. El instructor confirma con el visto bueno.
      *
-     * @return Collection<int, array{estudiante: Estudiante, meses: int, asistencia: int|null, cumple: bool}>
+     * @return Collection<int, array{matricula: Matricula, meses: int, asistencia: int|null, cumple: bool}>
      */
     public function sugerirElegibles(Convocatoria $convocatoria): Collection
     {
-        return Estudiante::activos()
+        return Matricula::activas()
             ->when($convocatoria->sede_id, fn ($q) => $q->where('sede_id', $convocatoria->sede_id))
-            ->orderBy('nombre')
+            ->with('persona')
             ->get()
-            ->map(fn (Estudiante $e) => [
-                'estudiante' => $e,
-                'meses' => $this->mesesEnGradoActual($e),
-                'asistencia' => $this->porcentajeAsistencia($e),
-                'cumple' => $this->cumpleElegibilidad($e),
+            ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())
+            ->values()
+            ->map(fn (Matricula $m) => [
+                'matricula' => $m,
+                'meses' => $this->mesesEnGradoActual($m),
+                'asistencia' => $this->porcentajeAsistencia($m),
+                'cumple' => $this->cumpleElegibilidad($m),
             ]);
     }
 
@@ -138,7 +140,7 @@ class ServicioExamenes
         }
 
         $yaExiste = Graduacion::where('convocatoria_id', $inscripcion->convocatoria_id)
-            ->where('estudiante_id', $inscripcion->estudiante_id)
+            ->where('matricula_id', $inscripcion->matricula_id)
             ->exists();
 
         if ($yaExiste) {
@@ -147,7 +149,7 @@ class ServicioExamenes
 
         $graduacion = Graduacion::create([
             'grupo_id' => $inscripcion->grupo_id,
-            'estudiante_id' => $inscripcion->estudiante_id,
+            'matricula_id' => $inscripcion->matricula_id,
             'convocatoria_id' => $inscripcion->convocatoria_id,
             'grado_origen_id' => $inscripcion->grado_origen_id,
             'grado_destino_id' => $inscripcion->grado_destino_id,
@@ -157,8 +159,9 @@ class ServicioExamenes
             'nota' => $inscripcion->nota,
         ]);
 
+        // El grado se cachea en la persona (última graduación).
         if ($inscripcion->grado_destino_id) {
-            $inscripcion->estudiante->update(['grado_id' => $inscripcion->grado_destino_id]);
+            $inscripcion->matricula->persona->update(['grado_id' => $inscripcion->grado_destino_id]);
         }
 
         return $graduacion;

@@ -13,7 +13,6 @@ use App\Models\Clase;
 use App\Models\Convocatoria;
 use App\Models\Estudiante;
 use App\Models\Grado;
-use App\Models\Graduacion;
 use App\Models\Grupo;
 use App\Models\Planilla;
 use App\Models\Sede;
@@ -155,31 +154,9 @@ class DemoBekhoSeeder extends Seeder
         // La asistencia de demostración se siembra en DemoAsistenciaSeeder, que
         // corre después de MigraPersonasSeeder (la asistencia va por matrícula).
 
-        // Los pagos de demostración se siembran en DemoPagosSeeder (van por
-        // matrícula, que se crea después en MigraPersonasSeeder).
-        $alumnos = Estudiante::activos()->get();
-
-        // Convocatoria próxima con inscritos.
-        $conv = Convocatoria::updateOrCreate(
-            ['grupo_id' => $grupo->id, 'nombre' => 'Examen de grado'],
-            ['sede_id' => $sede->id, 'fecha' => now()->addDays(9)->toDateString(), 'estado' => 'programada'],
-        );
-        foreach ($alumnos->take(9) as $est) {
-            $conv->inscripciones()->updateOrCreate(
-                ['estudiante_id' => $est->id],
-                ['grupo_id' => $grupo->id, 'grado_origen_id' => $est->grado_id, 'instructor_id' => $rodolfo->id],
-            );
-        }
-
-        // Historial de graduaciones (conteo en cascada del maestro/admin-plataforma).
-        $grado = Grado::porEscala(EscalaGrado::Adultos)->ordenados()->first();
-        foreach ($alumnos->take(14) as $m => $est) {
-            $instructor = $instructores[$m % 2];
-            Graduacion::updateOrCreate(
-                ['grupo_id' => $grupo->id, 'estudiante_id' => $est->id, 'convocatoria_id' => null, 'instructor_id' => $instructor->id],
-                ['grado_destino_id' => $grado?->id, 'fecha' => now()->subMonths($m % 6 + 1)->toDateString(), 'resultado' => 'aprobado'],
-            );
-        }
+        // Pagos, convocatoria de examen y graduaciones de demostración se siembran
+        // en DemoPagosSeeder y DemoExamenesSeeder (van por matrícula, que se crea
+        // después en MigraPersonasSeeder).
 
         Tenant::olvidar();
     }

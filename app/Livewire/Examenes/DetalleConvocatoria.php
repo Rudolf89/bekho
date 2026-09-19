@@ -6,9 +6,9 @@ use App\Enums\EstadoConvocatoria;
 use App\Enums\ResultadoExamen;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Inscripcion;
+use App\Models\Matricula;
 use App\Models\User;
 use App\Services\ServicioExamenes;
 use Flux\Flux;
@@ -45,24 +45,26 @@ class DetalleConvocatoria extends Component
     }
 
     /**
-     * Grado siguiente en la escala del estudiante (destino sugerido).
+     * Grado siguiente en la escala de la matrícula (destino sugerido).
      */
-    protected function siguienteGrado(Estudiante $estudiante): ?Grado
+    protected function siguienteGrado(Matricula $matricula): ?Grado
     {
-        if (! $estudiante->grado) {
-            return Grado::porEscala($estudiante->escalaGrado())->ordenados()->first();
+        $gradoActual = $matricula->persona?->grado;
+
+        if (! $gradoActual) {
+            return Grado::porEscala($matricula->escalaGrado())->ordenados()->first();
         }
 
-        return Grado::porEscala($estudiante->escalaGrado())
-            ->where('orden', '>', $estudiante->grado->orden)
+        return Grado::porEscala($matricula->escalaGrado())
+            ->where('orden', '>', $gradoActual->orden)
             ->ordenados()
             ->first();
     }
 
     /**
-     * Inscribe a un estudiante en la convocatoria.
+     * Inscribe una matrícula (alumno) en la convocatoria.
      */
-    public function inscribir(int $estudianteId, ServicioExamenes $servicio): void
+    public function inscribir(int $matriculaId, ServicioExamenes $servicio): void
     {
         // El instructor inscribe; el alumno queda inscrito sin aprobación de nadie.
         $this->authorize('inscribir examenes');
@@ -72,22 +74,22 @@ class DetalleConvocatoria extends Component
             return;
         }
 
-        $estudiante = Estudiante::findOrFail($estudianteId);
+        $matricula = Matricula::with('persona')->findOrFail($matriculaId);
 
         Inscripcion::firstOrCreate(
             [
                 'convocatoria_id' => $this->convocatoria->id,
-                'estudiante_id' => $estudiante->id,
+                'matricula_id' => $matricula->id,
             ],
             [
                 'grupo_id' => $this->convocatoria->grupo_id,
-                'grado_origen_id' => $estudiante->grado_id,
-                'grado_destino_id' => $this->siguienteGrado($estudiante)?->id,
-                'instructor_id' => $servicio->instructorPorDefecto($estudiante)?->id,
+                'grado_origen_id' => $matricula->persona?->grado_id,
+                'grado_destino_id' => $this->siguienteGrado($matricula)?->id,
+                'instructor_id' => $servicio->instructorPorDefecto($matricula)?->id,
             ],
         );
 
-        Flux::toast(variant: 'success', text: 'Estudiante inscrito.');
+        Flux::toast(variant: 'success', text: 'Alumno inscrito.');
     }
 
     public function abrirEdicion(Inscripcion $inscripcion): void
@@ -162,13 +164,13 @@ class DetalleConvocatoria extends Component
     public function render(ServicioExamenes $servicio)
     {
         $inscritos = $this->convocatoria->inscripciones()
-            ->with(['estudiante', 'gradoOrigen', 'gradoDestino', 'instructor'])
+            ->with(['matricula.persona', 'gradoOrigen', 'gradoDestino', 'instructor'])
             ->get();
 
-        $idsInscritos = $inscritos->pluck('estudiante_id')->all();
+        $idsInscritos = $inscritos->pluck('matricula_id')->all();
 
         $sugeridos = $servicio->sugerirElegibles($this->convocatoria)
-            ->reject(fn ($s) => in_array($s['estudiante']->id, $idsInscritos, true))
+            ->reject(fn ($s) => in_array($s['matricula']->id, $idsInscritos, true))
             ->values();
 
         return view('livewire.examenes.detalle-convocatoria', [

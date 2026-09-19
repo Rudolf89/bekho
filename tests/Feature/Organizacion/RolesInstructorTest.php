@@ -8,6 +8,8 @@ use App\Models\Convocatoria;
 use App\Models\Estudiante;
 use App\Models\Grupo;
 use App\Models\Inscripcion;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -118,13 +120,14 @@ test('un instructor puede inscribir a un alumno en un examen', function () {
     $instructor = usuarioRol('instructor', $this->bekho->id);
     $conv = Convocatoria::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Examen',
         'fecha' => now()->addDays(5), 'estado' => 'programada']);
-    $alumno = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Inscribible',
-        'grupo_etario' => 'for_kids', 'activo' => true]);
+    $persona = Persona::create(['nombres' => 'Inscribible', 'fecha_nacimiento' => now()->subYears(10)]);
+    $matricula = Matricula::create(['grupo_id' => $this->bekho->id, 'persona_id' => $persona->id,
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now()]);
 
     Livewire::actingAs($instructor)->test(DetalleConvocatoria::class, ['convocatoria' => $conv])
-        ->call('inscribir', $alumno->id);
+        ->call('inscribir', $matricula->id);
 
-    expect(Inscripcion::where('convocatoria_id', $conv->id)->where('estudiante_id', $alumno->id)->exists())
+    expect(Inscripcion::where('convocatoria_id', $conv->id)->where('matricula_id', $matricula->id)->exists())
         ->toBeTrue();
 });
 

@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
@@ -192,21 +191,25 @@ class Estudiante extends Model
     /**
      * Inscripciones a convocatorias de examen.
      *
-     * @return HasMany<Inscripcion, $this>
+     * @return HasManyThrough<Inscripcion, Matricula, $this>
      */
-    public function inscripciones(): HasMany
+    public function inscripciones(): HasManyThrough
     {
-        return $this->hasMany(Inscripcion::class);
+        return $this->hasManyThrough(
+            Inscripcion::class, Matricula::class, 'estudiante_id', 'matricula_id', 'id', 'id',
+        );
     }
 
     /**
      * Historial de graduaciones.
      *
-     * @return HasMany<Graduacion, $this>
+     * @return HasManyThrough<Graduacion, Matricula, $this>
      */
-    public function graduaciones(): HasMany
+    public function graduaciones(): HasManyThrough
     {
-        return $this->hasMany(Graduacion::class);
+        return $this->hasManyThrough(
+            Graduacion::class, Matricula::class, 'estudiante_id', 'matricula_id', 'id', 'id',
+        );
     }
 
     /**

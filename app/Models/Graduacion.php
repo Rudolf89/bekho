@@ -25,7 +25,7 @@ class Graduacion extends Model
      */
     protected $fillable = [
         'grupo_id',
-        'estudiante_id',
+        'matricula_id',
         'convocatoria_id',
         'grado_origen_id',
         'grado_destino_id',
@@ -48,11 +48,11 @@ class Graduacion extends Model
     }
 
     /**
-     * @return BelongsTo<Estudiante, $this>
+     * @return BelongsTo<Matricula, $this>
      */
-    public function estudiante(): BelongsTo
+    public function matricula(): BelongsTo
     {
-        return $this->belongsTo(Estudiante::class);
+        return $this->belongsTo(Matricula::class);
     }
 
     /**

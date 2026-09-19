@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EscalaGrado;
 use App\Enums\EstadoMatricula;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
@@ -102,6 +103,34 @@ class Matricula extends Model
     public function logros(): HasMany
     {
         return $this->hasMany(Logro::class);
+    }
+
+    /**
+     * Inscripciones a convocatorias de examen.
+     *
+     * @return HasMany<Inscripcion, $this>
+     */
+    public function inscripciones(): HasMany
+    {
+        return $this->hasMany(Inscripcion::class);
+    }
+
+    /**
+     * Historial de graduaciones de esta matrícula.
+     *
+     * @return HasMany<Graduacion, $this>
+     */
+    public function graduaciones(): HasMany
+    {
+        return $this->hasMany(Graduacion::class);
+    }
+
+    /**
+     * Escala de grados que corresponde al grupo etario de la matrícula.
+     */
+    public function escalaGrado(): EscalaGrado
+    {
+        return EscalaGrado::paraGrupo($this->grupo_etario);
     }
 
     /**

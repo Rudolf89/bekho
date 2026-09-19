@@ -54,9 +54,10 @@ class DatabaseSeeder extends Seeder
             // Rediseño Fase 2: deriva la capa de identidad (personas/matrículas)
             // desde la operación actual. Aditivo; el recableo llega en la Fase 4.
             MigraPersonasSeeder::class,
-            // Rediseño Fase 4: asistencia y pagos de demostración por matrícula.
+            // Rediseño Fase 4: operación de demostración por matrícula.
             DemoAsistenciaSeeder::class,
             DemoPagosSeeder::class,
+            DemoExamenesSeeder::class,
         ]);
     }
 }
