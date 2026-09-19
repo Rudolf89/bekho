@@ -6,7 +6,7 @@ use App\Livewire\Clases\GestionClases;
 use App\Livewire\Estudiantes\GestionEstudiantes;
 use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Livewire\Pagos\GestionPagos;
-use App\Models\Estudiante;
+use App\Models\Matricula;
 use Illuminate\Support\Facades\Route;
 
 // Inscripción de alumnos (permiso "gestionar alumnos": dirección/administrativo).
@@ -14,9 +14,9 @@ Route::middleware(['auth', 'can:gestionar alumnos'])->group(function () {
     Route::livewire('inscripcion', InscribirAlumno::class)->name('inscripcion.crear');
 });
 
-// Listado de estudiantes: gestores ven todo su tenant; el instructor solo los
-// alumnos de sus clases; el apoderado sus hijos (autorizado por EstudiantePolicy).
-Route::middleware(['auth', 'can:viewAny,'.Estudiante::class])->group(function () {
+// Listado de alumnos (matrículas): gestores ven todo su tenant; el instructor
+// solo las de sus clases; el apoderado las de sus hijos (MatriculaPolicy).
+Route::middleware(['auth', 'can:viewAny,'.Matricula::class])->group(function () {
     Route::livewire('estudiantes', GestionEstudiantes::class)->name('estudiantes.index');
 });
 
@@ -35,7 +35,7 @@ Route::middleware(['auth', 'can:registrar pagos'])->group(function () {
     Route::livewire('pagos', GestionPagos::class)->name('pagos.index');
 });
 
-// Vista de apoderado: solo ve a sus hijos (autorizado por EstudiantePolicy).
-Route::middleware(['auth', 'can:viewAny,'.Estudiante::class])->group(function () {
+// Vista de apoderado: solo ve las matrículas de sus hijos (MatriculaPolicy).
+Route::middleware(['auth', 'can:viewAny,'.Matricula::class])->group(function () {
     Route::livewire('mis-estudiantes', MisEstudiantes::class)->name('mis-estudiantes.index');
 });

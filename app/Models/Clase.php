@@ -159,25 +159,9 @@ class Clase extends Model
     }
 
     /**
-     * Estudiantes que corresponden a esta clase: activos de la misma sede y
-     * grupo etario (las clases se dividen solo por grupo etario; no hay
-     * inscripción explícita alumno↔clase).
-     *
-     * @return Builder<Estudiante>
-     */
-    public function estudiantesEsperados(): Builder
-    {
-        return Estudiante::query()
-            ->activos()
-            ->where('sede_id', $this->sede_id)
-            ->where('grupo_etario', $this->grupo_etario->value)
-            ->orderBy('nombre');
-    }
-
-    /**
      * Matrículas que corresponden a esta clase: activas de la misma sede y grupo
-     * etario (las clases se dividen solo por grupo etario). Reemplaza a
-     * estudiantesEsperados en el modelo de personas/matrículas.
+     * etario (las clases se dividen solo por grupo etario; no hay inscripción
+     * explícita alumno↔clase).
      *
      * @return Builder<Matricula>
      */

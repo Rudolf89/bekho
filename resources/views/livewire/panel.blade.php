@@ -76,7 +76,7 @@
                             </div>
                         </div>
                         <div class="shrink-0 text-right">
-                            <p class="text-sm text-zinc-500">{{ $clase->estudiantesEsperados()->count() }} alumnos</p>
+                            <p class="text-sm text-zinc-500">{{ $clase->matriculasEsperadas()->count() }} alumnos</p>
                             @if ($clase->planilla)
                                 <a href="{{ route('planillas.editar', $clase->planilla) }}" wire:navigate class="text-sm font-semibold text-[#b01e28] hover:underline">Ver planilla</a>
                             @endif

@@ -192,7 +192,7 @@ class TomarAsistencia extends Component
             }
         }
 
-        // Mapa estudiante_id => estado, para la clase y fecha actuales.
+        // Mapa matricula_id => estado, para la clase y fecha actuales.
         $estados = [];
         if ($clase) {
             $estados = Asistencia::where('clase_id', $clase->id)

@@ -7,8 +7,8 @@ use App\Enums\TipoPago;
 use App\Models\Asistencia;
 use App\Models\Clase;
 use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
 use App\Models\Pago;
 use App\Models\Sede;
 use App\Services\ServicioExamenes;
@@ -42,9 +42,9 @@ class Panel extends Component
             $chip = 'Todos los grupos';
         }
 
-        // KPIs.
-        $alumnosActivos = Estudiante::activos()->count();
-        $alumnosNuevosMes = Estudiante::activos()
+        // KPIs (por matrícula: el vínculo alumno ↔ grupo).
+        $alumnosActivos = Matricula::activas()->count();
+        $alumnosNuevosMes = Matricula::activas()
             ->where('created_at', '>=', $hoy->copy()->startOfMonth())->count();
 
         // Clases con un horario hoy; se anota la hora de inicio de ese día para

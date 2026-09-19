@@ -2,7 +2,6 @@
 
 use App\Livewire\Grupos\GestionGrupos;
 use App\Livewire\Sedes\GestionSedes;
-use App\Models\Estudiante;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Persona;
@@ -78,16 +77,16 @@ test('los conteos de grupos son globales, no del grupo activo', function () {
 
 test('el alcance del admin-plataforma (no filtrar lecturas) aplica a todo modelo por grupo', function () {
     $otra = Grupo::create(['nombre' => 'ATA Norte', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    matriculaOrg($this->bekho->id, 'Alumno BEKHO');
+    matriculaOrg($otra->id, 'Alumno Norte');
 
     // Con grupo activo filtrando (maestro): solo ve la suya.
     Tenant::set($this->bekho->id);
-    expect(Estudiante::count())->toBe(1);
+    expect(Matricula::count())->toBe(1);
 
     // Super-admin (no filtra lecturas): ve las de todos los grupos.
     Tenant::set($this->bekho->id, filtraLecturas: false);
-    expect(Estudiante::count())->toBe(2);
+    expect(Matricula::count())->toBe(2);
 });
 
 test('en una petición real el admin-plataforma ve alumnos de otro grupo', function () {

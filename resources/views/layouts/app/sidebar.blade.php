@@ -50,7 +50,7 @@
 
                 @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar recompensas', 'gestionar legacy'])
                     <flux:sidebar.group heading="Gestión" class="grid">
-                        @can('viewAny', App\Models\Estudiante::class)
+                        @can('viewAny', App\Models\Matricula::class)
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
                                 Alumnos
                             </flux:sidebar.item>

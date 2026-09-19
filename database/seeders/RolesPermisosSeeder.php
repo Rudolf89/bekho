@@ -101,7 +101,7 @@ class RolesPermisosSeeder extends Seeder
         ]);
 
         // instructor: asistencia, planillas, inscribir en exámenes, ver formación.
-        // Los alumnos que ve son solo los de SUS clases (EstudiantePolicy), por eso
+        // Los alumnos que ve son solo los de SUS clases (MatriculaPolicy), por eso
         // NO tiene "gestionar alumnos" (accede a la vista por la Policy viewAny).
         // Como examinador puede crear/editar cuestionarios.
         Role::findOrCreate('instructor')->syncPermissions([

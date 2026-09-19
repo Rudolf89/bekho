@@ -2,8 +2,9 @@
 
 use App\Livewire\Usuarios\GestionUsuarios;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
 
@@ -71,16 +72,15 @@ test('no se puede eliminar un usuario con historial; solo desactivar', function 
     $conHistorial = User::factory()->create();
     $grupo = Grupo::create(['nombre' => 'ATA', 'activo' => true]);
 
-    // Historial: un estudiante vinculado a esa cuenta.
-    DB::table('estudiantes')->insert([
+    // Historial: una matrícula que esa cuenta aceptó (acción de personal).
+    $persona = Persona::create(['nombres' => 'Alumno vinculado', 'fecha_nacimiento' => now()->subYears(10)]);
+    Matricula::withoutGlobalScopes()->create([
         'grupo_id' => $grupo->id,
-        'user_id' => $conHistorial->id,
-        'nombre' => 'Alumno vinculado',
+        'persona_id' => $persona->id,
         'grupo_etario' => 'tigers',
-        'nivel' => 'principiante',
-        'activo' => true,
-        'created_at' => now(),
-        'updated_at' => now(),
+        'estado' => 'activa',
+        'fecha_ingreso' => now(),
+        'aceptado_por_user_id' => $conHistorial->id,
     ]);
 
     Livewire::test(GestionUsuarios::class)

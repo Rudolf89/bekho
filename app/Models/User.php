@@ -178,14 +178,4 @@ class User extends Authenticatable implements PasskeyUser
             ->where('contenido_id', $contenido->id)
             ->first()?->estado ?? EstadoProgreso::Pendiente;
     }
-
-    /**
-     * Estudiantes de los que este usuario es apoderado.
-     *
-     * @return BelongsToMany<Estudiante, $this>
-     */
-    public function hijos(): BelongsToMany
-    {
-        return $this->belongsToMany(Estudiante::class, 'apoderado_estudiante');
-    }
 }

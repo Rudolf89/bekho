@@ -3,7 +3,6 @@
 use App\Enums\TipoPago;
 use App\Models\Clase;
 use App\Models\ConfiguracionPago;
-use App\Models\Estudiante;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Persona;
@@ -39,29 +38,18 @@ function actor(string $rol, ?int $grupoId): User
     return $user;
 }
 
-function nuevoEstudiante(int $grupoId, array $extra = []): Estudiante
-{
-    return Estudiante::create(array_merge([
-        'grupo_id' => $grupoId,
-        'nombre' => 'Alumno',
-        'grupo_etario' => 'for_kids',
-        'nivel' => 'principiantes',
-        'activo' => true,
-    ], $extra));
-}
-
 /**
  * Persona con matrícula activa (alumno del nuevo modelo). Devuelve la matrícula.
  */
-function nuevaMatricula(int $grupoId, string $nombre = 'Alumno', ?int $sedeId = null): Matricula
+function nuevaMatricula(int $grupoId, string $nombre = 'Alumno', ?int $sedeId = null, string $grupoEtario = 'for_kids', ?int $gradoId = null): Matricula
 {
-    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(10)]);
+    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(10), 'grado_id' => $gradoId]);
 
     return Matricula::create([
         'grupo_id' => $grupoId,
         'persona_id' => $persona->id,
         'sede_id' => $sedeId,
-        'grupo_etario' => 'for_kids',
+        'grupo_etario' => $grupoEtario,
         'estado' => 'activa',
         'fecha_ingreso' => now(),
     ]);
@@ -111,18 +99,18 @@ test('la gestión de estudiantes renderiza aunque existan apoderados', function 
 
 // --- Scope por grupo ------------------------------------------------------
 
-test('los estudiantes se aíslan por grupo', function () {
+test('las matrículas se aíslan por grupo', function () {
     $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
-    nuevoEstudiante($this->bekho->id, ['nombre' => 'De BEKHO']);
-    nuevoEstudiante($otra->id, ['nombre' => 'De OTRA']);
+    nuevaMatricula($this->bekho->id, 'De BEKHO');
+    nuevaMatricula($otra->id, 'De OTRA');
 
     Tenant::set($this->bekho->id);
-    expect(Estudiante::count())->toBe(1);
-    expect(Estudiante::first()->nombre)->toBe('De BEKHO');
+    expect(Matricula::count())->toBe(1);
+    expect(Matricula::first()->persona->nombres)->toBe('De BEKHO');
 
     Tenant::set($otra->id);
-    expect(Estudiante::count())->toBe(1);
-    expect(Estudiante::first()->nombre)->toBe('De OTRA');
+    expect(Matricula::count())->toBe(1);
+    expect(Matricula::first()->persona->nombres)->toBe('De OTRA');
 });
 
 // --- Regla central: morosidad ------------------------------------------------
@@ -200,25 +188,25 @@ test('un apoderado solo ve a sus propios hijos', function () {
 
 // --- Asistencia --------------------------------------------------------------
 
-test('el roster de una clase son los estudiantes activos de su sede y grupo etario', function () {
+test('el roster de una clase son las matrículas activas de su sede y grupo etario', function () {
     // Las clases se dividen SOLO por grupo etario: el roster incluye a todos los
     // For Kids de la sede, sin importar su nivel; excluye otros grupos etarios.
     Tenant::set($this->bekho->id);
     $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
 
-    nuevoEstudiante($this->bekho->id, ['nombre' => 'KidPrincipiante', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'principiantes']);
-    nuevoEstudiante($this->bekho->id, ['nombre' => 'KidAvanzado', 'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'nivel' => 'avanzado']);
-    nuevoEstudiante($this->bekho->id, ['nombre' => 'Adulto', 'sede_id' => $sede->id, 'grupo_etario' => 'jovenes_adultos', 'nivel' => 'principiantes']);
+    nuevaMatricula($this->bekho->id, 'KidPrincipiante', $sede->id, 'for_kids');
+    nuevaMatricula($this->bekho->id, 'KidAvanzado', $sede->id, 'for_kids');
+    nuevaMatricula($this->bekho->id, 'Adulto', $sede->id, 'jovenes_adultos');
 
     $clase = Clase::create([
         'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids',
         'grupo_etario' => 'for_kids', 'activo' => true,
     ]);
 
-    $roster = $clase->estudiantesEsperados()->get();
+    $roster = $clase->matriculasEsperadas()->get();
 
     // Ambos For Kids (cualquier nivel) entran; el adulto no.
-    expect($roster->pluck('nombre')->all())->toContain('KidPrincipiante', 'KidAvanzado');
-    expect($roster->pluck('nombre')->all())->not->toContain('Adulto');
+    expect($roster->pluck('persona.nombres')->all())->toContain('KidPrincipiante', 'KidAvanzado');
+    expect($roster->pluck('persona.nombres')->all())->not->toContain('Adulto');
     expect($roster)->toHaveCount(2);
 });

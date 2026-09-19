@@ -27,7 +27,6 @@ class Matricula extends Model
      */
     protected $fillable = [
         'persona_id',
-        'estudiante_id',
         'grupo_id',
         'sede_id',
         'grupo_etario',

@@ -3,17 +3,19 @@
 namespace Database\Seeders;
 
 use App\Enums\EscalaGrado;
+use App\Enums\EstadoMatricula;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\PapelEnClase;
 use App\Enums\TipoSede;
-use App\Models\Asistencia;
 use App\Models\CargoRango;
 use App\Models\Clase;
-use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Grupo;
+use App\Models\Instructor;
+use App\Models\Matricula;
+use App\Models\Persona;
+use App\Models\PersonalGrupo;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
@@ -24,8 +26,10 @@ use Illuminate\Support\Facades\Hash;
 /**
  * Datos de demostración para que el panel/dashboard se vea "vivo".
  *
- * NO es data real: alumnos, clases, pagos y graduaciones de ejemplo dentro de
- * BEKHO. Se puede quitar antes de producción (borrar del DatabaseSeeder).
+ * NO es data real: personal, alumnos, clases, pagos y graduaciones de ejemplo
+ * dentro de BEKHO. Crea directamente la capa de identidad del rediseño
+ * (personas + matrículas + personal_grupo + instructores); ya no hay tabla
+ * estudiantes. Se puede quitar antes de producción (borrar del DatabaseSeeder).
  */
 class DemoBekhoSeeder extends Seeder
 {
@@ -65,6 +69,15 @@ class DemoBekhoSeeder extends Seeder
             return $u;
         });
 
+        // Identidad del personal: cada usuario obtiene su persona + vínculo de
+        // personal y, si tiene rango, su registro de instructor. Idempotente por
+        // guarda (el usuario ya con persona no se vuelve a derivar).
+        $this->derivarIdentidadPersonal();
+
+        // Recargar los usuarios en memoria para tener su persona_id recién creado.
+        $rodolfo->refresh();
+        $instructores->each->refresh();
+
         $sede = Sede::updateOrCreate(
             ['grupo_id' => $grupo->id, 'nombre' => 'BEKHO Central'],
             [
@@ -79,8 +92,15 @@ class DemoBekhoSeeder extends Seeder
             $instructores->pluck('id')->push($rodolfo->id)->all(),
         );
 
-        // Alumnos por grupo etario. El nivel se deriva del cinturón, así que se
-        // les asigna un grado de cada banda para que la demo muestre variedad.
+        // Instructor a cargo por grupo etario (persona del instructor).
+        $instructorPorEtario = [
+            'tigers' => $instructores[0]->persona_id,
+            'for_kids' => $instructores[1]->persona_id,
+            'jovenes_adultos' => $rodolfo->persona_id,
+        ];
+
+        // Alumnos (persona + matrícula). El nivel se deriva del cinturón, así que
+        // se les asigna un grado de cada banda para que la demo muestre variedad.
         $gruposEtarios = ['tigers', 'for_kids', 'jovenes_adultos'];
         $bandasColores = [
             ['Blanco', 'Naranjo', 'Amarillo'],   // -> Principiantes
@@ -90,30 +110,40 @@ class DemoBekhoSeeder extends Seeder
         $nombres = ['Antonia', 'Benjamín', 'Catalina', 'Diego', 'Emilia', 'Felipe', 'Gabriela', 'Hugo',
             'Isidora', 'Joaquín', 'Karla', 'Lucas', 'Martina', 'Nicolás', 'Olivia', 'Pablo',
             'Renata', 'Sebastián', 'Tamara', 'Vicente', 'Ximena', 'Agustín', 'Florencia', 'Matías'];
+        $apellidos = ['Pérez', 'Soto', 'Muñoz', 'Rojas'];
 
-        foreach ($nombres as $i => $nombre) {
-            $grupoEtario = $gruposEtarios[$i % 3];
-            $escala = EscalaGrado::paraGrupo(GrupoEtario::from($grupoEtario));
-            $grado = Grado::porEscala($escala)
-                ->whereIn('color', $bandasColores[$i % 3])
-                ->ordenados()
-                ->first();
+        // Idempotencia: si el grupo ya tiene matrículas de demo, no recrear.
+        if (! Matricula::withoutGlobalScopes()->where('grupo_id', $grupo->id)->exists()) {
+            foreach ($nombres as $i => $nombre) {
+                $grupoEtario = $gruposEtarios[$i % 3];
+                $escala = EscalaGrado::paraGrupo(GrupoEtario::from($grupoEtario));
+                $grado = Grado::porEscala($escala)
+                    ->whereIn('color', $bandasColores[$i % 3])
+                    ->ordenados()
+                    ->first();
 
-            Estudiante::updateOrCreate(
-                ['grupo_id' => $grupo->id, 'nombre' => $nombre.' '.['Pérez', 'Soto', 'Muñoz', 'Rojas'][$i % 4]],
-                [
+                $persona = Persona::create([
+                    'nombres' => $nombre,
+                    'apellido_paterno' => $apellidos[$i % 4],
+                    'fecha_nacimiento' => now()->subYears(6 + $i % 25),
+                    'grado_id' => $grado?->id, // caché del último grado
+                ]);
+
+                Matricula::create([
+                    'grupo_id' => $grupo->id,
+                    'persona_id' => $persona->id,
                     'sede_id' => $sede->id,
                     'grupo_etario' => $grupoEtario,
-                    'grado_id' => $grado?->id,
                     // El nivel se deriva del cinturón. En la semilla los eventos de
                     // modelo están apagados (WithoutModelEvents), así que se calcula
-                    // aquí con el mismo criterio que usa el modelo.
-                    'nivel' => $grado?->nivelEntrenamiento() ?? NivelEntrenamiento::Principiantes,
-                    'fecha_nacimiento' => now()->subYears(6 + $i % 25),
-                    'activo' => true,
+                    // aquí con el mismo criterio que usa el catálogo de grados.
+                    'nivel' => $grado?->nivelEntrenamiento()->value ?? NivelEntrenamiento::Principiantes->value,
+                    'estado' => EstadoMatricula::Activa->value,
+                    'fecha_ingreso' => $i < 6 ? now()->subDays($i) : now()->subMonths(3),
+                    'instructor_persona_id' => $instructorPorEtario[$grupoEtario] ?? null,
                     'created_at' => $i < 6 ? now()->subDays($i) : now()->subMonths(3),
-                ],
-            );
+                ]);
+            }
         }
 
         // Clases de HOY (una por grupo etario), enlazadas a la planilla
@@ -151,13 +181,70 @@ class DemoBekhoSeeder extends Seeder
             $clase->sincronizarInstructores($papeles);
         }
 
-        // La asistencia de demostración se siembra en DemoAsistenciaSeeder, que
-        // corre después de MigraPersonasSeeder (la asistencia va por matrícula).
-
-        // Pagos, convocatoria de examen y graduaciones de demostración se siembran
-        // en DemoPagosSeeder y DemoExamenesSeeder (van por matrícula, que se crea
-        // después en MigraPersonasSeeder).
+        // La asistencia, pagos, convocatoria y graduaciones de demostración se
+        // siembran en DemoAsistenciaSeeder/DemoPagosSeeder/DemoExamenesSeeder,
+        // que corren después y operan por matrícula.
 
         Tenant::olvidar();
+    }
+
+    /**
+     * Deriva la capa de identidad del personal desde los usuarios: persona por
+     * usuario, personal_grupo (si tiene grupo), instructor (si tiene rango) y el
+     * árbol de supervisión (persona → persona). Idempotente: salta los usuarios
+     * que ya tienen persona. Las fechas de nacimiento son de DEMO.
+     */
+    protected function derivarIdentidadPersonal(): void
+    {
+        foreach (User::sinGrupo()->whereNull('persona_id')->get() as $user) {
+            $persona = $this->personaDesdeNombre($user->name, [
+                'email' => $user->email,
+                'telefono' => $user->telefono,
+                'fecha_nacimiento' => now()->subYears(30)->toDateString(), // demo
+            ]);
+            $user->forceFill(['persona_id' => $persona->id])->save();
+
+            if ($user->grupo_id) {
+                PersonalGrupo::updateOrCreate(
+                    ['persona_id' => $persona->id, 'grupo_id' => $user->grupo_id],
+                    ['activo' => $user->activo],
+                );
+            }
+
+            if ($user->rango_id) {
+                Instructor::updateOrCreate(
+                    ['persona_id' => $persona->id],
+                    ['rango_id' => $user->rango_id],
+                );
+            }
+        }
+
+        // Árbol de supervisión entre instructores (persona → persona).
+        foreach (User::sinGrupo()->whereNotNull('supervisor_id')->whereNotNull('persona_id')->get() as $user) {
+            $supervisorPersonaId = User::sinGrupo()->find($user->supervisor_id)?->persona_id;
+            if ($supervisorPersonaId) {
+                Instructor::where('persona_id', $user->persona_id)
+                    ->update(['supervisor_persona_id' => $supervisorPersonaId]);
+            }
+        }
+    }
+
+    /**
+     * Crea una persona repartiendo el nombre completo en nombres / apellidos.
+     *
+     * @param  array<string, mixed>  $extra
+     */
+    protected function personaDesdeNombre(string $nombreCompleto, array $extra): Persona
+    {
+        $partes = preg_split('/\s+/', trim($nombreCompleto)) ?: [];
+        $nombres = array_shift($partes) ?: $nombreCompleto;
+        $apellidoPaterno = array_shift($partes);
+        $apellidoMaterno = $partes !== [] ? implode(' ', $partes) : null;
+
+        return Persona::create(array_merge([
+            'nombres' => $nombres,
+            'apellido_paterno' => $apellidoPaterno,
+            'apellido_materno' => $apellidoMaterno,
+        ], $extra));
     }
 }

@@ -51,11 +51,9 @@ class DatabaseSeeder extends Seeder
             // Programa Legacy: niveles y requisitos (catálogo compartido).
             LegacySeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
+            // Crea directamente la capa de identidad (personas/matrículas/personal).
             DemoBekhoSeeder::class,
-            // Rediseño Fase 2: deriva la capa de identidad (personas/matrículas)
-            // desde la operación actual. Aditivo; el recableo llega en la Fase 4.
-            MigraPersonasSeeder::class,
-            // Rediseño Fase 4: operación de demostración por matrícula.
+            // Operación de demostración por matrícula.
             DemoAsistenciaSeeder::class,
             DemoPagosSeeder::class,
             DemoExamenesSeeder::class,

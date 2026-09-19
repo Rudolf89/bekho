@@ -228,7 +228,7 @@ class GestionUsuarios extends Component
      *
      * Un usuario con historial no se puede eliminar sin corromper registros
      * (pagos/asistencia registrados, graduaciones e inscripciones acreditadas
-     * como instructor, clases a su cargo, o vínculo como apoderado o alumno).
+     * como instructor, clases a su cargo, o matrículas que aceptó).
      * Se consulta con DB directo para ignorar el aislamiento por grupo.
      *
      * @param  Collection<int, int>  $ids
@@ -246,8 +246,7 @@ class GestionUsuarios extends Component
             ['inscripciones', 'instructor_id'],
             ['pagos', 'registrado_por'],
             ['asistencias', 'registrado_por'],
-            ['estudiantes', 'user_id'],
-            ['apoderado_estudiante', 'user_id'],
+            ['matriculas', 'aceptado_por_user_id'],
         ];
 
         return collect($fuentes)
