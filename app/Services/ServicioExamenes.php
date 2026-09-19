@@ -4,12 +4,16 @@ namespace App\Services;
 
 use App\Enums\EstadoAsistencia;
 use App\Enums\EstadoConvocatoria;
+use App\Enums\EstadoNominacion;
 use App\Enums\ResultadoExamen;
 use App\Models\Clase;
 use App\Models\Convocatoria;
+use App\Models\Grado;
 use App\Models\Graduacion;
 use App\Models\Inscripcion;
 use App\Models\Matricula;
+use App\Models\Nominacion;
+use App\Models\Persona;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
@@ -147,6 +151,14 @@ class ServicioExamenes
             return null;
         }
 
+        // Los grados que requieren nominación (rojo-negro, danes) no se gradúan sin
+        // una nominación aprobada de la persona a ese grado objetivo.
+        $gradoDestino = $inscripcion->grado_destino_id ? Grado::find($inscripcion->grado_destino_id) : null;
+        if ($gradoDestino?->requiere_nominacion
+            && ! $this->tieneNominacionAprobada($inscripcion->matricula->persona, $gradoDestino)) {
+            return null;
+        }
+
         $graduacion = Graduacion::create([
             'grupo_id' => $inscripcion->grupo_id,
             'matricula_id' => $inscripcion->matricula_id,
@@ -154,6 +166,8 @@ class ServicioExamenes
             'grado_origen_id' => $inscripcion->grado_origen_id,
             'grado_destino_id' => $inscripcion->grado_destino_id,
             'instructor_id' => $inscripcion->instructor_id,
+            // Examinador por persona (por defecto, la del instructor acreditado).
+            'examinador_persona_id' => $inscripcion->instructor_id ? User::find($inscripcion->instructor_id)?->persona_id : null,
             'fecha' => $inscripcion->convocatoria->fecha,
             'resultado' => $inscripcion->resultado,
             'nota' => $inscripcion->nota,
@@ -165,6 +179,68 @@ class ServicioExamenes
         }
 
         return $graduacion;
+    }
+
+    /**
+     * Registra la entrega del cinturón (ceremonia): fija fecha_entrega. El grado
+     * ya está cacheado en la persona desde la aprobación.
+     */
+    public function registrarEntrega(Graduacion $graduacion, ?CarbonInterface $fecha = null): Graduacion
+    {
+        $graduacion->update(['fecha_entrega' => ($fecha ?? now())->toDateString()]);
+
+        return $graduacion;
+    }
+
+    /**
+     * Graduaciones aprobadas cuyo cinturón aún no se entrega y ya vencieron el
+     * plazo de 30 días (solo para alertar; la aprobación no caduca).
+     *
+     * @return Collection<int, Graduacion>
+     */
+    public function entregasVencidas(?CarbonInterface $a = null): Collection
+    {
+        return Graduacion::whereNull('fecha_entrega')
+            ->get()
+            ->filter(fn (Graduacion $g) => $g->plazoEntregaVencido($a))
+            ->values();
+    }
+
+    /**
+     * Nomina a una persona a un grado objetivo (queda pendiente de aprobación).
+     */
+    public function nominar(Persona $persona, Grado $gradoObjetivo, ?Persona $nominadoPor = null): Nominacion
+    {
+        return Nominacion::create([
+            'persona_id' => $persona->id,
+            'grado_objetivo_id' => $gradoObjetivo->id,
+            'nominado_por_persona_id' => $nominadoPor?->id,
+            'fecha' => now()->toDateString(),
+            'estado' => EstadoNominacion::Pendiente->value,
+        ]);
+    }
+
+    /**
+     * Resuelve una nominación pendiente: aprobada o rechazada.
+     */
+    public function resolverNominacion(Nominacion $nominacion, bool $aprobar): Nominacion
+    {
+        $nominacion->update([
+            'estado' => ($aprobar ? EstadoNominacion::Aprobada : EstadoNominacion::Rechazada)->value,
+        ]);
+
+        return $nominacion;
+    }
+
+    /**
+     * ¿La persona tiene una nominación APROBADA para ese grado objetivo?
+     */
+    public function tieneNominacionAprobada(Persona $persona, Grado $gradoObjetivo): bool
+    {
+        return Nominacion::where('persona_id', $persona->id)
+            ->where('grado_objetivo_id', $gradoObjetivo->id)
+            ->where('estado', EstadoNominacion::Aprobada->value)
+            ->exists();
     }
 
     /**
