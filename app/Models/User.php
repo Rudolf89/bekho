@@ -38,13 +38,14 @@ use Spatie\Permission\Traits\HasRoles;
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property int|null $persona_id
  * @property int|null $grupo_id
  * @property int|null $rango_id
  * @property int|null $supervisor_id
  * @property string|null $telefono
  * @property bool $activo
  */
-#[Fillable(['name', 'email', 'password', 'grupo_id', 'rango_id', 'supervisor_id', 'telefono', 'activo'])]
+#[Fillable(['name', 'email', 'password', 'persona_id', 'grupo_id', 'rango_id', 'supervisor_id', 'telefono', 'activo'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements PasskeyUser
 {
@@ -75,6 +76,16 @@ class User extends Authenticatable implements PasskeyUser
         return Str::length($initials) > 1
             ? Str::substr($initials, 0, 1).Str::substr($initials, -1)
             : $initials;
+    }
+
+    /**
+     * Persona (identidad) dueña de esta cuenta de acceso.
+     *
+     * @return BelongsTo<Persona, $this>
+     */
+    public function persona(): BelongsTo
+    {
+        return $this->belongsTo(Persona::class);
     }
 
     /**
