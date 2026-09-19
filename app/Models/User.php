@@ -178,4 +178,44 @@ class User extends Authenticatable implements PasskeyUser
             ->where('contenido_id', $contenido->id)
             ->first()?->estado ?? EstadoProgreso::Pendiente;
     }
+
+    /**
+     * Sedes a las que el usuario queda acotado por sus roles de personal
+     * (personal_grupo_rol con sede_id) en el grupo activo. Devuelve null cuando NO
+     * hay restricción por sede: no es personal del grupo, o tiene algún rol a
+     * nivel de grupo (sin sede). Con esto las policies y los listados limitan a un
+     * direccion-sede a su sede, sin activar el modo teams de spatie.
+     *
+     * @return list<int>|null
+     */
+    public function sedesRestringidas(): ?array
+    {
+        if ($this->persona_id === null) {
+            return null;
+        }
+
+        $grupoId = \App\Support\Tenancy\Grupo::id() ?? $this->grupo_id;
+        if ($grupoId === null) {
+            return null;
+        }
+
+        $personal = PersonalGrupo::withoutGlobalScopes()
+            ->where('persona_id', $this->persona_id)
+            ->where('grupo_id', $grupoId)
+            ->first();
+
+        $roles = $personal?->roles()->get();
+        if ($roles === null || $roles->isEmpty()) {
+            return null;
+        }
+
+        // Un rol a nivel de grupo (sin sede) implica acceso a todo el grupo.
+        if ($roles->contains(fn (PersonalGrupoRol $r) => $r->sede_id === null)) {
+            return null;
+        }
+
+        $sedes = $roles->pluck('sede_id')->filter()->unique()->values()->all();
+
+        return $sedes === [] ? null : $sedes;
+    }
 }

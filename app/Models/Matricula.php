@@ -174,7 +174,9 @@ class Matricula extends Model
     public function scopeVisiblePara(Builder $query, User $usuario): Builder
     {
         if ($usuario->can('gestionar alumnos')) {
-            return $query;
+            $sedes = $usuario->sedesRestringidas();
+
+            return $sedes === null ? $query : $query->whereIn('sede_id', $sedes);
         }
 
         if ($usuario->hasRole('instructor')) {

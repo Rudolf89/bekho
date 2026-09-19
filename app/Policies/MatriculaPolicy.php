@@ -25,7 +25,7 @@ class MatriculaPolicy
     public function view(User $user, Matricula $matricula): bool
     {
         if ($user->can('gestionar alumnos')) {
-            return true;
+            return $this->enSuSede($user, $matricula);
         }
 
         if ($user->hasRole('instructor')) {
@@ -50,7 +50,7 @@ class MatriculaPolicy
         }
 
         if ($user->can('gestionar alumnos')) {
-            return true;
+            return $this->enSuSede($user, $matricula);
         }
 
         return $user->hasRole('instructor') && $matricula->esDeInstructor($user);
@@ -58,6 +58,19 @@ class MatriculaPolicy
 
     public function delete(User $user, Matricula $matricula): bool
     {
-        return ! $user->esSoloLectura() && $user->can('gestionar alumnos');
+        return ! $user->esSoloLectura()
+            && $user->can('gestionar alumnos')
+            && $this->enSuSede($user, $matricula);
+    }
+
+    /**
+     * La matrícula está dentro del alcance por sede del usuario: sin restricción
+     * (rol a nivel de grupo) o la sede de la matrícula está entre las suyas.
+     */
+    protected function enSuSede(User $user, Matricula $matricula): bool
+    {
+        $sedes = $user->sedesRestringidas();
+
+        return $sedes === null || in_array($matricula->sede_id, $sedes, true);
     }
 }
