@@ -3,8 +3,11 @@
 namespace Database\Seeders;
 
 use App\Enums\EscalaGrado;
+use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoGrado;
+use App\Models\Federacion;
 use App\Models\Grado;
+use App\Models\TramoEntrenamiento;
 use Illuminate\Database\Seeder;
 
 /**
@@ -61,9 +64,17 @@ class GradosSeeder extends Seeder
         $adultos[] = ['Rojo/Negro', 'Rojo/Negro'];
         $adultos = array_merge($adultos, $this->danes());
 
-        $this->sembrarEscala(EscalaGrado::Tigers, $tigers);
-        $this->sembrarEscala(EscalaGrado::ForKids, $forKids);
-        $this->sembrarEscala(EscalaGrado::Adultos, $adultos);
+        $federacion = Federacion::firstOrCreate(
+            ['nombre' => 'BEKHO'],
+            ['razon_social' => 'BEKHO Martial Arts', 'pais' => 'Chile', 'moneda' => 'CLP', 'activo' => true],
+        );
+        // Mapa clave de tramo => id, para enlazar cada grado a su tramo. Si aún
+        // no hay tramos sembrados, queda vacío y tramo_id se deja en null.
+        $tramos = TramoEntrenamiento::where('federacion_id', $federacion->id)->pluck('id', 'clave')->all();
+
+        $this->sembrarEscala(EscalaGrado::Tigers, $tigers, $federacion->id, $tramos);
+        $this->sembrarEscala(EscalaGrado::ForKids, $forKids, $federacion->id, $tramos);
+        $this->sembrarEscala(EscalaGrado::Adultos, $adultos, $federacion->id, $tramos);
     }
 
     /**
@@ -85,26 +96,50 @@ class GradosSeeder extends Seeder
      * Siembra una escala respetando el orden del arreglo.
      *
      * @param  array<int, array{0: string, 1: string}>  $grados
+     * @param  array<string, int>  $tramos  [clave de tramo => id]
      */
-    private function sembrarEscala(EscalaGrado $escala, array $grados): void
+    private function sembrarEscala(EscalaGrado $escala, array $grados, int $federacionId, array $tramos): void
     {
         foreach ($grados as $orden => [$nombre, $color]) {
             $tipo = TipoGrado::desdeNombre($nombre);
             [$franjas, $estrellas] = self::insigniasDe($nombre, $tipo);
+            $nivel = self::nivelDeColor($color);
+            $requiereNominacion = in_array($nivel, [NivelEntrenamiento::RojoNegro, NivelEntrenamiento::Danes], true);
 
             Grado::updateOrCreate(
                 ['escala' => $escala->value, 'nombre' => $nombre],
                 [
+                    'federacion_id' => $federacionId,
+                    'tramo_id' => $tramos[$nivel->value] ?? null,
                     'orden' => $orden + 1,
                     'color' => $color,
                     'tipo' => $tipo->value,
                     'franjas' => $franjas,
                     'estrellas' => $estrellas,
+                    // Tiempo sugerido entre grados: 2 meses en los de color; los
+                    // rojo-negro y danes van por nominación, sin plazo fijo.
+                    'meses_sugeridos' => $requiereNominacion ? null : 2,
+                    'requiere_nominacion' => $requiereNominacion,
                     'significado' => self::SIGNIFICADOS[$color] ?? null,
                     'activo' => true,
                 ],
             );
         }
+    }
+
+    /**
+     * Tramo de entrenamiento según el color del cinturón (mismo corte que
+     * App\Models\Grado::nivelEntrenamiento()).
+     */
+    private static function nivelDeColor(string $color): NivelEntrenamiento
+    {
+        return match ($color) {
+            'Camuflado', 'Verde', 'Púrpura' => NivelEntrenamiento::Intermedio,
+            'Azul', 'Café', 'Rojo' => NivelEntrenamiento::Avanzado,
+            'Rojo/Negro' => NivelEntrenamiento::RojoNegro,
+            'Negro' => NivelEntrenamiento::Danes,
+            default => NivelEntrenamiento::Principiantes,
+        };
     }
 
     /**

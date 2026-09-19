@@ -7,6 +7,7 @@ use App\Enums\NivelEntrenamiento;
 use App\Enums\TipoGrado;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -24,13 +25,17 @@ class Grado extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'federacion_id',
         'nombre',
         'orden',
         'escala',
+        'tramo_id',
         'color',
         'tipo',
         'franjas',
         'estrellas',
+        'meses_sugeridos',
+        'requiere_nominacion',
         'significado',
         'activo',
     ];
@@ -47,8 +52,30 @@ class Grado extends Model
             'tipo' => TipoGrado::class,
             'franjas' => 'integer',
             'estrellas' => 'integer',
+            'meses_sugeridos' => 'integer',
+            'requiere_nominacion' => 'boolean',
             'activo' => 'boolean',
         ];
+    }
+
+    /**
+     * Federación dueña del catálogo.
+     *
+     * @return BelongsTo<Federacion, $this>
+     */
+    public function federacion(): BelongsTo
+    {
+        return $this->belongsTo(Federacion::class);
+    }
+
+    /**
+     * Tramo de entrenamiento al que pertenece el grado.
+     *
+     * @return BelongsTo<TramoEntrenamiento, $this>
+     */
+    public function tramo(): BelongsTo
+    {
+        return $this->belongsTo(TramoEntrenamiento::class, 'tramo_id');
     }
 
     /**
