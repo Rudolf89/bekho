@@ -9,12 +9,12 @@
     @endif
 
     @foreach ($coleccion as $fila)
-        @php($estudiante = $fila['estudiante'])
-        <div wire:key="est-{{ $estudiante->id }}" class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800">
+        @php($matricula = $fila['matricula'])
+        <div wire:key="mat-{{ $matricula->id }}" class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800">
             <div class="mb-4 flex items-center justify-between">
                 <div>
-                    <flux:heading size="lg">{{ $estudiante->nombre }}</flux:heading>
-                    <flux:text size="sm" class="mt-0.5">{{ $estudiante->grupo_etario?->etiqueta() }}</flux:text>
+                    <flux:heading size="lg">{{ $matricula->persona?->nombreCompleto() }}</flux:heading>
+                    <flux:text size="sm" class="mt-0.5">{{ $matricula->grupo_etario?->etiqueta() }}</flux:text>
                 </div>
                 <flux:badge size="lg" color="{{ $fila['total'] > 0 ? 'green' : 'zinc' }}">
                     {{ $fila['total'] }} {{ $fila['total'] === 1 ? 'logro' : 'logros' }}
@@ -29,7 +29,7 @@
                         <div class="flex flex-wrap gap-3">
                             @foreach ($items as $recompensa)
                                 @php($n = (int) ($fila['ganados'][$recompensa->id] ?? 0))
-                                <div wire:key="est-{{ $estudiante->id }}-r-{{ $recompensa->id }}"
+                                <div wire:key="mat-{{ $matricula->id }}-r-{{ $recompensa->id }}"
                                      class="flex w-24 flex-col items-center gap-1 text-center"
                                      title="{{ $recompensa->nombre }}{{ $n > 0 ? '' : ' (por conseguir)' }}">
                                     <span class="relative flex size-14 items-center justify-center rounded-full text-2xl {{ $n > 0 ? 'ring-2 ring-green-400 dark:ring-green-600' : 'opacity-40 grayscale' }}"

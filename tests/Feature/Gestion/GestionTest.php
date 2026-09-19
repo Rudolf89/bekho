@@ -179,11 +179,15 @@ test('el descuento por hermanos se aplica cuando comparten apoderado', function 
 
 test('un apoderado solo ve a sus propios hijos', function () {
     Tenant::set($this->bekho->id);
-    $ana = nuevoEstudiante($this->bekho->id, ['nombre' => 'Ana']);
-    $ajeno = nuevoEstudiante($this->bekho->id, ['nombre' => 'Ajeno']);
+    $ana = nuevaMatricula($this->bekho->id, 'Ana');
+    $ajeno = nuevaMatricula($this->bekho->id, 'Ajeno');
 
+    $papaPersona = Persona::create(['nombres' => 'Papá', 'fecha_nacimiento' => now()->subYears(40)]);
     $papa = actor('apoderado', $this->bekho->id);
-    $ana->apoderados()->attach($papa->id);
+    $papa->update(['persona_id' => $papaPersona->id]);
+
+    // Solo tutela a Ana; la matrícula ajena no le es visible.
+    Tutela::create(['apoderado_persona_id' => $papaPersona->id, 'alumno_persona_id' => $ana->persona_id, 'parentesco' => 'padre']);
 
     expect($papa->can('view', $ana))->toBeTrue();
     expect($papa->can('view', $ajeno))->toBeFalse();

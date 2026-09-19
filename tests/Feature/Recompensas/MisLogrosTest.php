@@ -3,11 +3,11 @@
 use App\Enums\GrupoEtario;
 use App\Enums\TipoRecompensa;
 use App\Livewire\Recompensas\MisLogros;
-use App\Models\Estudiante;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Persona;
 use App\Models\Recompensa;
+use App\Models\Tutela;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RecompensasSeeder;
@@ -28,17 +28,19 @@ beforeEach(function () {
 
 afterEach(fn () => Tenant::olvidar());
 
-function estudianteConLogro(Grupo $a, TipoRecompensa $tipo): Estudiante
+/**
+ * Persona (alumno) con matrícula activa y un logro del tipo dado. El logro se
+ * otorga a la matrícula; la persona es la identidad transversal.
+ */
+function personaConLogro(Grupo $a, TipoRecompensa $tipo): Persona
 {
-    $e = Estudiante::create([
-        'grupo_id' => $a->id, 'nombre' => 'Hijo '.uniqid(),
-        'grupo_etario' => GrupoEtario::ForKids->value, 'activo' => true,
+    $persona = Persona::create([
+        'nombres' => 'Hijo '.uniqid(),
+        'fecha_nacimiento' => now()->subYears(9),
     ]);
 
-    // El alumno es una persona con matrícula; el logro se otorga a la matrícula.
-    $persona = Persona::create(['nombres' => $e->nombre, 'fecha_nacimiento' => now()->subYears(9)]);
     $matricula = Matricula::create([
-        'grupo_id' => $a->id, 'persona_id' => $persona->id, 'estudiante_id' => $e->id,
+        'grupo_id' => $a->id, 'persona_id' => $persona->id,
         'grupo_etario' => GrupoEtario::ForKids->value, 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]);
 
@@ -47,47 +49,48 @@ function estudianteConLogro(Grupo $a, TipoRecompensa $tipo): Estudiante
         'recompensa_id' => $recompensa->id, 'otorgado_at' => now(), 'grupo_id' => $a->id,
     ]);
 
-    return $e;
+    return $persona;
 }
 
 // --- Apoderado ---------------------------------------------------------------
 
 test('el apoderado ve la colección de logros de sus hijos', function () {
-    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);
+    $apoderadoPersona = Persona::create(['nombres' => 'Apoderado', 'fecha_nacimiento' => now()->subYears(40)]);
+    $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id, 'persona_id' => $apoderadoPersona->id]);
     $apoderado->assignRole('apoderado');
 
-    $hijo = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
-    $apoderado->hijos()->attach($hijo->id);
+    $hijo = personaConLogro($this->bekho, TipoRecompensa::Coleccionable);
+    Tutela::create([
+        'apoderado_persona_id' => $apoderadoPersona->id,
+        'alumno_persona_id' => $hijo->id,
+        'parentesco' => 'padre',
+    ]);
 
     // Hijo de OTRO apoderado (no debe verse).
-    $ajeno = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
+    $ajeno = personaConLogro($this->bekho, TipoRecompensa::Coleccionable);
 
     Livewire::actingAs($apoderado)->test(MisLogros::class)
-        ->assertSee($hijo->nombre)
-        ->assertDontSee($ajeno->nombre)
+        ->assertSee($hijo->nombres)
+        ->assertDontSee($ajeno->nombres)
         ->assertSee('Coleccionables');
 });
 
 // --- Alumno ------------------------------------------------------------------
 
 test('el alumno ve su propia colección', function () {
-    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id]);
+    $persona = personaConLogro($this->bekho, TipoRecompensa::Coleccionable);
+    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id, 'persona_id' => $persona->id]);
     $alumnoUser->assignRole('alumno');
 
-    $ficha = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
-    $ficha->update(['user_id' => $alumnoUser->id]);
-
     Livewire::actingAs($alumnoUser)->test(MisLogros::class)
-        ->assertSee($ficha->nombre);
+        ->assertSee($persona->nombres);
 });
 
 test('muestra ganadas y bloqueadas (coleccionables por conseguir)', function () {
-    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id]);
-    $alumnoUser->assignRole('alumno');
-
     // Gana solo 1 de los 6 coleccionables.
-    $ficha = estudianteConLogro($this->bekho, TipoRecompensa::Coleccionable);
-    $ficha->update(['user_id' => $alumnoUser->id]);
+    $persona = personaConLogro($this->bekho, TipoRecompensa::Coleccionable);
+    $alumnoUser = User::factory()->create(['grupo_id' => $this->bekho->id, 'persona_id' => $persona->id]);
+    $alumnoUser->assignRole('alumno');
 
     Livewire::actingAs($alumnoUser)->test(MisLogros::class)
         ->assertSee('1 logro')
