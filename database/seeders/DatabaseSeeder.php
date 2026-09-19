@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             // Federación raíz (BEKHO). Fase 0 del rediseño del modelo de datos.
             FederacionesSeeder::class,
             TramosEntrenamientoSeeder::class,
+            CatalogosFederacionSeeder::class,
             CargosRangosSeeder::class,
             ProgramasSeeder::class,
             GradosSeeder::class,
