@@ -4,6 +4,8 @@ use App\Livewire\Grupos\GestionGrupos;
 use App\Livewire\Sedes\GestionSedes;
 use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -30,6 +32,17 @@ function actorOrg(string $rol, ?int $grupoId): User
     $user->assignRole($rol);
 
     return $user;
+}
+
+/** Matrícula activa (alumno) con su persona, para las pruebas de alcance. */
+function matriculaOrg(int $grupoId, string $nombre): Matricula
+{
+    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(10)]);
+
+    return Matricula::withoutGlobalScopes()->create([
+        'grupo_id' => $grupoId, 'persona_id' => $persona->id,
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
+    ]);
 }
 
 // --- Alcance del admin-plataforma -------------------------------------------------
@@ -79,7 +92,7 @@ test('el alcance del admin-plataforma (no filtrar lecturas) aplica a todo modelo
 
 test('en una petición real el admin-plataforma ve alumnos de otro grupo', function () {
     $otra = Grupo::create(['nombre' => 'ATA Norte', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Otro Grupo', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    matriculaOrg($otra->id, 'Alumno Otro Grupo');
 
     Tenant::olvidar();
 
@@ -92,8 +105,8 @@ test('en una petición real el admin-plataforma ve alumnos de otro grupo', funct
 
 test('el admin-plataforma enfocado en un grupo solo ve los datos de ese grupo', function () {
     $otra = Grupo::create(['nombre' => 'ATA Norte', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    matriculaOrg($this->bekho->id, 'Alumno BEKHO');
+    matriculaOrg($otra->id, 'Alumno Norte');
 
     Tenant::olvidar();
 
@@ -108,8 +121,8 @@ test('el admin-plataforma enfocado en un grupo solo ve los datos de ese grupo', 
 
 test('el admin-plataforma en "Todos los grupos" ve los datos de todas', function () {
     $otra = Grupo::create(['nombre' => 'ATA Norte', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno BEKHO', 'grupo_etario' => 'for_kids', 'activo' => true]);
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Alumno Norte', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    matriculaOrg($this->bekho->id, 'Alumno BEKHO');
+    matriculaOrg($otra->id, 'Alumno Norte');
 
     Tenant::olvidar();
 

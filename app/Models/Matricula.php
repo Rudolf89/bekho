@@ -153,6 +153,17 @@ class Matricula extends Model
     }
 
     /**
+     * ¿La matrícula pertenece a una clase del instructor (misma sede y grupo etario)?
+     */
+    public function esDeInstructor(User $instructor): bool
+    {
+        return $instructor->clases()
+            ->where('sede_id', $this->sede_id)
+            ->where('grupo_etario', $this->grupo_etario?->value)
+            ->exists();
+    }
+
+    /**
      * Acota las matrículas a las visibles para el usuario: dirección/administración
      * ve todas; el instructor solo las de sus clases (misma sede y grupo etario);
      * el apoderado solo las de las personas que tutela; el resto, ninguna.

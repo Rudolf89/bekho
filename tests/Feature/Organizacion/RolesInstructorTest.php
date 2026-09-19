@@ -5,7 +5,6 @@ use App\Livewire\Examenes\DetalleConvocatoria;
 use App\Models\CargoRango;
 use App\Models\Clase;
 use App\Models\Convocatoria;
-use App\Models\Estudiante;
 use App\Models\Grupo;
 use App\Models\Inscripcion;
 use App\Models\Matricula;
@@ -38,6 +37,19 @@ function usuarioRol(string $rol, ?int $grupoId, ?int $rangoId = null): User
     $user->assignRole($rol);
 
     return $user;
+}
+
+/**
+ * Matrícula activa (alumno) con su persona, para las pruebas de visibilidad.
+ */
+function matriculaRol(int $grupoId, string $nombre, ?int $sedeId, string $etario): Matricula
+{
+    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(10)]);
+
+    return Matricula::withoutGlobalScopes()->create([
+        'grupo_id' => $grupoId, 'persona_id' => $persona->id, 'sede_id' => $sedeId,
+        'grupo_etario' => $etario, 'estado' => 'activa', 'fecha_ingreso' => now(),
+    ]);
 }
 
 // --- Rol y rango son ejes independientes -------------------------------------
@@ -82,18 +94,16 @@ test('un instructor ve solo los alumnos de sus clases y no los de otra', functio
     ]);
     $clase->sincronizarInstructores([$instructor->id => 'titular']);
 
-    $suyo = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno Suyo',
-        'sede_id' => $sedeA->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
-    $otraSede = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno Otra Sede',
-        'sede_id' => $sedeB->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
-    $otroGrupo = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Alumno Otro Grupo',
-        'sede_id' => $sedeA->id, 'grupo_etario' => 'tigers', 'activo' => true]);
+    $suyo = matriculaRol($this->bekho->id, 'Alumno Suyo', $sedeA->id, 'for_kids');
+    $otraSede = matriculaRol($this->bekho->id, 'Alumno Otra Sede', $sedeB->id, 'for_kids');
+    $otroGrupo = matriculaRol($this->bekho->id, 'Alumno Otro Grupo', $sedeA->id, 'tigers');
 
     // Scope de consulta.
-    $visibles = Estudiante::visiblePara($instructor)->pluck('nombre')->all();
+    $visibles = Matricula::visiblePara($instructor)->with('persona')->get()
+        ->map(fn ($m) => $m->persona->nombreCompleto())->all();
     expect($visibles)->toBe(['Alumno Suyo']);
 
-    // Policy por ficha.
+    // Policy por matrícula.
     expect($instructor->can('view', $suyo))->toBeTrue();
     expect($instructor->can('view', $otraSede))->toBeFalse();
     expect($instructor->can('view', $otroGrupo))->toBeFalse();
@@ -108,10 +118,9 @@ test('un instructor ve solo los alumnos de sus clases y no los de otra', functio
 test('un instructor sin clases no ve ningún alumno', function () {
     $instructor = usuarioRol('instructor', $this->bekho->id);
 
-    Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Cualquiera',
-        'grupo_etario' => 'for_kids', 'activo' => true]);
+    matriculaRol($this->bekho->id, 'Cualquiera', null, 'for_kids');
 
-    expect(Estudiante::visiblePara($instructor)->count())->toBe(0);
+    expect(Matricula::visiblePara($instructor)->count())->toBe(0);
 });
 
 // --- Instructor: inscribe en exámenes sin aprobación -------------------------
@@ -144,10 +153,10 @@ test('un instructor de un grupo no ve alumnos de otra grupo', function () {
     ]);
     $clase->sincronizarInstructores([$instructor->id => 'titular']);
 
-    // Alumno de la otra grupo con la misma sede/grupo "por coincidencia".
-    Estudiante::create(['grupo_id' => $otra->id, 'nombre' => 'Ajeno',
-        'sede_id' => $sede->id, 'grupo_etario' => 'for_kids', 'activo' => true]);
+    // Alumno de la otra grupo (su sede es de otro grupo; aquí basta sin sede).
+    matriculaRol($otra->id, 'Ajeno', null, 'for_kids');
 
     // El tenant del instructor filtra por su grupo: no aparece el ajeno.
-    expect(Estudiante::visiblePara($instructor)->count())->toBe(0);
+    Tenant::set($this->bekho->id);
+    expect(Matricula::visiblePara($instructor)->count())->toBe(0);
 });

@@ -3,15 +3,16 @@
 namespace App\Livewire\Estudiantes;
 
 use App\Enums\EscalaGrado;
+use App\Enums\EstadoMatricula;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\ConOrden;
 use App\Livewire\Concerns\SugiereGrupoEtario;
-use App\Models\Estudiante;
 use App\Models\Grado;
-use App\Models\Programa;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
-use App\Models\User;
+use App\Support\Rut;
 use Flux\Flux;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
@@ -19,7 +20,12 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Title('Estudiantes')]
+/**
+ * Gestión de alumnos (matrículas). La identidad vive en la persona; la matrícula
+ * es el vínculo con el grupo. "Alta rápida" crea persona + matrícula; la
+ * inscripción completa vive en InscribirAlumno.
+ */
+#[Title('Alumnos')]
 class GestionEstudiantes extends Component
 {
     use AuthorizesRequests, ConOrden, SugiereGrupoEtario, WithPagination;
@@ -33,7 +39,7 @@ class GestionEstudiantes extends Component
 
     public string $filtroEstado = 'activos';
 
-    // Formulario
+    // Formulario (matrícula + persona)
     public ?int $editandoId = null;
 
     public string $nombre = '';
@@ -54,12 +60,6 @@ class GestionEstudiantes extends Component
 
     public bool $activo = true;
 
-    /** @var array<int, int> */
-    public array $programas = [];
-
-    /** @var array<int, int> */
-    public array $apoderados = [];
-
     public bool $mostrarModal = false;
 
     /**
@@ -72,16 +72,11 @@ class GestionEstudiantes extends Component
             'rut' => ['nullable', 'string', 'max:20'],
             'fecha_nacimiento' => ['nullable', 'date'],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
-            // El nivel no se pide: se deriva del cinturón (grado) al guardar.
             'grado_id' => ['nullable', Rule::exists('grados', 'id')],
             'sede_id' => ['nullable', Rule::exists('sedes', 'id')],
             'telefono_contacto' => ['nullable', 'string', 'max:50'],
             'email_contacto' => ['nullable', 'email', 'max:255'],
             'activo' => ['boolean'],
-            'programas' => ['array'],
-            'programas.*' => [Rule::exists('programas', 'id')],
-            'apoderados' => ['array'],
-            'apoderados.*' => [Rule::exists('users', 'id')],
         ];
     }
 
@@ -94,67 +89,88 @@ class GestionEstudiantes extends Component
 
     public function nuevo(): void
     {
-        $this->authorize('create', Estudiante::class);
+        $this->authorize('create', Matricula::class);
 
         $this->reset('editandoId', 'nombre', 'rut', 'fecha_nacimiento', 'grupo_etario',
-            'grado_id', 'sede_id', 'telefono_contacto', 'email_contacto', 'programas', 'apoderados');
+            'grado_id', 'sede_id', 'telefono_contacto', 'email_contacto');
         $this->activo = true;
         $this->resetErrorBag();
         $this->mostrarModal = true;
     }
 
-    public function editar(Estudiante $estudiante): void
+    public function editar(Matricula $matricula): void
     {
-        $this->authorize('update', $estudiante);
+        $this->authorize('update', $matricula);
 
-        $this->editandoId = $estudiante->id;
-        $this->nombre = $estudiante->nombre;
-        $this->rut = $estudiante->rut;
-        $this->fecha_nacimiento = $estudiante->fecha_nacimiento?->format('Y-m-d');
-        $this->grupo_etario = $estudiante->grupo_etario->value;
-        $this->grado_id = (string) ($estudiante->grado_id ?? '');
-        $this->sede_id = (string) ($estudiante->sede_id ?? '');
-        $this->telefono_contacto = $estudiante->telefono_contacto;
-        $this->email_contacto = $estudiante->email_contacto;
-        $this->activo = $estudiante->activo;
-        $this->programas = $estudiante->programas()->pluck('programas.id')->all();
-        $this->apoderados = $estudiante->apoderados()->pluck('users.id')->all();
+        $persona = $matricula->persona;
+        $this->editandoId = $matricula->id;
+        $this->nombre = $persona->nombreCompleto();
+        $this->rut = $persona->documentos()->where('tipo', 'rut')->value('numero');
+        $this->fecha_nacimiento = $persona->fecha_nacimiento?->format('Y-m-d');
+        $this->grupo_etario = $matricula->grupo_etario->value;
+        $this->grado_id = (string) ($persona->grado_id ?? '');
+        $this->sede_id = (string) ($matricula->sede_id ?? '');
+        $this->telefono_contacto = $persona->telefono;
+        $this->email_contacto = $persona->email;
+        $this->activo = $matricula->estado === EstadoMatricula::Activa;
         $this->resetErrorBag();
         $this->mostrarModal = true;
     }
 
     public function guardar(): void
     {
-        // Los <select> opcionales devuelven '' cuando no se elige nada.
         $this->grado_id = $this->grado_id ?: null;
         $this->sede_id = $this->sede_id ?: null;
 
         $datos = $this->validate();
 
-        $atributos = collect($datos)->except('programas', 'apoderados')->all();
-
         if ($this->editandoId) {
-            $estudiante = Estudiante::findOrFail($this->editandoId);
-            $this->authorize('update', $estudiante);
-            $estudiante->update($atributos);
-            Flux::toast(variant: 'success', text: 'Estudiante actualizado.');
+            $matricula = Matricula::findOrFail($this->editandoId);
+            $this->authorize('update', $matricula);
+            $persona = $matricula->persona;
         } else {
-            $this->authorize('create', Estudiante::class);
-            $estudiante = Estudiante::create($atributos);
-            Flux::toast(variant: 'success', text: 'Estudiante creado.');
+            $this->authorize('create', Matricula::class);
+            $persona = new Persona;
+            $matricula = new Matricula(['estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now()->toDateString()]);
         }
 
-        $estudiante->programas()->sync($this->programas);
-        $estudiante->apoderados()->sync($this->apoderados);
+        // Persona (identidad): el nombre completo va a "nombres" en la alta rápida.
+        $persona->fill([
+            'nombres' => $datos['nombre'],
+            'fecha_nacimiento' => $datos['fecha_nacimiento'] ?? $persona->fecha_nacimiento ?? now()->subYears(10)->toDateString(),
+            'telefono' => $datos['telefono_contacto'],
+            'email' => $datos['email_contacto'],
+            'grado_id' => $datos['grado_id'],
+        ])->save();
 
+        if ($datos['rut']) {
+            $persona->documentos()->updateOrCreate(
+                ['tipo' => 'rut'],
+                ['numero' => Rut::normalizar($datos['rut']) ?? $datos['rut'], 'pais' => 'CL', 'principal' => true],
+            );
+        }
+
+        $matricula->fill([
+            'persona_id' => $persona->id,
+            'grupo_etario' => $datos['grupo_etario'],
+            'sede_id' => $datos['sede_id'],
+            'nivel' => $this->nivelDerivado()->value,
+            'estado' => $this->activo ? EstadoMatricula::Activa->value : EstadoMatricula::Retirada->value,
+        ])->save();
+
+        Flux::toast(variant: 'success', text: $this->editandoId ? 'Alumno actualizado.' : 'Alumno creado.');
         $this->mostrarModal = false;
     }
 
-    public function alternarActivo(Estudiante $estudiante): void
+    public function alternarActivo(Matricula $matricula): void
     {
-        $this->authorize('update', $estudiante);
+        $this->authorize('update', $matricula);
 
-        $estudiante->update(['activo' => ! $estudiante->activo]);
+        $matricula->update([
+            'estado' => $matricula->estado === EstadoMatricula::Activa
+                ? EstadoMatricula::Retirada->value
+                : EstadoMatricula::Activa->value,
+        ]);
     }
 
     /**
@@ -166,14 +182,11 @@ class GestionEstudiantes extends Component
             return collect();
         }
 
-        $escala = EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario));
-
-        return Grado::porEscala($escala)->ordenados()->get();
+        return Grado::porEscala(EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario)))->ordenados()->get();
     }
 
     /**
-     * Nivel que tendrá el alumno según el cinturón elegido en el formulario.
-     * Sin cinturón (alumno nuevo) => Principiantes.
+     * Nivel que tendrá el alumno según el cinturón elegido (sin cinturón => Principiantes).
      */
     public function nivelDerivado(): NivelEntrenamiento
     {
@@ -184,24 +197,25 @@ class GestionEstudiantes extends Component
 
     public function render()
     {
-        $query = Estudiante::query()
+        $query = Matricula::query()
             ->visiblePara(auth()->user())
-            ->with(['sede', 'grado'])
+            ->with(['persona.grado', 'sede'])
             ->when($this->buscar !== '', fn ($q) => $q->where(fn ($sub) => $sub
-                ->where('nombre', 'ilike', "%{$this->buscar}%")
-                ->orWhere('rut', 'ilike', "%{$this->buscar}%")))
+                ->whereHas('persona', fn ($p) => $p
+                    ->where('nombres', 'like', "%{$this->buscar}%")
+                    ->orWhere('apellido_paterno', 'like', "%{$this->buscar}%")
+                    ->orWhere('apellido_materno', 'like', "%{$this->buscar}%"))
+                ->orWhereHas('persona.documentos', fn ($d) => $d->where('numero', 'like', "%{$this->buscar}%"))))
             ->when($this->filtroGrupo !== '', fn ($q) => $q->where('grupo_etario', $this->filtroGrupo))
             ->when($this->filtroNivel !== '', fn ($q) => $q->where('nivel', $this->filtroNivel))
-            ->when($this->filtroEstado === 'activos', fn ($q) => $q->where('activo', true))
-            ->when($this->filtroEstado === 'inactivos', fn ($q) => $q->where('activo', false));
+            ->when($this->filtroEstado === 'activos', fn ($q) => $q->where('estado', EstadoMatricula::Activa->value))
+            ->when($this->filtroEstado === 'inactivos', fn ($q) => $q->where('estado', '!=', EstadoMatricula::Activa->value));
 
         return view('livewire.estudiantes.gestion-estudiantes', [
-            'estudiantes' => $this->aplicarOrden($query, ['nombre', 'grupo_etario', 'nivel', 'activo'], 'nombre')->paginate(15),
+            'matriculas' => $this->aplicarOrden($query, ['grupo_etario', 'nivel', 'estado'], 'grupo_etario')->paginate(15),
             'grupos' => GrupoEtario::cases(),
             'niveles' => NivelEntrenamiento::cases(),
             'sedes' => Sede::orderBy('nombre')->get(),
-            'listaProgramas' => Programa::activos()->ordenados()->get(),
-            'listaApoderados' => User::role('apoderado')->orderBy('name')->get(),
         ]);
     }
 }
