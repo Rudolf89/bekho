@@ -6,6 +6,7 @@ use App\Enums\EstadoPlanillaCompetencia;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * Planilla operativa de competencia (prueba de certificación de planillero).
@@ -85,5 +86,29 @@ class PlanillaCompetencia extends Model
     public function competidores(): HasMany
     {
         return $this->hasMany(CompetidorPlanilla::class, 'planilla_id')->orderBy('orden');
+    }
+
+    /**
+     * @return HasMany<Combate, $this>
+     */
+    public function combates(): HasMany
+    {
+        return $this->hasMany(Combate::class, 'planilla_id')->orderBy('orden');
+    }
+
+    /**
+     * @return HasMany<ResultadoPlanilla, $this>
+     */
+    public function resultados(): HasMany
+    {
+        return $this->hasMany(ResultadoPlanilla::class, 'planilla_id')->orderBy('lugar');
+    }
+
+    /**
+     * @return HasOne<RecuentoMedallas, $this>
+     */
+    public function recuentoMedallas(): HasOne
+    {
+        return $this->hasOne(RecuentoMedallas::class, 'planilla_id');
     }
 }
