@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Apoderado;
 
+use App\Models\Matricula;
 use App\Services\ServicioPagos;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -18,9 +19,17 @@ class MisEstudiantes extends Component
     {
         $hijos = Auth::user()->hijos()->with(['grado', 'sede'])->orderBy('nombre')->get();
 
-        $estados = $hijos->mapWithKeys(fn ($hijo) => [
-            $hijo->id => $servicio->estaMoroso($hijo) ? 'moroso' : 'al_dia',
-        ]);
+        // Morosidad por la matrícula activa del hijo (la asistencia y los pagos
+        // van por matrícula desde el rediseño Fase 4).
+        $matriculas = Matricula::withoutGlobalScopes()->activas()
+            ->whereIn('estudiante_id', $hijos->pluck('id'))
+            ->get()->keyBy('estudiante_id');
+
+        $estados = $hijos->mapWithKeys(function ($hijo) use ($servicio, $matriculas) {
+            $matricula = $matriculas->get($hijo->id);
+
+            return [$hijo->id => $matricula && $servicio->estaMoroso($matricula) ? 'moroso' : 'al_dia'];
+        });
 
         return view('livewire.apoderado.mis-estudiantes', [
             'hijos' => $hijos,

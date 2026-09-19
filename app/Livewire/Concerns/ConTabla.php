@@ -52,13 +52,26 @@ trait ConTabla
 
         return $query->where(function (Builder $q) use ($columnas, $like) {
             foreach ($columnas as $columna) {
-                if (str_contains($columna, '.')) {
-                    [$relacion, $campo] = explode('.', $columna, 2);
-                    $q->orWhereHas($relacion, fn (Builder $r) => $r->where($campo, 'like', $like));
-                } else {
-                    $q->orWhere($columna, 'like', $like);
-                }
+                $this->aplicarColumnaBusqueda($q, $columna, $like, true);
             }
         });
+    }
+
+    /**
+     * Aplica un LIKE sobre una columna que puede pertenecer a una relación
+     * anidada ("matricula.persona.nombres"): baja por cada nivel con whereHas.
+     */
+    protected function aplicarColumnaBusqueda(Builder $q, string $columna, string $like, bool $or): void
+    {
+        if (str_contains($columna, '.')) {
+            [$relacion, $campo] = explode('.', $columna, 2);
+            $metodo = $or ? 'orWhereHas' : 'whereHas';
+            // Dentro de la relación las condiciones se encadenan con AND (where).
+            $q->{$metodo}($relacion, fn (Builder $r) => $this->aplicarColumnaBusqueda($r, $campo, $like, false));
+
+            return;
+        }
+
+        $q->{$or ? 'orWhere' : 'where'}($columna, 'like', $like);
     }
 }

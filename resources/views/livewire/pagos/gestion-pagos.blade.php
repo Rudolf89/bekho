@@ -18,14 +18,14 @@
         </div>
         <flux:table>
             <flux:table.columns>
-                <flux:table.column>Estudiante</flux:table.column>
+                <flux:table.column>Alumno</flux:table.column>
                 <flux:table.column>Grupo</flux:table.column>
                 <flux:table.column></flux:table.column>
             </flux:table.columns>
             <flux:table.rows>
                 @forelse ($morosos as $moroso)
                     <flux:table.row wire:key="moroso-{{ $moroso->id }}">
-                        <flux:table.cell variant="strong">{{ $moroso->nombre }}</flux:table.cell>
+                        <flux:table.cell variant="strong">{{ $moroso->persona?->nombreCompleto() ?? '—' }}</flux:table.cell>
                         <flux:table.cell>{{ $moroso->grupo_etario->etiqueta() }}</flux:table.cell>
                         <flux:table.cell>
                             <div class="flex justify-end">
@@ -70,7 +70,7 @@
         <flux:table>
             <flux:table.columns>
                 <flux:table.column sortable :sorted="$ordenCampo === 'fecha_pago'" :direction="$ordenDir" wire:click="ordenarPor('fecha_pago')">Fecha</flux:table.column>
-                <flux:table.column>Estudiante</flux:table.column>
+                <flux:table.column>Alumno</flux:table.column>
                 <flux:table.column>Tipo</flux:table.column>
                 <flux:table.column sortable :sorted="$ordenCampo === 'monto'" :direction="$ordenDir" wire:click="ordenarPor('monto')">Monto</flux:table.column>
             </flux:table.columns>
@@ -78,7 +78,7 @@
                 @forelse ($pagos as $pago)
                     <flux:table.row wire:key="pago-{{ $pago->id }}">
                         <flux:table.cell>{{ $pago->fecha_pago->format('d-m-Y') }}</flux:table.cell>
-                        <flux:table.cell variant="strong">{{ $pago->estudiante?->nombre ?? '—' }}</flux:table.cell>
+                        <flux:table.cell variant="strong">{{ $pago->matricula?->persona?->nombreCompleto() ?? '—' }}</flux:table.cell>
                         <flux:table.cell>{{ $pago->tipo->etiqueta() }}</flux:table.cell>
                         <flux:table.cell>${{ number_format($pago->monto, 0, ',', '.') }}</flux:table.cell>
                     </flux:table.row>
@@ -102,9 +102,9 @@
         <form wire:submit="registrarPago" class="space-y-5">
             <flux:heading size="lg">Registrar pago</flux:heading>
 
-            <flux:select wire:model="pagoEstudianteId" label="Estudiante" placeholder="Selecciona">
-                @foreach ($estudiantes as $est)
-                    <flux:select.option value="{{ $est->id }}">{{ $est->nombre }}</flux:select.option>
+            <flux:select wire:model="pagoMatriculaId" label="Alumno" placeholder="Selecciona">
+                @foreach ($matriculas as $m)
+                    <flux:select.option value="{{ $m->id }}">{{ $m->persona?->nombreCompleto() }}</flux:select.option>
                 @endforeach
             </flux:select>
 

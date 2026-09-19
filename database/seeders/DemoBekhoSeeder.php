@@ -6,7 +6,6 @@ use App\Enums\EscalaGrado;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\PapelEnClase;
-use App\Enums\TipoPago;
 use App\Enums\TipoSede;
 use App\Models\Asistencia;
 use App\Models\CargoRango;
@@ -16,7 +15,6 @@ use App\Models\Estudiante;
 use App\Models\Grado;
 use App\Models\Graduacion;
 use App\Models\Grupo;
-use App\Models\Pago;
 use App\Models\Planilla;
 use App\Models\Sede;
 use App\Models\User;
@@ -157,16 +155,9 @@ class DemoBekhoSeeder extends Seeder
         // La asistencia de demostración se siembra en DemoAsistenciaSeeder, que
         // corre después de MigraPersonasSeeder (la asistencia va por matrícula).
 
-        // Pagos del mes (dos tercios pagan; el resto queda moroso).
+        // Los pagos de demostración se siembran en DemoPagosSeeder (van por
+        // matrícula, que se crea después en MigraPersonasSeeder).
         $alumnos = Estudiante::activos()->get();
-        foreach ($alumnos as $k => $est) {
-            if ($k % 3 !== 0) {
-                Pago::updateOrCreate(
-                    ['estudiante_id' => $est->id, 'tipo' => TipoPago::Mensualidad->value, 'periodo' => now()->startOfMonth()->toDateString()],
-                    ['grupo_id' => $grupo->id, 'monto' => 35000, 'fecha_pago' => now()->toDateString()],
-                );
-            }
-        }
 
         // Convocatoria próxima con inscritos.
         $conv = Convocatoria::updateOrCreate(

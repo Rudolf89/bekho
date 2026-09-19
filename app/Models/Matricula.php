@@ -85,6 +85,16 @@ class Matricula extends Model
     }
 
     /**
+     * Pagos registrados para esta matrícula.
+     *
+     * @return HasMany<Pago, $this>
+     */
+    public function pagos(): HasMany
+    {
+        return $this->hasMany(Pago::class);
+    }
+
+    /**
      * @return BelongsTo<Grupo, $this>
      */
     public function grupo(): BelongsTo

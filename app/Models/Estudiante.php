@@ -172,13 +172,21 @@ class Estudiante extends Model
     }
 
     /**
-     * Pagos registrados.
+     * Pagos del alumno, a través de su matrícula (los pagos van por matrícula
+     * desde el rediseño Fase 4). Puente transitorio mientras vive Estudiante.
      *
-     * @return HasMany<Pago, $this>
+     * @return HasManyThrough<Pago, Matricula, $this>
      */
-    public function pagos(): HasMany
+    public function pagos(): HasManyThrough
     {
-        return $this->hasMany(Pago::class);
+        return $this->hasManyThrough(
+            Pago::class,
+            Matricula::class,
+            'estudiante_id', // FK en matriculas → estudiantes
+            'matricula_id',  // FK en pagos → matriculas
+            'id',
+            'id',
+        );
     }
 
     /**

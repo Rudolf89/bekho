@@ -5,7 +5,7 @@ namespace App\Livewire\Pagos;
 use App\Enums\TipoPago;
 use App\Livewire\Concerns\ConTabla;
 use App\Models\ConfiguracionPago;
-use App\Models\Estudiante;
+use App\Models\Matricula;
 use App\Models\Pago;
 use App\Services\ServicioPagos;
 use App\Support\Tenancy\Grupo;
@@ -26,7 +26,7 @@ class GestionPagos extends Component
     public string $filtroTipo = '';
 
     // Formulario de registro de pago
-    public ?string $pagoEstudianteId = '';
+    public ?string $pagoMatriculaId = '';
 
     public string $pagoTipo = 'mensualidad';
 
@@ -97,10 +97,10 @@ class GestionPagos extends Component
         );
     }
 
-    public function abrirRegistro(?int $estudianteId = null): void
+    public function abrirRegistro(?int $matriculaId = null): void
     {
         $this->reset('pagoTipo', 'pagoMonto', 'pagoMedio');
-        $this->pagoEstudianteId = (string) ($estudianteId ?? '');
+        $this->pagoMatriculaId = (string) ($matriculaId ?? '');
         $this->pagoFechaPago = now()->format('Y-m-d');
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -109,17 +109,17 @@ class GestionPagos extends Component
     public function registrarPago(ServicioPagos $servicio): void
     {
         $datos = $this->validate([
-            'pagoEstudianteId' => ['required', Rule::exists('estudiantes', 'id')],
+            'pagoMatriculaId' => ['required', Rule::exists('matriculas', 'id')],
             'pagoTipo' => ['required', Rule::enum(TipoPago::class)],
             'pagoMonto' => ['required', 'integer', 'min:1'],
             'pagoFechaPago' => ['required', 'date'],
             'pagoMedio' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $estudiante = Estudiante::findOrFail($datos['pagoEstudianteId']);
+        $matricula = Matricula::findOrFail($datos['pagoMatriculaId']);
 
         $servicio->registrarPago(
-            $estudiante,
+            $matricula,
             TipoPago::from($datos['pagoTipo']),
             $datos['pagoMonto'],
             Carbon::parse($datos['pagoFechaPago']),
@@ -148,8 +148,10 @@ class GestionPagos extends Component
     public function render(ServicioPagos $servicio)
     {
         // Consulta base filtrable: búsqueda por alumno/medio + filtro por tipo.
-        $base = $this->aplicarBusqueda(Pago::with('estudiante'), ['estudiante.nombre', 'medio'])
-            ->when($this->filtroTipo !== '', fn ($q) => $q->where('tipo', $this->filtroTipo));
+        $base = $this->aplicarBusqueda(
+            Pago::with('matricula.persona'),
+            ['matricula.persona.nombres', 'matricula.persona.apellido_paterno', 'medio'],
+        )->when($this->filtroTipo !== '', fn ($q) => $q->where('tipo', $this->filtroTipo));
 
         // El resumen suma TODOS los pagos que calzan con el filtro (no solo la página).
         $totalPagos = (clone $base)->count();
@@ -165,7 +167,8 @@ class GestionPagos extends Component
             'pagos' => $pagos,
             'totalPagos' => $totalPagos,
             'sumaPagos' => $sumaPagos,
-            'estudiantes' => Estudiante::activos()->orderBy('nombre')->get(),
+            'matriculas' => Matricula::activas()->with('persona')->get()
+                ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())->values(),
             'tipos' => TipoPago::cases(),
         ]);
     }

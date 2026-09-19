@@ -1,9 +1,10 @@
 <?php
 
 use App\Livewire\Pagos\GestionPagos;
-use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
 use App\Models\Pago;
+use App\Models\Persona;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\RolesPermisosSeeder;
@@ -22,11 +23,14 @@ beforeEach(function () {
     $this->direccion = User::factory()->create(['grupo_id' => $this->bekho->id, 'two_factor_confirmed_at' => now()]);
     $this->direccion->assignRole('direccion');
 
-    $this->ana = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Ana Pérez', 'grupo_etario' => 'for_kids', 'activo' => true]);
-    $this->beto = Estudiante::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Beto Soto', 'grupo_etario' => 'for_kids', 'activo' => true]);
+    $ana = Persona::create(['nombres' => 'Ana', 'apellido_paterno' => 'Pérez', 'fecha_nacimiento' => now()->subYears(10)]);
+    $beto = Persona::create(['nombres' => 'Beto', 'apellido_paterno' => 'Soto', 'fecha_nacimiento' => now()->subYears(10)]);
 
-    Pago::create(['grupo_id' => $this->bekho->id, 'estudiante_id' => $this->ana->id, 'tipo' => 'mensualidad', 'periodo' => now()->startOfMonth(), 'monto' => 30000, 'fecha_pago' => now()]);
-    Pago::create(['grupo_id' => $this->bekho->id, 'estudiante_id' => $this->beto->id, 'tipo' => 'matricula', 'periodo' => now()->startOfMonth(), 'monto' => 50000, 'fecha_pago' => now()]);
+    $this->matAna = Matricula::create(['grupo_id' => $this->bekho->id, 'persona_id' => $ana->id, 'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now()]);
+    $this->matBeto = Matricula::create(['grupo_id' => $this->bekho->id, 'persona_id' => $beto->id, 'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now()]);
+
+    Pago::create(['grupo_id' => $this->bekho->id, 'matricula_id' => $this->matAna->id, 'tipo' => 'mensualidad', 'periodo' => now()->startOfMonth(), 'monto' => 30000, 'fecha_pago' => now()]);
+    Pago::create(['grupo_id' => $this->bekho->id, 'matricula_id' => $this->matBeto->id, 'tipo' => 'matricula', 'periodo' => now()->startOfMonth(), 'monto' => 50000, 'fecha_pago' => now()]);
 });
 
 test('la tabla de pagos suma el total recaudado del filtro', function () {
@@ -47,4 +51,16 @@ test('el filtro por tipo acota la suma a ese tipo', function () {
         ->set('filtroTipo', 'matricula')
         ->assertViewHas('totalPagos', 1)
         ->assertViewHas('sumaPagos', 50000);
+});
+
+test('se puede registrar un pago para una matrícula', function () {
+    Livewire::actingAs($this->direccion)->test(GestionPagos::class)
+        ->call('abrirRegistro', $this->matAna->id)
+        ->assertSet('pagoMatriculaId', (string) $this->matAna->id)
+        ->set('pagoTipo', 'matricula')
+        ->set('pagoMonto', 50000)
+        ->call('registrarPago')
+        ->assertHasNoErrors();
+
+    expect(Pago::where('matricula_id', $this->matAna->id)->where('tipo', 'matricula')->exists())->toBeTrue();
 });

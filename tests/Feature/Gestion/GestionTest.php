@@ -5,7 +5,10 @@ use App\Models\Clase;
 use App\Models\ConfiguracionPago;
 use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
+use App\Models\Tutela;
 use App\Models\User;
 use App\Services\ServicioPagos;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -45,6 +48,23 @@ function nuevoEstudiante(int $grupoId, array $extra = []): Estudiante
         'nivel' => 'principiantes',
         'activo' => true,
     ], $extra));
+}
+
+/**
+ * Persona con matrícula activa (alumno del nuevo modelo). Devuelve la matrícula.
+ */
+function nuevaMatricula(int $grupoId, string $nombre = 'Alumno', ?int $sedeId = null): Matricula
+{
+    $persona = Persona::create(['nombres' => $nombre, 'fecha_nacimiento' => now()->subYears(10)]);
+
+    return Matricula::create([
+        'grupo_id' => $grupoId,
+        'persona_id' => $persona->id,
+        'sede_id' => $sedeId,
+        'grupo_etario' => 'for_kids',
+        'estado' => 'activa',
+        'fecha_ingreso' => now(),
+    ]);
 }
 
 // --- Permisos ----------------------------------------------------------------
@@ -107,29 +127,29 @@ test('los estudiantes se aíslan por grupo', function () {
 
 // --- Regla central: morosidad ------------------------------------------------
 
-test('un estudiante activo sin mensualidad del período está moroso', function () {
+test('una matrícula activa sin mensualidad del período está morosa', function () {
     Tenant::set($this->bekho->id);
-    $estudiante = nuevoEstudiante($this->bekho->id);
+    $matricula = nuevaMatricula($this->bekho->id);
     $servicio = app(ServicioPagos::class);
 
-    expect($servicio->estaMoroso($estudiante))->toBeTrue();
+    expect($servicio->estaMoroso($matricula))->toBeTrue();
 
-    $servicio->registrarPago($estudiante, TipoPago::Mensualidad, 30000, now());
+    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 30000, now());
 
-    expect($servicio->estaMoroso($estudiante))->toBeFalse();
+    expect($servicio->estaMoroso($matricula))->toBeFalse();
     expect($servicio->morosos())->toHaveCount(0);
 });
 
 test('registrar la mensualidad es idempotente en el mismo período', function () {
     Tenant::set($this->bekho->id);
-    $estudiante = nuevoEstudiante($this->bekho->id);
+    $matricula = nuevaMatricula($this->bekho->id);
     $servicio = app(ServicioPagos::class);
 
-    $servicio->registrarPago($estudiante, TipoPago::Mensualidad, 30000, now());
-    $servicio->registrarPago($estudiante, TipoPago::Mensualidad, 35000, now());
+    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 30000, now());
+    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 35000, now());
 
-    expect($estudiante->pagos()->where('tipo', 'mensualidad')->count())->toBe(1);
-    expect($estudiante->pagos()->where('tipo', 'mensualidad')->first()->monto)->toBe(35000);
+    expect($matricula->pagos()->where('tipo', 'mensualidad')->count())->toBe(1);
+    expect($matricula->pagos()->where('tipo', 'mensualidad')->first()->monto)->toBe(35000);
 });
 
 // --- Descuento por hermanos --------------------------------------------------
@@ -137,11 +157,13 @@ test('registrar la mensualidad es idempotente en el mismo período', function ()
 test('el descuento por hermanos se aplica cuando comparten apoderado', function () {
     Tenant::set($this->bekho->id);
 
-    $ana = nuevoEstudiante($this->bekho->id, ['nombre' => 'Ana']);
-    $beto = nuevoEstudiante($this->bekho->id, ['nombre' => 'Beto']);
-    $apoderado = actor('apoderado', $this->bekho->id);
-    $ana->apoderados()->attach($apoderado->id);
-    $beto->apoderados()->attach($apoderado->id);
+    $ana = nuevaMatricula($this->bekho->id, 'Ana');
+    $beto = nuevaMatricula($this->bekho->id, 'Beto');
+    $apoderado = Persona::create(['nombres' => 'Papá', 'fecha_nacimiento' => now()->subYears(40)]);
+
+    // Una tutela vigente del apoderado con cada alumno = son hermanos.
+    Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $ana->persona_id, 'parentesco' => 'padre']);
+    Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $beto->persona_id, 'parentesco' => 'padre']);
 
     $servicio = app(ServicioPagos::class);
     expect($servicio->tieneHermanos($ana))->toBeTrue();
