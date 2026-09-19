@@ -19,8 +19,13 @@ return new class extends Migration
         Schema::create('matriculas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('persona_id')->constrained('personas')->cascadeOnDelete();
+            // Puente TRANSITORIO hacia estudiantes mientras la operación (exámenes,
+            // etc.) aún usa Estudiante. Se elimina al retirar la tabla estudiantes.
+            $table->foreignId('estudiante_id')->nullable()->constrained('estudiantes')->nullOnDelete();
             $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('sede_id')->nullable();
+            $table->string('grupo_etario'); // App\Enums\GrupoEtario (roster de la clase)
+            $table->string('nivel')->nullable(); // App\Enums\NivelEntrenamiento (derivado del grado)
             $table->string('estado')->default('activa'); // App\Enums\EstadoMatricula
             $table->date('fecha_ingreso')->nullable();
             $table->date('fecha_retiro')->nullable();

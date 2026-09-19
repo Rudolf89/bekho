@@ -175,6 +175,25 @@ class Clase extends Model
     }
 
     /**
+     * Matrículas que corresponden a esta clase: activas de la misma sede y grupo
+     * etario (las clases se dividen solo por grupo etario). Reemplaza a
+     * estudiantesEsperados en el modelo de personas/matrículas.
+     *
+     * @return Builder<Matricula>
+     */
+    public function matriculasEsperadas(): Builder
+    {
+        return Matricula::query()
+            ->activas()
+            ->where('sede_id', $this->sede_id)
+            ->where('grupo_etario', $this->grupo_etario->value)
+            ->with('persona')
+            ->join('personas', 'personas.id', '=', 'matriculas.persona_id')
+            ->orderBy('personas.nombres')
+            ->select('matriculas.*');
+    }
+
+    /**
      * @param  Builder<Clase>  $query
      * @return Builder<Clase>
      */

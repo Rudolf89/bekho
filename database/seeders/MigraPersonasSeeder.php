@@ -93,8 +93,11 @@ class MigraPersonasSeeder extends Seeder
 
             Matricula::withoutGlobalScopes()->create([
                 'persona_id' => $persona->id,
+                'estudiante_id' => $est->id, // puente transitorio
                 'grupo_id' => $est->grupo_id,
                 'sede_id' => $est->sede_id,
+                'grupo_etario' => $est->grupo_etario,
+                'nivel' => $est->nivel,
                 'estado' => $est->activo ? EstadoMatricula::Activa->value : EstadoMatricula::Retirada->value,
                 'fecha_ingreso' => $est->created_at?->toDateString(),
                 'instructor_persona_id' => $est->instructor_id ? User::find($est->instructor_id)?->persona_id : null,

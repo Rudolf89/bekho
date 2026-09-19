@@ -23,27 +23,27 @@
             </div>
 
             <div class="space-y-2">
-                @forelse ($roster as $estudiante)
-                    @php($estado = $estados[$estudiante->id] ?? null)
-                    <div wire:key="ros-{{ $estudiante->id }}"
+                @forelse ($roster as $matricula)
+                    @php($estado = $estados[$matricula->id] ?? null)
+                    <div wire:key="ros-{{ $matricula->id }}"
                         class="flex items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-700 dark:bg-zinc-800">
-                        <flux:heading class="min-w-0 truncate">{{ $estudiante->nombre }}</flux:heading>
+                        <flux:heading class="min-w-0 truncate">{{ $matricula->persona->nombreCompleto() }}</flux:heading>
                         <div class="flex shrink-0 gap-2">
                             <flux:button size="sm"
                                 :variant="$estado === 'presente' ? 'primary' : 'outline'"
-                                wire:click="marcar({{ $estudiante->id }}, 'presente')">
+                                wire:click="marcar({{ $matricula->id }}, 'presente')">
                                 Presente
                             </flux:button>
                             <flux:button size="sm"
                                 :variant="$estado === 'ausente' ? 'danger' : 'outline'"
-                                wire:click="marcar({{ $estudiante->id }}, 'ausente')">
+                                wire:click="marcar({{ $matricula->id }}, 'ausente')">
                                 Ausente
                             </flux:button>
                         </div>
                     </div>
                 @empty
                     <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                        <flux:text>No hay estudiantes activos para esta clase (misma sede y grupo etario).</flux:text>
+                        <flux:text>No hay alumnos con matrícula activa para esta clase (misma sede y grupo etario).</flux:text>
                     </div>
                 @endforelse
             </div>

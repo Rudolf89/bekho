@@ -28,13 +28,13 @@ test('una persona solo puede tener una matrícula activa en toda la federación'
 
     Matricula::create([
         'persona_id' => $persona->id, 'grupo_id' => $this->bekho->id, 'sede_id' => $this->sede->id,
-        'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
+        'grupo_etario' => 'for_kids', 'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
     ]);
 
     // Otra activa (aunque sea en otro grupo) rompe el índice parcial.
     expect(fn () => Matricula::create([
         'persona_id' => $persona->id, 'grupo_id' => $otra->id,
-        'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
+        'grupo_etario' => 'for_kids', 'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
     ]))->toThrow(QueryException::class);
 });
 
@@ -43,12 +43,12 @@ test('una matrícula retirada no bloquea una nueva activa', function () {
 
     Matricula::create([
         'persona_id' => $persona->id, 'grupo_id' => $this->bekho->id, 'sede_id' => $this->sede->id,
-        'estado' => EstadoMatricula::Retirada->value, 'fecha_ingreso' => now()->subYear(), 'fecha_retiro' => now()->subMonth(),
+        'grupo_etario' => 'for_kids', 'estado' => EstadoMatricula::Retirada->value, 'fecha_ingreso' => now()->subYear(), 'fecha_retiro' => now()->subMonth(),
     ]);
 
     $activa = Matricula::create([
         'persona_id' => $persona->id, 'grupo_id' => $this->bekho->id, 'sede_id' => $this->sede->id,
-        'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
+        'grupo_etario' => 'for_kids', 'estado' => EstadoMatricula::Activa->value, 'fecha_ingreso' => now(),
     ]);
 
     expect($activa->exists)->toBeTrue()
@@ -61,12 +61,12 @@ test('la matrícula se aísla por grupo y autorrellena el grupo activo', functio
     $p2 = Persona::create(['nombres' => 'Dos', 'fecha_nacimiento' => now()->subYears(10)]);
 
     Matricula::withoutGlobalScopes()->create([
-        'persona_id' => $p2->id, 'grupo_id' => $otra->id, 'estado' => 'activa', 'fecha_ingreso' => now(),
+        'persona_id' => $p2->id, 'grupo_id' => $otra->id, 'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]);
 
     Tenant::set($this->bekho->id);
     $mia = Matricula::create([
-        'persona_id' => $p1->id, 'sede_id' => $this->sede->id, 'estado' => 'activa', 'fecha_ingreso' => now(),
+        'persona_id' => $p1->id, 'sede_id' => $this->sede->id, 'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]);
 
     expect($mia->grupo_id)->toBe($this->bekho->id)
@@ -82,7 +82,7 @@ test('la sede de la matrícula debe pertenecer al mismo grupo (FK compuesta)', f
     // Matrícula en BEKHO apuntando a una sede de otro grupo: la FK compuesta lo impide.
     expect(fn () => Matricula::withoutGlobalScopes()->create([
         'persona_id' => $persona->id, 'grupo_id' => $this->bekho->id, 'sede_id' => $sedeAjena->id,
-        'estado' => 'activa', 'fecha_ingreso' => now(),
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]))->toThrow(QueryException::class);
 });
 
@@ -91,8 +91,8 @@ test('el scope activas filtra por estado', function () {
     $a = Persona::create(['nombres' => 'A', 'fecha_nacimiento' => now()->subYears(10)]);
     $b = Persona::create(['nombres' => 'B', 'fecha_nacimiento' => now()->subYears(10)]);
 
-    Matricula::create(['persona_id' => $a->id, 'sede_id' => $this->sede->id, 'estado' => 'activa', 'fecha_ingreso' => now()]);
-    Matricula::create(['persona_id' => $b->id, 'sede_id' => $this->sede->id, 'estado' => 'retirada', 'fecha_ingreso' => now()]);
+    Matricula::create(['persona_id' => $a->id, 'sede_id' => $this->sede->id, 'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now()]);
+    Matricula::create(['persona_id' => $b->id, 'sede_id' => $this->sede->id, 'grupo_etario' => 'for_kids', 'estado' => 'retirada', 'fecha_ingreso' => now()]);
 
     expect(Matricula::activas()->count())->toBe(1);
 });
@@ -103,11 +103,11 @@ test('matricula_origen_id enlaza un traslado con su matrícula de origen', funct
 
     $origen = Matricula::create([
         'persona_id' => $persona->id, 'sede_id' => $this->sede->id,
-        'estado' => 'retirada', 'fecha_ingreso' => now()->subYear(), 'motivo_baja' => 'traslado',
+        'grupo_etario' => 'for_kids', 'estado' => 'retirada', 'fecha_ingreso' => now()->subYear(), 'motivo_baja' => 'traslado',
     ]);
     $destino = Matricula::create([
         'persona_id' => $persona->id, 'sede_id' => $this->sede->id,
-        'estado' => 'activa', 'fecha_ingreso' => now(), 'matricula_origen_id' => $origen->id,
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(), 'matricula_origen_id' => $origen->id,
     ]);
 
     expect($destino->origen->id)->toBe($origen->id);

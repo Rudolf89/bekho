@@ -9,21 +9,21 @@ return new class extends Migration
     /**
      * Ejecuta la migración.
      *
-     * Registro de asistencia por estudiante, clase y fecha.
+     * Registro de asistencia por matrícula, clase y fecha.
      */
     public function up(): void
     {
+        // matricula_id (y su índice único) se añade en una migración posterior,
+        // porque la tabla matriculas se crea después (rediseño Fase 2/4).
         Schema::create('asistencias', function (Blueprint $table) {
             $table->id();
             $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
             $table->foreignId('clase_id')->constrained('clases')->cascadeOnDelete();
-            $table->foreignId('estudiante_id')->constrained('estudiantes')->cascadeOnDelete();
             $table->foreignId('registrado_por')->nullable()->constrained('users')->nullOnDelete();
             $table->date('fecha');
             $table->string('estado'); // App\Enums\EstadoAsistencia
             $table->timestamps();
 
-            $table->unique(['clase_id', 'estudiante_id', 'fecha']);
             $table->index('grupo_id');
         });
     }

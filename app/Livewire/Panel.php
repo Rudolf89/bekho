@@ -61,7 +61,7 @@ class Panel extends Component
             ->sortBy('hora_hoy')
             ->values();
 
-        $esperadosHoy = $clasesHoy->sum(fn (Clase $c) => $c->estudiantesEsperados()->count());
+        $esperadosHoy = $clasesHoy->sum(fn (Clase $c) => $c->matriculasEsperadas()->count());
         $presentesHoy = Asistencia::whereDate('fecha', $hoy->toDateString())
             ->where('estado', EstadoAsistencia::Presente->value)->count();
 

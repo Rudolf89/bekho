@@ -3,10 +3,13 @@
 namespace App\Models;
 
 use App\Enums\EstadoMatricula;
+use App\Enums\GrupoEtario;
+use App\Enums\NivelEntrenamiento;
 use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -22,8 +25,11 @@ class Matricula extends Model
      */
     protected $fillable = [
         'persona_id',
+        'estudiante_id',
         'grupo_id',
         'sede_id',
+        'grupo_etario',
+        'nivel',
         'estado',
         'fecha_ingreso',
         'fecha_retiro',
@@ -42,6 +48,8 @@ class Matricula extends Model
     {
         return [
             'estado' => EstadoMatricula::class,
+            'grupo_etario' => GrupoEtario::class,
+            'nivel' => NivelEntrenamiento::class,
             'fecha_ingreso' => 'date',
             'fecha_retiro' => 'date',
             'acepto_reglamento_at' => 'datetime',
@@ -64,6 +72,16 @@ class Matricula extends Model
     public function persona(): BelongsTo
     {
         return $this->belongsTo(Persona::class);
+    }
+
+    /**
+     * Asistencias registradas para esta matrícula.
+     *
+     * @return HasMany<Asistencia, $this>
+     */
+    public function asistencias(): HasMany
+    {
+        return $this->hasMany(Asistencia::class);
     }
 
     /**

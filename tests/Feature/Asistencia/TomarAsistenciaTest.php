@@ -4,8 +4,9 @@ use App\Enums\EstadoAsistencia;
 use App\Livewire\Asistencia\TomarAsistencia;
 use App\Models\Asistencia;
 use App\Models\Clase;
-use App\Models\Estudiante;
 use App\Models\Grupo;
+use App\Models\Matricula;
+use App\Models\Persona;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -30,9 +31,12 @@ beforeEach(function () {
     ]);
     // La clase se reúne los lunes (día 1).
     $this->clase->horarios()->create(['dia_semana' => 1, 'hora_inicio' => '18:00', 'hora_fin' => '18:45']);
-    $this->alumno = Estudiante::create([
-        'grupo_id' => $this->bekho->id, 'nombre' => 'Pedrito', 'sede_id' => $this->sede->id,
-        'grupo_etario' => 'for_kids', 'activo' => true,
+
+    // El alumno es una persona con matrícula activa en la sede y grupo etario.
+    $persona = Persona::create(['nombres' => 'Pedrito', 'fecha_nacimiento' => now()->subYears(9)]);
+    $this->matricula = Matricula::create([
+        'grupo_id' => $this->bekho->id, 'persona_id' => $persona->id, 'sede_id' => $this->sede->id,
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
     ]);
 
     $this->instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
@@ -60,12 +64,12 @@ test('abrir una clase del calendario y marcar presente registra la asistencia', 
         ->assertSet('claseId', (string) $this->clase->id)
         ->assertSet('fecha', $lunes)
         ->assertSee('Pedrito')
-        ->call('marcar', $this->alumno->id, 'presente')
+        ->call('marcar', $this->matricula->id, 'presente')
         ->call('volver')
         ->assertSet('claseId', '');
 
     expect(Asistencia::where('clase_id', $this->clase->id)
-        ->where('estudiante_id', $this->alumno->id)
+        ->where('matricula_id', $this->matricula->id)
         ->whereDate('fecha', $lunes)
         ->where('estado', EstadoAsistencia::Presente->value)
         ->exists())->toBeTrue();

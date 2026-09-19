@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * Ficha del alumno. Distinta del User: el estudiante puede o no tener cuenta.
@@ -152,13 +153,22 @@ class Estudiante extends Model
     }
 
     /**
-     * Asistencias registradas.
+     * Asistencias del alumno, a través de su matrícula (la asistencia se registra
+     * por matrícula desde el rediseño Fase 4). Puente transitorio mientras la
+     * ficha Estudiante sigue viva.
      *
-     * @return HasMany<Asistencia, $this>
+     * @return HasManyThrough<Asistencia, Matricula, $this>
      */
-    public function asistencias(): HasMany
+    public function asistencias(): HasManyThrough
     {
-        return $this->hasMany(Asistencia::class);
+        return $this->hasManyThrough(
+            Asistencia::class,
+            Matricula::class,
+            'estudiante_id', // FK en matriculas → estudiantes
+            'matricula_id',  // FK en asistencias → matriculas
+            'id',
+            'id',
+        );
     }
 
     /**

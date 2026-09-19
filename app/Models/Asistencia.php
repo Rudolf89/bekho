@@ -22,7 +22,7 @@ class Asistencia extends Model
     protected $fillable = [
         'grupo_id',
         'clase_id',
-        'estudiante_id',
+        'matricula_id',
         'registrado_por',
         'fecha',
         'estado',
@@ -48,11 +48,11 @@ class Asistencia extends Model
     }
 
     /**
-     * @return BelongsTo<Estudiante, $this>
+     * @return BelongsTo<Matricula, $this>
      */
-    public function estudiante(): BelongsTo
+    public function matricula(): BelongsTo
     {
-        return $this->belongsTo(Estudiante::class);
+        return $this->belongsTo(Matricula::class);
     }
 
     /**

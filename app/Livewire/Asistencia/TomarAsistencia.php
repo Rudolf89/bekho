@@ -71,7 +71,7 @@ class TomarAsistencia extends Component
      * Marca (o cambia) el estado de un estudiante en la clase y fecha actuales.
      * Persiste de inmediato para agilizar la toma en el tatami.
      */
-    public function marcar(int $estudianteId, string $estado): void
+    public function marcar(int $matriculaId, string $estado): void
     {
         $clase = $this->claseSeleccionada();
 
@@ -79,8 +79,8 @@ class TomarAsistencia extends Component
             return;
         }
 
-        // El estudiante debe pertenecer al roster esperado de la clase.
-        if (! $clase->estudiantesEsperados()->whereKey($estudianteId)->exists()) {
+        // La matrícula debe pertenecer al roster esperado de la clase.
+        if (! $clase->matriculasEsperadas()->where('matriculas.id', $matriculaId)->exists()) {
             return;
         }
 
@@ -89,7 +89,7 @@ class TomarAsistencia extends Component
         Asistencia::updateOrCreate(
             [
                 'clase_id' => $clase->id,
-                'estudiante_id' => $estudianteId,
+                'matricula_id' => $matriculaId,
                 'fecha' => $this->fecha,
             ],
             [
@@ -137,7 +137,7 @@ class TomarAsistencia extends Component
                 ->map(function (array $par) use ($fecha) {
                     $c = $par['clase'];
                     $horario = $par['horario'];
-                    $esperados = $c->estudiantesEsperados()->count();
+                    $esperados = $c->matriculasEsperadas()->count();
                     $presentes = Asistencia::where('clase_id', $c->id)
                         ->whereDate('fecha', $fecha->toDateString())
                         ->where('estado', EstadoAsistencia::Presente->value)
@@ -179,7 +179,7 @@ class TomarAsistencia extends Component
         $clases = Clase::activas()->with(['sede', 'instructores', 'horarios'])->get();
 
         $clase = $this->claseSeleccionada();
-        $roster = $clase ? $clase->estudiantesEsperados()->get() : collect();
+        $roster = $clase ? $clase->matriculasEsperadas()->get() : collect();
 
         // Horario de la clase abierta que corresponde al día de la fecha elegida.
         $horarioLista = null;
@@ -197,7 +197,7 @@ class TomarAsistencia extends Component
         if ($clase) {
             $estados = Asistencia::where('clase_id', $clase->id)
                 ->whereDate('fecha', $this->fecha)
-                ->pluck('estado', 'estudiante_id')
+                ->pluck('estado', 'matricula_id')
                 ->map(fn ($e) => $e instanceof EstadoAsistencia ? $e->value : $e)
                 ->all();
         }

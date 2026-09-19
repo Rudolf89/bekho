@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Enums\EscalaGrado;
-use App\Enums\EstadoAsistencia;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Enums\PapelEnClase;
@@ -155,16 +154,8 @@ class DemoBekhoSeeder extends Seeder
             $clase->sincronizarInstructores($papeles);
         }
 
-        // Asistencia de hoy (marca presentes a la mitad).
-        $clasesHoy = Clase::whereHas('horarios', fn ($q) => $q->where('dia_semana', $diaHoy))->get();
-        foreach ($clasesHoy as $clase) {
-            foreach ($clase->estudiantesEsperados()->get() as $j => $est) {
-                Asistencia::updateOrCreate(
-                    ['clase_id' => $clase->id, 'estudiante_id' => $est->id, 'fecha' => now()->toDateString()],
-                    ['grupo_id' => $grupo->id, 'estado' => $j % 2 === 0 ? EstadoAsistencia::Presente : EstadoAsistencia::Ausente],
-                );
-            }
-        }
+        // La asistencia de demostración se siembra en DemoAsistenciaSeeder, que
+        // corre después de MigraPersonasSeeder (la asistencia va por matrícula).
 
         // Pagos del mes (dos tercios pagan; el resto queda moroso).
         $alumnos = Estudiante::activos()->get();
