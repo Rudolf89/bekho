@@ -40,11 +40,15 @@ class ServicioPagos
     }
 
     /**
-     * Indica si la matrícula (activa) está morosa en el período dado.
+     * Indica si la matrícula (activa) está morosa en el período dado. Una
+     * matrícula suspendida en ese período no genera cargo, así que no es morosa.
      */
     public function estaMoroso(Matricula $matricula, ?CarbonInterface $periodo = null): bool
     {
+        $periodo = $this->periodo($periodo);
+
         return $matricula->estado === EstadoMatricula::Activa
+            && ! $matricula->estaSuspendidaEn($periodo)
             && ! $this->estaAlDia($matricula, $periodo);
     }
 
@@ -62,6 +66,8 @@ class ServicioPagos
                 $query->where('tipo', TipoPago::Mensualidad->value)
                     ->whereDate('periodo', $periodo);
             })
+            // Las suspendidas en el período no cuentan como morosas.
+            ->whereDoesntHave('suspensiones', fn ($q) => $q->cubrePeriodo($periodo))
             ->with('persona')
             ->get()
             ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())

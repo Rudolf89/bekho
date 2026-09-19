@@ -7,6 +7,7 @@ use App\Enums\EstadoMatricula;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
 use App\Models\Concerns\PerteneceGrupo;
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -123,6 +124,24 @@ class Matricula extends Model
     public function graduaciones(): HasMany
     {
         return $this->hasMany(Graduacion::class);
+    }
+
+    /**
+     * Suspensiones (congelamientos) de esta matrícula.
+     *
+     * @return HasMany<Suspension, $this>
+     */
+    public function suspensiones(): HasMany
+    {
+        return $this->hasMany(Suspension::class);
+    }
+
+    /**
+     * ¿La matrícula está suspendida en el período (mes) dado?
+     */
+    public function estaSuspendidaEn(CarbonInterface $periodo): bool
+    {
+        return $this->suspensiones()->cubrePeriodo($periodo)->exists();
     }
 
     /**
