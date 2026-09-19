@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Enums\EstadoAsistencia;
-use App\Enums\TipoPago;
+use App\Enums\EstadoPago;
 use App\Models\Asistencia;
 use App\Models\Clase;
 use App\Models\Convocatoria;
@@ -65,8 +65,9 @@ class Panel extends Component
         $presentesHoy = Asistencia::whereDate('fecha', $hoy->toDateString())
             ->where('estado', EstadoAsistencia::Presente->value)->count();
 
-        $pagosMes = Pago::where('tipo', TipoPago::Mensualidad->value)
-            ->whereDate('periodo', $pagos->periodo())->count();
+        $pagosMes = Pago::where('estado', EstadoPago::Verificado->value)
+            ->whereBetween('fecha_pago', [$hoy->copy()->startOfMonth(), $hoy->copy()->endOfMonth()])
+            ->count();
         $porCobrar = $pagos->morosos()->count();
 
         $proximaConvocatoria = Convocatoria::whereDate('fecha', '>=', $hoy->toDateString())

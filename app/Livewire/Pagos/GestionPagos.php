@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Pagos;
 
-use App\Enums\TipoPago;
+use App\Enums\EstadoPago;
 use App\Livewire\Concerns\ConTabla;
 use App\Models\ConfiguracionPago;
 use App\Models\Matricula;
@@ -22,21 +22,28 @@ class GestionPagos extends Component
 {
     use ConTabla, WithPagination;
 
-    /** Filtro por tipo de pago (mensualidad/matrícula/…); '' = todos. */
-    public string $filtroTipo = '';
+    /** Filtro por estado del pago (por verificar/verificado/anulado); '' = todos. */
+    public string $filtroEstado = '';
 
     // Formulario de registro de pago
     public ?string $pagoMatriculaId = '';
-
-    public string $pagoTipo = 'mensualidad';
 
     public ?int $pagoMonto = null;
 
     public string $pagoFechaPago = '';
 
-    public ?string $pagoMedio = null;
+    public ?string $pagoBanco = null;
+
+    public ?string $pagoReferencia = null;
 
     public bool $mostrarModal = false;
+
+    // Anulación
+    public ?int $anulandoId = null;
+
+    public string $motivoAnulacion = '';
+
+    public bool $mostrarAnular = false;
 
     // Configuración de pagos (por grupo)
     public ?int $valor_mensualidad = null;
@@ -52,7 +59,6 @@ class GestionPagos extends Component
     public function mount(): void
     {
         $this->pagoFechaPago = now()->format('Y-m-d');
-        // Por defecto la tabla se ordena por fecha de pago, más reciente primero.
         if ($this->ordenCampo === '') {
             $this->ordenCampo = 'fecha_pago';
             $this->ordenDir = 'desc';
@@ -60,7 +66,7 @@ class GestionPagos extends Component
         $this->cargarConfig();
     }
 
-    public function updatedFiltroTipo(): void
+    public function updatedFiltroEstado(): void
     {
         $this->resetPage();
     }
@@ -76,9 +82,6 @@ class GestionPagos extends Component
 
     /**
      * Configuración de pagos del grupo activo (se crea si no existe).
-     *
-     * El admin-plataforma no tiene grupo activo (ve todas); en ese caso se usa su
-     * grupo o, en su defecto, la primera, para no insertar grupo_id nulo.
      */
     protected function config(): ConfiguracionPago
     {
@@ -86,7 +89,6 @@ class GestionPagos extends Component
             ?? Auth::user()?->grupo_id
             ?? \App\Models\Grupo::query()->orderBy('id')->value('id');
 
-        // Si no hay ningun grupo, devuelve una configuración transitoria.
         if (! $grupoId) {
             return new ConfiguracionPago(['descuento_hermanos_pct' => 20]);
         }
@@ -99,7 +101,7 @@ class GestionPagos extends Component
 
     public function abrirRegistro(?int $matriculaId = null): void
     {
-        $this->reset('pagoTipo', 'pagoMonto', 'pagoMedio');
+        $this->reset('pagoMonto', 'pagoBanco', 'pagoReferencia');
         $this->pagoMatriculaId = (string) ($matriculaId ?? '');
         $this->pagoFechaPago = now()->format('Y-m-d');
         $this->resetErrorBag();
@@ -110,24 +112,56 @@ class GestionPagos extends Component
     {
         $datos = $this->validate([
             'pagoMatriculaId' => ['required', Rule::exists('matriculas', 'id')],
-            'pagoTipo' => ['required', Rule::enum(TipoPago::class)],
             'pagoMonto' => ['required', 'integer', 'min:1'],
             'pagoFechaPago' => ['required', 'date'],
-            'pagoMedio' => ['nullable', 'string', 'max:100'],
+            'pagoBanco' => ['nullable', 'string', 'max:100'],
+            'pagoReferencia' => ['nullable', 'string', 'max:100'],
         ]);
 
         $matricula = Matricula::findOrFail($datos['pagoMatriculaId']);
 
+        // Registro manual de dirección/recepción: nace verificado y se aplica a
+        // los cargos pendientes de la matrícula.
         $servicio->registrarPago(
             $matricula,
-            TipoPago::from($datos['pagoTipo']),
             $datos['pagoMonto'],
             Carbon::parse($datos['pagoFechaPago']),
-            medio: $datos['pagoMedio'] ?? null,
+            [
+                'estado' => EstadoPago::Verificado,
+                'banco' => $datos['pagoBanco'] ?? null,
+                'referencia' => $datos['pagoReferencia'] ?? null,
+            ],
         );
 
         Flux::toast(variant: 'success', text: 'Pago registrado.');
         $this->mostrarModal = false;
+    }
+
+    public function verificar(int $pagoId, ServicioPagos $servicio): void
+    {
+        $pago = Pago::findOrFail($pagoId);
+        $servicio->verificar($pago, Auth::user());
+
+        Flux::toast(variant: 'success', text: 'Pago verificado.');
+    }
+
+    public function abrirAnular(int $pagoId): void
+    {
+        $this->anulandoId = $pagoId;
+        $this->motivoAnulacion = '';
+        $this->resetErrorBag();
+        $this->mostrarAnular = true;
+    }
+
+    public function anular(ServicioPagos $servicio): void
+    {
+        $this->validate(['motivoAnulacion' => ['required', 'string', 'max:255']]);
+
+        $pago = Pago::findOrFail($this->anulandoId);
+        $servicio->anular($pago, Auth::user(), $this->motivoAnulacion);
+
+        Flux::toast(variant: 'success', text: 'Pago anulado.');
+        $this->mostrarAnular = false;
     }
 
     public function guardarConfig(): void
@@ -147,15 +181,15 @@ class GestionPagos extends Component
 
     public function render(ServicioPagos $servicio)
     {
-        // Consulta base filtrable: búsqueda por alumno/medio + filtro por tipo.
+        // Consulta base filtrable: búsqueda por quien pagó / referencia + estado.
         $base = $this->aplicarBusqueda(
-            Pago::with('matricula.persona'),
-            ['matricula.persona.nombres', 'matricula.persona.apellido_paterno', 'medio'],
-        )->when($this->filtroTipo !== '', fn ($q) => $q->where('tipo', $this->filtroTipo));
+            Pago::with('pagadoPor'),
+            ['pagadoPor.nombres', 'pagadoPor.apellido_paterno', 'referencia'],
+        )->when($this->filtroEstado !== '', fn ($q) => $q->where('estado', $this->filtroEstado));
 
-        // El resumen suma TODOS los pagos que calzan con el filtro (no solo la página).
+        // El total recaudado suma solo los pagos verificados del filtro.
         $totalPagos = (clone $base)->count();
-        $sumaPagos = (clone $base)->sum('monto');
+        $sumaPagos = (clone $base)->where('estado', EstadoPago::Verificado->value)->sum('monto');
 
         $pagos = $this->aplicarOrden($base, ['fecha_pago', 'monto'], 'fecha_pago')
             ->latest('id')
@@ -169,7 +203,7 @@ class GestionPagos extends Component
             'sumaPagos' => $sumaPagos,
             'matriculas' => Matricula::activas()->with('persona')->get()
                 ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())->values(),
-            'tipos' => TipoPago::cases(),
+            'estados' => EstadoPago::cases(),
         ]);
     }
 }

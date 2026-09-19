@@ -2,21 +2,24 @@
 
 namespace App\Services;
 
+use App\Enums\EstadoCargo;
 use App\Enums\EstadoMatricula;
-use App\Enums\TipoPago;
-use App\Models\ConfiguracionPago;
+use App\Enums\EstadoPago;
+use App\Models\Cargo;
 use App\Models\Matricula;
 use App\Models\Pago;
-use App\Models\Tutela;
+use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 /**
- * Lógica de dominio de pagos y morosidad (por matrícula).
+ * Lógica de dominio de pagos y morosidad, sobre CARGOS (rediseño Fase 5b).
  *
- * Morosidad "solo se marca": una matrícula activa está morosa si no tiene
- * registrada la mensualidad del período vigente. No se bloquea ningún acceso.
+ * La deuda vive en los cargos: una matrícula activa (no suspendida) está morosa
+ * si tiene un cargo pendiente cuyo período ya llegó. Un pago es un abono con
+ * verificación que se aplica a uno o varios cargos (pivote pago_cargo); solo los
+ * pagos verificados cubren un cargo y lo dejan "pagado".
  */
 class ServicioPagos
 {
@@ -29,14 +32,31 @@ class ServicioPagos
     }
 
     /**
-     * Indica si la matrícula tiene pagada la mensualidad de un período.
+     * Cargos pendientes de la matrícula con período vencido (≤ el dado o sin
+     * período), ordenados del más antiguo al más nuevo.
+     *
+     * @return Collection<int, Cargo>
+     */
+    public function cargosPendientes(Matricula $matricula, ?CarbonInterface $periodo = null): Collection
+    {
+        $periodo = $this->periodo($periodo);
+
+        return Cargo::withoutGlobalScopes()
+            ->where('matricula_id', $matricula->id)
+            ->pendientes()
+            ->where(fn ($q) => $q->whereNull('periodo')->orWhereDate('periodo', '<=', $periodo))
+            ->orderByRaw('periodo is null')
+            ->orderBy('periodo')
+            ->orderBy('id')
+            ->get();
+    }
+
+    /**
+     * Indica si la matrícula está al día (sin cargos pendientes vencidos).
      */
     public function estaAlDia(Matricula $matricula, ?CarbonInterface $periodo = null): bool
     {
-        return $matricula->pagos()
-            ->where('tipo', TipoPago::Mensualidad->value)
-            ->whereDate('periodo', $this->periodo($periodo))
-            ->exists();
+        return $this->cargosPendientes($matricula, $periodo)->isEmpty();
     }
 
     /**
@@ -49,24 +69,23 @@ class ServicioPagos
 
         return $matricula->estado === EstadoMatricula::Activa
             && ! $matricula->estaSuspendidaEn($periodo)
-            && ! $this->estaAlDia($matricula, $periodo);
+            && $this->cargosPendientes($matricula, $periodo)->isNotEmpty();
     }
 
     /**
-     * Matrículas activas morosas del período (respeta el scope por grupo).
+     * Matrículas activas morosas del período (respeta el scope por grupo): tienen
+     * un cargo pendiente vencido y no están suspendidas en el período.
      *
      * @return Collection<int, Matricula>
      */
-    public function morosos(?CarbonInterface $periodo = null)
+    public function morosos(?CarbonInterface $periodo = null): Collection
     {
         $periodo = $this->periodo($periodo);
 
         return Matricula::activas()
-            ->whereDoesntHave('pagos', function ($query) use ($periodo): void {
-                $query->where('tipo', TipoPago::Mensualidad->value)
-                    ->whereDate('periodo', $periodo);
-            })
-            // Las suspendidas en el período no cuentan como morosas.
+            ->whereHas('cargos', fn ($q) => $q
+                ->where('estado', EstadoCargo::Pendiente->value)
+                ->where(fn ($sub) => $sub->whereNull('periodo')->orWhereDate('periodo', '<=', $periodo)))
             ->whereDoesntHave('suspensiones', fn ($q) => $q->cubrePeriodo($periodo))
             ->with('persona')
             ->get()
@@ -75,77 +94,123 @@ class ServicioPagos
     }
 
     /**
-     * Indica si la matrícula tiene hermanos en la escuela (la persona comparte
-     * apoderado, vía tutela vigente, con otra persona que tiene matrícula activa).
+     * Registra un pago de la matrícula y lo aplica a sus cargos pendientes. Por
+     * defecto el pago nace verificado (registro manual de dirección/recepción);
+     * pasar estado PorVerificar para un comprobante subido por el apoderado.
+     *
+     * @param  array<string, mixed>  $opts  estado, banco, referencia, comprobante_archivo, pagado_por_persona_id, cargos
      */
-    public function tieneHermanos(Matricula $matricula): bool
+    public function registrarPago(Matricula $matricula, int $monto, CarbonInterface $fechaPago, array $opts = []): Pago
     {
-        $apoderadoIds = Tutela::query()
-            ->where('alumno_persona_id', $matricula->persona_id)
-            ->pluck('apoderado_persona_id');
+        $estado = $opts['estado'] ?? EstadoPago::Verificado;
 
-        if ($apoderadoIds->isEmpty()) {
-            return false;
+        $pago = Pago::create([
+            'grupo_id' => $matricula->grupo_id,
+            'pagado_por_persona_id' => $opts['pagado_por_persona_id'] ?? $matricula->persona_id,
+            'monto' => $monto,
+            'fecha_pago' => $fechaPago,
+            'banco' => $opts['banco'] ?? null,
+            'referencia' => $opts['referencia'] ?? null,
+            'comprobante_archivo' => $opts['comprobante_archivo'] ?? null,
+            'estado' => $estado->value,
+            'registrado_por' => Auth::id(),
+            'verificado_por_user_id' => $estado === EstadoPago::Verificado ? Auth::id() : null,
+            'verificado_at' => $estado === EstadoPago::Verificado ? now() : null,
+        ]);
+
+        $cargos = $opts['cargos'] ?? $this->cargosPendientes($matricula);
+        $this->aplicar($pago, $cargos);
+
+        if ($estado === EstadoPago::Verificado) {
+            $this->marcarCubiertos($cargos);
         }
 
-        $hermanoPersonaIds = Tutela::query()
-            ->whereIn('apoderado_persona_id', $apoderadoIds)
-            ->where('alumno_persona_id', '!=', $matricula->persona_id)
-            ->pluck('alumno_persona_id');
-
-        if ($hermanoPersonaIds->isEmpty()) {
-            return false;
-        }
-
-        return Matricula::activas()
-            ->whereIn('persona_id', $hermanoPersonaIds)
-            ->exists();
+        return $pago;
     }
 
     /**
-     * Monto de mensualidad esperado para la matrícula según la configuración de
-     * su grupo, aplicando el descuento por hermanos si corresponde.
-     * Devuelve null si el grupo aún no fijó el valor de la mensualidad.
+     * Verifica un pago: lo confirma y marca como pagados los cargos que cubre.
      */
-    public function montoMensualidadEsperado(Matricula $matricula, ConfiguracionPago $config): ?int
+    public function verificar(Pago $pago, User $verificador): void
     {
-        if ($config->valor_mensualidad === null) {
-            return null;
-        }
+        $pago->update([
+            'estado' => EstadoPago::Verificado->value,
+            'verificado_por_user_id' => $verificador->id,
+            'verificado_at' => now(),
+        ]);
 
-        $monto = $config->valor_mensualidad;
-
-        if ($this->tieneHermanos($matricula)) {
-            $monto = (int) round($monto * (100 - $config->descuento_hermanos_pct) / 100);
-        }
-
-        return $monto;
+        $this->marcarCubiertos($pago->cargos()->get());
     }
 
     /**
-     * Registra un pago de la matrícula (registro manual).
+     * Anula un pago (nunca se borra): revierte a pendiente los cargos que dejen
+     * de estar cubiertos por pagos verificados.
      */
-    public function registrarPago(
-        Matricula $matricula,
-        TipoPago $tipo,
-        int $monto,
-        CarbonInterface $fechaPago,
-        ?CarbonInterface $periodo = null,
-        ?string $medio = null,
-    ): Pago {
-        return Pago::updateOrCreate(
-            [
-                'matricula_id' => $matricula->id,
-                'tipo' => $tipo->value,
-                'periodo' => $tipo === TipoPago::Mensualidad ? $this->periodo($periodo) : null,
-            ],
-            [
-                'grupo_id' => $matricula->grupo_id,
-                'monto' => $monto,
-                'fecha_pago' => $fechaPago,
-                'medio' => $medio,
-                'registrado_por' => Auth::id(),
-            ],
-        );
+    public function anular(Pago $pago, User $usuario, ?string $motivo = null): void
+    {
+        $cargos = $pago->cargos()->get();
+
+        $pago->update([
+            'estado' => EstadoPago::Anulado->value,
+            'motivo_anulacion' => $motivo,
+        ]);
+
+        foreach ($cargos as $cargo) {
+            if ($cargo->estado === EstadoCargo::Pagado && ! $cargo->estaCubierto()) {
+                $cargo->update(['estado' => EstadoCargo::Pendiente->value]);
+            }
+        }
+    }
+
+    /**
+     * Aplica el monto del pago a los cargos (del más antiguo al más nuevo),
+     * registrando el monto aplicado a cada uno en el pivote.
+     *
+     * @param  Collection<int, Cargo>  $cargos
+     */
+    protected function aplicar(Pago $pago, Collection $cargos): void
+    {
+        $restante = $pago->monto;
+
+        foreach ($cargos as $cargo) {
+            if ($restante <= 0) {
+                break;
+            }
+
+            $saldo = $this->saldoCargo($cargo);
+            if ($saldo <= 0) {
+                continue;
+            }
+
+            $aplicado = min($restante, $saldo);
+            $pago->cargos()->syncWithoutDetaching([$cargo->id => ['monto_aplicado' => $aplicado]]);
+            $restante -= $aplicado;
+        }
+    }
+
+    /**
+     * Marca como pagados los cargos totalmente cubiertos por pagos verificados.
+     *
+     * @param  Collection<int, Cargo>  $cargos
+     */
+    protected function marcarCubiertos(Collection $cargos): void
+    {
+        foreach ($cargos as $cargo) {
+            if ($cargo->estado !== EstadoCargo::Pagado && $cargo->estaCubierto()) {
+                $cargo->update(['estado' => EstadoCargo::Pagado->value]);
+            }
+        }
+    }
+
+    /**
+     * Saldo de un cargo: su monto menos lo ya aplicado por pagos no anulados.
+     */
+    protected function saldoCargo(Cargo $cargo): int
+    {
+        $aplicado = (int) $cargo->pagos()
+            ->where('estado', '!=', EstadoPago::Anulado->value)
+            ->sum('pago_cargo.monto_aplicado');
+
+        return max(0, $cargo->monto - $aplicado);
     }
 }

@@ -86,13 +86,14 @@ class Matricula extends Model
     }
 
     /**
-     * Pagos registrados para esta matrícula.
+     * Cargos (cobros) generados a esta matrícula. Los pagos se enlazan a los
+     * cargos vía el pivote pago_cargo (no cuelgan directamente de la matrícula).
      *
-     * @return HasMany<Pago, $this>
+     * @return HasMany<Cargo, $this>
      */
-    public function pagos(): HasMany
+    public function cargos(): HasMany
     {
-        return $this->hasMany(Pago::class);
+        return $this->hasMany(Cargo::class);
     }
 
     /**

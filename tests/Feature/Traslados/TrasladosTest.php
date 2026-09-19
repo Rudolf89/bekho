@@ -2,14 +2,16 @@
 
 use App\Enums\EstadoMatricula;
 use App\Enums\EstadoTraslado;
-use App\Enums\TipoPago;
+use App\Models\Cargo;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Persona;
 use App\Models\Sede;
+use App\Models\TipoCargo;
 use App\Services\ServicioPagos;
 use App\Services\ServicioTraslados;
 use App\Support\Tenancy\Grupo as Tenant;
+use Database\Seeders\CatalogosFederacionSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -20,6 +22,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
+    $this->seed(CatalogosFederacionSeeder::class); // tipos_cargo
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->origen = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     $this->destino = Grupo::create(['nombre' => 'BEKHO Norte', 'activo' => true]);
@@ -34,10 +37,22 @@ beforeEach(function () {
 
 afterEach(fn () => Tenant::olvidar());
 
-/** Deja la matrícula de origen al día para que no bloquee por deuda. */
+/** Genera un cargo pendiente en la matrícula (deuda que bloquea el traslado). */
+function generaDeuda(Matricula $matricula, int $monto = 30000): Cargo
+{
+    $tipo = TipoCargo::where('recurrente', true)->orderBy('orden')->first();
+
+    return Cargo::withoutGlobalScopes()->create([
+        'grupo_id' => $matricula->grupo_id, 'matricula_id' => $matricula->id,
+        'tipo_cargo_id' => $tipo->id, 'periodo' => now()->startOfMonth(),
+        'monto' => $monto, 'estado' => 'pendiente',
+    ]);
+}
+
+/** Deja la matrícula de origen al día pagando (verificado) sus cargos pendientes. */
 function alDia(Matricula $matricula): void
 {
-    app(ServicioPagos::class)->registrarPago($matricula, TipoPago::Mensualidad, 30000, now());
+    app(ServicioPagos::class)->registrarPago($matricula, 100000, now());
 }
 
 test('solicitar crea una solicitud pendiente de consentimiento', function () {
@@ -67,10 +82,12 @@ test('consentir sin deuda pasa a pendiente de aprobación', function () {
 });
 
 test('consentir con deuda en el origen bloquea la solicitud', function () {
+    // La matrícula de origen tiene un cargo pendiente → morosa → bloquea.
+    generaDeuda($this->matriculaOrigen);
+
     $servicio = app(ServicioTraslados::class);
     $solicitud = $servicio->solicitar($this->persona, $this->matriculaOrigen, $this->destino);
 
-    // La matrícula de origen está morosa (sin mensualidad) → bloquea.
     $servicio->consentir($solicitud, $this->persona);
 
     expect($solicitud->fresh()->estado)->toBe(EstadoTraslado::Bloqueada);

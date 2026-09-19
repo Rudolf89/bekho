@@ -1,16 +1,18 @@
 <?php
 
-use App\Enums\TipoPago;
+use App\Models\Cargo;
 use App\Models\Clase;
-use App\Models\ConfiguracionPago;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Persona;
 use App\Models\Sede;
+use App\Models\TipoCargo;
 use App\Models\Tutela;
 use App\Models\User;
+use App\Services\ServicioCargos;
 use App\Services\ServicioPagos;
 use App\Support\Tenancy\Grupo as Tenant;
+use Database\Seeders\CatalogosFederacionSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\PermissionRegistrar;
@@ -19,8 +21,10 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
+    $this->seed(CatalogosFederacionSeeder::class); // tipos_cargo (Mensualidad, …)
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
+    $this->mensualidad = TipoCargo::where('recurrente', true)->orderBy('orden')->first();
 });
 
 /**
@@ -115,52 +119,58 @@ test('las matrículas se aíslan por grupo', function () {
 
 // --- Regla central: morosidad ------------------------------------------------
 
-test('una matrícula activa sin mensualidad del período está morosa', function () {
+/** Cargo de mensualidad pendiente del mes actual para la matrícula. */
+function cargoDe(Matricula $matricula, int $monto = 30000): Cargo
+{
+    $tipo = TipoCargo::where('recurrente', true)->orderBy('orden')->first();
+
+    return Cargo::withoutGlobalScopes()->create([
+        'grupo_id' => $matricula->grupo_id, 'matricula_id' => $matricula->id,
+        'tipo_cargo_id' => $tipo->id, 'periodo' => now()->startOfMonth(),
+        'monto' => $monto, 'estado' => 'pendiente',
+    ]);
+}
+
+test('una matrícula activa con un cargo pendiente está morosa', function () {
     Tenant::set($this->bekho->id);
     $matricula = nuevaMatricula($this->bekho->id);
     $servicio = app(ServicioPagos::class);
 
-    expect($servicio->estaMoroso($matricula))->toBeTrue();
-
-    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 30000, now());
-
+    // Sin cargos aún: nada que deber.
     expect($servicio->estaMoroso($matricula))->toBeFalse();
-    expect($servicio->morosos())->toHaveCount(0);
+
+    cargoDe($matricula, 30000);
+    expect($servicio->estaMoroso($matricula))->toBeTrue();
 });
 
-test('registrar la mensualidad es idempotente en el mismo período', function () {
+test('pagar el cargo del período lo marca pagado y sale de morosidad', function () {
     Tenant::set($this->bekho->id);
     $matricula = nuevaMatricula($this->bekho->id);
+    $cargo = cargoDe($matricula, 30000);
     $servicio = app(ServicioPagos::class);
 
-    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 30000, now());
-    $servicio->registrarPago($matricula, TipoPago::Mensualidad, 35000, now());
+    $servicio->registrarPago($matricula, 30000, now());
 
-    expect($matricula->pagos()->where('tipo', 'mensualidad')->count())->toBe(1);
-    expect($matricula->pagos()->where('tipo', 'mensualidad')->first()->monto)->toBe(35000);
+    expect($cargo->fresh()->estado->value)->toBe('pagado')
+        ->and($servicio->estaMoroso($matricula))->toBeFalse()
+        ->and($servicio->morosos())->toHaveCount(0);
 });
 
 // --- Descuento por hermanos --------------------------------------------------
 
-test('el descuento por hermanos se aplica cuando comparten apoderado', function () {
+test('el tamaño de familia cuenta a los hermanos con el mismo responsable de pago', function () {
     Tenant::set($this->bekho->id);
 
     $ana = nuevaMatricula($this->bekho->id, 'Ana');
     $beto = nuevaMatricula($this->bekho->id, 'Beto');
     $apoderado = Persona::create(['nombres' => 'Papá', 'fecha_nacimiento' => now()->subYears(40)]);
 
-    // Una tutela vigente del apoderado con cada alumno = son hermanos.
-    Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $ana->persona_id, 'parentesco' => 'padre']);
-    Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $beto->persona_id, 'parentesco' => 'padre']);
+    foreach ([$ana, $beto] as $hijo) {
+        Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $hijo->persona_id, 'parentesco' => 'padre', 'responsable_pago' => true]);
+    }
 
-    $servicio = app(ServicioPagos::class);
-    expect($servicio->tieneHermanos($ana))->toBeTrue();
-
-    // Con mensualidad de 10000 y 20% de descuento => 8000.
-    $cfg = ConfiguracionPago::where('grupo_id', $this->bekho->id)->first();
-    $cfg->update(['valor_mensualidad' => 10000, 'descuento_hermanos_pct' => 20]);
-
-    expect($servicio->montoMensualidadEsperado($ana, $cfg->fresh()))->toBe(8000);
+    // La familia (para el tramo de tarifas) incluye a ambos hermanos.
+    expect(app(ServicioCargos::class)->tamanoFamilia($ana))->toBe(2);
 });
 
 // --- Vista de apoderado (Policy) ---------------------------------------------
