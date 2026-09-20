@@ -10,6 +10,7 @@ use App\Models\TarifaSede;
 use App\Models\TipoCargo;
 use App\Models\Tutela;
 use Carbon\CarbonInterface;
+use Illuminate\Support\Carbon;
 use RuntimeException;
 
 /**
@@ -168,9 +169,9 @@ class ServicioCargos
      * Genera un cargo único (no recurrente) para la matrícula — p. ej. matrícula
      * de ingreso o uniforme — con la tarifa de la sede (tramo de 1). Best-effort:
      * devuelve null si la matrícula no tiene sede o la sede no tiene esa tarifa
-     * (no bloquea la inscripción). Idempotente por (matrícula, tipo, período nulo).
+     * (no bloquea la inscripción). Idempotente por (matrícula, tipo, período).
      */
-    public function generarCargoUnico(Matricula $matricula, TipoCargo $tipo, ?CarbonInterface $vence = null): ?Cargo
+    public function generarCargoUnico(Matricula $matricula, TipoCargo $tipo, ?CarbonInterface $vence = null, ?CarbonInterface $periodo = null): ?Cargo
     {
         if (! $matricula->sede_id) {
             return null;
@@ -182,7 +183,7 @@ class ServicioCargos
         }
 
         return Cargo::withoutGlobalScopes()->updateOrCreate(
-            ['matricula_id' => $matricula->id, 'tipo_cargo_id' => $tipo->id, 'periodo' => null],
+            ['matricula_id' => $matricula->id, 'tipo_cargo_id' => $tipo->id, 'periodo' => $periodo?->toDateString()],
             [
                 'grupo_id' => $matricula->grupo_id,
                 'sede_id' => $matricula->sede_id,
@@ -192,6 +193,78 @@ class ServicioCargos
                 'detalle_calculo' => ['sede_id' => $matricula->sede_id, 'tramo' => 1, 'monto_base' => $tarifa->monto_por_alumno, 'monto_final' => $tarifa->monto_por_alumno],
             ],
         );
+    }
+
+    /**
+     * Tipo de cargo "Matrícula" de la federación (una vez al año, feb–mar).
+     */
+    public function tipoMatricula(?int $federacionId = null): ?TipoCargo
+    {
+        return TipoCargo::query()
+            ->when($federacionId, fn ($q) => $q->where('federacion_id', $federacionId))
+            ->where('nombre', 'Matrícula')
+            ->first();
+    }
+
+    /**
+     * ¿La matrícula está EXENTA de la matrícula anual del año dado? El reglamento:
+     * el alumno nuevo que ingresó entre octubre (año anterior) y enero queda eximido
+     * del pago de matrícula del período anual siguiente.
+     */
+    public function exentaDeMatricula(Matricula $matricula, int $anio): bool
+    {
+        $ingreso = $matricula->fecha_ingreso;
+
+        if (! $ingreso) {
+            return false;
+        }
+
+        $desde = Carbon::create($anio - 1, 10, 1)->startOfDay();
+        $hasta = Carbon::create($anio, 1, 31)->endOfDay();
+
+        return $ingreso->betweenIncluded($desde, $hasta);
+    }
+
+    /**
+     * Genera (idempotente) la matrícula ANUAL del año dado para las matrículas
+     * activas, salvo las exentas por haber ingresado en octubre–enero. El monto
+     * sale de la tarifa de la sede; sin tarifa se omite. Devuelve cuántas creó.
+     */
+    public function generarMatriculasAnuales(?int $anio = null): int
+    {
+        $anio = $anio ?? (int) now()->year;
+        $periodo = Carbon::create($anio, 1, 1)->startOfDay();
+        $creadas = 0;
+
+        foreach (Matricula::withoutGlobalScopes()->activas()->get() as $matricula) {
+            if ($this->exentaDeMatricula($matricula, $anio)) {
+                continue;
+            }
+
+            $tipo = $this->tipoMatricula($matricula->grupo->federacion_id ?? null);
+            if (! $tipo) {
+                continue;
+            }
+
+            $existe = Cargo::withoutGlobalScopes()
+                ->where('matricula_id', $matricula->id)
+                ->where('tipo_cargo_id', $tipo->id)
+                ->whereDate('periodo', $periodo)
+                ->where('estado', '!=', EstadoCargo::Anulado->value)
+                ->exists();
+
+            if ($existe) {
+                continue;
+            }
+
+            // Vence en marzo (fin del período feb–mar de matrícula).
+            $vence = Carbon::create($anio, 3, 31);
+            if ($this->generarCargoUnico($matricula, $tipo, $vence, $periodo)) {
+                $creadas++;
+            }
+        }
+
+        return $creadas;
     }
 
     /**

@@ -246,7 +246,8 @@ class InscribirAlumno extends Component
         // 4) Cobros de ingreso (best-effort: solo si la sede tiene la tarifa).
         $cargos = app(ServicioCargos::class);
         if ($tipoMatricula = TipoCargo::where('nombre', 'Matrícula')->first()) {
-            $cargos->generarCargoUnico($matricula, $tipoMatricula);
+            // La matrícula de ingreso es la matrícula ANUAL del año en curso.
+            $cargos->generarCargoUnico($matricula, $tipoMatricula, periodo: now()->startOfYear());
         }
         if (($datos['incluir_uniforme'] ?? false) && $tipoUniforme = TipoCargo::where('nombre', 'Uniforme')->first()) {
             $cargos->generarCargoUnico($matricula, $tipoUniforme);
