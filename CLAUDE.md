@@ -267,7 +267,7 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   usan `SoftDeletes`; alumnos y traslados fijan estado `Retirada`). Con `restrictOnDelete`
   van `matriculas.persona_id`/`grupo_id` y todo lo colgado de la matrícula
   (`asistencias`, `cargos` —los `pagos` cuelgan de `cargos` vía `pago_cargo`—, `becas`,
-  `suspensiones`, `notas_matricula`, `graduaciones`, exámenes `inscripciones`) y de la
+  `suspensiones`, `notas_matricula`, `graduaciones`, exámenes `inscripciones`, `logros`) y de la
   persona (`documentos_persona`, `tutelas`, `instructores`, `personal_grupo`,
   `solicitudes_traslado`). Se dejan en `cascadeOnDelete` las cascadas de **composición**
   legítima (el hijo no existe sin su padre: `pago_cargo`, `personal_grupo_rol`, hijos de

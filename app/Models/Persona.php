@@ -7,6 +7,7 @@ use App\Enums\Genero;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -116,6 +117,19 @@ class Persona extends Model
     public function matriculas(): HasMany
     {
         return $this->hasMany(Matricula::class);
+    }
+
+    /**
+     * Todos los logros (gamificación) de la persona a lo largo de TODAS sus
+     * matrículas, no solo la activa: la colección es de la persona, así un alumno
+     * trasladado no pierde de vista lo ganado en su grupo anterior. (Quien lea esto
+     * a través de grupos debe quitar el scope de grupo de Logro; ver MisLogros.)
+     *
+     * @return HasManyThrough<Logro, Matricula, $this>
+     */
+    public function logros(): HasManyThrough
+    {
+        return $this->hasManyThrough(Logro::class, Matricula::class, 'persona_id', 'matricula_id', 'id', 'id');
     }
 
     /**

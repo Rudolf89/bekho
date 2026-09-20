@@ -28,9 +28,12 @@ class MisLogros extends Component
             ->unique()
             ->all();
 
+        // Los logros se leen SIN el scope de grupo: la colección es de la persona a
+        // lo largo de todas sus matrículas (incluidas las de grupos anteriores tras
+        // un traslado), y el apoderado puede tutelar hijos en distintos grupos.
         $matriculas = Matricula::withoutGlobalScopes()
             ->whereIn('persona_id', $personaIds)
-            ->with(['persona', 'logros'])
+            ->with(['persona', 'logros' => fn ($q) => $q->withoutGlobalScopes()])
             ->get();
 
         $catalogo = Recompensa::activas()->ordenadas()->get();

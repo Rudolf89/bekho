@@ -97,6 +97,37 @@ test('muestra ganadas y bloqueadas (coleccionables por conseguir)', function () 
         ->assertSee('🔒'); // hay coleccionables aún bloqueados
 });
 
+test('un alumno trasladado sigue viendo los logros de su grupo anterior', function () {
+    // Segundo grupo (el "anterior", de otra federación/academia).
+    $otra = Grupo::create(['nombre' => 'Otra Academia', 'activo' => true]);
+
+    $persona = Persona::create(['nombres' => 'Trasladado', 'fecha_nacimiento' => now()->subYears(10)]);
+
+    // Matrícula anterior (retirada) en el otro grupo, con un logro ganado allí.
+    $anterior = Matricula::create([
+        'grupo_id' => $otra->id, 'persona_id' => $persona->id,
+        'grupo_etario' => GrupoEtario::ForKids->value, 'estado' => 'retirada', 'fecha_ingreso' => now()->subYear(),
+    ]);
+    $coleccionable = Recompensa::where('tipo', TipoRecompensa::Coleccionable)->first();
+    $anterior->logros()->create([
+        'recompensa_id' => $coleccionable->id, 'otorgado_at' => now()->subYear(), 'grupo_id' => $otra->id,
+    ]);
+
+    // Matrícula activa actual en BEKHO (el tenant fijado en beforeEach), sin logros.
+    Matricula::create([
+        'grupo_id' => $this->bekho->id, 'persona_id' => $persona->id,
+        'grupo_etario' => GrupoEtario::ForKids->value, 'estado' => 'activa', 'fecha_ingreso' => now(),
+    ]);
+
+    $alumno = User::factory()->create(['grupo_id' => $this->bekho->id, 'persona_id' => $persona->id]);
+    $alumno->assignRole('alumno');
+
+    // Aunque el tenant activo es BEKHO, el logro ganado en el grupo anterior sigue
+    // visible: la colección se lee por persona, sin scope de grupo.
+    Livewire::actingAs($alumno)->test(MisLogros::class)
+        ->assertSee('1 logro');
+});
+
 // --- Permisos ----------------------------------------------------------------
 
 test('mis-logros exige el permiso ver recompensas', function () {
