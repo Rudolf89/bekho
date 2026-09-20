@@ -161,13 +161,14 @@ class InscribirAlumno extends Component
     }
 
     /**
-     * Días permitidos para el vencimiento de la mensualidad.
+     * Días permitidos para el vencimiento de la mensualidad. El reglamento admite
+     * pago dentro de los primeros 5 días o un día fijo con máximo el 20.
      *
      * @return list<int>
      */
     public function diasVencimiento(): array
     {
-        return [1, 5, 10, 15];
+        return [5, 10, 15, 20];
     }
 
     /**

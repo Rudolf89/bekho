@@ -162,9 +162,9 @@ test('el apoderado 1 no es obligatorio para Jóvenes y Adultos', function () {
         ->assertHasNoErrors();
 });
 
-test('el día de vencimiento solo admite 1, 5, 10 o 15', function () {
-    inscribir()->set('dia_vencimiento', '20')->call('inscribir')->assertHasErrors('dia_vencimiento');
-    inscribir()->set('dia_vencimiento', '10')->call('inscribir')->assertHasNoErrors();
+test('el día de vencimiento admite hasta el 20 (reglamento) y rechaza más', function () {
+    inscribir()->set('dia_vencimiento', '20')->call('inscribir')->assertHasNoErrors();
+    inscribir()->set('dia_vencimiento', '25')->call('inscribir')->assertHasErrors('dia_vencimiento');
 });
 
 test('la comuna debe pertenecer a la región elegida', function () {
