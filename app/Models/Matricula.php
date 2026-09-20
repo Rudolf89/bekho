@@ -138,6 +138,16 @@ class Matricula extends Model
     }
 
     /**
+     * Notas del instructor sobre esta matrícula (para la ficha del alumno).
+     *
+     * @return HasMany<NotaMatricula, $this>
+     */
+    public function notas(): HasMany
+    {
+        return $this->hasMany(NotaMatricula::class)->latest();
+    }
+
+    /**
      * ¿La matrícula está suspendida en el período (mes) dado?
      */
     public function estaSuspendidaEn(CarbonInterface $periodo): bool

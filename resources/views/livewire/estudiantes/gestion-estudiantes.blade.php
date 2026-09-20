@@ -58,6 +58,7 @@
                         </flux:table.cell>
                         <flux:table.cell>
                             <div class="flex items-center justify-end gap-1">
+                                <flux:button :href="route('estudiantes.ver', $matricula)" wire:navigate icon="identification" variant="ghost" size="sm" title="Ver ficha" />
                                 @can('update', $matricula)
                                     <flux:button wire:click="editar({{ $matricula->id }})" icon="pencil-square" variant="ghost" size="sm" />
                                     @if ($matricula->estado->value === 'activa')

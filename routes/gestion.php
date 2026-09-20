@@ -5,6 +5,7 @@ use App\Livewire\Asistencia\TomarAsistencia;
 use App\Livewire\Clases\GestionClases;
 use App\Livewire\Cobros\GestionTarifas;
 use App\Livewire\Estudiantes\GestionEstudiantes;
+use App\Livewire\Estudiantes\VerMatricula;
 use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Livewire\Pagos\GestionPagos;
 use App\Models\Matricula;
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'can:gestionar alumnos'])->group(function () {
 // solo las de sus clases; el apoderado las de sus hijos (MatriculaPolicy).
 Route::middleware(['auth', 'can:viewAny,'.Matricula::class])->group(function () {
     Route::livewire('estudiantes', GestionEstudiantes::class)->name('estudiantes.index');
+    Route::livewire('estudiantes/{matricula}', VerMatricula::class)->name('estudiantes.ver');
 });
 
 // Clases y horario (permiso "gestionar clases").
