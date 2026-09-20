@@ -144,6 +144,8 @@ class GestionSedes extends Component
         } else {
             $sede = Sede::create($atributos);
             Flux::toast(variant: 'success', text: 'Sede creada.');
+            // Recordatorio: sin tarifas cargadas no se pueden generar sus cobros.
+            Flux::toast(variant: 'warning', text: 'Recuerda cargar las tarifas de esta sede para poder cobrar.');
         }
 
         $sede->instructores()->sync($this->instructores);

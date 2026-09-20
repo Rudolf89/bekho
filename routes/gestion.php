@@ -3,6 +3,7 @@
 use App\Livewire\Apoderado\MisEstudiantes;
 use App\Livewire\Asistencia\TomarAsistencia;
 use App\Livewire\Clases\GestionClases;
+use App\Livewire\Cobros\GestionTarifas;
 use App\Livewire\Estudiantes\GestionEstudiantes;
 use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Livewire\Pagos\GestionPagos;
@@ -30,9 +31,10 @@ Route::middleware(['auth', 'can:tomar asistencia'])->group(function () {
     Route::livewire('asistencia', TomarAsistencia::class)->name('asistencia.tomar');
 });
 
-// Pagos (permiso "registrar pagos").
+// Pagos y tarifas (permiso "registrar pagos").
 Route::middleware(['auth', 'can:registrar pagos'])->group(function () {
     Route::livewire('pagos', GestionPagos::class)->name('pagos.index');
+    Route::livewire('tarifas', GestionTarifas::class)->name('tarifas.index');
 });
 
 // Vista de apoderado: solo ve las matrículas de sus hijos (MatriculaPolicy).

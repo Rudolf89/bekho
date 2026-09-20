@@ -7,6 +7,7 @@ use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sede extends Model
 {
@@ -62,5 +63,15 @@ class Sede extends Model
     public function instructores(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'sede_user');
+    }
+
+    /**
+     * Tarifas de cobro de la sede (matrícula, mensualidad, … por tramo familiar).
+     *
+     * @return HasMany<TarifaSede, $this>
+     */
+    public function tarifas(): HasMany
+    {
+        return $this->hasMany(TarifaSede::class);
     }
 }

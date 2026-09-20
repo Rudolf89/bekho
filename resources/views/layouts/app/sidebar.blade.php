@@ -74,6 +74,9 @@
                             <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
                                 Pagos
                             </flux:sidebar.item>
+                            <flux:sidebar.item icon="tag" :href="route('tarifas.index')" :current="request()->routeIs('tarifas.*')" wire:navigate>
+                                Tarifas
+                            </flux:sidebar.item>
                         @endcan
                         @can('ver examenes')
                             <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
