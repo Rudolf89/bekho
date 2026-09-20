@@ -261,6 +261,18 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `grupo_id` + trait `PerteneceGrupo`.
   ¿Contenido ATA compartido? → **sin** `grupo_id` (catálogo).
+- **Sin cascadas sobre el historial** (`restrictOnDelete` + SoftDeletes): las FK que
+  cuelgan del historial usan `restrictOnDelete`, así que un `forceDelete` de persona o
+  matrícula con historial FALLA (a propósito): la baja es lógica (`Persona`/`Matricula`
+  usan `SoftDeletes`; alumnos y traslados fijan estado `Retirada`). Con `restrictOnDelete`
+  van `matriculas.persona_id`/`grupo_id` y todo lo colgado de la matrícula
+  (`asistencias`, `cargos` —los `pagos` cuelgan de `cargos` vía `pago_cargo`—, `becas`,
+  `suspensiones`, `notas_matricula`, `graduaciones`, exámenes `inscripciones`) y de la
+  persona (`documentos_persona`, `tutelas`, `instructores`, `personal_grupo`,
+  `solicitudes_traslado`). Se dejan en `cascadeOnDelete` las cascadas de **composición**
+  legítima (el hijo no existe sin su padre: `pago_cargo`, `personal_grupo_rol`, hijos de
+  planilla de competencia, `bloques`/`cuadrantes` de planificación, catálogos colgados de
+  la federación).
 - **"Planilla" = solo competencia.** La planificación de clase se llama
   `PlanificacionClase` (tabla `planificaciones_clase`, con `BloquePlanificacion` y
   `CuadrantePlanificacion`; permiso `gestionar planificaciones`; `App\Livewire\
