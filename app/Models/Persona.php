@@ -133,6 +133,17 @@ class Persona extends Model
     }
 
     /**
+     * Inscripciones en programas formativos (LMS/Legacy unificados). Transversal:
+     * la formación sigue a la persona aunque cambie de grupo.
+     *
+     * @return HasMany<InscripcionPrograma, $this>
+     */
+    public function inscripcionesPrograma(): HasMany
+    {
+        return $this->hasMany(InscripcionPrograma::class);
+    }
+
+    /**
      * Faceta de instructor (rango, supervisor, certificación), si la tiene.
      *
      * @return HasOne<Instructor, $this>

@@ -360,8 +360,15 @@ que ancla programas a la federación, siembra las 3 etapas Legacy desde
 `database/data/legacy_niveles.json` (100 h, 13/16/18, 1.er Dan en la etapa 3, requisitos
 + prueba escrita enlazada al banco N3) y fusiona cada `nivel` del LMS en una etapa por
 manual (Tigers/MAK/MAX→Xtreme/Juez; Legacy reutiliza el suyo; el resto va al contenedor
-"Aprender (general)"), enlazando los contenidos. **(b)** migrar `inscripciones_legacy`/
-`horas_legacy`/`progreso_contenidos` de `user_id` a `persona_id` (sin pérdida). **(c)**
+"Aprender (general)"), enlazando los contenidos. **(b) HECHO** — lo operativo pasa a la
+PERSONA: nuevas `inscripciones_programa` (transversal, sin grupo_id), `horas_programa`,
+`cumplimientos_requisito`, `ascensos_programa`, y `progreso_contenidos` gana `persona_id`
++ `registrado_por_user_id` (un hook autocompleta persona desde el user al crear).
+`App\Support\Formacion\MigraFormacionAPersona` traslada los datos viejos sin pérdida
+(user→persona; horas manuales congeladas; un user sin persona queda fuera y se reporta;
+cumplimientos best-effort al resembrar los requisitos). **Decisión:** las horas por ahora
+solo migran las manuales; el cálculo desde la asistencia con papel de ayudante queda como
+follow-up (hoy no hay registro de ayudante por sesión del cual sumarlas). **(c)**
 instrumentos de evaluación práctica. **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
 Legacy`/`RequisitoLegacy` y unificar la UI (Aprender y Legacy pasan a ser programas).
 
