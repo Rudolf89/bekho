@@ -1,34 +1,181 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
+    <body class="min-h-screen bg-[#f5f2ec] dark:bg-zinc-800">
+        <flux:sidebar sticky collapsible="mobile" class="border-e border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-900">
             <flux:sidebar.header>
                 <x-app-logo :sidebar="true" href="{{ route('dashboard') }}" wire:navigate />
                 <flux:sidebar.collapse class="lg:hidden" />
             </flux:sidebar.header>
+
+            @role('admin-plataforma')
+                <div class="mb-2 border-b border-zinc-200 px-2 pb-3 dark:border-zinc-700">
+                    <flux:text size="xs" class="mb-1.5 block font-semibold uppercase tracking-wide text-zinc-400">Grupo activo</flux:text>
+                    <livewire:selector-grupo />
+                </div>
+            @endrole
 
             <flux:sidebar.nav>
                 <flux:sidebar.group :heading="__('Platform')" class="grid">
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
+
+                    @php($noLeidas = auth()->user()->unreadNotifications()->count())
+                    <flux:sidebar.item icon="bell" :href="route('notificaciones.index')" :current="request()->routeIs('notificaciones.*')" wire:navigate>
+                        Notificaciones
+                        @if ($noLeidas > 0)
+                            <flux:badge size="sm" color="red" class="ml-auto">{{ $noLeidas }}</flux:badge>
+                        @endif
+                    </flux:sidebar.item>
+
+                    @can('gestionar usuarios')
+                        <flux:sidebar.item icon="users" :href="route('usuarios.index')" :current="request()->routeIs('usuarios.*')" wire:navigate>
+                            Usuarios
+                        </flux:sidebar.item>
+                    @endcan
+                    @can('gestionar sedes')
+                        <flux:sidebar.item icon="building-office" :href="route('sedes.index')" :current="request()->routeIs('sedes.*')" wire:navigate>
+                            Sedes
+                        </flux:sidebar.item>
+                    @endcan
+                    @can('gestionar grupos')
+                        <flux:sidebar.item icon="building-library" :href="route('grupos.index')" :current="request()->routeIs('grupos.*')" wire:navigate>
+                            Grupos
+                        </flux:sidebar.item>
+                    @endcan
                 </flux:sidebar.group>
+
+                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar competencia', 'gestionar recompensas', 'gestionar inscripciones'])
+                    <flux:sidebar.group heading="Gestión" class="grid">
+                        @can('viewAny', App\Models\Matricula::class)
+                            <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
+                                Alumnos
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar alumnos')
+                            <flux:sidebar.item icon="user-plus" :href="route('inscripcion.crear')" :current="request()->routeIs('inscripcion.*')" wire:navigate>
+                                Inscribir alumno
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar clases')
+                            <flux:sidebar.item icon="calendar-days" :href="route('clases.index')" :current="request()->routeIs('clases.*')" wire:navigate>
+                                Clases
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('tomar asistencia')
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('asistencia.tomar')" :current="request()->routeIs('asistencia.*')" wire:navigate>
+                                Asistencia
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar alumnos')
+                            <flux:sidebar.item icon="chart-bar" :href="route('reportes.index')" :current="request()->routeIs('reportes.*')" wire:navigate>
+                                Reportes
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('registrar pagos')
+                            <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
+                                Pagos
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="tag" :href="route('tarifas.index')" :current="request()->routeIs('tarifas.*')" wire:navigate>
+                                Tarifas
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('ver examenes')
+                            <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
+                                Exámenes
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar recompensas')
+                            <flux:sidebar.item icon="gift" :href="route('recompensas.index')" :current="request()->routeIs('recompensas.index')" wire:navigate>
+                                Recompensas
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar inscripciones')
+                            <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
+                                Inscripciones
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar planificaciones')
+                            <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
+                                Ciclos
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
+                                Planificador
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
+                                Biblioteca
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="bars-3-bottom-left" :href="route('formas.index')" :current="request()->routeIs('formas.*')" wire:navigate>
+                                Formas
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="swatch" :href="route('cinturones.index')" :current="request()->routeIs('cinturones.*')" wire:navigate>
+                                Cinturones
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
+                                Cuadrantes
+                            </flux:sidebar.item>
+                            <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
+                                Planificaciones
+                            </flux:sidebar.item>
+                        @endcan
+                        @can('gestionar competencia')
+                            <flux:sidebar.item icon="trophy" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
+                                Competencia
+                            </flux:sidebar.item>
+                        @endcan
+                    </flux:sidebar.group>
+                @endcanany
+
+                @role('apoderado')
+                    <flux:sidebar.group heading="Apoderado" class="grid">
+                        <flux:sidebar.item icon="users" :href="route('mis-estudiantes.index')" :current="request()->routeIs('mis-estudiantes.*')" wire:navigate>
+                            Mis estudiantes
+                        </flux:sidebar.item>
+                        <flux:sidebar.item icon="gift" :href="route('recompensas.mis-logros')" :current="request()->routeIs('recompensas.mis-logros')" wire:navigate>
+                            Logros
+                        </flux:sidebar.item>
+                    </flux:sidebar.group>
+                @endrole
+
+                @canany(['ver programas', 'rendir cuestionarios'])
+                    <flux:sidebar.group heading="Formación" class="grid">
+                        @can('ver programas')
+                            <flux:sidebar.item icon="academic-cap" :href="route('programas.index')" :current="request()->routeIs('programas.index') || request()->routeIs('programas.programa') || request()->routeIs('programas.contenido')" wire:navigate>
+                                Programas
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('rendir cuestionarios')
+                            <flux:sidebar.item icon="clipboard-document-check" :href="route('cuestionarios.index')" :current="request()->routeIs('cuestionarios.index') || request()->routeIs('cuestionarios.rendir') || request()->routeIs('cuestionarios.mis-intentos') || request()->routeIs('cuestionarios.crear') || request()->routeIs('cuestionarios.editar')" wire:navigate>
+                                Cuestionarios
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('ver recompensas')
+                            <flux:sidebar.item icon="gift" :href="route('recompensas.mis-logros')" :current="request()->routeIs('recompensas.mis-logros')" wire:navigate>
+                                Mis logros
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('gestionar cuestionarios')
+                            <flux:sidebar.item icon="chart-bar" :href="route('cuestionarios.resultados')" :current="request()->routeIs('cuestionarios.resultados')" wire:navigate>
+                                Resultados
+                            </flux:sidebar.item>
+                        @endcan
+
+                        @can('gestionar programas')
+                            <flux:sidebar.item icon="cog-6-tooth" :href="route('programas.admin.etapas')" :current="request()->routeIs('programas.admin.*')" wire:navigate>
+                                Administrar
+                            </flux:sidebar.item>
+                        @endcan
+                    </flux:sidebar.group>
+                @endcanany
             </flux:sidebar.nav>
 
             <flux:spacer />
-
-            <flux:sidebar.nav>
-                <flux:sidebar.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                    {{ __('Repository') }}
-                </flux:sidebar.item>
-
-                <flux:sidebar.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
-                    {{ __('Documentation') }}
-                </flux:sidebar.item>
-            </flux:sidebar.nav>
 
             <x-desktop-user-menu class="hidden lg:block" :name="auth()->user()->name" />
         </flux:sidebar>

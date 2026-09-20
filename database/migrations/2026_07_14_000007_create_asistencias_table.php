@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Ejecuta la migración.
+     *
+     * Registro de asistencia por matrícula, clase y fecha.
+     */
+    public function up(): void
+    {
+        // matricula_id (y su índice único) se añade en una migración posterior,
+        // porque la tabla matriculas se crea después (rediseño Fase 2/4).
+        Schema::create('asistencias', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('grupo_id')->constrained('grupos')->cascadeOnDelete();
+            $table->foreignId('clase_id')->constrained('clases')->cascadeOnDelete();
+            $table->foreignId('registrado_por')->nullable()->constrained('users')->nullOnDelete();
+            $table->date('fecha');
+            $table->string('estado'); // App\Enums\EstadoAsistencia
+            $table->timestamps();
+
+            $table->index('grupo_id');
+        });
+    }
+
+    /**
+     * Revierte la migración.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('asistencias');
+    }
+};

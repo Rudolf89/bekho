@@ -1,0 +1,152 @@
+<div class="mx-auto w-full max-w-5xl space-y-6">
+    <div class="flex items-center justify-between gap-4">
+        <div>
+            <flux:heading size="xl">Usuarios</flux:heading>
+            <flux:text class="mt-1">Alta y gestión de cuentas de la escuela</flux:text>
+        </div>
+        <flux:button wire:click="nuevo" icon="user-plus" variant="primary">Nuevo usuario</flux:button>
+    </div>
+
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <x-tabla.buscador placeholder="Buscar por nombre, correo o teléfono…" />
+        <x-tabla.resumen :total="$usuarios->count()" etiqueta="usuario" class="w-full sm:w-auto" />
+    </div>
+
+    <div class="overflow-hidden rounded-xl border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
+        <flux:table>
+            <flux:table.columns>
+                <flux:table.column sortable :sorted="$ordenCampo === 'name'" :direction="$ordenDir" wire:click="ordenarPor('name')">Nombre</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'email'" :direction="$ordenDir" wire:click="ordenarPor('email')">Correo</flux:table.column>
+                <flux:table.column>Rol</flux:table.column>
+                <flux:table.column sortable :sorted="$ordenCampo === 'activo'" :direction="$ordenDir" wire:click="ordenarPor('activo')">Estado</flux:table.column>
+                <flux:table.column></flux:table.column>
+            </flux:table.columns>
+            <flux:table.rows>
+                @forelse ($usuarios as $usuario)
+                    <flux:table.row wire:key="usuario-{{ $usuario->id }}">
+                        <flux:table.cell variant="strong">{{ $usuario->name }}</flux:table.cell>
+                        <flux:table.cell>{{ $usuario->email }}</flux:table.cell>
+                        <flux:table.cell>
+                            @foreach ($usuario->roles as $rol)
+                                <flux:badge color="blue" size="sm">{{ $rol->name }}</flux:badge>
+                            @endforeach
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <flux:badge :color="$usuario->activo ? 'green' : 'zinc'" size="sm">
+                                {{ $usuario->activo ? 'Activo' : 'Inactivo' }}
+                            </flux:badge>
+                        </flux:table.cell>
+                        <flux:table.cell>
+                            <div class="flex items-center justify-end gap-1">
+                                <flux:button wire:click="enviarEnlaceContrasena({{ $usuario->id }})"
+                                    icon="envelope" variant="ghost" size="sm" title="Enviar enlace de contraseña" />
+                                <flux:button wire:click="editar({{ $usuario->id }})" icon="pencil-square" variant="ghost" size="sm" />
+                                @if ($usuario->activo)
+                                    <flux:button wire:click="alternarActivo({{ $usuario->id }})" icon="user-minus" variant="ghost" size="sm"
+                                        title="Desactivar" wire:confirm="¿Desactivar a {{ $usuario->name }}? No podrá iniciar sesión hasta que lo reactives." />
+                                @else
+                                    <flux:button wire:click="alternarActivo({{ $usuario->id }})" icon="user" variant="ghost" size="sm" title="Activar" />
+                                @endif
+                                @if ($usuario->id !== $usuarioActualId && ! $idsConHistorial->contains($usuario->id))
+                                    {{-- Solo se puede eliminar a usuarios sin historial en el sistema. --}}
+                                    <flux:button wire:click="confirmarEliminar({{ $usuario->id }})"
+                                        icon="trash" variant="ghost" size="sm" title="Eliminar"
+                                        class="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/50" />
+                                @endif
+                            </div>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @empty
+                    <flux:table.row>
+                        <flux:table.cell colspan="5">
+                            <flux:text class="py-4 text-center">
+                                {{ $buscar !== '' ? 'Sin resultados para tu búsqueda.' : 'Aún no hay usuarios. Crea el primero.' }}
+                            </flux:text>
+                        </flux:table.cell>
+                    </flux:table.row>
+                @endforelse
+            </flux:table.rows>
+        </flux:table>
+    </div>
+
+    <flux:modal name="usuario-modal" wire:model="mostrarModal" class="max-w-lg md:min-w-lg">
+        <form wire:submit="guardar" class="space-y-6">
+            <flux:heading size="lg">{{ $editandoId ? 'Editar usuario' : 'Nuevo usuario' }}</flux:heading>
+
+            <flux:input wire:model="name" label="Nombre" required />
+            <flux:input wire:model="email" type="email" label="Correo electrónico" required />
+            <flux:input wire:model="telefono" label="Teléfono" />
+
+            <flux:select wire:model="rol" label="Rol" placeholder="Selecciona un rol">
+                @foreach ($roles as $r)
+                    <flux:select.option value="{{ $r }}">{{ $r }}</flux:select.option>
+                @endforeach
+            </flux:select>
+
+            <flux:select wire:model="rango_id" label="Rango" placeholder="Sin rango">
+                @foreach ($rangos as $rango)
+                    <flux:select.option value="{{ $rango->id }}">{{ $rango->nombre }}</flux:select.option>
+                @endforeach
+            </flux:select>
+
+            @if ($this->esSuperAdmin())
+                <flux:select wire:model.live="grupo_id" label="Grupo" placeholder="Selecciona un grupo">
+                    @foreach ($grupos as $grupo)
+                        <flux:select.option value="{{ $grupo->id }}">{{ $grupo->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
+            @endif
+
+            {{-- Una persona puede estar a cargo de varias sedes (o de ninguna: la
+                 dirección administra todo el grupo y puede no estar atada a una
+                 sede). Multiselección con casillas. --}}
+            <div>
+                <flux:label>Sedes</flux:label>
+                @if ($listaSedes->isNotEmpty())
+                    <div class="mt-2 max-h-40 space-y-2 overflow-y-auto rounded-lg border border-zinc-200 p-3 dark:border-zinc-700">
+                        @foreach ($listaSedes as $sede)
+                            <flux:checkbox wire:model="sedes" value="{{ $sede->id }}" label="{{ $sede->nombre }}" />
+                        @endforeach
+                    </div>
+                @else
+                    <flux:text size="sm" class="mt-2 block text-zinc-500">
+                        {{ $this->esSuperAdmin() ? 'Elige un grupo para ver sus sedes.' : 'Aún no hay sedes en este grupo.' }}
+                    </flux:text>
+                @endif
+            </div>
+
+            <flux:switch wire:model="activo" label="Activo" />
+
+            @if (! $editandoId)
+                <flux:callout icon="envelope" variant="secondary">
+                    <flux:callout.text>
+                        Al crear el usuario se le enviará un enlace por email para que defina su contraseña.
+                    </flux:callout.text>
+                </flux:callout>
+            @endif
+
+            <div class="flex justify-end gap-3">
+                <flux:button type="button" variant="outline" wire:click="$set('mostrarModal', false)">Cancelar</flux:button>
+                <flux:button type="submit" variant="primary">Guardar</flux:button>
+            </div>
+        </form>
+    </flux:modal>
+
+    <flux:modal name="eliminar-usuario" wire:model="mostrarEliminar" class="max-w-md">
+        <div class="space-y-6">
+            <div class="space-y-2">
+                <flux:heading size="lg">¿Eliminar a {{ $eliminandoNombre }}?</flux:heading>
+                <flux:text>
+                    Esta acción es permanente y no se puede deshacer. Solo es posible porque este
+                    usuario no tiene historial (pagos, asistencia, graduaciones ni alumnos asociados).
+                    Si prefieres conservar el registro, mejor desactívalo.
+                </flux:text>
+            </div>
+
+            <div class="flex justify-end gap-3">
+                <flux:button type="button" variant="outline" wire:click="$set('mostrarEliminar', false)">Cancelar</flux:button>
+                <flux:button variant="danger" wire:click="eliminar">Eliminar</flux:button>
+            </div>
+        </div>
+    </flux:modal>
+</div>

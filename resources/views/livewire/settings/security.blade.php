@@ -3,6 +3,12 @@
 
     <flux:heading class="sr-only">{{ __('Security settings') }}</flux:heading>
 
+    @if (session('status'))
+        <div class="mb-6">
+            <flux:callout variant="warning" icon="shield-exclamation" :heading="session('status')" />
+        </div>
+    @endif
+
     <x-settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
             <flux:input
@@ -122,7 +128,7 @@
                                     name="code"
                                     wire:model="code"
                                     length="6"
-                                    label="OTP Code"
+                                    :label="__('OTP Code')"
                                     label:sr-only
                                     class="mx-auto"
                                 />

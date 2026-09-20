@@ -161,13 +161,21 @@ return [
     */
 
     'features' => [
-        Features::registration(),
+        // El auto-registro público está desactivado a propósito: en una escuela
+        // con menores, las cuentas las crea la escuela desde la gestión de
+        // usuarios (permiso "gestionar usuarios"). Sin esta feature, /register
+        // deja de existir (404).
+        // Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
         Features::twoFactorAuthentication([
             'confirm' => true,
             'confirmPassword' => true,
-            // 'window' => 0
+            // Tolerancia de desfase de reloj del validador TOTP, en múltiplos de
+            // 30s hacia cada lado. 1 = ±30s (recomendado en producción). Solo
+            // súbelo en local si el reloj del equipo está desfasado respecto del
+            // teléfono (p. ej. 30 ≈ ±15 min). Ver FORTIFY_2FA_WINDOW en .env.
+            'window' => (int) env('FORTIFY_2FA_WINDOW', 1),
         ]),
         Features::passkeys([
             'confirmPassword' => true,

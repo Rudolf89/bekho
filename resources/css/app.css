@@ -23,16 +23,21 @@
     --color-zinc-900: #171717;
     --color-zinc-950: #0a0a0a;
 
-    --color-accent: var(--color-neutral-800);
-    --color-accent-content: var(--color-neutral-800);
+    /* Marca BEKHO: rojo de acento sobre crema. */
+    --color-bekho: #b01e28;
+    --color-bekho-dark: #8f1820;
+    --color-crema: #f5f2ec;
+
+    --color-accent: #b01e28;
+    --color-accent-content: #b01e28;
     --color-accent-foreground: var(--color-white);
 }
 
 @layer theme {
     .dark {
-        --color-accent: var(--color-white);
-        --color-accent-content: var(--color-white);
-        --color-accent-foreground: var(--color-neutral-800);
+        --color-accent: #e2565f;
+        --color-accent-content: #e2565f;
+        --color-accent-foreground: var(--color-white);
     }
 }
 
@@ -64,3 +69,23 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+
+/* Más aire en todas las tablas Flux (celdas y encabezados). Sin @layer para
+   ganarle en el cascade a las utilidades py-3 de Flux. */
+[data-flux-cell],
+[data-flux-column] {
+    padding-top: 0.95rem;
+    padding-bottom: 0.95rem;
+}
+
+/* Aire en los márgenes de la tabla: que el contenido no quede pegado a los
+   bordes en la primera y última columna. */
+[data-flux-cell]:first-child,
+[data-flux-column]:first-child {
+    padding-left: 1.5rem;
+}
+
+[data-flux-cell]:last-child,
+[data-flux-column]:last-child {
+    padding-right: 1.5rem;
+}

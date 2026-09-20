@@ -11,7 +11,8 @@ Route::middleware(['auth'])->group(function () {
     Route::livewire('settings/profile', Profile::class)->name('profile.edit');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+// Sin 'verified' (User no implementa MustVerifyEmail; ver nota en el modelo).
+Route::middleware(['auth'])->group(function () {
     Route::livewire('settings/appearance', Appearance::class)->name('appearance.edit');
 
     Route::livewire('settings/security', Security::class)

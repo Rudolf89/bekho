@@ -1,0 +1,110 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018): solicitudes de ascenso de Niveles 1, 2 y 3 y políticas del programa",
+  "programa": {
+    "nombre": "ATA Legacy",
+    "descripcion": "Formación de futuros instructores. Toma las habilidades del Programa de Liderazgo y forma al alumno para transmitir ese conocimiento a otros.",
+    "edad_minima_ingreso": 9,
+    "nota_ingreso": "El manual sugiere incorporar al inicio a los alumnos de 9 años o más para poner en marcha el programa."
+  },
+  "niveles": [
+    {
+      "orden": 1,
+      "nombre": "Nivel 1",
+      "horas_requeridas": 100,
+      "edad_minima": 13,
+      "grado_minimo": null,
+      "requisitos": [
+        "Plan de estudios de Nivel 1 completado y demostrado (desempeño tipo Campeón de Clase, «CC»)",
+        "Membresía ATA vigente",
+        "Programa de Protección de Menores completado y enviado a la Sede Central de ATA",
+        "Primer bloque de 100 horas de asistencia a clase registrado durante el Nivel 1",
+        "Seminario presencial de ascenso a Nivel 1 completado",
+        "Hoja de trabajo del plan de estudios de Nivel 1 firmada por el licenciatario",
+        "Solicitud de ascenso firmada por el licenciatario",
+        "Arancel de ascenso de nivel y de verificación de antecedentes"
+      ],
+      "contenido_evaluado": [
+        "Formas: Songahm 1 a 5, In Wha 1 y 2, Choong Jung 1 y 2",
+        "Patadas por color de cinturón",
+        "Protech Nivel 1 (armas)"
+      ],
+      "parche_alumno": "Negro / rojo"
+    },
+    {
+      "orden": 2,
+      "nombre": "Nivel 2",
+      "horas_requeridas": 100,
+      "edad_minima": 16,
+      "grado_minimo": null,
+      "requisitos": [
+        "Reexamen del plan de estudios de Nivel 1",
+        "Membresía ATA vigente y Programa de Protección de Menores enviado a la Sede Central",
+        "Hoja de trabajo de Nivel 1 firmada por el licenciatario",
+        "Segundo bloque de 100 horas de asistencia a clase",
+        "Seminario presencial de ascenso completado",
+        "Arancel de ascenso de nivel y de verificación de antecedentes"
+      ],
+      "contenido_evaluado": [
+        "Cuadrantes de Enseñanza: Estructura, Emoción, Conocimiento y Legado",
+        "Protech Nivel 2 (armas)"
+      ],
+      "parche_alumno": "Negro / rojo / negro"
+    },
+    {
+      "orden": 3,
+      "nombre": "Nivel 3 (Instructor)",
+      "horas_requeridas": 100,
+      "edad_minima": 18,
+      "grado_minimo": "1.er Dan",
+      "requisitos": [
+        "Ascensos de Niveles 1 y 2 completados y procesados por la Sede Central de ATA",
+        "Plan de estudios de Niveles 1 a 3 completado y demostrado; membresía ATA vigente",
+        "Hojas de repaso de Niveles 1 y 2 y de plan de estudios de Nivel 3 firmadas por el licenciatario",
+        "Tercer bloque de 100 horas de asistencia a clase",
+        "Programa de Protección de Menores completado y enviado; verificación de antecedentes",
+        "Campamento de Certificación Nacional — ascenso de Nivel 3 aprobado",
+        "Examen escrito de Nivel 3 aprobado",
+        "Certificación vigente de RCP (CPR)",
+        "Solicitud de ascenso firmada por el dueño de la escuela",
+        "Arancel de ascenso y de verificación de antecedentes pagado en su totalidad"
+      ],
+      "contenido_evaluado": [
+        "Habilidades para la vida: definición y aplicación junto con el taekwondo",
+        "Repaso de habilidades físicas de Nivel 1 (formas y patadas)",
+        "Repaso de los Cuadrantes de Enseñanza de Nivel 2",
+        "Protech Niveles 1, 2 y 3 (armas)"
+      ],
+      "examen_escrito": {
+        "preguntas_min": 20,
+        "preguntas_max": 30,
+        "minutos_min": 45,
+        "minutos_max": 60,
+        "umbral_aprobacion_pct": 80,
+        "nota": "Evalúa la capacidad de recordar la información de los manuales de Habilidades de Vida. Se sugiere modificarlo periódicamente."
+      },
+      "parche_instructor": "Negro"
+    }
+  ],
+  "parches": {
+    "alumno": [
+      { "etapa": "Ingreso al programa", "colores": "Rojo" },
+      { "etapa": "Nivel 1", "colores": "Negro / rojo" },
+      { "etapa": "Nivel 2", "colores": "Negro / rojo / negro" }
+    ],
+    "instructor": [
+      { "etapa": "Nivel 3", "colores": "Negro" },
+      { "etapa": "Maestros (Master, Sr. Master, Chief Master)", "colores": "Negro / dorado" }
+    ]
+  },
+  "collar_licenciatario": {
+    "opciones": ["Negro", "Azul", "Plata", "Oro"],
+    "nota": "El manual solo lista las opciones de distinción de collar vigente del licenciatario; no indica los umbrales de graduados para cada una. Pendiente de confirmar con la federación."
+  },
+  "restricciones": [
+    "Los alumnos del programa Legacy pueden ayudar en clases, pero no pueden enseñar sin la supervisión directa del licenciatario o de un instructor certificado de Nivel 3.",
+    "El collar nuevo no puede usarse hasta recibir la notificación de la Sede Central de ATA.",
+    "La verificación de antecedentes aprobada es obligatoria para todos los solicitantes de 18 años en adelante.",
+    "El Consentimiento de Protección de Menores debe estar en archivo para todos los solicitantes de ascenso; en menores lo firma un padre, madre o tutor legal.",
+    "La certificación de RCP se requiere solo para el Nivel 3."
+  ]
+}

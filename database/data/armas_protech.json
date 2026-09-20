@@ -1,0 +1,43 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018): Listas de verificación Protech de Niveles 1, 2 y 3",
+  "lineas_golpeo": [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  "armas": [
+    { "abreviatura": "SSJB", "nombre": "Ssahng Jeol Bong individual", "nombre_comun": "nunchaku", "modalidad": "individual" },
+    { "abreviatura": "DSJB", "nombre": "Ssahng Jeol Bong doble", "nombre_comun": "nunchaku doble", "modalidad": "doble" },
+    { "abreviatura": "SBME", "nombre": "Bahng Mahng Ee individual", "nombre_comun": "bastón corto", "modalidad": "individual" },
+    { "abreviatura": "DBME", "nombre": "Bahng Mahng Ee doble", "nombre_comun": "bastón corto doble", "modalidad": "doble" },
+    { "abreviatura": "CBME", "nombre": "Bahng Mahng Ee combinado", "nombre_comun": "bastón corto combinado", "modalidad": "combinada" },
+    { "abreviatura": "JB", "nombre": "Jahng Bong", "nombre_comun": "bastón largo", "modalidad": "individual" }
+  ],
+  "requisitos_por_nivel": [
+    {
+      "nivel": 1,
+      "condicion_general": "Demostrar con precisión las líneas de golpeo 1 a 9, usando ambas manos, con desplazamiento hacia adelante y hacia atrás, y control firme del arma.",
+      "items": [
+        { "arma": "SSJB", "detalle": "Líneas de golpeo 1 a 9" },
+        { "arma": "SBME", "detalle": "Líneas de golpeo 1 a 9" },
+        { "arma": "JB", "detalle": "Rango medio — líneas de golpeo 1 a 9" }
+      ]
+    },
+    {
+      "nivel": 2,
+      "items": [
+        { "arma": "DSJB", "detalle": "N.º 5, 7 y 9" },
+        { "arma": "DBME", "detalle": null },
+        { "arma": null, "detalle": "Ofensiva y defensa a 3 tiempos" },
+        { "arma": null, "detalle": "Ofensiva a 5 tiempos" },
+        { "arma": "JB", "detalle": "Rango medio" },
+        { "arma": null, "detalle": "Desarmes n.º 1 y n.º 2" }
+      ]
+    },
+    {
+      "nivel": 3,
+      "items": [
+        { "arma": "CBME", "detalle": null },
+        { "arma": "CBME", "detalle": "Golpe del Gallo Dorado" },
+        { "arma": "CBME", "detalle": "Golpe de la Pantera" },
+        { "arma": "CBME", "detalle": "Golpe del Cocodrilo" }
+      ]
+    }
+  ]
+}

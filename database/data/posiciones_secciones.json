@@ -1,0 +1,39 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018): leyenda de la sección Formas",
+  "nota": "En las formas por número la posición y la sección vienen en palabras; en las formas de cinturón negro vienen como códigos combinados (por ejemplo «M H» o «-- M/H»). Estos catálogos permiten normalizar ambas.",
+  "posiciones": [
+    { "codigo": "F", "nombre": "Frontal" },
+    { "codigo": "B", "nombre": "Atrasada" },
+    { "codigo": "M", "nombre": "Media (caballo)" },
+    { "codigo": "S", "nombre": "Combate" },
+    { "codigo": "C", "nombre": "Cerrada" },
+    { "codigo": "R", "nombre": "Descanso (ready)" },
+    { "codigo": "X", "nombre": "En aspa" },
+    { "codigo": "OL", "nombre": "Pierna abierta" },
+    { "codigo": "P", "nombre": "Pisada" },
+    { "codigo": "HS", "nombre": "Gancho" },
+    { "codigo": "--", "nombre": "Sin posición (patada)" }
+  ],
+  "secciones": [
+    { "codigo": "H", "nombre": "Alta" },
+    { "codigo": "M", "nombre": "Media" },
+    { "codigo": "L", "nombre": "Baja" }
+  ],
+  "combinadores_seccion": [
+    { "simbolo": "&", "significado": "Combinada (por ejemplo H&L: alta y baja)" },
+    { "simbolo": "/", "significado": "A elección (por ejemplo M/H: media o alta)" }
+  ],
+  "lados": [
+    { "codigo": "Izq.", "nombre": "Izquierdo" },
+    { "codigo": "Der.", "nombre": "Derecho" },
+    { "codigo": "Ambos", "nombre": "Ambos lados" }
+  ],
+  "modificadores": [
+    { "nombre": "KIHAP", "descripcion": "El movimiento se ejecuta con kihap" },
+    { "nombre": "Tensión", "descripcion": "Movimiento con tensión sostenida; el manual indica la duración (por ejemplo 5 s)" },
+    { "nombre": "Lento", "descripcion": "Movimiento lento; el manual indica la duración (por ejemplo 2 s)" },
+    { "nombre": "Con retracción", "descripcion": "El movimiento incluye retracción" },
+    { "nombre": "Doble acción", "descripcion": "El movimiento se ejecuta en dos tiempos" }
+  ],
+  "orientacion_inicial": "Todas las formas comienzan mirando al Este."
+}
