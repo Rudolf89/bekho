@@ -61,6 +61,9 @@ class DatabaseSeeder extends Seeder
             RecompensasSeeder::class,
             // Programa Legacy: niveles y requisitos (catálogo compartido).
             LegacySeeder::class,
+            // Unificación LMS + Legacy: fusiona niveles y niveles_legacy en
+            // programas → etapas_programa (corre tras crearse todos los niveles).
+            EtapasProgramaSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             // Crea directamente la capa de identidad (personas/matrículas/personal).
             DemoBekhoSeeder::class,

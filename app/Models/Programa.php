@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Enums\TipoPrograma;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * Catálogo compartido de programas ATA. NO usa el trait PerteneceGrupo: es
@@ -30,12 +32,16 @@ class Programa extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'federacion_id',
         'nombre',
         'descripcion',
         'tipo',
         'edad_minima',
+        'grado_minimo_id',
         'activo',
         'orden',
+        'fuente',
+        'verificado',
     ];
 
     /**
@@ -48,7 +54,38 @@ class Programa extends Model
         return [
             'tipo' => TipoPrograma::class,
             'activo' => 'boolean',
+            'verificado' => 'boolean',
         ];
+    }
+
+    /**
+     * Federación dueña del catálogo.
+     *
+     * @return BelongsTo<Federacion, $this>
+     */
+    public function federacion(): BelongsTo
+    {
+        return $this->belongsTo(Federacion::class);
+    }
+
+    /**
+     * Grado mínimo para INGRESAR al programa (opcional; además de edad_minima).
+     *
+     * @return BelongsTo<Grado, $this>
+     */
+    public function gradoMinimo(): BelongsTo
+    {
+        return $this->belongsTo(Grado::class, 'grado_minimo_id');
+    }
+
+    /**
+     * Etapas de la ruta formativa, ordenadas.
+     *
+     * @return HasMany<EtapaPrograma, $this>
+     */
+    public function etapas(): HasMany
+    {
+        return $this->hasMany(EtapaPrograma::class)->orderBy('orden');
     }
 
     /**

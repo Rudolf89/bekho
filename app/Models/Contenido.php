@@ -20,6 +20,7 @@ class Contenido extends Model
     protected $fillable = [
         'grupo_id',
         'nivel_id',
+        'etapa_programa_id',
         'titulo',
         'descripcion',
         'tipo',
@@ -50,6 +51,16 @@ class Contenido extends Model
     public function nivel(): BelongsTo
     {
         return $this->belongsTo(Nivel::class);
+    }
+
+    /**
+     * Etapa de programa a la que pertenece el contenido (modelo unificado).
+     *
+     * @return BelongsTo<EtapaPrograma, $this>
+     */
+    public function etapaPrograma(): BelongsTo
+    {
+        return $this->belongsTo(EtapaPrograma::class);
     }
 
     /**

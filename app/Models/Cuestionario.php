@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -18,7 +19,7 @@ class Cuestionario extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['titulo', 'descripcion', 'area', 'umbral_aprobacion', 'activo', 'orden'];
+    protected $fillable = ['etapa_programa_id', 'titulo', 'descripcion', 'area', 'umbral_aprobacion', 'activo', 'orden'];
 
     /**
      * @return array<string, string>
@@ -30,6 +31,16 @@ class Cuestionario extends Model
             'activo' => 'boolean',
             'orden' => 'integer',
         ];
+    }
+
+    /**
+     * Etapa de programa a la que pertenece (nulo = cuestionario suelto).
+     *
+     * @return BelongsTo<EtapaPrograma, $this>
+     */
+    public function etapaPrograma(): BelongsTo
+    {
+        return $this->belongsTo(EtapaPrograma::class);
     }
 
     /**

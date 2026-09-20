@@ -344,6 +344,27 @@ sembrarLecciones`): **Ciclo 1 Disciplina · Semana 7** y el **Ciclo 3 Comunicaci
 completo (Semanas 1–8)** (9 de 48). Cada una con los 3 momentos (comienzo/durante/
 fin + frase).
 
+**Unificación LMS + Legacy → programas/etapas (EN CURSO).** El LMS (`niveles`→
+`contenidos`→`progreso_contenidos` por usuario) y el Programa Legacy (`niveles_legacy`
+→`requisitos_legacy`, `inscripciones_legacy`/`horas_legacy` por usuario) eran dos
+modelos paralelos para lo mismo. Se unen bajo `programas` (catálogo de la federación,
+ahora con `federacion_id`, `grado_minimo_id` de ingreso, `fuente`/`verificado`) →
+`etapas_programa` (fusión de niveles LMS + niveles_legacy: `nombre`, `orden`,
+`horas_requeridas`, `edad_minima`, `grado_minimo_id`, `fuente`/`verificado`) →
+`requisitos_etapa` (`App\Enums\TipoRequisitoEtapa` manual/cuestionario) y `contenidos`
+/`cuestionarios` con `etapa_programa_id`. Motivo de fondo: **los menores no tienen
+cuenta**, así que todo lo formativo debe colgar de `persona_id`, no de `user_id`.
+Plan por commits (cada uno en verde): **(a) HECHO** — etapas y catálogo: migración
+ADITIVA (expand; no se toca `niveles`/`nivel_id`) + `EtapasProgramaSeeder` idempotente
+que ancla programas a la federación, siembra las 3 etapas Legacy desde
+`database/data/legacy_niveles.json` (100 h, 13/16/18, 1.er Dan en la etapa 3, requisitos
++ prueba escrita enlazada al banco N3) y fusiona cada `nivel` del LMS en una etapa por
+manual (Tigers/MAK/MAX→Xtreme/Juez; Legacy reutiliza el suyo; el resto va al contenedor
+"Aprender (general)"), enlazando los contenidos. **(b)** migrar `inscripciones_legacy`/
+`horas_legacy`/`progreso_contenidos` de `user_id` a `persona_id` (sin pérdida). **(c)**
+instrumentos de evaluación práctica. **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
+Legacy`/`RequisitoLegacy` y unificar la UI (Aprender y Legacy pasan a ser programas).
+
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
 **sembrar el resto de lecciones de vida** (46 semanas · el usuario pasa la lámina y
 se agrega a la lista de `sembrarLecciones`).
