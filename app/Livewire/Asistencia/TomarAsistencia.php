@@ -5,6 +5,9 @@ namespace App\Livewire\Asistencia;
 use App\Enums\EstadoAsistencia;
 use App\Models\Asistencia;
 use App\Models\Clase;
+use App\Models\Matricula;
+use App\Services\ServicioPagos;
+use Flux\Flux;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -71,7 +74,7 @@ class TomarAsistencia extends Component
      * Marca (o cambia) el estado de un estudiante en la clase y fecha actuales.
      * Persiste de inmediato para agilizar la toma en el tatami.
      */
-    public function marcar(int $matriculaId, string $estado): void
+    public function marcar(int $matriculaId, string $estado, ServicioPagos $pagos): void
     {
         $clase = $this->claseSeleccionada();
 
@@ -85,6 +88,15 @@ class TomarAsistencia extends Component
         }
 
         $estadoEnum = EstadoAsistencia::from($estado);
+
+        // Reglamento: un moroso que ya usó sus 3 clases de gracia tras el
+        // vencimiento no puede ingresar hasta regularizar (solo se le marca ausente).
+        if ($estadoEnum === EstadoAsistencia::Presente
+            && $pagos->estaBloqueadoPorDeuda(Matricula::findOrFail($matriculaId))) {
+            Flux::toast(variant: 'warning', text: 'Alumno con deuda: superó las 3 clases de gracia. Debe regularizar su pago para ingresar.');
+
+            return;
+        }
 
         Asistencia::updateOrCreate(
             [

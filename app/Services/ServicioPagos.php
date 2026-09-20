@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Enums\EstadoAsistencia;
 use App\Enums\EstadoCargo;
 use App\Enums\EstadoMatricula;
 use App\Enums\EstadoPago;
+use App\Models\Asistencia;
 use App\Models\Cargo;
 use App\Models\Matricula;
 use App\Models\Pago;
@@ -23,6 +25,61 @@ use Illuminate\Support\Facades\Auth;
  */
 class ServicioPagos
 {
+    /** Clases de gracia que un moroso puede asistir tras el vencimiento (reglamento). */
+    public const CLASES_GRACIA = 3;
+
+    /**
+     * Fecha de vencimiento del impago más antiguo (cargo pendiente con vence_el ya
+     * pasado), o null si no hay ninguno vencido.
+     */
+    public function fechaVencimientoImpago(Matricula $matricula, ?CarbonInterface $a = null): ?CarbonInterface
+    {
+        $a = $a ?? now();
+
+        return Cargo::withoutGlobalScopes()
+            ->where('matricula_id', $matricula->id)
+            ->pendientes()
+            ->whereNotNull('vence_el')
+            ->whereDate('vence_el', '<', $a)
+            ->orderBy('vence_el')
+            ->value('vence_el');
+    }
+
+    /**
+     * Clases (presentes) a las que asistió la matrícula después de su fecha de
+     * vencimiento impaga.
+     */
+    public function clasesDesdeVencimiento(Matricula $matricula, ?CarbonInterface $a = null): int
+    {
+        $vencimiento = $this->fechaVencimientoImpago($matricula, $a);
+
+        if (! $vencimiento) {
+            return 0;
+        }
+
+        return Asistencia::where('matricula_id', $matricula->id)
+            ->where('estado', EstadoAsistencia::Presente->value)
+            ->whereDate('fecha', '>', $vencimiento)
+            ->count();
+    }
+
+    /**
+     * ¿La matrícula quedó bloqueada por deuda? El reglamento: con impago, el alumno
+     * solo puede asistir a un máximo de 3 clases tras el vencimiento; superadas, no
+     * puede ingresar hasta regularizar. No aplica a suspendidas.
+     */
+    public function estaBloqueadoPorDeuda(Matricula $matricula, ?CarbonInterface $a = null): bool
+    {
+        $a = $a ?? now();
+
+        if ($matricula->estado !== EstadoMatricula::Activa || $matricula->estaSuspendidaEn($a)) {
+            return false;
+        }
+
+        return $this->fechaVencimientoImpago($matricula, $a) !== null
+            && $this->clasesDesdeVencimiento($matricula, $a) >= self::CLASES_GRACIA;
+    }
+
     /**
      * Primer día del mes de un período (por defecto, el mes actual).
      */

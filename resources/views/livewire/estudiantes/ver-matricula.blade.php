@@ -128,6 +128,11 @@
             {{-- Estado de cuenta --}}
             <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800">
                 <flux:heading size="lg" class="mb-2">Estado de cuenta</flux:heading>
+                @if ($bloqueado)
+                    <flux:callout icon="lock-closed" color="red" class="mb-3">
+                        Bloqueado por deuda: superó las 3 clases de gracia. No puede ingresar hasta regularizar.
+                    </flux:callout>
+                @endif
                 @if ($cargosPendientes->isEmpty())
                     <flux:text class="text-zinc-500">Sin cargos pendientes.</flux:text>
                 @else

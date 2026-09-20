@@ -89,6 +89,7 @@ class VerMatricula extends Component
             'cargosPendientes' => $pendientes,
             'deuda' => (int) $pendientes->sum('monto'),
             'moroso' => $pagos->estaMoroso($this->matricula),
+            'bloqueado' => $pagos->estaBloqueadoPorDeuda($this->matricula),
             'puedeEditar' => Auth::user()?->can('update', $this->matricula),
         ]);
     }
