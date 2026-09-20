@@ -31,7 +31,7 @@ test('el seeder crea los tipos de cargo con sus banderas', function () {
     $this->seed(CatalogosFederacionSeeder::class);
     $this->seed(CatalogosFederacionSeeder::class); // no duplica
 
-    expect(TipoCargo::count())->toBe(7);
+    expect(TipoCargo::count())->toBe(8);
 
     $mensualidad = TipoCargo::where('nombre', 'Mensualidad')->first();
     expect($mensualidad->recurrente)->toBeTrue()

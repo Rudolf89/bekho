@@ -120,15 +120,39 @@
             @endif
         </section>
 
-        {{-- 5. Mensualidad y reglamento --}}
+        {{-- 5. Salud y consentimientos --}}
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
-            <flux:heading size="lg" class="mb-4">Mensualidad y reglamento</flux:heading>
+            <flux:heading size="lg" class="mb-4">Salud y consentimientos</flux:heading>
+            <flux:textarea wire:model="observaciones_medicas" rows="2"
+                label="Observaciones médicas (lesiones, alergias, medicación)" />
+            <div class="mt-3 space-y-2">
+                <flux:checkbox wire:model="apto_medico" label="Apto médico presentado y vigente" />
+                <flux:checkbox wire:model="autoriza_imagen" label="Autoriza el uso de imagen en comunicaciones de la escuela" />
+            </div>
+        </section>
+
+        {{-- 6. Grado, mensualidad y reglamento --}}
+        <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
+            <flux:heading size="lg" class="mb-4">Grado, mensualidad y reglamento</flux:heading>
             <div class="grid gap-4 sm:grid-cols-2">
+                <flux:select wire:model="grado_id" label="Cinturón de inicio (homologación)"
+                    :placeholder="$grupo_etario ? 'Nuevo (Blanco)' : 'Primero elige el grupo etario'"
+                    :disabled="! $grupo_etario">
+                    <flux:select.option value="">Nuevo (Blanco)</flux:select.option>
+                    @foreach ($grados as $grado)
+                        <flux:select.option value="{{ $grado->id }}">{{ $grado->nombre }}</flux:select.option>
+                    @endforeach
+                </flux:select>
                 <flux:select wire:model="dia_vencimiento" label="Día de vencimiento de la mensualidad *" placeholder="Elegir día">
                     @foreach ($diasVencimiento as $dia)
                         <flux:select.option value="{{ $dia }}">Día {{ $dia }}</flux:select.option>
                     @endforeach
                 </flux:select>
+            </div>
+
+            <div class="mt-3">
+                <flux:checkbox wire:model="incluir_uniforme" label="Incluir el uniforme (dobok) en el cobro de ingreso" />
+                <flux:text size="sm" class="mt-1 text-zinc-500">La matrícula de ingreso y el uniforme se cobran según la tarifa de la sede.</flux:text>
             </div>
 
             <flux:separator class="my-5" />

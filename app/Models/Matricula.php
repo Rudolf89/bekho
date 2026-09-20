@@ -40,6 +40,9 @@ class Matricula extends Model
         'acepto_reglamento_at',
         'acepto_reglamento_persona_id',
         'aceptado_por_user_id',
+        'apto_medico',
+        'observaciones_medicas',
+        'autoriza_imagen',
         'matricula_origen_id',
     ];
 
@@ -55,6 +58,8 @@ class Matricula extends Model
             'fecha_ingreso' => 'date',
             'fecha_retiro' => 'date',
             'acepto_reglamento_at' => 'datetime',
+            'apto_medico' => 'boolean',
+            'autoriza_imagen' => 'boolean',
             'dia_vencimiento' => 'integer',
         ];
     }

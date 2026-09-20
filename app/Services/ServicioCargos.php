@@ -165,6 +165,36 @@ class ServicioCargos
     }
 
     /**
+     * Genera un cargo único (no recurrente) para la matrícula — p. ej. matrícula
+     * de ingreso o uniforme — con la tarifa de la sede (tramo de 1). Best-effort:
+     * devuelve null si la matrícula no tiene sede o la sede no tiene esa tarifa
+     * (no bloquea la inscripción). Idempotente por (matrícula, tipo, período nulo).
+     */
+    public function generarCargoUnico(Matricula $matricula, TipoCargo $tipo, ?CarbonInterface $vence = null): ?Cargo
+    {
+        if (! $matricula->sede_id) {
+            return null;
+        }
+
+        $tarifa = $this->tarifaPara($matricula->sede_id, $tipo->id, 1);
+        if (! $tarifa) {
+            return null;
+        }
+
+        return Cargo::withoutGlobalScopes()->updateOrCreate(
+            ['matricula_id' => $matricula->id, 'tipo_cargo_id' => $tipo->id, 'periodo' => null],
+            [
+                'grupo_id' => $matricula->grupo_id,
+                'sede_id' => $matricula->sede_id,
+                'monto' => $tarifa->monto_por_alumno,
+                'vence_el' => ($vence ?? now())->toDateString(),
+                'estado' => EstadoCargo::Pendiente->value,
+                'detalle_calculo' => ['sede_id' => $matricula->sede_id, 'tramo' => 1, 'monto_base' => $tarifa->monto_por_alumno, 'monto_final' => $tarifa->monto_por_alumno],
+            ],
+        );
+    }
+
+    /**
      * ¿La matrícula tiene deuda (cargo pendiente con período ≤ el dado)?
      */
     public function tieneDeuda(Matricula $matricula, ?CarbonInterface $periodo = null): bool

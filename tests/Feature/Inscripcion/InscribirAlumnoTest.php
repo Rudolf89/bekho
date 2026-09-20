@@ -4,10 +4,16 @@ use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Enums\TipoDocumento;
 use App\Livewire\Inscripcion\InscribirAlumno;
+use App\Models\Cargo;
 use App\Models\DocumentoPersona;
+use App\Models\Grado;
 use App\Models\Grupo;
+use App\Models\Matricula;
 use App\Models\Sede;
+use App\Models\TarifaSede;
+use App\Models\TipoCargo;
 use App\Models\User;
+use Database\Seeders\CatalogosFederacionSeeder;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
 use Spatie\Permission\Models\Role;
@@ -74,6 +80,53 @@ test('inscribir crea la persona, su documento y la matrícula', function () {
         ->and($matricula->grupo_etario)->toBe(GrupoEtario::ForKids)
         ->and($matricula->dia_vencimiento)->toBe(5)
         ->and($matricula->acepto_reglamento_at)->not->toBeNull();
+});
+
+test('inscribir guarda salud, consentimientos y la homologación de grado', function () {
+    $grado = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'for_kids', 'color' => 'Amarillo', 'activo' => true]);
+
+    inscribir()
+        ->set('grado_id', (string) $grado->id)
+        ->set('apto_medico', true)
+        ->set('autoriza_imagen', true)
+        ->set('observaciones_medicas', 'Asma leve')
+        ->call('inscribir')
+        ->assertHasNoErrors();
+
+    $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
+    expect($matricula->apto_medico)->toBeTrue()
+        ->and($matricula->autoriza_imagen)->toBeTrue()
+        ->and($matricula->observaciones_medicas)->toBe('Asma leve')
+        ->and($matricula->persona->grado_id)->toBe($grado->id);
+});
+
+test('inscribir genera los cargos de matrícula y uniforme según la tarifa de la sede', function () {
+    $this->seed(CatalogosFederacionSeeder::class); // tipos_cargo (Matrícula, Uniforme, …)
+    $mat = TipoCargo::where('nombre', 'Matrícula')->first();
+    $uni = TipoCargo::where('nombre', 'Uniforme')->first();
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $mat->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 20000]);
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $uni->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 26000]);
+
+    inscribir()->set('incluir_uniforme', true)->call('inscribir')->assertHasNoErrors();
+
+    $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
+    expect(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $mat->id)->first()?->monto)->toBe(20000)
+        ->and(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $uni->id)->first()?->monto)->toBe(26000)
+        ->and(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $uni->id)->first()?->sede_id)->toBe($this->sede->id);
+});
+
+test('sin incluir uniforme no se genera el cargo de uniforme', function () {
+    $this->seed(CatalogosFederacionSeeder::class);
+    $mat = TipoCargo::where('nombre', 'Matrícula')->first();
+    $uni = TipoCargo::where('nombre', 'Uniforme')->first();
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $mat->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 20000]);
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $uni->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 26000]);
+
+    inscribir()->call('inscribir')->assertHasNoErrors();
+
+    $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
+    expect(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $mat->id)->exists())->toBeTrue()
+        ->and(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $uni->id)->exists())->toBeFalse();
 });
 
 test('el reglamento debe aceptarse', function () {

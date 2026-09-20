@@ -41,6 +41,7 @@ class CatalogosFederacionSeeder extends Seeder
             ['nombre' => 'Torneo', 'recurrente' => false, 'requiere_periodo' => false],
             ['nombre' => 'Seminario', 'recurrente' => false, 'requiere_periodo' => false],
             ['nombre' => 'Campamento', 'recurrente' => false, 'requiere_periodo' => false],
+            ['nombre' => 'Uniforme', 'recurrente' => false, 'requiere_periodo' => false],
             ['nombre' => 'Otras actividades', 'recurrente' => false, 'requiere_periodo' => false],
         ];
         foreach ($tipos as $orden => $t) {

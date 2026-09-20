@@ -2,14 +2,18 @@
 
 namespace App\Livewire\Inscripcion;
 
+use App\Enums\EscalaGrado;
 use App\Enums\EstadoMatricula;
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
 use App\Livewire\Concerns\SugiereGrupoEtario;
+use App\Models\Grado;
 use App\Models\Matricula;
 use App\Models\Persona;
 use App\Models\Sede;
+use App\Models\TipoCargo;
 use App\Models\User;
+use App\Services\ServicioCargos;
 use App\Support\Rut;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
@@ -65,8 +69,21 @@ class InscribirAlumno extends Component
 
     public ?string $email_contacto_2 = null;
 
+    // Grado de inicio / homologación (nulo = alumno nuevo => Blanco).
+    public ?string $grado_id = '';
+
+    // Salud y consentimientos
+    public bool $apto_medico = false;
+
+    public ?string $observaciones_medicas = null;
+
+    public bool $autoriza_imagen = false;
+
     // Pago y declaración
     public string $dia_vencimiento = '';
+
+    /** Incluir la matrícula de ingreso y el uniforme en el primer cobro. */
+    public bool $incluir_uniforme = false;
 
     public bool $acepto_reglamento = false;
 
@@ -98,6 +115,11 @@ class InscribirAlumno extends Component
             'email_contacto' => ['required', 'email', 'max:255'],
             'email_contacto_2' => ['nullable', 'email', 'max:255'],
             'dia_vencimiento' => ['required', Rule::in($this->diasVencimiento())],
+            'grado_id' => ['nullable', Rule::exists('grados', 'id')],
+            'apto_medico' => ['boolean'],
+            'observaciones_medicas' => ['nullable', 'string', 'max:1000'],
+            'autoriza_imagen' => ['boolean'],
+            'incluir_uniforme' => ['boolean'],
             'acepto_reglamento' => ['accepted'],
         ];
     }
@@ -196,7 +218,8 @@ class InscribirAlumno extends Component
             'contacto_emergencia_nombre' => $datos['apoderado_1'] ?: null,
             'contacto_emergencia_telefono' => ($datos['telefono_contacto_2'] ?? null) ?: $datos['telefono_contacto'],
             'contacto_emergencia_relacion' => ($datos['apoderado_1'] ?? null) ? 'Apoderado' : null,
-            // grado_id queda nulo: alumno nuevo => Blanco => Principiantes.
+            // Grado de inicio (homologación); nulo = alumno nuevo => Principiantes.
+            'grado_id' => $datos['grado_id'] ?: null,
         ]);
 
         // 2) Documento (RUT normalizado).
@@ -208,7 +231,7 @@ class InscribirAlumno extends Component
         ]);
 
         // 3) Matrícula (vínculo con el grupo).
-        Matricula::create([
+        $matricula = Matricula::create([
             'grupo_id' => $grupoId,
             'persona_id' => $persona->id,
             'sede_id' => $datos['sede_id'],
@@ -222,7 +245,19 @@ class InscribirAlumno extends Component
             // persona del apoderado y su tutela, apuntará al responsable del menor).
             'acepto_reglamento_persona_id' => $persona->id,
             'aceptado_por_user_id' => Auth::id(),
+            'apto_medico' => $datos['apto_medico'] ?? false,
+            'observaciones_medicas' => $datos['observaciones_medicas'] ?? null,
+            'autoriza_imagen' => $datos['autoriza_imagen'] ?? false,
         ]);
+
+        // 4) Cobros de ingreso (best-effort: solo si la sede tiene la tarifa).
+        $cargos = app(ServicioCargos::class);
+        if ($tipoMatricula = TipoCargo::where('nombre', 'Matrícula')->first()) {
+            $cargos->generarCargoUnico($matricula, $tipoMatricula);
+        }
+        if (($datos['incluir_uniforme'] ?? false) && $tipoUniforme = TipoCargo::where('nombre', 'Uniforme')->first()) {
+            $cargos->generarCargoUnico($matricula, $tipoUniforme);
+        }
 
         Flux::toast(variant: 'success', text: 'Alumno inscrito correctamente.');
 
@@ -248,6 +283,9 @@ class InscribirAlumno extends Component
             'regiones' => $this->regiones(),
             'comunasRegion' => $this->comunas(),
             'diasVencimiento' => $this->diasVencimiento(),
+            'grados' => $this->grupo_etario !== ''
+                ? Grado::porEscala(EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario)))->ordenados()->get()
+                : collect(),
         ]);
     }
 }
