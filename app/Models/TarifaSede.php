@@ -2,27 +2,25 @@
 
 namespace App\Models;
 
-use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Tarifa de un grupo para un tipo de cargo, por tramo de cantidad de alumnos.
+ * Tarifa de una SEDE para un tipo de cargo, por tramo de cantidad de alumnos.
+ * Cada sede define sus propios valores; no hay tarifa a nivel de grupo.
  */
-class TarifaGrupo extends Model
+class TarifaSede extends Model
 {
-    use PerteneceGrupo;
-
     /**
      * @var string
      */
-    protected $table = 'tarifas_grupo';
+    protected $table = 'tarifas_sede';
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'grupo_id',
+        'sede_id',
         'tipo_cargo_id',
         'cantidad_alumnos',
         'monto_por_alumno',
@@ -39,6 +37,14 @@ class TarifaGrupo extends Model
             'monto_por_alumno' => 'integer',
             'vigente_desde' => 'date',
         ];
+    }
+
+    /**
+     * @return BelongsTo<Sede, $this>
+     */
+    public function sede(): BelongsTo
+    {
+        return $this->belongsTo(Sede::class);
     }
 
     /**

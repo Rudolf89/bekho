@@ -23,6 +23,7 @@ class Cargo extends Model
     protected $fillable = [
         'grupo_id',
         'matricula_id',
+        'sede_id',
         'tipo_cargo_id',
         'periodo',
         'monto',
@@ -60,6 +61,16 @@ class Cargo extends Model
     public function matricula(): BelongsTo
     {
         return $this->belongsTo(Matricula::class);
+    }
+
+    /**
+     * Sede que cobra el cargo (la de la matrícula).
+     *
+     * @return BelongsTo<Sede, $this>
+     */
+    public function sede(): BelongsTo
+    {
+        return $this->belongsTo(Sede::class);
     }
 
     /**

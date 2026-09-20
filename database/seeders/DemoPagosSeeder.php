@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use App\Enums\EstadoPago;
 use App\Models\Grupo;
 use App\Models\Matricula;
-use App\Models\TarifaGrupo;
+use App\Models\Sede;
+use App\Models\TarifaSede;
 use App\Models\TipoCargo;
 use App\Services\ServicioCargos;
 use App\Services\ServicioPagos;
@@ -13,9 +14,9 @@ use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Database\Seeder;
 
 /**
- * Cobros de demostración por matrícula: fija una tarifa de mensualidad, genera
- * los cargos del mes y paga (verificado) dos tercios; el resto queda con el cargo
- * pendiente (moroso). Idempotente.
+ * Cobros de demostración por sede: fija una tarifa de mensualidad en cada sede del
+ * grupo, genera los cargos del mes y paga (verificado) dos tercios; el resto queda
+ * con el cargo pendiente (moroso). Idempotente.
  */
 class DemoPagosSeeder extends Seeder
 {
@@ -30,10 +31,13 @@ class DemoPagosSeeder extends Seeder
 
         $mensualidad = TipoCargo::where('recurrente', true)->orderBy('orden')->first();
         if ($mensualidad) {
-            TarifaGrupo::withoutGlobalScopes()->updateOrCreate(
-                ['grupo_id' => $grupo->id, 'tipo_cargo_id' => $mensualidad->id, 'cantidad_alumnos' => 1],
-                ['monto_por_alumno' => 35000],
-            );
+            // Cada sede define su tarifa; en la demo todas parten en 35.000.
+            foreach (Sede::where('grupo_id', $grupo->id)->get() as $sede) {
+                TarifaSede::updateOrCreate(
+                    ['sede_id' => $sede->id, 'tipo_cargo_id' => $mensualidad->id, 'cantidad_alumnos' => 1, 'vigente_desde' => null],
+                    ['monto_por_alumno' => 35000],
+                );
+            }
         }
 
         app(ServicioCargos::class)->generarMensualidades();

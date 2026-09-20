@@ -158,18 +158,19 @@ test('pagar el cargo del período lo marca pagado y sale de morosidad', function
 
 // --- Descuento por hermanos --------------------------------------------------
 
-test('el tamaño de familia cuenta a los hermanos con el mismo responsable de pago', function () {
+test('el tamaño de familia cuenta a los hermanos de la misma sede con el mismo responsable', function () {
     Tenant::set($this->bekho->id);
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
 
-    $ana = nuevaMatricula($this->bekho->id, 'Ana');
-    $beto = nuevaMatricula($this->bekho->id, 'Beto');
+    $ana = nuevaMatricula($this->bekho->id, 'Ana', $sede->id);
+    $beto = nuevaMatricula($this->bekho->id, 'Beto', $sede->id);
     $apoderado = Persona::create(['nombres' => 'Papá', 'fecha_nacimiento' => now()->subYears(40)]);
 
     foreach ([$ana, $beto] as $hijo) {
         Tutela::create(['apoderado_persona_id' => $apoderado->id, 'alumno_persona_id' => $hijo->persona_id, 'parentesco' => 'padre', 'responsable_pago' => true]);
     }
 
-    // La familia (para el tramo de tarifas) incluye a ambos hermanos.
+    // La familia (para el tramo de tarifas) incluye a ambos hermanos de la sede.
     expect(app(ServicioCargos::class)->tamanoFamilia($ana))->toBe(2);
 });
 
