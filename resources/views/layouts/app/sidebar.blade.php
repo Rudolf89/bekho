@@ -70,6 +70,11 @@
                                 Asistencia
                             </flux:sidebar.item>
                         @endcan
+                        @can('gestionar alumnos')
+                            <flux:sidebar.item icon="chart-bar" :href="route('reportes.index')" :current="request()->routeIs('reportes.*')" wire:navigate>
+                                Reportes
+                            </flux:sidebar.item>
+                        @endcan
                         @can('registrar pagos')
                             <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
                                 Pagos

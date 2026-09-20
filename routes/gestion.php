@@ -8,6 +8,7 @@ use App\Livewire\Estudiantes\GestionEstudiantes;
 use App\Livewire\Estudiantes\VerMatricula;
 use App\Livewire\Inscripcion\InscribirAlumno;
 use App\Livewire\Pagos\GestionPagos;
+use App\Livewire\Reportes\Reportes;
 use App\Models\Matricula;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,11 @@ Route::middleware(['auth', 'can:viewAny,'.Matricula::class])->group(function () 
 // Clases y horario (permiso "gestionar clases").
 Route::middleware(['auth', 'can:gestionar clases'])->group(function () {
     Route::livewire('clases', GestionClases::class)->name('clases.index');
+});
+
+// Reportes de gestión (permiso "gestionar alumnos").
+Route::middleware(['auth', 'can:gestionar alumnos'])->group(function () {
+    Route::livewire('reportes', Reportes::class)->name('reportes.index');
 });
 
 // Toma de asistencia (permiso "tomar asistencia").
