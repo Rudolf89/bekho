@@ -17,14 +17,14 @@ class RequisitoLegacy extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['nivel_legacy_id', 'texto', 'cuestionario_id', 'orden'];
+    protected $fillable = ['nivel_legacy_id', 'texto', 'cuestionario_id', 'orden', 'fuente', 'verificado'];
 
     /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
-        return ['orden' => 'integer'];
+        return ['orden' => 'integer', 'verificado' => 'boolean'];
     }
 
     /**

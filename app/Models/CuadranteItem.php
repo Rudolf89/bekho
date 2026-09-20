@@ -18,7 +18,7 @@ class CuadranteItem extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['cuadrante', 'rol', 'orden', 'texto', 'detalle'];
+    protected $fillable = ['cuadrante', 'rol', 'orden', 'texto', 'detalle', 'fuente', 'verificado'];
 
     /**
      * @return array<string, string>
@@ -28,6 +28,7 @@ class CuadranteItem extends Model
         return [
             'cuadrante' => Cuadrante::class,
             'rol' => RolCuadrante::class,
+            'verificado' => 'boolean',
         ];
     }
 

@@ -25,7 +25,12 @@ class CuadrantesSeeder extends Seeder
                     [$texto, $detalle] = is_array($item) ? $item : [$item, null];
                     CuadranteItem::updateOrCreate(
                         ['cuadrante' => $cuadrante, 'rol' => $rol, 'orden' => $i + 1],
-                        ['texto' => $texto, 'detalle' => $detalle],
+                        [
+                            'texto' => $texto,
+                            'detalle' => $detalle,
+                            'fuente' => ManualLegacySeeder::FUENTE,
+                            'verificado' => true,
+                        ],
                     );
                 }
             }

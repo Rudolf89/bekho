@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Enums\HabilidadVida;
+use App\Models\HabilidadVida as HabilidadVidaModelo;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
@@ -19,7 +21,7 @@ class Ciclo extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['habilidad_vida', 'nombre', 'orden', 'semanas'];
+    protected $fillable = ['habilidad_vida', 'habilidad_vida_id', 'nombre', 'orden', 'semanas'];
 
     /**
      * @return array<string, string>
@@ -31,6 +33,17 @@ class Ciclo extends Model
             'orden' => 'integer',
             'semanas' => 'integer',
         ];
+    }
+
+    /**
+     * Habilidad para la vida del catálogo del manual (FK). La clave enum
+     * `habilidad_vida` se conserva como clave natural histórica.
+     *
+     * @return BelongsTo<HabilidadVidaModelo, $this>
+     */
+    public function habilidadVida(): BelongsTo
+    {
+        return $this->belongsTo(HabilidadVidaModelo::class, 'habilidad_vida_id');
     }
 
     /**

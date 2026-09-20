@@ -57,9 +57,17 @@ class PlanificadorSeeder extends Seeder
         ];
 
         foreach ($ciclos as $i => $habilidad) {
+            // Enlaza a la habilidad del catálogo del manual por nombre (si existe).
+            $habilidadId = \App\Models\HabilidadVida::where('nombre', $habilidad->etiqueta())->value('id');
+
             Ciclo::updateOrCreate(
                 ['habilidad_vida' => $habilidad->value],
-                ['nombre' => 'Ciclo '.($i + 1).' · '.$habilidad->etiqueta(), 'orden' => $i + 1, 'semanas' => 8],
+                [
+                    'habilidad_vida_id' => $habilidadId,
+                    'nombre' => 'Ciclo '.($i + 1).' · '.$habilidad->etiqueta(),
+                    'orden' => $i + 1,
+                    'semanas' => 8,
+                ],
             );
         }
     }

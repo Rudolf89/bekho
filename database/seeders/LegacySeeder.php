@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Cuestionario;
 use App\Models\NivelLegacy;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 
 /**
  * Catálogo del Programa Legacy: Niveles 1-3 (100 h cada uno) y sus requisitos.
@@ -57,6 +58,9 @@ class LegacySeeder extends Seeder
         // Prueba escrita N3 → cuestionario del banco de Legacy (si ya se sembró).
         $pruebaN3 = Cuestionario::where('titulo', 'Examen escrito · Programa Legacy Nivel 3')->first();
 
+        // Requisitos Protech por nivel, desde el Manual ATA Legacy (armas_protech.json).
+        $protech = $this->protechPorNivel();
+
         foreach ($niveles as $orden => $datos) {
             $nivel = NivelLegacy::updateOrCreate(
                 ['nombre' => $datos['nombre']],
@@ -65,20 +69,77 @@ class LegacySeeder extends Seeder
                     'horas_requeridas' => 100,
                     'edad_minima' => $datos['edad_minima'],
                     'descripcion' => $datos['descripcion'],
+                    'fuente' => ManualLegacySeeder::FUENTE,
+                    'verificado' => true,
                 ],
             );
 
-            foreach ($datos['requisitos'] as $ordenReq => $texto) {
+            $ordenReq = 0;
+            foreach ($datos['requisitos'] as $texto) {
+                $ordenReq++;
                 $esPruebaEscrita = str_contains($texto, 'Prueba escrita');
 
                 $nivel->requisitos()->updateOrCreate(
                     ['texto' => $texto],
                     [
-                        'orden' => $ordenReq + 1,
+                        'orden' => $ordenReq,
                         'cuestionario_id' => $esPruebaEscrita ? $pruebaN3?->id : null,
+                        'fuente' => ManualLegacySeeder::FUENTE,
+                        'verificado' => true,
                     ],
                 );
             }
+
+            // Requisitos Protech (armas) del nivel, como contenido del manual.
+            foreach ($protech[$orden + 1] ?? [] as $texto) {
+                $ordenReq++;
+                $nivel->requisitos()->updateOrCreate(
+                    ['texto' => $texto],
+                    ['orden' => $ordenReq, 'cuestionario_id' => null, 'fuente' => ManualLegacySeeder::FUENTE, 'verificado' => true],
+                );
+            }
         }
+    }
+
+    /**
+     * Requisitos Protech por número de nivel (1, 2, 3), como textos, desde
+     * database/data/armas_protech.json. Devuelve [] si el archivo no existe.
+     *
+     * @return array<int, list<string>>
+     */
+    private function protechPorNivel(): array
+    {
+        $ruta = database_path('data/armas_protech.json');
+        if (! File::exists($ruta)) {
+            return [];
+        }
+
+        $datos = json_decode(File::get($ruta), true);
+        $porNivel = [];
+
+        foreach ($datos['requisitos_por_nivel'] ?? [] as $bloque) {
+            $nivel = (int) ($bloque['nivel'] ?? 0);
+            $textos = [];
+
+            if (! empty($bloque['condicion_general'])) {
+                $textos[] = 'Protech (condición general): '.$bloque['condicion_general'];
+            }
+
+            foreach ($bloque['items'] ?? [] as $item) {
+                $arma = $item['arma'] ?? null;
+                $detalle = $item['detalle'] ?? null;
+
+                $textos[] = match (true) {
+                    $arma && $detalle => "Protech: {$arma} — {$detalle}",
+                    (bool) $arma => "Protech: {$arma}",
+                    (bool) $detalle => "Protech: {$detalle}",
+                    default => 'Protech',
+                };
+            }
+
+            $porNivel[$nivel] = $textos;
+        }
+
+        return $porNivel;
     }
 }
