@@ -38,9 +38,15 @@ class BibliotecaTecnicas extends Component
             ->ordenadas()
             ->get();
 
+        // Las formas ya no son técnicas: tienen su propia página (Formas).
+        $categorias = array_values(array_filter(
+            CategoriaTecnica::cases(),
+            fn (CategoriaTecnica $c) => $c !== CategoriaTecnica::Forma,
+        ));
+
         return view('livewire.planificador.biblioteca-tecnicas', [
             'grupos' => $tecnicas->groupBy(fn (Tecnica $t) => $t->categoria->value),
-            'categorias' => CategoriaTecnica::cases(),
+            'categorias' => $categorias,
             'modalidades' => ModalidadTecnica::cases(),
             'total' => $tecnicas->count(),
         ]);

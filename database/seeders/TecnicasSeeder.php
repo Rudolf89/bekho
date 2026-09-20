@@ -11,9 +11,10 @@ use Illuminate\Database\Seeder;
 /**
  * Biblioteca de técnicas del currículo ATA (catálogo compartido). Portado desde
  * los manuales traducidos: Patadas (tradicionales por cinturón + Creative/Xtreme
- * de ATA MAX), Tricks, Manos, Armas (con sus segmentos) y Formas Songahm.
+ * de ATA MAX), Tricks, Manos y Armas (con sus segmentos). Las FORMAS ya no son
+ * técnicas: viven en `formas`/`pasos_forma` (FormasPasosSeeder).
  *
- * Idempotente. Las combinaciones/armas/formas con secuencia guardan sus pasos en
+ * Idempotente. Las combinaciones/armas con secuencia guardan sus pasos en
  * pasos_tecnica.
  */
 class TecnicasSeeder extends Seeder
@@ -25,7 +26,8 @@ class TecnicasSeeder extends Seeder
         $this->tricks();
         $this->manos();
         $this->armas();
-        $this->formas();
+        // Las formas ya NO son técnicas: viven en `formas`/`pasos_forma`
+        // (FormasPasosSeeder). Ver la migración que separa formas de técnicas.
     }
 
     /**
@@ -227,46 +229,6 @@ class TecnicasSeeder extends Seeder
                 'core' => false,
                 'orden' => $i + 1,
             ], $pasos);
-        }
-    }
-
-    // ── Formas (Songahm / Hyung) ────────────────────────────────────────────
-
-    private function formas(): void
-    {
-        $prin = NivelEntrenamiento::Principiantes->value;
-        $inter = NivelEntrenamiento::Intermedio->value;
-        $avan = NivelEntrenamiento::Avanzado->value;
-        $rn = NivelEntrenamiento::RojoNegro->value;
-        $dan = NivelEntrenamiento::Danes->value;
-
-        // [nombre, significado, nivel]
-        $formas = [
-            ['Songahm Il-Jahng n.º 1', 'El pino y la roca', $prin],
-            ['Songahm Ee-Jahng n.º 2', 'El pino y la roca', $prin],
-            ['Songahm Sahm-Jahng n.º 3', 'El pino y la roca', $prin],
-            ['Songahm Sah-Jahng n.º 4', 'El pino y la roca', $inter],
-            ['Songahm Oh-Jahng n.º 5', 'El pino y la roca', $inter],
-            ['In Wha Il-Jahng n.º 1', 'Una gloria inquebrantable', $avan],
-            ['In Wha Ee-Jahng n.º 2', 'Una gloria inquebrantable', $rn],
-            ['Choong Jung Il-Jahng n.º 1', 'Todo resulta perfecto y hermoso', $rn],
-            ['Choong Jung Ee-Jahng n.º 2', 'Todo resulta perfecto y hermoso', $dan],
-            ['Shim Jun', 'Comienza a plantar semillas para el futuro', $dan],
-            ['Jung Yul', 'Con tu noble carácter, desarrollarás una nueva permanencia en tu vida', $dan],
-            ['Chung San', 'Paz mental y tranquilidad', $dan],
-        ];
-
-        foreach ($formas as $i => [$nombre, $significado, $nivel]) {
-            // TODO: los pasos detallados de cada forma están en el manual (texto
-            // largo); por ahora se carga nombre + significado + nivel.
-            $this->tecnica(CategoriaTecnica::Forma, $nombre, [
-                'subcategoria' => 'Songahm',
-                'significado' => $significado,
-                'modalidad' => ModalidadTecnica::Tradicional->value,
-                'nivel' => $nivel,
-                'core' => true,
-                'orden' => $i + 1,
-            ]);
         }
     }
 }

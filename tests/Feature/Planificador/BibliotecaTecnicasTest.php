@@ -21,8 +21,9 @@ beforeEach(function () {
 });
 
 test('la biblioteca de técnicas se siembra con todas las categorías', function () {
+    // Las formas ya no son técnicas (viven en `formas`); la biblioteca no las tiene.
     expect(Tecnica::deCategoria(CategoriaTecnica::Patada)->count())->toBeGreaterThan(10)
-        ->and(Tecnica::deCategoria(CategoriaTecnica::Forma)->count())->toBe(12)
+        ->and(Tecnica::deCategoria(CategoriaTecnica::Forma)->count())->toBe(0)
         ->and(Tecnica::deCategoria(CategoriaTecnica::Arma)->count())->toBe(6)
         ->and(Tecnica::deCategoria(CategoriaTecnica::Mano)->count())->toBe(9)
         ->and(Tecnica::deCategoria(CategoriaTecnica::Trick)->count())->toBe(12);
@@ -39,7 +40,7 @@ test('las técnicas con secuencia guardan sus pasos por segmento', function () {
 
 test('las técnicas son transversales (contenido compartido, sin grupo)', function () {
     // La tabla no tiene grupo_id: se ven igual con o sin tenant.
-    expect(Tecnica::count())->toBeGreaterThan(50);
+    expect(Tecnica::count())->toBeGreaterThan(40);
 });
 
 test('la biblioteca filtra por categoría y modalidad', function () {
