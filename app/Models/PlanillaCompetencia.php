@@ -24,6 +24,7 @@ class PlanillaCompetencia extends Model
      * @var list<string>
      */
     protected $fillable = [
+        'evaluacion_practica_id',
         'prueba_id',
         'grupo_edad_id',
         'categoria_competencia_id',
@@ -54,6 +55,16 @@ class PlanillaCompetencia extends Model
     public function prueba(): BelongsTo
     {
         return $this->belongsTo(Prueba::class);
+    }
+
+    /**
+     * Evaluación práctica (certificación de planillero) que respalda la planilla.
+     *
+     * @return BelongsTo<EvaluacionPractica, $this>
+     */
+    public function evaluacionPractica(): BelongsTo
+    {
+        return $this->belongsTo(EvaluacionPractica::class, 'evaluacion_practica_id');
     }
 
     /**

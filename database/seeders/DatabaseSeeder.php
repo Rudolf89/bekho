@@ -64,6 +64,8 @@ class DatabaseSeeder extends Seeder
             // Unificación LMS + Legacy: fusiona niveles y niveles_legacy en
             // programas → etapas_programa (corre tras crearse todos los niveles).
             EtapasProgramaSeeder::class,
+            // Instrumentos de evaluación práctica (planillero; formas y patadas).
+            InstrumentosEvaluacionSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             // Crea directamente la capa de identidad (personas/matrículas/personal).
             DemoBekhoSeeder::class,

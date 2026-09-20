@@ -368,8 +368,17 @@ PERSONA: nuevas `inscripciones_programa` (transversal, sin grupo_id), `horas_pro
 (user→persona; horas manuales congeladas; un user sin persona queda fuera y se reporta;
 cumplimientos best-effort al resembrar los requisitos). **Decisión:** las horas por ahora
 solo migran las manuales; el cálculo desde la asistencia con papel de ayudante queda como
-follow-up (hoy no hay registro de ayudante por sesión del cual sumarlas). **(c)**
-instrumentos de evaluación práctica. **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
+follow-up (hoy no hay registro de ayudante por sesión del cual sumarlas). **(c) HECHO** —
+instrumentos de evaluación práctica: `instrumentos_evaluacion` (catálogo de la
+federación; escala + `puntaje_maximo`; aprueba por `umbral_porcentaje` O `nota_minima`,
+alternativos según la escala) → `secciones_instrumento` → `criterios_instrumento`
+(criterio puede atarse a un `atributo_tecnico`); `evaluaciones_practicas` (historial de
+la persona, transversal) → `puntajes_criterio`; `planillas_competencia` gana
+`evaluacion_practica_id`. `InstrumentosEvaluacionSeeder` siembra la **Prueba de
+planillero** (escala Rúbrica 0–6.0, umbral 80 %, secciones Fórmula y Armas / Sparring /
+Recuento de medallas) y la **Evaluación de formas y patadas** (escala Competencia 9.1–9.9,
+nota mínima 9.5; 13 criterios = 10 atributos + 3 criterios de conocimiento de
+`atributos_tecnicos`). **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
 Legacy`/`RequisitoLegacy` y unificar la UI (Aprender y Legacy pasan a ser programas).
 
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):
