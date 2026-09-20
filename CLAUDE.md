@@ -37,10 +37,11 @@ Piezas del tenant:
 
 **Catálogos compartidos = SIN `grupo_id`** (como `cargos_rangos`): `planificaciones_clase`,
 `bloques_planificacion`, `cuadrantes_planificacion`, `ciclos`, `planner_ciclo`, `tecnicas`,
-`pasos_tecnica`, `cuadrante_items`, `grados`, `grado_tecnica`, `curriculos_nivel`,
-`lecciones_vida`, biblioteca de calentamiento, planificador de Cinturón Negro,
-`cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`, `recompensas`,
-`niveles_legacy`, `requisitos_legacy`, `distintivos_rango`. **Transversales (identidad,
+`pasos_tecnica`, `formas`, `pasos_forma`, `posiciones`, `secciones_altura`,
+`habilidades_vida`, `atributos_tecnicos`, `armas`, `cuadrante_items`, `grados`,
+`grado_tecnica`, `curriculos_nivel`, `lecciones_vida`, biblioteca de calentamiento,
+planificador de Cinturón Negro, `cuestionarios`, `preguntas_cuestionario`,
+`opciones_pregunta`, `recompensas`, `niveles_legacy`, `requisitos_legacy`, `distintivos_rango`. **Transversales (identidad,
 sin `grupo_id` pero operativos):** `personas`, `instructores`, `tutelas`,
 `creditos_graduacion`. **Datos operativos = CON `grupo_id`**:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
@@ -174,7 +175,9 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   regular y el de Cinturón Negro comparten estilo visual: tarjeta blanca con acento
   de color, no banners a sangre), **Ciclos** (`PlanCiclos`: class
   planner de cada ciclo — grilla fila × bloque de semanas — con sus lecciones de
-  vida), **Biblioteca de técnicas** (patadas/formas/manos/tricks/armas con pasos),
+  vida), **Biblioteca de técnicas** (patadas/manos/tricks/armas con pasos; las
+  **formas** ya NO son técnicas), **Formas** (`Formas`: página propia, poomsae del
+  Manual ATA Legacy con su secuencia paso a paso desde `formas`/`pasos_forma`),
   **Cuadrantes de Enseñanza**, **Cinturones** (`Cinturones`: escala de grados con
   color, `tipo` recomendado/decidido/dan, `franjas`, significado Songahm, las
   técnicas enlazadas por color vía `grado_tecnica` y la **comparativa de patadas
@@ -241,12 +244,21 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   `CuadrantePlanificacion`; permiso `gestionar planificaciones`; `App\Livewire\
   Planificador`). Las "planillas" (`planillas_competencia`, `jueces_planilla`, etc.)
   son exclusivamente de competencia.
-- **Procedencia del contenido del planificador.** `planificaciones_clase`,
-  `planificaciones_cinturon_negro` y `categorias_calentamiento` llevan `fuente` y
-  `verificado` (bool). El contenido sembrado desde `docs/planificador-unificado.tsx`
-  fue **generado con IA** (no transcrito del manual): va con `verificado=false` y el
-  Planificador muestra un aviso cuando el contenido no está validado. No se corrige
-  ni completa el contenido (requiere los planner reales del manual en español).
+- **Procedencia del contenido.** El contenido carga `fuente`/`verificado` (bool).
+  El del planificador (`planificaciones_clase`, `planificaciones_cinturon_negro`,
+  `categorias_calentamiento`) fue **generado con IA** desde
+  `docs/planificador-unificado.tsx` → `verificado=false`, y el Planificador muestra
+  un aviso. En cambio, el contenido del **Manual ATA Legacy v4** (formas, catálogos
+  de leyenda/habilidades/atributos/armas, Cuadrantes de Enseñanza, Programa Legacy)
+  se siembra desde `database/data/*.json` con `fuente='Manual ATA Legacy v4 (julio
+  2018)'` y `verificado=true` (`ManualLegacySeeder`, `FormasPasosSeeder`). Donde el
+  manual no dice, se siembra `null`; no se inventa ni completa (p. ej. las 5 formas
+  de cinturón negro que el manual nombra pero no detalla van sin pasos y
+  `verificado=false`).
+- **"Forma" ≠ "Técnica".** Una forma (poomsae) es una secuencia con nombre coreano,
+  significado y grado: vive en `formas`/`pasos_forma` (`Forma`, `PasoForma`;
+  `pasos_forma.posicion_id`→`posiciones`, la sección y los modificadores como texto).
+  Una técnica es un movimiento (`tecnicas`). Las formas NO están en `tecnicas`.
 - Tests **Pest** + `RefreshDatabase`; `beforeEach` siembra los seeders necesarios
   (`RolesPermisosSeeder`, etc.) + `app(PermissionRegistrar::class)->forgetCachedPermissions()`;
   `Grupo` tenant con `Tenant::set()/olvidar()`.
