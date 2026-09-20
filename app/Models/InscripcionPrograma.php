@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoIntento;
 use App\Enums\EstadoLegacy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -100,5 +101,53 @@ class InscripcionPrograma extends Model
     public function horasAcumuladas(): float
     {
         return (float) $this->horas()->sum('horas');
+    }
+
+    /**
+     * ¿Completó las horas requeridas de la etapa en curso?
+     */
+    public function horasCompletas(): bool
+    {
+        return $this->horasAcumuladas() >= ($this->etapaActual?->horas_requeridas ?? 0);
+    }
+
+    /**
+     * ¿Está cumplido un requisito? Los de cuestionario se cumplen solos con un
+     * intento aprobado del user de la persona; el resto, por marca manual.
+     */
+    public function cumpleRequisito(RequisitoEtapa $requisito): bool
+    {
+        if ($requisito->esAutomatico()) {
+            $userId = $this->persona?->user?->id;
+
+            return $userId !== null && IntentoCuestionario::query()
+                ->where('user_id', $userId)
+                ->where('cuestionario_id', $requisito->cuestionario_id)
+                ->where('estado', EstadoIntento::Aprobado)
+                ->exists();
+        }
+
+        return $this->cumplimientos()->where('requisito_etapa_id', $requisito->id)->exists();
+    }
+
+    /**
+     * ¿Cumple TODOS los requisitos de la etapa en curso?
+     */
+    public function cumpleTodosLosRequisitos(): bool
+    {
+        $requisitos = $this->etapaActual?->requisitos ?? collect();
+
+        return $requisitos->every(fn (RequisitoEtapa $r) => $this->cumpleRequisito($r));
+    }
+
+    /**
+     * ¿Reúne las condiciones para aprobar el ascenso de la etapa en curso?
+     */
+    public function puedeAprobar(): bool
+    {
+        return $this->estado === EstadoLegacy::EnCurso
+            && $this->etapaActual !== null
+            && $this->horasCompletas()
+            && $this->cumpleTodosLosRequisitos();
     }
 }

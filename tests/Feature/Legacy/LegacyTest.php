@@ -2,16 +2,23 @@
 
 use App\Enums\EstadoIntento;
 use App\Enums\EstadoLegacy;
-use App\Livewire\Legacy\PanelLegacy;
+use App\Livewire\Programas\GestionInscripciones;
 use App\Models\Cuestionario;
+use App\Models\EtapaPrograma;
 use App\Models\Grupo;
-use App\Models\InscripcionLegacy;
+use App\Models\InscripcionPrograma;
 use App\Models\IntentoCuestionario;
-use App\Models\NivelLegacy;
-use App\Models\RequisitoLegacy;
+use App\Models\Matricula;
+use App\Models\Persona;
+use App\Models\Programa;
+use App\Models\RequisitoEtapa;
+use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
-use Database\Seeders\LegacySeeder;
+use Database\Seeders\EtapasProgramaSeeder;
+use Database\Seeders\FederacionesSeeder;
+use Database\Seeders\GradosSeeder;
+use Database\Seeders\ProgramasSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -21,143 +28,140 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
-    $this->seed(LegacySeeder::class);
+    $this->seed(FederacionesSeeder::class);
+    $this->seed(ProgramasSeeder::class);
+    $this->seed(GradosSeeder::class);
+    $this->seed(EtapasProgramaSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
+    $this->legacy = Programa::where('nombre', 'Legacy')->first();
     Tenant::set($this->bekho->id);
 });
 
 afterEach(fn () => Tenant::olvidar());
 
-test('cada nivel Legacy tiene su edad mínima de ascenso (13, 16, 18)', function () {
-    $edades = NivelLegacy::orderBy('orden')->pluck('edad_minima', 'nombre');
-
-    expect($edades['Legacy Nivel 1'])->toBe(13)
-        ->and($edades['Legacy Nivel 2'])->toBe(16)
-        ->and($edades['Legacy Nivel 3'])->toBe(18);
-});
-
 function usuarioLegacy(string $rol, int $grupoId): User
 {
-    $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
-    $u = User::factory()->create([
-        'grupo_id' => $grupoId,
-        'two_factor_confirmed_at' => $exige2fa ? now() : null,
-    ]);
+    $persona = Persona::create(['nombres' => 'U '.uniqid(), 'fecha_nacimiento' => now()->subYears(30)]);
+    $u = User::factory()->create(['grupo_id' => $grupoId, 'persona_id' => $persona->id]);
     $u->assignRole($rol);
 
     return $u;
 }
 
-// --- Catálogo ----------------------------------------------------------------
+/** Inscripción a Legacy en la etapa dada (por orden). */
+function inscribirEnPrograma(Persona $persona, EtapaPrograma $etapa): InscripcionPrograma
+{
+    return InscripcionPrograma::create([
+        'persona_id' => $persona->id, 'programa_id' => $etapa->programa_id,
+        'etapa_actual_id' => $etapa->id, 'estado' => EstadoLegacy::EnCurso->value, 'fecha_ingreso' => now(),
+    ]);
+}
 
-test('el catálogo Legacy tiene 3 niveles de 100 h con requisitos', function () {
-    expect(NivelLegacy::count())->toBe(3);
-    NivelLegacy::all()->each(fn ($n) => expect($n->horas_requeridas)->toBe(100)
-        ->and($n->requisitos()->count())->toBeGreaterThan(0));
+test('el programa Legacy tiene 3 etapas de 100 h con edades 13/16/18', function () {
+    $etapas = $this->legacy->etapas()->whereNotNull('horas_requeridas')->orderBy('orden')->get();
+
+    expect($etapas)->toHaveCount(3)
+        ->and($etapas->pluck('edad_minima')->all())->toBe([13, 16, 18])
+        ->and($etapas->every(fn ($e) => $e->horas_requeridas === 100))->toBeTrue()
+        ->and($etapas->every(fn ($e) => $e->requisitos()->count() > 0))->toBeTrue();
 });
 
-// --- Inscripción + horas -----------------------------------------------------
-
 test('acumular 100 h marca las horas como completas', function () {
-    $formando = usuarioLegacy('instructor', $this->bekho->id);
-    $nivel = NivelLegacy::ordenados()->first();
-    $inscripcion = InscripcionLegacy::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
-        'estado' => EstadoLegacy::EnCurso->value,
-    ]);
+    $persona = Persona::create(['nombres' => 'Formando', 'fecha_nacimiento' => now()->subYears(20)]);
+    $etapa = $this->legacy->etapas()->orderBy('orden')->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
 
-    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 60]);
+    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 60, 'origen' => 'manual']);
     expect($inscripcion->horasCompletas())->toBeFalse();
 
-    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 40]);
-    expect($inscripcion->fresh()->horasAcumuladas())->toEqual(100.0)
+    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 40, 'origen' => 'manual']);
+    expect((float) $inscripcion->fresh()->horasAcumuladas())->toBe(100.0)
         ->and($inscripcion->fresh()->horasCompletas())->toBeTrue();
 });
 
-// --- Ascenso -----------------------------------------------------------------
-
-test('no se puede aprobar sin cumplir 100 h y todos los requisitos', function () {
+test('la dirección no puede aprobar sin cumplir horas y requisitos', function () {
     $direccion = usuarioLegacy('direccion', $this->bekho->id);
-    $formando = usuarioLegacy('instructor', $this->bekho->id);
-    $nivel = NivelLegacy::ordenados()->first();
-    $inscripcion = InscripcionLegacy::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
-        'estado' => EstadoLegacy::EnCurso->value,
-    ]);
-    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100]); // horas ok, requisitos no
+    $persona = Persona::create(['nombres' => 'Formando', 'fecha_nacimiento' => now()->subYears(20)]);
+    $etapa = $this->legacy->etapas()->orderBy('orden')->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
+    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100, 'origen' => 'manual']); // horas ok, requisitos no
 
-    Livewire::actingAs($direccion)->test(PanelLegacy::class)
+    Livewire::actingAs($direccion)->test(GestionInscripciones::class)
         ->set('inscripcionId', $inscripcion->id)
         ->call('aprobar');
 
-    expect($inscripcion->fresh()->estado)->toBe(EstadoLegacy::EnCurso);
+    expect($inscripcion->fresh()->etapa_actual_id)->toBe($etapa->id);
 });
 
-test('el licenciatario aprueba el ascenso cuando todo está cumplido', function () {
+test('la dirección aprueba el ascenso cuando todo está cumplido y avanza de etapa', function () {
     $direccion = usuarioLegacy('direccion', $this->bekho->id);
-    $formando = usuarioLegacy('instructor', $this->bekho->id);
-    $nivel = NivelLegacy::ordenados()->first();
-    $inscripcion = InscripcionLegacy::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
-        'estado' => EstadoLegacy::EnCurso->value,
-    ]);
-    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100]);
+    $persona = Persona::create(['nombres' => 'Formando', 'fecha_nacimiento' => now()->subYears(20)]);
+    $etapas = $this->legacy->etapas()->whereNotNull('horas_requeridas')->orderBy('orden')->get();
+    $etapa = $etapas->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
+    $inscripcion->horas()->create(['fecha' => now(), 'horas' => 100, 'origen' => 'manual']);
 
-    // Marca todos los requisitos manuales como cumplidos.
-    foreach ($nivel->requisitos as $r) {
-        $inscripcion->requisitosCumplidos()->attach($r->id, ['verificado_por' => $direccion->id, 'verificado_at' => now()]);
+    foreach ($etapa->requisitos as $r) {
+        $inscripcion->cumplimientos()->create(['requisito_etapa_id' => $r->id, 'cumplido_at' => now()]);
     }
 
     expect($inscripcion->fresh()->puedeAprobar())->toBeTrue();
 
-    Livewire::actingAs($direccion)->test(PanelLegacy::class)
+    Livewire::actingAs($direccion)->test(GestionInscripciones::class)
         ->set('inscripcionId', $inscripcion->id)
         ->call('aprobar');
 
     $inscripcion->refresh();
-    expect($inscripcion->estado)->toBe(EstadoLegacy::Aprobado)
-        ->and($inscripcion->aprobado_por)->toBe($direccion->id)
-        ->and($inscripcion->fecha_aprobacion)->not->toBeNull();
+    expect($inscripcion->ascensos()->count())->toBe(1)
+        ->and($inscripcion->etapa_actual_id)->toBe($etapas[1]->id); // avanzó a la etapa 2
 });
 
-test('un instructor no puede aprobar el ascenso (solo el licenciatario)', function () {
+test('el instructor del alumno puede aprobar; uno ajeno no', function () {
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
     $instructor = usuarioLegacy('instructor', $this->bekho->id);
-    $formando = usuarioLegacy('instructor', $this->bekho->id);
-    $nivel = NivelLegacy::ordenados()->first();
-    $inscripcion = InscripcionLegacy::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
-        'estado' => EstadoLegacy::EnCurso->value,
+    $ajeno = usuarioLegacy('instructor', $this->bekho->id);
+
+    $persona = Persona::create(['nombres' => 'Alumno', 'fecha_nacimiento' => now()->subYears(16)]);
+    // Matrícula activa con ese instructor.
+    Matricula::create([
+        'grupo_id' => $this->bekho->id, 'persona_id' => $persona->id, 'sede_id' => $sede->id,
+        'grupo_etario' => 'for_kids', 'estado' => 'activa', 'fecha_ingreso' => now(),
+        'instructor_persona_id' => $instructor->persona_id,
     ]);
 
-    Livewire::actingAs($instructor)->test(PanelLegacy::class)
+    $etapa = $this->legacy->etapas()->orderBy('orden')->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
+
+    // El instructor ajeno no está autorizado a aprobar.
+    Livewire::actingAs($ajeno)->test(GestionInscripciones::class)
         ->set('inscripcionId', $inscripcion->id)
         ->call('aprobar')
         ->assertForbidden();
+
+    // El instructor del alumno sí (aunque falten horas, pasa el control de autorización).
+    Livewire::actingAs($instructor)->test(GestionInscripciones::class)
+        ->set('inscripcionId', $inscripcion->id)
+        ->call('aprobar')
+        ->assertOk();
 });
 
-// --- Prueba escrita = cuestionario aprobado ---------------------------------
-
 test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', function () {
-    $formando = usuarioLegacy('instructor', $this->bekho->id);
-    $nivel = NivelLegacy::ordenados()->first();
+    $persona = Persona::create(['nombres' => 'Formando', 'fecha_nacimiento' => now()->subYears(20)]);
+    $user = User::factory()->create(['grupo_id' => $this->bekho->id, 'persona_id' => $persona->id]);
+    $etapa = $this->legacy->etapas()->orderBy('orden')->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
 
-    $cuestionario = Cuestionario::create(['titulo' => 'Prueba escrita Legacy', 'activo' => true, 'umbral_aprobacion' => 80]);
-    $requisito = RequisitoLegacy::create([
-        'nivel_legacy_id' => $nivel->id, 'texto' => 'Prueba escrita aprobada', 'cuestionario_id' => $cuestionario->id, 'orden' => 99,
+    $cuestionario = Cuestionario::create(['titulo' => 'Prueba escrita X', 'activo' => true, 'umbral_aprobacion' => 80]);
+    $requisito = RequisitoEtapa::create([
+        'etapa_programa_id' => $etapa->id, 'descripcion' => 'Prueba escrita aprobada',
+        'tipo' => 'cuestionario', 'cuestionario_id' => $cuestionario->id, 'orden' => 99,
     ]);
 
-    $inscripcion = InscripcionLegacy::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'nivel_legacy_id' => $nivel->id,
-        'estado' => EstadoLegacy::EnCurso->value,
-    ]);
-
-    // Sin intento aprobado: no cumple.
     expect($inscripcion->cumpleRequisito($requisito))->toBeFalse();
 
-    // Intento aprobado por el examinador: cumple automáticamente.
     IntentoCuestionario::create([
-        'grupo_id' => $this->bekho->id, 'user_id' => $formando->id, 'cuestionario_id' => $cuestionario->id,
+        'grupo_id' => $this->bekho->id, 'user_id' => $user->id, 'cuestionario_id' => $cuestionario->id,
         'correctas' => 9, 'total' => 10, 'porcentaje' => 90, 'aprobado' => true,
         'estado' => EstadoIntento::Aprobado->value, 'finalizado_at' => now(),
     ]);
@@ -165,13 +169,11 @@ test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', 
     expect($inscripcion->fresh()->cumpleRequisito($requisito->fresh()))->toBeTrue();
 });
 
-// --- Permisos ----------------------------------------------------------------
-
-test('el panel Legacy exige el permiso gestionar legacy', function () {
+test('la gestión de inscripciones exige el permiso gestionar legacy', function () {
     $instructor = usuarioLegacy('instructor', $this->bekho->id);
     $apoderado = usuarioLegacy('apoderado', $this->bekho->id);
 
     Tenant::olvidar();
-    $this->actingAs($instructor)->get(route('legacy.index'))->assertOk();
-    $this->actingAs($apoderado)->get(route('legacy.index'))->assertForbidden();
+    $this->actingAs($instructor)->get(route('programas.gestion'))->assertOk();
+    $this->actingAs($apoderado)->get(route('programas.gestion'))->assertForbidden();
 });

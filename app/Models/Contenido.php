@@ -3,23 +3,20 @@
 namespace App\Models;
 
 use App\Enums\TipoContenido;
-use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * Contenido de estudio de una etapa de programa. Catálogo de la federación (sin
+ * grupo_id): los manuales son de ATA, iguales para todos los grupos.
+ */
 class Contenido extends Model
 {
-    use PerteneceGrupo;
-
     /**
-     * Atributos asignables masivamente.
-     *
      * @var list<string>
      */
     protected $fillable = [
-        'grupo_id',
-        'nivel_id',
         'etapa_programa_id',
         'titulo',
         'descripcion',
@@ -31,8 +28,6 @@ class Contenido extends Model
     ];
 
     /**
-     * Casts de atributos.
-     *
      * @return array<string, string>
      */
     protected function casts(): array
@@ -44,17 +39,7 @@ class Contenido extends Model
     }
 
     /**
-     * Nivel al que pertenece el contenido.
-     *
-     * @return BelongsTo<Nivel, $this>
-     */
-    public function nivel(): BelongsTo
-    {
-        return $this->belongsTo(Nivel::class);
-    }
-
-    /**
-     * Etapa de programa a la que pertenece el contenido (modelo unificado).
+     * Etapa de programa a la que pertenece el contenido.
      *
      * @return BelongsTo<EtapaPrograma, $this>
      */
@@ -64,7 +49,7 @@ class Contenido extends Model
     }
 
     /**
-     * Registros de progreso de los usuarios sobre este contenido.
+     * Registros de progreso (por persona) sobre este contenido.
      *
      * @return HasMany<ProgresoContenido, $this>
      */

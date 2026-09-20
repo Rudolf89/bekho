@@ -1,47 +1,34 @@
 <?php
 
 use App\Enums\TipoContenido;
-use App\Models\Grupo;
-use App\Models\Nivel;
-use App\Support\Tenancy\Grupo as Tenant;
+use App\Models\EtapaPrograma;
+use Database\Seeders\FederacionesSeeder;
 use Database\Seeders\PreparacionJuezSeeder;
-use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\PermissionRegistrar;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(RolesPermisosSeeder::class);
+    $this->seed(FederacionesSeeder::class);
     $this->seed(PreparacionJuezSeeder::class);
-    app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
 });
 
-afterEach(fn () => Tenant::olvidar());
+test('la preparación para examen de juez se siembra como etapa de programa', function () {
+    $etapa = EtapaPrograma::where('nombre', 'Preparación para examen de juez nivel 1')->first();
 
-test('la preparación para examen de juez se siembra como nivel de Aprender', function () {
-    Tenant::set($this->bekho->id);
-
-    $nivel = Nivel::where('nombre', 'Preparación para examen de juez nivel 1')->first();
-
-    expect($nivel)->not->toBeNull()
-        ->and($nivel->grupo_id)->toBe($this->bekho->id)
-        ->and($nivel->activo)->toBeTrue()
-        // Intro + 18 secciones de manual + pointer a práctica + 2 documentos.
-        ->and($nivel->contenidos()->count())->toBe(22);
+    expect($etapa)->not->toBeNull()
+        ->and($etapa->programa->nombre)->toBe('Preparación para examen de juez')
+        ->and($etapa->activo)->toBeTrue()
+        // Intro + 18 secciones de manual + puntero a práctica + 2 documentos.
+        ->and($etapa->contenidos()->count())->toBe(22);
 });
 
 test('incluye el manual, el puntero a la práctica y los documentos', function () {
-    Tenant::set($this->bekho->id);
+    $etapa = EtapaPrograma::where('nombre', 'Preparación para examen de juez nivel 1')->first();
+    $contenidos = $etapa->contenidos()->get();
 
-    $nivel = Nivel::where('nombre', 'Preparación para examen de juez nivel 1')->first();
-    $contenidos = $nivel->contenidos()->get();
-
-    // Manual de referencia: 18 secciones.
     expect($contenidos->filter(fn ($c) => str_starts_with($c->titulo, 'Manual · ')))->toHaveCount(18);
 
-    // Puntero a la práctica interactiva (los cuestionarios viven en su módulo).
     $practica = $contenidos->firstWhere('titulo', 'Práctica interactiva (autocorregida)');
     expect($practica)->not->toBeNull()
         ->and($practica->cuerpo)->toContain('módulo de Cuestionarios');
@@ -54,6 +41,5 @@ test('incluye el manual, el puntero a la práctica y los documentos', function (
 test('el seeder es idempotente (no duplica al re-sembrar)', function () {
     $this->seed(PreparacionJuezSeeder::class);
 
-    Tenant::set($this->bekho->id);
-    expect(Nivel::where('nombre', 'Preparación para examen de juez nivel 1')->count())->toBe(1);
+    expect(EtapaPrograma::where('nombre', 'Preparación para examen de juez nivel 1')->count())->toBe(1);
 });

@@ -1,9 +1,13 @@
 <?php
 
 use App\Models\Cuestionario;
-use App\Models\RequisitoLegacy;
+use App\Models\Programa;
+use App\Models\RequisitoEtapa;
 use Database\Seeders\CuestionariosSeeder;
-use Database\Seeders\LegacySeeder;
+use Database\Seeders\EtapasProgramaSeeder;
+use Database\Seeders\FederacionesSeeder;
+use Database\Seeders\GradosSeeder;
+use Database\Seeders\ProgramasSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,9 +15,12 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
+    $this->seed(FederacionesSeeder::class);
+    $this->seed(ProgramasSeeder::class);
+    $this->seed(GradosSeeder::class);
     // El orden importa: el banco se siembra antes de enlazarlo al requisito.
     $this->seed(CuestionariosSeeder::class);
-    $this->seed(LegacySeeder::class);
+    $this->seed(EtapasProgramaSeeder::class);
 });
 
 test('se siembra la prueba escrita de Legacy N3 con sus preguntas', function () {
@@ -33,7 +40,10 @@ test('cada pregunta del banco Legacy tiene exactamente una opción correcta', fu
 });
 
 test('el requisito de prueba escrita N3 queda enlazado al cuestionario', function () {
-    $requisito = RequisitoLegacy::where('texto', 'Prueba escrita de Nivel 3 aprobada')->first();
+    $legacy = Programa::where('nombre', 'Legacy')->first();
+    $n3 = $legacy->etapas()->where('orden', 3)->first();
+
+    $requisito = $n3->requisitos()->where('tipo', 'cuestionario')->first();
 
     expect($requisito)->not->toBeNull()
         ->and($requisito->cuestionario_id)->not->toBeNull()
@@ -42,8 +52,9 @@ test('el requisito de prueba escrita N3 queda enlazado al cuestionario', functio
 });
 
 test('los demás requisitos siguen siendo checklist manual', function () {
-    $requisito = RequisitoLegacy::where('texto', '100 horas de asistencia acreditadas')->first();
+    $manual = RequisitoEtapa::where('tipo', 'manual')->first();
 
-    expect($requisito->cuestionario_id)->toBeNull()
-        ->and($requisito->esAutomatico())->toBeFalse();
+    expect($manual)->not->toBeNull()
+        ->and($manual->cuestionario_id)->toBeNull()
+        ->and($manual->esAutomatico())->toBeFalse();
 });

@@ -1,29 +1,21 @@
 <?php
 
 use App\Models\Contenido;
-use App\Models\Grupo;
-use App\Models\Nivel;
-use App\Support\Tenancy\Grupo as Tenant;
+use App\Models\EtapaPrograma;
+use Database\Seeders\FederacionesSeeder;
 use Database\Seeders\ManualesAprenderSeeder;
-use Database\Seeders\RolesPermisosSeeder;
+use Database\Seeders\ProgramasSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Spatie\Permission\PermissionRegistrar;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(RolesPermisosSeeder::class);
-    app(PermissionRegistrar::class)->forgetCachedPermissions();
-    $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
-    // El seeder termina con Tenant::olvidar(); se fija el tenant DESPUÉS para que
-    // las lecturas del test (aislamiento falla cerrado) vean los niveles del grupo.
+    $this->seed(FederacionesSeeder::class);
+    $this->seed(ProgramasSeeder::class);
     $this->seed(ManualesAprenderSeeder::class);
-    Tenant::set($this->bekho->id);
 });
 
-afterEach(fn () => Tenant::olvidar());
-
-test('cada manual crea un Nivel de Aprender con sus contenidos', function () {
+test('cada manual es una etapa de su programa con sus contenidos', function () {
     $esperados = [
         'Programa ATA Legacy · Formación de facilitadores e instructores',
         'Programa ATA Tigers (preescolar y kínder)',
@@ -33,24 +25,26 @@ test('cada manual crea un Nivel de Aprender con sus contenidos', function () {
     ];
 
     foreach ($esperados as $nombre) {
-        $nivel = Nivel::where('nombre', $nombre)->first();
-        expect($nivel)->not->toBeNull("Falta el nivel: {$nombre}");
-        // Intro + varias secciones + documento.
-        expect($nivel->contenidos()->count())->toBeGreaterThan(3);
+        $etapa = EtapaPrograma::where('nombre', $nombre)->first();
+        expect($etapa)->not->toBeNull("Falta la etapa: {$nombre}")
+            ->and($etapa->contenidos()->count())->toBeGreaterThan(3);
     }
 });
 
-test('las secciones se vuelcan como texto y el manual como documento', function () {
-    $legacy = Nivel::where('nombre', 'Programa ATA Legacy · Formación de facilitadores e instructores')->first();
+test('el manual Legacy queda bajo el programa Legacy', function () {
+    $etapa = EtapaPrograma::where('nombre', 'Programa ATA Legacy · Formación de facilitadores e instructores')->first();
+    expect($etapa->programa->nombre)->toBe('Legacy');
+});
 
-    // Una sección conocida del manual Legacy.
-    $cuadrantes = $legacy->contenidos()->where('titulo', 'Cuadrantes de Enseñanza (Teaching Quadrants)')->first();
+test('las secciones se vuelcan como texto y el manual como documento', function () {
+    $etapa = EtapaPrograma::where('nombre', 'Programa ATA Legacy · Formación de facilitadores e instructores')->first();
+
+    $cuadrantes = $etapa->contenidos()->where('titulo', 'Cuadrantes de Enseñanza (Teaching Quadrants)')->first();
     expect($cuadrantes)->not->toBeNull()
         ->and($cuadrantes->tipo->value)->toBe('texto')
         ->and($cuadrantes->cuerpo)->toContain('Estructura', 'Emoción', 'Conocimiento', 'Legado');
 
-    // El documento oficial en Drive.
-    $doc = $legacy->contenidos()->where('titulo', 'Documento oficial')->first();
+    $doc = $etapa->contenidos()->where('titulo', 'Documento oficial')->first();
     expect($doc)->not->toBeNull()
         ->and($doc->tipo->value)->toBe('documento')
         ->and($doc->url_recurso)->toContain('drive.google.com');
@@ -59,7 +53,6 @@ test('las secciones se vuelcan como texto y el manual como documento', function 
 test('el seeder es idempotente', function () {
     $antes = Contenido::count();
     $this->seed(ManualesAprenderSeeder::class);
-    Tenant::set($this->bekho->id); // el seeder termina con olvidar(); se reestablece
 
     expect(Contenido::count())->toBe($antes);
 });

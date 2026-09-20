@@ -174,20 +174,25 @@ class User extends Authenticatable implements PasskeyUser
     }
 
     /**
-     * Registros de progreso de formación del usuario.
+     * Progreso de estudio del usuario, vía su persona (el progreso cuelga de la
+     * persona, no del user: los menores no tienen cuenta).
      *
      * @return HasMany<ProgresoContenido, $this>
      */
     public function progresos(): HasMany
     {
-        return $this->hasMany(ProgresoContenido::class);
+        return $this->hasMany(ProgresoContenido::class, 'persona_id', 'persona_id');
     }
 
     /**
-     * Estado de progreso del usuario en un contenido (Pendiente si no hay registro).
+     * Estado de progreso del usuario (por su persona) en un contenido.
      */
     public function progresoEn(Contenido $contenido): EstadoProgreso
     {
+        if ($this->persona_id === null) {
+            return EstadoProgreso::Pendiente;
+        }
+
         return $this->progresos()
             ->where('contenido_id', $contenido->id)
             ->first()?->estado ?? EstadoProgreso::Pendiente;

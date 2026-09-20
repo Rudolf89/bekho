@@ -297,10 +297,10 @@ class GestionUsuarios extends Component
             return;
         }
 
-        // Se limpian vínculos sin valor histórico y se elimina.
+        // Se limpian vínculos sin valor histórico y se elimina. El progreso de
+        // estudio NO se toca: cuelga de la persona, no de la cuenta.
         $usuario->sedes()->detach();
         $usuario->syncRoles([]);
-        $usuario->progresos()->delete();
         $usuario->delete();
 
         Flux::toast(variant: 'success', text: 'Usuario eliminado.');

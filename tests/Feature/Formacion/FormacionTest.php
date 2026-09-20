@@ -1,14 +1,17 @@
 <?php
 
 use App\Enums\EstadoProgreso;
-use App\Livewire\Formacion\VerContenido;
-use App\Models\Contenido;
+use App\Livewire\Programas\VerContenido;
+use App\Models\EtapaPrograma;
 use App\Models\Grupo;
-use App\Models\Nivel;
+use App\Models\Persona;
+use App\Models\Programa;
 use App\Models\ProgresoContenido;
 use App\Models\User;
-use App\Services\ServicioFormacion;
+use App\Services\ServicioProgramas;
 use App\Support\Tenancy\Grupo as Tenant;
+use Database\Seeders\FederacionesSeeder;
+use Database\Seeders\ProgramasSeeder;
 use Database\Seeders\RolesPermisosSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
@@ -18,26 +21,22 @@ uses(RefreshDatabase::class);
 
 beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
+    $this->seed(FederacionesSeeder::class);
+    $this->seed(ProgramasSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
     Tenant::olvidar();
 });
 
-afterEach(function () {
-    Tenant::olvidar();
-});
+afterEach(fn () => Tenant::olvidar());
 
-/**
- * Crea un usuario con un rol y un grupo dados.
- */
 function usuarioConRol(string $rol, ?int $grupoId): User
 {
-    // Los roles con 2FA obligatoria (admin-plataforma, maestro) necesitan la 2FA
-    // confirmada para navegar; si no, el middleware ExigeDosFactores los redirige.
     $exige2fa = in_array($rol, config('bekho.2fa_obligatorio_para', []), true);
-
+    $persona = Persona::create(['nombres' => 'U '.uniqid(), 'fecha_nacimiento' => now()->subYears(20)]);
     $user = User::factory()->create([
         'grupo_id' => $grupoId,
+        'persona_id' => $persona->id,
         'two_factor_confirmed_at' => $exige2fa ? now() : null,
     ]);
     $user->assignRole($rol);
@@ -45,206 +44,80 @@ function usuarioConRol(string $rol, ?int $grupoId): User
     return $user;
 }
 
+/** Programa con una etapa y N contenidos de texto. */
+function etapaConContenidos(int $n = 1): EtapaPrograma
+{
+    $programa = Programa::where('nombre', 'Legacy')->first();
+    $etapa = EtapaPrograma::create(['programa_id' => $programa->id, 'nombre' => 'Etapa '.uniqid(), 'orden' => 0, 'activo' => true]);
+
+    foreach (range(1, $n) as $i) {
+        $etapa->contenidos()->create(['titulo' => "Contenido {$i}", 'tipo' => 'texto', 'cuerpo' => 'x', 'orden' => $i, 'activo' => true]);
+    }
+
+    return $etapa;
+}
+
 test('un usuario sin permiso no accede a la administración', function () {
-    // El rol alumno tiene "ver formacion" pero NO "gestionar formacion".
     $user = usuarioConRol('alumno', $this->bekho->id);
 
-    $this->actingAs($user)
-        ->get(route('formacion.admin.niveles'))
-        ->assertForbidden();
+    $this->actingAs($user)->get(route('programas.admin.etapas'))->assertForbidden();
 });
 
 test('un usuario con permiso sí accede a la administración', function () {
     $user = usuarioConRol('direccion', $this->bekho->id);
 
-    $this->actingAs($user)
-        ->get(route('formacion.admin.niveles'))
-        ->assertOk();
+    $this->actingAs($user)->get(route('programas.admin.etapas'))->assertOk();
 });
 
-test('un usuario con ver formacion ve el listado de niveles', function () {
-    Nivel::create([
-        'grupo_id' => $this->bekho->id,
-        'nombre' => 'Nivel de prueba',
-        'orden' => 0,
-        'activo' => true,
-    ]);
-
+test('un usuario con ver formacion ve el listado de programas', function () {
+    etapaConContenidos();
     $user = usuarioConRol('alumno', $this->bekho->id);
 
-    $this->actingAs($user)
-        ->get(route('formacion.index'))
-        ->assertOk()
-        ->assertSee('Nivel de prueba');
+    $this->actingAs($user)->get(route('programas.index'))->assertOk()->assertSee('Legacy');
 });
 
-test('marcarContenido crea y luego actualiza un único registro', function () {
-    Tenant::set($this->bekho->id);
+test('marcarContenido crea y luego actualiza un único registro por persona', function () {
+    $etapa = etapaConContenidos();
+    $contenido = $etapa->contenidos()->first();
+    $persona = Persona::create(['nombres' => 'Alumno', 'fecha_nacimiento' => now()->subYears(12)]);
 
-    $nivel = Nivel::create([
-        'grupo_id' => $this->bekho->id,
-        'nombre' => 'Nivel 1',
-        'orden' => 0,
-        'activo' => true,
-    ]);
+    $servicio = app(ServicioProgramas::class);
+    $servicio->marcarContenido($persona, $contenido, EstadoProgreso::Visto);
+    $progreso = $servicio->marcarContenido($persona, $contenido, EstadoProgreso::Completado);
 
-    $contenido = Contenido::create([
-        'grupo_id' => $this->bekho->id,
-        'nivel_id' => $nivel->id,
-        'titulo' => 'Contenido 1',
-        'tipo' => 'texto',
-        'cuerpo' => 'Cuerpo de ejemplo',
-        'orden' => 0,
-        'activo' => true,
-    ]);
-
-    $user = User::factory()->create(['grupo_id' => $this->bekho->id]);
-    $servicio = app(ServicioFormacion::class);
-
-    $servicio->marcarContenido($user, $contenido, EstadoProgreso::Visto);
-    $progreso = $servicio->marcarContenido($user, $contenido, EstadoProgreso::Completado);
-
-    // Un solo registro para el par (user, contenido).
-    expect(
-        ProgresoContenido::where('user_id', $user->id)
-            ->where('contenido_id', $contenido->id)
-            ->count()
-    )->toBe(1);
-
-    expect($progreso->estado)->toBe(EstadoProgreso::Completado);
-    expect($progreso->visto_en)->not->toBeNull();
-    expect($progreso->grupo_id)->toBe($this->bekho->id);
+    expect(ProgresoContenido::where('persona_id', $persona->id)->where('contenido_id', $contenido->id)->count())->toBe(1)
+        ->and($progreso->estado)->toBe(EstadoProgreso::Completado)
+        ->and($progreso->visto_en)->not->toBeNull();
 });
 
-test('marcarContenido como pendiente limpia visto_en', function () {
-    Tenant::set($this->bekho->id);
+test('avanceDeEtapa calcula el porcentaje de completados', function () {
+    $etapa = etapaConContenidos(4);
+    $persona = Persona::create(['nombres' => 'Alumno', 'fecha_nacimiento' => now()->subYears(12)]);
+    $servicio = app(ServicioProgramas::class);
 
-    $nivel = Nivel::create([
-        'grupo_id' => $this->bekho->id,
-        'nombre' => 'Nivel 1',
-        'orden' => 0,
-        'activo' => true,
-    ]);
+    $servicio->marcarContenido($persona, $etapa->contenidos()->first(), EstadoProgreso::Completado);
 
-    $contenido = Contenido::create([
-        'grupo_id' => $this->bekho->id,
-        'nivel_id' => $nivel->id,
-        'titulo' => 'Contenido 1',
-        'tipo' => 'texto',
-        'cuerpo' => 'x',
-        'orden' => 0,
-        'activo' => true,
-    ]);
-
-    $user = User::factory()->create(['grupo_id' => $this->bekho->id]);
-    $servicio = app(ServicioFormacion::class);
-
-    $servicio->marcarContenido($user, $contenido, EstadoProgreso::Completado);
-    $progreso = $servicio->marcarContenido($user, $contenido, EstadoProgreso::Pendiente);
-
-    expect($progreso->visto_en)->toBeNull();
+    $avance = $servicio->avanceDeEtapa($persona, $etapa);
+    expect($avance['total'])->toBe(4)
+        ->and($avance['completados'])->toBe(1)
+        ->and($avance['porcentaje'])->toBe(25);
 });
-
-test('marcarContenido funciona sin tenant activo tomando el grupo del contenido', function () {
-    // Simula el caso de un admin-plataforma (sin grupo activo) revisando contenido.
-    $nivel = Nivel::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Nivel 1', 'orden' => 0, 'activo' => true]);
-    $contenido = Contenido::create([
-        'grupo_id' => $this->bekho->id,
-        'nivel_id' => $nivel->id,
-        'titulo' => 'Contenido 1',
-        'tipo' => 'texto',
-        'cuerpo' => 'x',
-        'orden' => 0,
-        'activo' => true,
-    ]);
-
-    $user = User::factory()->create(['grupo_id' => null]);
-
-    Tenant::olvidar();
-    $progreso = app(ServicioFormacion::class)->marcarContenido($user, $contenido, EstadoProgreso::Completado);
-
-    expect($progreso->grupo_id)->toBe($this->bekho->id);
-});
-
-test('el global scope filtra los niveles por grupo', function () {
-    $otra = Grupo::create(['nombre' => 'OTRA', 'activo' => true]);
-
-    Nivel::create(['grupo_id' => $this->bekho->id, 'nombre' => 'De BEKHO', 'orden' => 0, 'activo' => true]);
-    Nivel::create(['grupo_id' => $otra->id, 'nombre' => 'De OTRA', 'orden' => 0, 'activo' => true]);
-
-    Tenant::set($this->bekho->id);
-    expect(Nivel::count())->toBe(1);
-    expect(Nivel::first()->nombre)->toBe('De BEKHO');
-
-    Tenant::set($otra->id);
-    expect(Nivel::count())->toBe(1);
-    expect(Nivel::first()->nombre)->toBe('De OTRA');
-
-    // Sin grupo activo el aislamiento FALLA CERRADO: no se ve nada.
-    Tenant::olvidar();
-    expect(Nivel::count())->toBe(0);
-
-    // El código de sistema que debe ver todo lo declara con comoSistema().
-    expect(Tenant::comoSistema(fn () => Nivel::count()))->toBe(2);
-
-    // El scope sinGrupo() también ignora el filtro.
-    Tenant::set($this->bekho->id);
-    expect(Nivel::sinGrupo()->count())->toBe(2);
-});
-
-test('avanceDeNivel calcula el porcentaje de completados', function () {
-    Tenant::set($this->bekho->id);
-
-    $nivel = Nivel::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Nivel 1', 'orden' => 0, 'activo' => true]);
-
-    $contenidos = collect(range(1, 4))->map(fn ($i) => Contenido::create([
-        'grupo_id' => $this->bekho->id,
-        'nivel_id' => $nivel->id,
-        'titulo' => "Contenido {$i}",
-        'tipo' => 'texto',
-        'cuerpo' => 'x',
-        'orden' => $i,
-        'activo' => true,
-    ]));
-
-    $user = User::factory()->create(['grupo_id' => $this->bekho->id]);
-    $servicio = app(ServicioFormacion::class);
-
-    // Completa 1 de 4.
-    $servicio->marcarContenido($user, $contenidos->first(), EstadoProgreso::Completado);
-
-    $avance = $servicio->avanceDeNivel($user, $nivel);
-
-    expect($avance['total'])->toBe(4);
-    expect($avance['completados'])->toBe(1);
-    expect($avance['porcentaje'])->toBe(25);
-});
-
-// --- Navegación entre capítulos (VerContenido) -------------------------------
 
 test('la navegación avanza al siguiente capítulo y marca completado', function () {
-    Tenant::set($this->bekho->id);
-
-    $nivel = Nivel::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Manual X', 'orden' => 0, 'activo' => true]);
-    $caps = collect(range(0, 2))->map(fn ($i) => Contenido::create([
-        'grupo_id' => $this->bekho->id, 'nivel_id' => $nivel->id,
-        'titulo' => "Capítulo {$i}", 'tipo' => 'texto', 'cuerpo' => 'x', 'orden' => $i, 'activo' => true,
-    ]));
-
+    $etapa = etapaConContenidos(3);
+    $caps = $etapa->contenidos()->orderBy('orden')->get();
     $user = usuarioConRol('alumno', $this->bekho->id);
 
-    // Primer capítulo: sin anterior, con siguiente; "completar y continuar" lleva al 2.º.
     Livewire::actingAs($user)->test(VerContenido::class, ['contenido' => $caps[0]])
         ->assertViewHas('anterior', null)
         ->assertViewHas('siguiente', fn ($s) => $s?->id === $caps[1]->id)
         ->call('completarYSeguir')
-        ->assertRedirect(route('formacion.contenido', $caps[1]));
+        ->assertRedirect(route('programas.contenido', $caps[1]));
 
     expect($user->progresoEn($caps[0]->fresh()))->toBe(EstadoProgreso::Completado);
 
-    // Último capítulo: "completar y terminar" vuelve al nivel.
     Livewire::actingAs($user)->test(VerContenido::class, ['contenido' => $caps[2]])
         ->assertViewHas('siguiente', null)
         ->call('completarYSeguir')
-        ->assertRedirect(route('formacion.nivel', $nivel->id));
+        ->assertRedirect(route('programas.programa', $etapa->programa_id));
 });

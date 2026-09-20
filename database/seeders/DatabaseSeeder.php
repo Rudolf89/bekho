@@ -59,10 +59,8 @@ class DatabaseSeeder extends Seeder
             CuadrantesSeeder::class,
             // Catálogo de recompensas/gamificación (catálogo compartido).
             RecompensasSeeder::class,
-            // Programa Legacy: niveles y requisitos (catálogo compartido).
-            LegacySeeder::class,
-            // Unificación LMS + Legacy: fusiona niveles y niveles_legacy en
-            // programas → etapas_programa (corre tras crearse todos los niveles).
+            // Etapas del programa Legacy (desde legacy_niveles.json) y ancla de los
+            // programas a la federación. Corre tras crearse todos los programas.
             EtapasProgramaSeeder::class,
             // Instrumentos de evaluación práctica (planillero; formas y patadas).
             InstrumentosEvaluacionSeeder::class,

@@ -1,23 +1,25 @@
 <?php
 
-namespace App\Livewire\Formacion\Admin;
+namespace App\Livewire\Programas\Admin;
 
 use App\Enums\TipoContenido;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Contenido;
-use App\Models\Nivel;
+use App\Models\EtapaPrograma;
 use Flux\Flux;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
+/**
+ * Administración de los contenidos de una etapa.
+ */
 #[Title('Administrar contenidos')]
 class AdminContenidos extends Component
 {
     use SoloLectura;
 
-    public Nivel $nivel;
+    public EtapaPrograma $etapa;
 
-    /** Id del contenido en edición (null = creando). */
     public ?int $editandoId = null;
 
     public string $titulo = '';
@@ -36,18 +38,12 @@ class AdminContenidos extends Component
 
     public bool $mostrarModal = false;
 
-    /**
-     * Monta el componente con el nivel resuelto por la ruta.
-     */
-    public function mount(Nivel $nivel): void
+    public function mount(EtapaPrograma $etapa): void
     {
-        $this->nivel = $nivel;
+        $this->etapa = $etapa;
     }
 
     /**
-     * Reglas de validación. La URL es obligatoria para video/documento y el
-     * cuerpo para texto.
-     *
      * @return array<string, mixed>
      */
     protected function rules(): array
@@ -64,14 +60,11 @@ class AdminContenidos extends Component
     }
 
     /**
-     * Etiquetas de tipo para el selector.
-     *
      * @return array<string, string>
      */
     public function tiposDisponibles(): array
     {
         $tipos = [];
-
         foreach (TipoContenido::cases() as $caso) {
             $tipos[$caso->value] = $caso->etiqueta();
         }
@@ -79,21 +72,15 @@ class AdminContenidos extends Component
         return $tipos;
     }
 
-    /**
-     * Abre el modal para crear un contenido nuevo.
-     */
     public function nuevo(): void
     {
         $this->reset('editandoId', 'titulo', 'descripcion', 'cuerpo', 'url_recurso', 'activo');
         $this->tipo = 'texto';
-        $this->orden = (int) ($this->nivel->contenidos()->max('orden') ?? -1) + 1;
+        $this->orden = (int) ($this->etapa->contenidos()->max('orden') ?? -1) + 1;
         $this->resetErrorBag();
         $this->mostrarModal = true;
     }
 
-    /**
-     * Abre el modal para editar un contenido existente.
-     */
     public function editar(Contenido $contenido): void
     {
         $this->editandoId = $contenido->id;
@@ -108,16 +95,12 @@ class AdminContenidos extends Component
         $this->mostrarModal = true;
     }
 
-    /**
-     * Guarda (crea o actualiza) el contenido dentro del nivel.
-     */
     public function guardar(): void
     {
         $this->bloqueaSiSoloLectura();
 
         $datos = $this->validate();
 
-        // Limpia el campo que no corresponde al tipo elegido.
         if ($datos['tipo'] === 'texto') {
             $datos['url_recurso'] = null;
         } else {
@@ -128,16 +111,13 @@ class AdminContenidos extends Component
             Contenido::findOrFail($this->editandoId)->update($datos);
             Flux::toast(variant: 'success', text: 'Contenido actualizado.');
         } else {
-            $this->nivel->contenidos()->create($datos);
+            $this->etapa->contenidos()->create($datos);
             Flux::toast(variant: 'success', text: 'Contenido creado.');
         }
 
         $this->mostrarModal = false;
     }
 
-    /**
-     * Activa o desactiva un contenido.
-     */
     public function alternarActivo(Contenido $contenido): void
     {
         $this->bloqueaSiSoloLectura();
@@ -145,52 +125,10 @@ class AdminContenidos extends Component
         $contenido->update(['activo' => ! $contenido->activo]);
     }
 
-    /**
-     * Sube un contenido una posición dentro del nivel.
-     */
-    public function subir(Contenido $contenido): void
-    {
-        $anterior = $this->nivel->contenidos()
-            ->where('orden', '<', $contenido->orden)
-            ->orderByDesc('orden')
-            ->first();
-
-        $this->intercambiar($contenido, $anterior);
-    }
-
-    /**
-     * Baja un contenido una posición dentro del nivel.
-     */
-    public function bajar(Contenido $contenido): void
-    {
-        $siguiente = $this->nivel->contenidos()
-            ->where('orden', '>', $contenido->orden)
-            ->orderBy('orden')
-            ->first();
-
-        $this->intercambiar($contenido, $siguiente);
-    }
-
-    /**
-     * Intercambia el orden de dos contenidos.
-     */
-    protected function intercambiar(Contenido $a, ?Contenido $b): void
-    {
-        $this->bloqueaSiSoloLectura();
-
-        if (! $b) {
-            return;
-        }
-
-        $ordenA = $a->orden;
-        $a->update(['orden' => $b->orden]);
-        $b->update(['orden' => $ordenA]);
-    }
-
     public function render()
     {
-        return view('livewire.formacion.admin.admin-contenidos', [
-            'contenidos' => $this->nivel->contenidos()->get(),
+        return view('livewire.programas.admin.admin-contenidos', [
+            'contenidos' => $this->etapa->contenidos()->get(),
         ]);
     }
 }

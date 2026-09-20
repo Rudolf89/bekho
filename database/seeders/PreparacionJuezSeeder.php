@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contenido;
-use App\Models\Grupo;
-use App\Models\Nivel;
-use App\Support\Tenancy\Grupo as Tenant;
+use App\Models\EtapaPrograma;
+use App\Models\Federacion;
+use App\Models\Programa;
 use Illuminate\Database\Seeder;
 
 /**
@@ -34,33 +33,32 @@ class PreparacionJuezSeeder extends Seeder
 
     public function run(): void
     {
-        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
-
-        if (! $grupo) {
-            $this->command?->warn('No existe el grupo BEKHO; ejecuta antes RolesPermisosSeeder.');
-
+        $federacion = Federacion::query()->orderBy('id')->first();
+        if (! $federacion) {
             return;
         }
 
-        Tenant::set($grupo->id);
+        $programa = Programa::firstOrCreate(
+            ['nombre' => 'Preparación para examen de juez'],
+            ['tipo' => 'formacion', 'federacion_id' => $federacion->id, 'descripcion' => 'Estudio del Manual del Juez ATA.', 'activo' => true, 'orden' => 92],
+        );
 
-        $nivel = Nivel::updateOrCreate(
-            ['grupo_id' => $grupo->id, 'nombre' => 'Preparación para examen de juez nivel 1'],
+        $etapa = EtapaPrograma::updateOrCreate(
+            ['programa_id' => $programa->id, 'nombre' => 'Preparación para examen de juez nivel 1'],
             [
                 'descripcion' => 'Manual del Juez ATA (reglamento 2025-2026) y práctica de examen para la '
                     .'certificación de jueces BEKHO Chile. Incluye el reglamento por secciones y cuestionarios '
                     .'con respuestas para Niveles 1, 2 y 3. Aprobación mínima: 80%.',
-                'orden' => 10,
+                'orden' => 1,
                 'activo' => true,
             ],
         );
 
         $orden = 0;
         foreach ($this->contenidos() as $c) {
-            Contenido::updateOrCreate(
-                ['nivel_id' => $nivel->id, 'titulo' => $c['titulo']],
+            $etapa->contenidos()->updateOrCreate(
+                ['titulo' => $c['titulo']],
                 [
-                    'grupo_id' => $grupo->id,
                     'descripcion' => $c['descripcion'] ?? null,
                     'tipo' => $c['tipo'],
                     'cuerpo' => $c['cuerpo'] ?? null,
@@ -70,8 +68,6 @@ class PreparacionJuezSeeder extends Seeder
                 ],
             );
         }
-
-        Tenant::olvidar();
     }
 
     /**

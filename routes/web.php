@@ -19,7 +19,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 require __DIR__.'/settings.php';
-require __DIR__.'/formacion.php';
+require __DIR__.'/programas.php';
 require __DIR__.'/cuestionarios.php';
 require __DIR__.'/usuarios.php';
 require __DIR__.'/gestion.php';
@@ -27,5 +27,4 @@ require __DIR__.'/examenes.php';
 require __DIR__.'/planificador.php';
 require __DIR__.'/competencia.php';
 require __DIR__.'/recompensas.php';
-require __DIR__.'/legacy.php';
 require __DIR__.'/organizacion.php';

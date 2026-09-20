@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Contenido;
-use App\Models\Grupo;
-use App\Models\Nivel;
-use App\Support\Tenancy\Grupo as Tenant;
+use App\Models\EtapaPrograma;
+use App\Models\Federacion;
+use App\Models\Programa;
 use Illuminate\Database\Seeder;
 
 /**
@@ -18,16 +17,16 @@ class FormacionDemoSeeder extends Seeder
 {
     public function run(): void
     {
-        $grupo = Grupo::where('nombre', 'BEKHO Power Academy')->first();
-
-        if (! $grupo) {
-            $this->command?->warn('No existe el grupo BEKHO; ejecuta antes RolesPermisosSeeder.');
-
+        $federacion = Federacion::query()->orderBy('id')->first();
+        if (! $federacion) {
             return;
         }
 
-        // Fija el tenant activo para que el trait autorelleno de grupo_id actúe.
-        Tenant::set($grupo->id);
+        // Contenido genérico de ejemplo: va al programa contenedor "Aprender (general)".
+        $programa = Programa::firstOrCreate(
+            ['nombre' => 'Aprender (general)'],
+            ['tipo' => 'formacion', 'federacion_id' => $federacion->id, 'descripcion' => 'Contenido de estudio sin programa propio.', 'activo' => true, 'orden' => 95],
+        );
 
         $niveles = [
             [
@@ -62,20 +61,15 @@ class FormacionDemoSeeder extends Seeder
         ];
 
         foreach ($niveles as $ordenNivel => $datosNivel) {
-            $nivel = Nivel::updateOrCreate(
-                ['grupo_id' => $grupo->id, 'nombre' => $datosNivel['nombre']],
-                [
-                    'descripcion' => $datosNivel['descripcion'],
-                    'orden' => $ordenNivel,
-                    'activo' => true,
-                ],
+            $etapa = EtapaPrograma::updateOrCreate(
+                ['programa_id' => $programa->id, 'nombre' => $datosNivel['nombre']],
+                ['descripcion' => $datosNivel['descripcion'], 'orden' => $ordenNivel, 'activo' => true],
             );
 
             foreach ($datosNivel['contenidos'] as $ordenContenido => $datosContenido) {
-                Contenido::updateOrCreate(
-                    ['nivel_id' => $nivel->id, 'titulo' => $datosContenido['titulo']],
+                $etapa->contenidos()->updateOrCreate(
+                    ['titulo' => $datosContenido['titulo']],
                     [
-                        'grupo_id' => $grupo->id,
                         'tipo' => $datosContenido['tipo'],
                         'cuerpo' => $datosContenido['cuerpo'] ?? null,
                         'url_recurso' => $datosContenido['url_recurso'] ?? null,
@@ -85,8 +79,5 @@ class FormacionDemoSeeder extends Seeder
                 );
             }
         }
-
-        // Limpia el tenant activo tras sembrar.
-        Tenant::olvidar();
     }
 }

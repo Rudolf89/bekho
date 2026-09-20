@@ -94,8 +94,8 @@
                             </flux:sidebar.item>
                         @endcan
                         @can('gestionar legacy')
-                            <flux:sidebar.item icon="academic-cap" :href="route('legacy.index')" :current="request()->routeIs('legacy.*')" wire:navigate>
-                                Legacy
+                            <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
+                                Inscripciones
                             </flux:sidebar.item>
                         @endcan
                         @can('gestionar planificaciones')
@@ -143,8 +143,8 @@
                 @canany(['ver formacion', 'rendir cuestionarios'])
                     <flux:sidebar.group heading="Formación" class="grid">
                         @can('ver formacion')
-                            <flux:sidebar.item icon="academic-cap" :href="route('formacion.index')" :current="request()->routeIs('formacion.index') || request()->routeIs('formacion.nivel') || request()->routeIs('formacion.contenido')" wire:navigate>
-                                Aprender
+                            <flux:sidebar.item icon="academic-cap" :href="route('programas.index')" :current="request()->routeIs('programas.index') || request()->routeIs('programas.programa') || request()->routeIs('programas.contenido')" wire:navigate>
+                                Programas
                             </flux:sidebar.item>
                         @endcan
 
@@ -167,7 +167,7 @@
                         @endcan
 
                         @can('gestionar formacion')
-                            <flux:sidebar.item icon="cog-6-tooth" :href="route('formacion.admin.niveles')" :current="request()->routeIs('formacion.admin.*')" wire:navigate>
+                            <flux:sidebar.item icon="cog-6-tooth" :href="route('programas.admin.etapas')" :current="request()->routeIs('programas.admin.*')" wire:navigate>
                                 Administrar
                             </flux:sidebar.item>
                         @endcan

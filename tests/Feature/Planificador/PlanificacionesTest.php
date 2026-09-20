@@ -49,14 +49,14 @@ function nuevaPlanificacion(?int $grupoId = null, array $extra = []): Planificac
 test('un alumno no accede a la gestión de planificaciones', function () {
     $user = usuarioPlanificacion('alumno', $this->bekho->id);
 
-    $this->actingAs($user)->get(route("planificaciones.index"))->assertForbidden();
+    $this->actingAs($user)->get(route('planificaciones.index'))->assertForbidden();
 });
 
 test('un instructor sí gestiona planificaciones', function () {
     // El rol instructor tiene el permiso "gestionar planificaciones".
     $user = usuarioPlanificacion('instructor', $this->bekho->id);
 
-    $this->actingAs($user)->get(route("planificaciones.index"))->assertOk();
+    $this->actingAs($user)->get(route('planificaciones.index'))->assertOk();
 });
 
 // --- Transversalidad ---------------------------------------------------------
@@ -117,7 +117,7 @@ test('la pantalla de editar planificación renderiza para un instructor', functi
     $user = usuarioPlanificacion('instructor', $this->bekho->id);
 
     Tenant::olvidar();
-    $this->actingAs($user)->get(route("planificaciones.editar", $planificacion))->assertOk();
+    $this->actingAs($user)->get(route('planificaciones.editar', $planificacion))->assertOk();
 });
 
 test('editar planificación renderiza con bloques sin tipo (actividad con nombre propio)', function () {
@@ -129,7 +129,7 @@ test('editar planificación renderiza con bloques sin tipo (actividad con nombre
     $user = usuarioPlanificacion('instructor', $this->bekho->id);
 
     Tenant::olvidar();
-    $this->actingAs($user)->get(route("planificaciones.editar", $planificacion))
+    $this->actingAs($user)->get(route('planificaciones.editar', $planificacion))
         ->assertOk()
         ->assertSee('Juego de Golpes');
 });

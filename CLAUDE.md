@@ -58,12 +58,15 @@ Piezas del tenant:
 `habilidades_vida`, `atributos_tecnicos`, `armas`, `cuadrante_items`, `grados`,
 `grado_tecnica`, `curriculos_nivel`, `lecciones_vida`, biblioteca de calentamiento,
 planificador de Cinturón Negro, `cuestionarios`, `preguntas_cuestionario`,
-`opciones_pregunta`, `recompensas`, `niveles_legacy`, `requisitos_legacy`, `distintivos_rango`,
-`juramentos`. **Transversales (identidad,
+`opciones_pregunta`, `recompensas`, `distintivos_rango`, `juramentos`, `programas`,
+`etapas_programa`, `requisitos_etapa`, `contenidos`, `instrumentos_evaluacion`,
+`secciones_instrumento`, `criterios_instrumento`. **Transversales (identidad/formación,
 sin `grupo_id` pero operativos):** `personas`, `instructores`, `tutelas`,
-`creditos_graduacion`. **Datos operativos = CON `grupo_id`**:
+`creditos_graduacion`, `inscripciones_programa` (+ `horas_programa`, `cumplimientos_requisito`,
+`ascensos_programa`), `progreso_contenidos`, `evaluaciones_practicas` (+ `puntajes_criterio`).
+**Datos operativos = CON `grupo_id`**:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
-`intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
+`intentos_cuestionario`, `logros`.
 
 ## Personas, matrículas e identidad (rediseño completo)
 
@@ -179,13 +182,22 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   de cuenta y **notas del instructor** (`notas_matricula`). **Reportes**
   (`reportes.index`): distribución por cinturón, altas por mes y comparativa de
   sedes (activos/morosos/cobrado) con export CSV.
-- **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario;
-  navegación secuencial entre capítulos en `VerContenido` (Anterior/Siguiente +
-  "Completar y continuar →"). Aquí va el estudio de los manuales ATA: "Preparación
-  para examen de juez" (Manual del Juez ATA en 18 secciones) y los manuales **Legacy,
-  Tigers, MAK y MAX N1/N2** (`ManualesAprenderSeeder`, fuente en
-  `database/data/manuales/*.json`, transcritos de los .docx en español). Cada manual =
-  un Nivel con una lección de texto por sección + el documento oficial en Drive.
+- **Programas (Formación + Legacy unificados)**: `programas` (catálogo de la
+  federación: LMS "Aprender" + tracks de instructores) → `etapas_programa` →
+  `contenidos` (estudio) + `requisitos_etapa`. El progreso de estudio cuelga de la
+  **persona** (`progreso_contenidos.persona_id`; los menores no tienen cuenta). UI en
+  `App\Livewire\Programas\*` (`/programas`): consumo (`ListaProgramas`/`VerPrograma`/
+  `VerContenido`, navegación Anterior/Siguiente + "Completar y continuar →"), gestión de
+  inscripciones (`GestionInscripciones`: inscribe personas, horas, requisitos y aprueba
+  ascensos sobre `inscripciones_programa`) y administración del catálogo
+  (`Admin\AdminEtapas`/`AdminContenidos`). Aquí va el estudio de los manuales ATA:
+  "Preparación para examen de juez" (Manual del Juez ATA en 18 secciones) y los manuales
+  **Legacy, Tigers, MAK y MAX N1/N2** (`ManualesAprenderSeeder`, fuente en
+  `database/data/manuales/*.json`, transcritos de los .docx). Cada manual = una etapa de
+  su programa con una lección de texto por sección + el documento oficial en Drive.
+  **Instrumentos de evaluación práctica** (`instrumentos_evaluacion`→`secciones`→
+  `criterios`; `evaluaciones_practicas`→`puntajes_criterio`): prueba de planillero y
+  evaluación de formas/patadas (ver "Estado y plan").
 - **Currículo ATA (planificador)**: `Planificador` (planificación grupo×nivel o Cinturón
   Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planificación
   fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
@@ -224,12 +236,12 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   instructor (`gestionar recompensas`) otorga/quita en el panel (catálogo filtrado
   por grupo etario del alumno); alumno/apoderado ven su colección en "Mis logros"
   (`ver recompensas`).
-- **Programa Legacy** (track de formación de instructores, N1-3): catálogo
-  `niveles_legacy` (100 h c/u) + `requisitos_legacy` (un requisito puede enlazarse a
-  un cuestionario → se cumple con un intento aprobado = prueba escrita). Operativo:
-  `inscripciones_legacy`, `horas_legacy` y cumplimiento por inscripción. El panel
-  registra horas (barra a 100 h) y requisitos; el **licenciatario** (`aprobar
-  legacy`) aprueba el ascenso cuando se cumplen horas y requisitos.
+- **Programa Legacy** (track de formación de instructores, N1-3): ya NO es un módulo
+  aparte, es el programa "Legacy" dentro de **Programas**. Sus 3 etapas (100 h c/u,
+  edades 13/16/18, 1.er Dan en la N3) y requisitos se siembran desde
+  `database/data/legacy_niveles.json` (`EtapasProgramaSeeder`); un requisito puede
+  enlazarse a un cuestionario (prueba escrita = intento aprobado). Operativo por persona:
+  `inscripciones_programa`, `horas_programa`, `cumplimientos_requisito`, `ascensos_programa`.
 
 ## Convenciones
 
@@ -378,7 +390,20 @@ la persona, transversal) → `puntajes_criterio`; `planillas_competencia` gana
 planillero** (escala Rúbrica 0–6.0, umbral 80 %, secciones Fórmula y Armas / Sparring /
 Recuento de medallas) y la **Evaluación de formas y patadas** (escala Competencia 9.1–9.9,
 nota mínima 9.5; 13 criterios = 10 atributos + 3 criterios de conocimiento de
-`atributos_tecnicos`). **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
+`atributos_tecnicos`). **(d) HECHO** — retiro del modelo viejo y UI unificada: se
+eliminaron `Nivel`/`NivelLegacy`/`InscripcionLegacy`/`RequisitoLegacy` y las tablas
+`niveles`/`niveles_legacy`/`requisitos_legacy`/`inscripciones_legacy`/`horas_legacy`/
+`cumplimiento_requisitos`; `contenidos` pasó a catálogo (sin `grupo_id`, bajo su etapa)
+y `progreso_contenidos` a colgar de `persona_id`. Los seeders (`ManualesAprender`,
+`PreparacionJuez`, `FormacionDemo`) crean programa→etapa→contenido directamente. **Aprender
+y Legacy dejan de ser módulos separados: son el módulo "Programas"** (`App\Livewire\
+Programas\*`, rutas `/programas`): `ListaProgramas`, `VerPrograma`, `VerContenido`
+(consumo, permiso `ver formacion`); `GestionInscripciones` (antes PanelLegacy; permiso
+`gestionar legacy`) opera sobre `inscripciones_programa`; `Admin\AdminEtapas`/`AdminContenidos`
+(`gestionar formacion`). El **ascenso** lo aprueba el instructor de la matrícula activa
+del alumno (`matriculas.instructor_persona_id`) o, en su defecto, dirección/licenciatario
+(`aprobar legacy`); la supervisión es solo informativa. `ServicioProgramas` (antes
+`ServicioFormacion`) maneja el progreso por persona. **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
 Legacy`/`RequisitoLegacy` y unificar la UI (Aprender y Legacy pasan a ser programas).
 
 Pendiente / ideas (requieren datos reales de la escuela, no se inventan):

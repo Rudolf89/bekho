@@ -6,12 +6,8 @@ use App\Models\AtributoTecnico;
 use App\Models\Ciclo;
 use App\Models\CuadranteItem;
 use App\Models\HabilidadVida;
-use App\Models\NivelLegacy;
 use App\Models\Posicion;
-use App\Models\RequisitoLegacy;
 use Database\Seeders\CuadrantesSeeder;
-use Database\Seeders\CuestionariosSeeder;
-use Database\Seeders\LegacySeeder;
 use Database\Seeders\ManualLegacySeeder;
 use Database\Seeders\PlanificadorSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -55,16 +51,4 @@ test('los Cuadrantes de Enseñanza quedan marcados como contenido verificado del
     expect(CuadranteItem::count())->toBeGreaterThan(0)
         ->and(CuadranteItem::where('verificado', false)->count())->toBe(0)
         ->and(CuadranteItem::first()->fuente)->toBe(ManualLegacySeeder::FUENTE);
-});
-
-test('el Programa Legacy incluye los requisitos Protech por nivel', function () {
-    $this->seed(CuestionariosSeeder::class);
-    $this->seed(LegacySeeder::class);
-
-    expect(RequisitoLegacy::where('texto', 'like', 'Protech%')->count())->toBeGreaterThan(0)
-        ->and(NivelLegacy::where('verificado', true)->count())->toBe(3);
-
-    // Nivel 1: la condición general de Protech.
-    $n1 = NivelLegacy::where('orden', 1)->first();
-    expect($n1->requisitos()->where('texto', 'like', 'Protech (condición general)%')->exists())->toBeTrue();
 });

@@ -3,6 +3,7 @@
 namespace App\Support\Formacion;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 /**
  * Traslada la formación del modelo viejo (colgada de user_id) al nuevo (colgada
@@ -35,7 +36,12 @@ class MigraFormacionAPersona
             'requisitos_sin_mapa' => 0,
         ];
 
-        $this->migrarInscripciones($resumen);
+        // El modelo viejo puede ya no existir (tablas retiradas en el commit d):
+        // en ese caso no hay nada que trasladar.
+        if (Schema::hasTable('inscripciones_legacy')) {
+            $this->migrarInscripciones($resumen);
+        }
+
         $this->rellenarProgreso($resumen);
 
         return $resumen;
