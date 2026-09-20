@@ -118,7 +118,14 @@ pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámene
   miércoles = una clase con dos horarios; `hora_fin` obligatoria y autocompletada a
   inicio+45; `cupo_maximo` como aforo que solo advierte), **asistencia como
   calendario semanal** (cada clase aparece en cada día en que tiene horario), pagos,
-  exámenes (instructor inscribe; dirección finaliza), planillas.
+  exámenes (instructor inscribe; dirección finaliza), planillas. La **inscripción**
+  captura salud (apto médico, observaciones), consentimiento de uso de imagen y
+  homologación de grado, y genera el cobro de ingreso (matrícula + uniforme opcional)
+  según la tarifa de la sede. **Ficha de alumno** (`estudiantes.ver`): progreso al
+  siguiente cinturón, requisitos técnicos, historial de exámenes, asistencia, estado
+  de cuenta y **notas del instructor** (`notas_matricula`). **Reportes**
+  (`reportes.index`): distribución por cinturón, altas por mes y comparativa de
+  sedes (activos/morosos/cobrado) con export CSV.
 - **Formación / LMS ("Aprender")**: niveles → contenidos → progreso por usuario;
   navegación secuencial entre capítulos en `VerContenido` (Anterior/Siguiente +
   "Completar y continuar →"). Aquí va el estudio de los manuales ATA: "Preparación
