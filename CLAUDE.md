@@ -71,8 +71,11 @@ persona + matrícula (+ documento RUT); no queda ninguna `Estudiante`.
 **Catálogos de la federación (Fase 3/5/6):** `tramos_entrenamiento`, `grados`
 (con `tramo_id`, `meses_sugeridos`, `requiere_nominacion`), `escalas_puntaje`,
 `tipos_cargo`, y competencia (`grupos_edad`, `categorias_competencia`, `pruebas`,
-`criterios_prueba`, `tabla_libres`). **Cobros (Fase 5):** `tarifas_grupo`, `becas`,
-`cargos` (`ServicioCargos` genera mensualidades por tramo de familia + beca) y
+`criterios_prueba`, `tabla_libres`). **Cobros (Fase 5):** el cobro es **POR SEDE**:
+`tarifas_sede` (cada sede define matrícula/mensualidad por tramo; sin tarifa no se
+genera cargo, falla explícita, sin respaldo de grupo), `becas`, `cargos` (con
+`sede_id`; `ServicioCargos` cuenta el tramo familiar **por sede** — hermanos en otra
+sede no suman — y congela el detalle) y
 **pagos con verificación** (`EstadoPago` por_verificar/verificado/anulado, comprobante,
 `pago_cargo` para abonos que cubren varios cargos; `ServicioPagos` registra/verifica/
 anula y aplica montos a los cargos; el apoderado sube comprobante desde su portal).
