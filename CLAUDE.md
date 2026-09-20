@@ -40,7 +40,9 @@ Piezas del tenant:
 `pasos_tecnica`, `cuadrante_items`, `grados`, `grado_tecnica`, `curriculos_nivel`,
 `lecciones_vida`, biblioteca de calentamiento, planificador de Cinturón Negro,
 `cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`, `recompensas`,
-`niveles_legacy`, `requisitos_legacy`. **Datos operativos = CON `grupo_id`**:
+`niveles_legacy`, `requisitos_legacy`, `distintivos_rango`. **Transversales (identidad,
+sin `grupo_id` pero operativos):** `personas`, `instructores`, `tutelas`,
+`creditos_graduacion`. **Datos operativos = CON `grupo_id`**:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
 `intentos_cuestionario`, `logros`, `inscripciones_legacy`, `horas_legacy`.
 
@@ -63,10 +65,27 @@ capa de identidad (personas, matrículas, personal_grupo, instructores, personal
 **Operación sobre matrícula (Fase 4):** asistencia (`asistencias.matricula_id`,
 `Clase::matriculasEsperadas()`), pagos y morosidad (`ServicioPagos` sobre cargos;
 hermanos vía tutelas), logros (`Matricula::visiblePara` para instructor/apoderado),
-exámenes y graduaciones (el grado se cachea en la persona), **suspensiones** (congelan
+exámenes y graduaciones, **suspensiones** (congelan
 la morosidad) y **traslados** entre grupos (`ServicioTraslados`: consentimiento +
 deuda + ejecución). La inscripción (`InscribirAlumno`) y la gestión de alumnos crean
 persona + matrícula (+ documento RUT); no queda ninguna `Estudiante`.
+
+**Exámenes y créditos de graduación:** la convocatoria tiene `tipo` (`App\Enums\
+TipoConvocatoria` instructor/federación); la **nota** solo se valida en las de
+instructor (escala `config('bekho.examenes.nota')` 9.1–9.9, mínimo de aprobación 9.5).
+Cualquier instructor examina (permiso desde la convocatoria); el **examinador**
+(`graduaciones.examinador_persona_id`) es distinto del **instructor acreditado**
+(`graduaciones.instructor_acreditado_persona_id`), que recibe el crédito. El grado de
+la persona **se cachea al ENTREGAR el cinturón** (`ServicioExamenes::registrarEntrega`),
+nunca al aprobar; el plazo de 30 días solo alerta. Un alumno reprobado puede **volver a
+rendir en la misma convocatoria** (sin único convocatoria+matrícula). **Créditos de
+graduación** (`ServicioCreditos`): cada graduación suma un crédito al instructor de
+origen y a **toda su cadena de supervisión** hacia arriba (puede cruzar grupos), con
+protección contra ciclos. Origen: (1) instructor de la matrícula activa → (2)
+`sedes.responsable_persona_id` → (3) supervisor de su faceta de instructor → (4) nunca
+a sí mismo. `creditos_graduacion` (transversal, sin `grupo_id`) guarda una fila por
+graduación×persona; el **distintivo** del profesor NO se guarda: se calcula contando
+créditos contra `distintivos_rango` (umbrales por confirmar → nulos, no se inventan).
 
 **Catálogos de la federación (Fase 3/5/6):** `tramos_entrenamiento`, `grados`
 (con `tramo_id`, `meses_sugeridos`, `requiere_nominacion`), `escalas_puntaje`,
@@ -79,11 +98,17 @@ sede no suman — y congela el detalle) y
 **pagos con verificación** (`EstadoPago` por_verificar/verificado/anulado, comprobante,
 `pago_cargo` para abonos que cubren varios cargos; `ServicioPagos` registra/verifica/
 anula y aplica montos a los cargos; el apoderado sube comprobante desde su portal).
-**Reglas de pago del reglamento:** la mensualidad vence el día fijo elegido (máximo el
-20); tras el vencimiento hay **3 clases de gracia** (`ServicioPagos::CLASES_GRACIA`,
-`estaBloqueadoPorDeuda`) y luego el alumno queda bloqueado (no se le marca Presente).
-La **matrícula es anual** (`generarMatriculasAnuales`, feb–mar) con **exención** para el
-alumno que ingresó entre octubre y enero (`exentaDeMatricula`). El **plan de pago**
+**Reglas de pago del reglamento (configurables, nivel sede con respaldo de la
+federación** — `Sede::parametroCobro()` / columnas en `federaciones` y `sedes`; los
+defaults son los valores actuales, ver `docs/decisiones-reglas-cobro.md`**):** la
+mensualidad vence el día fijo elegido (máximo `dia_vencimiento_maximo`, def. 20,
+`InscribirAlumno::diasVencimiento`); tras el vencimiento hay **clases de gracia**
+(`clases_gracia_morosidad`, def. 3; `ServicioPagos::clasesGracia`/`estaBloqueadoPorDeuda`)
+y luego el alumno queda bloqueado (no se le marca Presente). La **matrícula es anual**
+(`generarMatriculasAnuales`, feb–mar) con **exención** para el alumno que ingresó en la
+ventana `exencion_matricula_desde_mes`–`_hasta_mes` (def. octubre–enero,
+`exentaDeMatricula`). Los tipos de cargo se identifican por **código estable**
+(`tipos_cargo.codigo`, p. ej. `matricula`/`mensualidad`), no por el nombre. El **plan de pago**
 (`matriculas.plan_pago`, enum `App\Enums\PlanPago` mensual/semestral/anual) define la
 recurrencia: el mensual se cobra mes a mes (`generarMensualidades`), el semestral/anual
 se cobran **por adelantado** en un solo cargo con el **descuento de la sede**
