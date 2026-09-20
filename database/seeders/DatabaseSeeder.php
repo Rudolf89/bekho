@@ -21,6 +21,8 @@ class DatabaseSeeder extends Seeder
             CatalogosFederacionSeeder::class,
             CompetenciaSeeder::class,
             CargosRangosSeeder::class,
+            // Distintivos de collar del profesor (avance por créditos de graduación).
+            DistintivosRangoSeeder::class,
             ProgramasSeeder::class,
             GradosSeeder::class,
             RolesPermisosSeeder::class,

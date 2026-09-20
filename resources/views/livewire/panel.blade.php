@@ -96,13 +96,13 @@
                 <div class="mt-4 flex items-center gap-3">
                     <span class="h-9 w-1.5 rounded-full bg-[#b01e28]"></span>
                     <div>
-                        <p class="text-xl font-extrabold text-zinc-900 dark:text-white">{{ $collar ? ucfirst($collar) : 'Sin collar aún' }}</p>
-                        <p class="text-sm text-zinc-500">{{ $collar ? 'Premio de collar actual' : 'Umbrales por confirmar' }}</p>
+                        <p class="text-xl font-extrabold text-zinc-900 dark:text-white">{{ $collar ?: 'Sin distintivo aún' }}</p>
+                        <p class="text-sm text-zinc-500">{{ $collar ? 'Distintivo actual' : 'Umbrales por confirmar' }}</p>
                     </div>
                 </div>
                 <p class="mt-4 text-sm text-zinc-500">
-                    Graduados acumulados (cascada): <span class="font-semibold text-zinc-900 dark:text-white">{{ $conteoCollar }}</span>.
-                    @unless ($collar) Umbral por confirmar con la sede. @endunless
+                    Créditos de graduación acumulados: <span class="font-semibold text-zinc-900 dark:text-white">{{ $conteoCollar }}</span>.
+                    @unless ($collar) Umbral por confirmar por la federación. @endunless
                 </p>
             </div>
 

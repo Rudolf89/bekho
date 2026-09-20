@@ -107,11 +107,16 @@ test('aprobar un examen sube el grado del estudiante y crea el historial', funct
     ]);
 
     $servicio = app(ServicioExamenes::class);
-    $servicio->registrarResultado($inscripcion, ResultadoExamen::Aprobado, 9.3);
+    $servicio->registrarResultado($inscripcion, ResultadoExamen::Aprobado, 9.6);
     $servicio->finalizar($conv);
 
-    expect($matricula->persona->fresh()->grado_id)->toBe($verde->id);
     expect(Graduacion::count())->toBe(1);
+    // El grado NO sube al finalizar: recién sube al ENTREGAR el cinturón.
+    expect($matricula->persona->fresh()->grado_id)->toBe($amarillo->id);
+
+    $servicio->registrarEntrega(Graduacion::first());
+    expect($matricula->persona->fresh()->grado_id)->toBe($verde->id);
+
     // Idempotente: finalizar de nuevo no duplica.
     $servicio->finalizar($conv->fresh());
     expect(Graduacion::count())->toBe(1);
@@ -135,33 +140,6 @@ test('un examen reprobado no sube el grado ni crea historial', function () {
 
     expect($matricula->persona->fresh()->grado_id)->toBe($amarillo->id);
     expect(Graduacion::count())->toBe(0);
-});
-
-// --- Conteo en cascada -------------------------------------------------------
-
-test('el conteo de graduaciones sube por la línea de supervisión', function () {
-    $ana = usuarioExamen('direccion', $this->bekho->id);              // jefa
-    $beto = usuarioExamen('instructor', $this->bekho->id, $ana->id); // Beto reporta a Ana
-
-    $amarillo = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'adultos', 'activo' => true]);
-    $verde = Grado::create(['nombre' => 'Verde', 'orden' => 3, 'escala' => 'adultos', 'activo' => true]);
-
-    // Dos graduaciones acreditadas a Beto.
-    foreach (['Uno', 'Dos'] as $nombre) {
-        $matricula = matriculaExamen($this->bekho->id, $amarillo->id, $nombre);
-        Graduacion::create([
-            'grupo_id' => $this->bekho->id, 'matricula_id' => $matricula->id, 'grado_origen_id' => $amarillo->id,
-            'grado_destino_id' => $verde->id, 'instructor_id' => $beto->id, 'fecha' => now(), 'resultado' => 'aprobado',
-        ]);
-    }
-
-    $servicio = app(ServicioExamenes::class);
-
-    // Beto: sus 2. Ana: las mismas 2 por cascada (Beto está en su línea).
-    expect($servicio->conteoEnCascada($beto))->toBe(2);
-    expect($servicio->conteoEnCascada($ana))->toBe(2);
-    // Sin umbrales configurados, no hay collar.
-    expect($servicio->collarDe($ana))->toBeNull();
 });
 
 // --- Elegibilidad ------------------------------------------------------------

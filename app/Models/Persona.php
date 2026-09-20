@@ -119,6 +119,27 @@ class Persona extends Model
     }
 
     /**
+     * Faceta de instructor (rango, supervisor, certificación), si la tiene.
+     *
+     * @return HasOne<Instructor, $this>
+     */
+    public function instructor(): HasOne
+    {
+        return $this->hasOne(Instructor::class);
+    }
+
+    /**
+     * Créditos de graduación acumulados por la persona (origen + cadena). El total
+     * sostiene el avance del distintivo de collar (ver ServicioCreditos).
+     *
+     * @return HasMany<CreditoGraduacion, $this>
+     */
+    public function creditosGraduacion(): HasMany
+    {
+        return $this->hasMany(CreditoGraduacion::class);
+    }
+
+    /**
      * Matrícula activa de la persona (solo puede haber una en la federación).
      *
      * @return HasOne<Matricula, $this>

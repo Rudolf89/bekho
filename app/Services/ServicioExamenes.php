@@ -17,13 +17,17 @@ use App\Models\Persona;
 use App\Models\User;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Lógica de dominio de los exámenes de grado: elegibilidad sugerida, aplicación
- * de resultados (graduación + historial) y conteo en cascada por instructor.
+ * de resultados (graduación + historial) y crédito de graduación al instructor
+ * acreditado (vía ServicioCreditos).
  */
 class ServicioExamenes
 {
+    public function __construct(private ServicioCreditos $creditos) {}
+
     /**
      * Instructor a quien se acredita por defecto la graduación de la matrícula:
      * el instructor de su clase (misma sede y grupo etario).
@@ -135,7 +139,9 @@ class ServicioExamenes
 
     /**
      * Aplica la graduación de una inscripción aprobada con visto bueno: crea el
-     * historial y sube el grado del estudiante. Idempotente por inscripción.
+     * historial y otorga el crédito al instructor acreditado (origen + cadena).
+     * NO sube el grado de la persona: eso ocurre al registrar la entrega del
+     * cinturón. Idempotente por (convocatoria, matrícula).
      */
     public function aplicarGraduacion(Inscripcion $inscripcion): ?Graduacion
     {
@@ -159,35 +165,41 @@ class ServicioExamenes
             return null;
         }
 
-        $graduacion = Graduacion::create([
-            'grupo_id' => $inscripcion->grupo_id,
-            'matricula_id' => $inscripcion->matricula_id,
-            'convocatoria_id' => $inscripcion->convocatoria_id,
-            'grado_origen_id' => $inscripcion->grado_origen_id,
-            'grado_destino_id' => $inscripcion->grado_destino_id,
-            'instructor_id' => $inscripcion->instructor_id,
-            // Examinador por persona (por defecto, la del instructor acreditado).
-            'examinador_persona_id' => $inscripcion->instructor_id ? User::find($inscripcion->instructor_id)?->persona_id : null,
-            'fecha' => $inscripcion->convocatoria->fecha,
-            'resultado' => $inscripcion->resultado,
-            'nota' => $inscripcion->nota,
-        ]);
+        return DB::transaction(function () use ($inscripcion): Graduacion {
+            $graduacion = Graduacion::create([
+                'grupo_id' => $inscripcion->grupo_id,
+                'matricula_id' => $inscripcion->matricula_id,
+                'convocatoria_id' => $inscripcion->convocatoria_id,
+                'grado_origen_id' => $inscripcion->grado_origen_id,
+                'grado_destino_id' => $inscripcion->grado_destino_id,
+                // Examinador: la persona de la cuenta que examinó (inscripcion).
+                'examinador_persona_id' => $inscripcion->instructor_id ? User::find($inscripcion->instructor_id)?->persona_id : null,
+                'fecha' => $inscripcion->convocatoria->fecha,
+                'resultado' => $inscripcion->resultado,
+                'nota' => $inscripcion->nota,
+            ]);
 
-        // El grado se cachea en la persona (última graduación).
-        if ($inscripcion->grado_destino_id) {
-            $inscripcion->matricula->persona->update(['grado_id' => $inscripcion->grado_destino_id]);
-        }
+            // Instructor acreditado (origen) + créditos de la cadena de supervisión.
+            $this->creditos->otorgar($graduacion);
 
-        return $graduacion;
+            return $graduacion;
+        });
     }
 
     /**
-     * Registra la entrega del cinturón (ceremonia): fija fecha_entrega. El grado
-     * ya está cacheado en la persona desde la aprobación.
+     * Registra la entrega del cinturón (ceremonia): fija fecha_entrega y recién
+     * entonces actualiza el grado actual de la persona (nunca antes). El plazo de
+     * 30 días desde la aprobación solo alerta; no caduca la aprobación.
      */
     public function registrarEntrega(Graduacion $graduacion, ?CarbonInterface $fecha = null): Graduacion
     {
         $graduacion->update(['fecha_entrega' => ($fecha ?? now())->toDateString()]);
+
+        if ($graduacion->grado_destino_id) {
+            $matricula = Matricula::withoutGlobalScopes()->find($graduacion->matricula_id);
+            $persona = $matricula ? Persona::find($matricula->persona_id) : null;
+            $persona?->update(['grado_id' => $graduacion->grado_destino_id]);
+        }
 
         return $graduacion;
     }
@@ -252,59 +264,5 @@ class ServicioExamenes
         $convocatoria->inscripciones()->each(fn (Inscripcion $i) => $this->aplicarGraduacion($i));
 
         $convocatoria->update(['estado' => EstadoConvocatoria::Finalizada]);
-    }
-
-    /**
-     * IDs del instructor y de toda su línea descendente (por supervisor_id).
-     *
-     * @return array<int, int>
-     */
-    public function lineaDescendente(User $instructor): array
-    {
-        $ids = [$instructor->id];
-        $pendientes = [$instructor->id];
-
-        while ($pendientes !== []) {
-            $hijos = User::sinGrupo()
-                ->whereIn('supervisor_id', $pendientes)
-                ->whereNotIn('id', $ids)
-                ->pluck('id')
-                ->all();
-
-            $ids = array_merge($ids, $hijos);
-            $pendientes = $hijos;
-        }
-
-        return $ids;
-    }
-
-    /**
-     * Total de graduaciones acreditadas al instructor incluyendo toda su línea
-     * descendente (conteo en cascada).
-     */
-    public function conteoEnCascada(User $instructor): int
-    {
-        return Graduacion::whereIn('instructor_id', $this->lineaDescendente($instructor))->count();
-    }
-
-    /**
-     * Collar de máster alcanzado según el conteo en cascada y los umbrales de
-     * config('bekho.premios_collar'). Devuelve null si aún no hay umbrales
-     * configurados o no se alcanza ninguno.
-     */
-    public function collarDe(User $instructor): ?string
-    {
-        $total = $this->conteoEnCascada($instructor);
-        $umbrales = config('bekho.premios_collar', []);
-
-        $alcanzado = null;
-        foreach (['azul', 'plateado', 'dorado'] as $collar) {
-            $umbral = $umbrales[$collar] ?? null;
-            if ($umbral !== null && $total >= $umbral) {
-                $alcanzado = $collar;
-            }
-        }
-
-        return $alcanzado;
     }
 }

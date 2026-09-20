@@ -8,6 +8,7 @@ use App\Models\Grado;
 use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\User;
+use App\Services\ServicioCreditos;
 use Illuminate\Database\Seeder;
 
 /**
@@ -24,7 +25,6 @@ class DemoExamenesSeeder extends Seeder
         }
 
         $rodolfo = User::where('email', 'rodolfo@bekho.cl')->first();
-        $instructores = User::whereIn('email', ['instructor1@bekho.cl', 'instructor2@bekho.cl'])->get()->values();
         $sede = $grupo->sedes()->where('nombre', 'BEKHO Central')->first();
 
         $matriculas = Matricula::withoutGlobalScopes()->activas()->where('grupo_id', $grupo->id)->orderBy('id')->get();
@@ -41,19 +41,20 @@ class DemoExamenesSeeder extends Seeder
             );
         }
 
-        // Historial de graduaciones (conteo en cascada del maestro/admin-plataforma).
+        // Historial de graduaciones: el crédito lo recibe el instructor acreditado
+        // (origen resuelto por la matrícula) y toda su cadena de supervisión.
         $grado = Grado::porEscala(EscalaGrado::Adultos)->ordenados()->first();
+        $creditos = app(ServicioCreditos::class);
         foreach ($matriculas->take(14)->values() as $m => $matricula) {
-            $instructor = $instructores[$m % max($instructores->count(), 1)] ?? $rodolfo;
-            $matricula->graduaciones()->updateOrCreate(
-                ['convocatoria_id' => null, 'instructor_id' => $instructor?->id],
+            $graduacion = $matricula->graduaciones()->updateOrCreate(
+                ['convocatoria_id' => null, 'grado_destino_id' => $grado?->id],
                 [
                     'grupo_id' => $grupo->id,
-                    'grado_destino_id' => $grado?->id,
                     'fecha' => now()->subMonths($m % 6 + 1)->toDateString(),
                     'resultado' => 'aprobado',
                 ],
             );
+            $creditos->otorgar($graduacion);
         }
     }
 }

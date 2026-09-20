@@ -30,7 +30,7 @@
             <flux:table.columns>
                 <flux:table.column>Estudiante</flux:table.column>
                 <flux:table.column>Grado</flux:table.column>
-                <flux:table.column>Instructor</flux:table.column>
+                <flux:table.column>Examinador</flux:table.column>
                 <flux:table.column>V°B°</flux:table.column>
                 <flux:table.column>Resultado</flux:table.column>
                 <flux:table.column></flux:table.column>
@@ -141,7 +141,7 @@
                         <flux:select.option value="{{ $grado->id }}">{{ $grado->nombre }} ({{ $grado->escala->etiqueta() }})</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="ins_instructor" label="Instructor a acreditar" placeholder="Sin asignar">
+                <flux:select wire:model="ins_instructor" label="Examinador" placeholder="Sin asignar">
                     @foreach ($instructores as $inst)
                         <flux:select.option value="{{ $inst->id }}">{{ $inst->name }}</flux:select.option>
                     @endforeach

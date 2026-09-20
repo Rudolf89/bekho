@@ -242,7 +242,8 @@ class GestionUsuarios extends Component
 
         $fuentes = [
             ['clases', 'instructor_id'],
-            ['graduaciones', 'instructor_id'],
+            // Las graduaciones ya no acreditan a una cuenta (el crédito va a la
+            // persona); solo queda el examinador en inscripciones.
             ['inscripciones', 'instructor_id'],
             ['pagos', 'registrado_por'],
             ['asistencias', 'registrado_por'],

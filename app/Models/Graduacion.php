@@ -6,10 +6,12 @@ use App\Enums\ResultadoExamen;
 use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Historial de una graduación aprobada. Base del conteo en cascada por
- * instructor (instructor_id) a través de la línea de supervisión.
+ * Historial de una graduación aprobada. Base del crédito de graduación: cada
+ * una suma un punto al instructor acreditado (instructor_acreditado_persona_id)
+ * y a toda su cadena de supervisión (ver App\Services\ServicioCreditos).
  */
 class Graduacion extends Model
 {
@@ -29,7 +31,7 @@ class Graduacion extends Model
         'convocatoria_id',
         'grado_origen_id',
         'grado_destino_id',
-        'instructor_id',
+        'instructor_acreditado_persona_id',
         'examinador_persona_id',
         'fecha',
         'fecha_entrega',
@@ -86,13 +88,24 @@ class Graduacion extends Model
     }
 
     /**
-     * Instructor acreditado (cuenta): sostiene el conteo en cascada.
+     * Instructor acreditado (persona): recibe el crédito de la graduación y es el
+     * origen de la cadena de supervisión. Distinto del examinador.
      *
-     * @return BelongsTo<User, $this>
+     * @return BelongsTo<Persona, $this>
      */
-    public function instructor(): BelongsTo
+    public function instructorAcreditado(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'instructor_id');
+        return $this->belongsTo(Persona::class, 'instructor_acreditado_persona_id');
+    }
+
+    /**
+     * Créditos otorgados por esta graduación (origen + cadena de supervisión).
+     *
+     * @return HasMany<CreditoGraduacion, $this>
+     */
+    public function creditos(): HasMany
+    {
+        return $this->hasMany(CreditoGraduacion::class);
     }
 
     /**

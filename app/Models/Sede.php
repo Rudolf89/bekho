@@ -20,6 +20,7 @@ class Sede extends Model
      */
     protected $fillable = [
         'grupo_id',
+        'responsable_persona_id',
         'nombre',
         'direccion',
         'comuna',
@@ -57,6 +58,17 @@ class Sede extends Model
     public function grupo(): BelongsTo
     {
         return $this->belongsTo(Grupo::class);
+    }
+
+    /**
+     * Persona responsable de la sede: origen del crédito de graduación cuando la
+     * matrícula del alumno no tiene instructor asignado (regla de origen 2).
+     *
+     * @return BelongsTo<Persona, $this>
+     */
+    public function responsable(): BelongsTo
+    {
+        return $this->belongsTo(Persona::class, 'responsable_persona_id');
     }
 
     /**

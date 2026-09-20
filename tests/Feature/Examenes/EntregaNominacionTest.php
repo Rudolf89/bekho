@@ -85,8 +85,12 @@ test('con nominación aprobada sí se gradúa a danes', function () {
 
     $graduacion = $this->servicio->aplicarGraduacion($inscripcion->fresh());
 
+    // La graduación se crea, pero el grado sube recién al entregar el cinturón.
     expect($graduacion)->not->toBeNull()
-        ->and($matricula->persona->fresh()->grado_id)->toBe($this->dan->id);
+        ->and($matricula->persona->fresh()->grado_id)->toBe($this->rojo->id);
+
+    $this->servicio->registrarEntrega($graduacion);
+    expect($matricula->persona->fresh()->grado_id)->toBe($this->dan->id);
 });
 
 // --- Entrega -----------------------------------------------------------------

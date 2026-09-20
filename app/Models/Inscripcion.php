@@ -77,7 +77,11 @@ class Inscripcion extends Model
     }
 
     /**
-     * Instructor a quien se acredita la graduación (conteo en cascada).
+     * Examinador de la inscripción (la cuenta que examina; cualquier instructor
+     * puede examinar, incluso de otro grupo). NO determina el crédito: el crédito
+     * lo recibe el instructor acreditado, que se resuelve por las reglas de origen
+     * al graduar (ver App\Services\ServicioCreditos). De aquí sale, por persona,
+     * graduaciones.examinador_persona_id.
      *
      * @return BelongsTo<User, $this>
      */

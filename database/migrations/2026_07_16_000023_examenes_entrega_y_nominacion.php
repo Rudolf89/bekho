@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Schema;
  *
  * - graduaciones gana fecha_entrega (la entrega en ceremonia; el plazo de 30 días
  *   desde la aprobación solo alerta) y examinador_persona_id (quién examinó, por
- *   persona), distinto del instructor acreditado (instructor_id → users) que
- *   sostiene el conteo en cascada.
+ *   persona), distinto del instructor acreditado (instructor_acreditado_persona_id,
+ *   que se añade en una migración posterior) que recibe el crédito de graduación.
  * - nominaciones_examen: los grados con requiere_nominacion (rojo-negro y danes)
  *   exigen una nominación aprobada antes de graduar.
  */
@@ -27,7 +27,9 @@ return new class extends Migration
 
         Schema::create('nominaciones_examen', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('persona_id')->constrained('personas')->cascadeOnDelete();
+            // restrictOnDelete como el resto del rediseño: no se borra en duro una
+            // persona con historial de nominaciones (la identidad usa SoftDeletes).
+            $table->foreignId('persona_id')->constrained('personas')->restrictOnDelete();
             $table->foreignId('grado_objetivo_id')->constrained('grados')->restrictOnDelete();
             $table->foreignId('nominado_por_persona_id')->nullable()->constrained('personas')->nullOnDelete();
             $table->date('fecha')->nullable();

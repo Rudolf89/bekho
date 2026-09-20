@@ -56,12 +56,16 @@ class DemoBekhoSeeder extends Seeder
         );
         $rodolfo->syncRoles(['direccion']);
 
-        $instructores = collect(['Camila Rojas', 'Diego Soto'])->map(function (string $nombre, int $i) use ($grupo, $rodolfo) {
+        // Rango Instructor: así los instructores obtienen su faceta de instructor
+        // (y la cadena de supervisión) para el crédito de graduación.
+        $rangoInstructor = CargoRango::where('nombre', 'Instructor')->first();
+        $instructores = collect(['Camila Rojas', 'Diego Soto'])->map(function (string $nombre, int $i) use ($grupo, $rodolfo, $rangoInstructor) {
             $u = User::updateOrCreate(
                 ['email' => 'instructor'.($i + 1).'@bekho.cl'],
                 [
                     'name' => $nombre, 'password' => Hash::make('cambiar-esto'),
-                    'grupo_id' => $grupo->id, 'supervisor_id' => $rodolfo->id, 'activo' => true,
+                    'grupo_id' => $grupo->id, 'rango_id' => $rangoInstructor?->id,
+                    'supervisor_id' => $rodolfo->id, 'activo' => true,
                 ],
             );
             $u->syncRoles(['instructor']);

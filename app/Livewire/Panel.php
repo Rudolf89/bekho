@@ -11,7 +11,7 @@ use App\Models\Grupo;
 use App\Models\Matricula;
 use App\Models\Pago;
 use App\Models\Sede;
-use App\Services\ServicioExamenes;
+use App\Services\ServicioCreditos;
 use App\Services\ServicioPagos;
 use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Support\Facades\Auth;
@@ -21,7 +21,7 @@ use Livewire\Component;
 #[Title('Resumen')]
 class Panel extends Component
 {
-    public function render(ServicioPagos $pagos, ServicioExamenes $examenes)
+    public function render(ServicioPagos $pagos, ServicioCreditos $creditos)
     {
         $usuario = Auth::user();
         $hoy = now();
@@ -73,9 +73,10 @@ class Panel extends Component
         $proximaConvocatoria = Convocatoria::whereDate('fecha', '>=', $hoy->toDateString())
             ->withCount('inscripciones')->orderBy('fecha')->first();
 
-        // Mi progreso de collar (conteo en cascada del usuario).
-        $conteoCollar = $examenes->conteoEnCascada($usuario);
-        $collar = $examenes->collarDe($usuario);
+        // Mi progreso de distintivo (créditos de graduación de mi persona).
+        $persona = $usuario->persona;
+        $conteoCollar = $persona ? $creditos->totalCreditos($persona) : 0;
+        $collar = $persona ? $creditos->distintivoDe($persona)?->nombre : null;
 
         // Por revisar.
         $porRevisar = [];

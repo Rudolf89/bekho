@@ -58,23 +58,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Premios de collar de máster (conteo en cascada de graduaciones)
+    | Distintivos de collar del profesor (créditos de graduación)
     |--------------------------------------------------------------------------
     |
-    | Umbrales de graduaciones acumuladas (incluida toda la línea descendente)
-    | para alcanzar cada collar: Negro → Azul → Plateado → Dorado.
-    |
-    | Estructura placeholder: los números reales están POR CONFIRMAR. Mientras
-    | sean null, el sistema calcula el total en cascada pero no otorga collares.
-    | Son DISTINTOS de los collares del catálogo cargos_rangos.
+    | El avance del distintivo del profesor ya NO se configura aquí: vive en la
+    | tabla distintivos_rango (por federación y rango), con umbrales por confirmar
+    | (nulos) hasta que la federación los fije. El total se calcula contando los
+    | créditos de graduación de la persona (ver App\Services\ServicioCreditos).
     |
     */
-
-    'premios_collar' => [
-        'azul' => null,      // TODO: umbral por confirmar
-        'plateado' => null,  // TODO: umbral por confirmar
-        'dorado' => null,    // TODO: umbral por confirmar
-    ],
 
     /*
     |--------------------------------------------------------------------------
