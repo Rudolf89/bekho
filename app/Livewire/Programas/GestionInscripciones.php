@@ -19,7 +19,7 @@ use Livewire\Component;
  * Gestión de inscripciones a programas formativos (antes "Panel Legacy"). El
  * instructor/dirección inscribe personas, registra horas y verifica requisitos;
  * el ascenso lo aprueba el instructor del alumno (matrícula activa) o, en su
- * defecto, dirección/licenciatario ('aprobar legacy'). La supervisión es solo
+ * defecto, dirección/licenciatario ('aprobar ascensos'). La supervisión es solo
  * informativa.
  */
 #[Title('Inscripciones a programas')]
@@ -42,7 +42,7 @@ class GestionInscripciones extends Component
 
     public function crearInscripcion(): void
     {
-        abort_unless(Auth::user()->can('gestionar legacy'), 403);
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
 
         $this->validate([
             'nuevaPersonaId' => ['required', 'exists:personas,id'],
@@ -63,7 +63,7 @@ class GestionInscripciones extends Component
 
     public function agregarHora(): void
     {
-        abort_unless(Auth::user()->can('gestionar legacy'), 403);
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
 
         $inscripcion = $this->inscripcion();
         if (! $inscripcion) {
@@ -88,14 +88,14 @@ class GestionInscripciones extends Component
 
     public function eliminarHora(int $horaId): void
     {
-        abort_unless(Auth::user()->can('gestionar legacy'), 403);
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
 
         $this->inscripcion()?->horas()->whereKey($horaId)->delete();
     }
 
     public function alternarRequisito(int $requisitoId): void
     {
-        abort_unless(Auth::user()->can('gestionar legacy'), 403);
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
 
         $inscripcion = $this->inscripcion();
         $requisito = RequisitoEtapa::find($requisitoId);
@@ -157,7 +157,7 @@ class GestionInscripciones extends Component
     {
         $usuario = Auth::user();
 
-        if ($usuario->can('aprobar legacy')) {
+        if ($usuario->can('aprobar ascensos')) {
             return true;
         }
 

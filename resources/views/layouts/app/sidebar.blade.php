@@ -48,7 +48,7 @@
                     @endcan
                 </flux:sidebar.group>
 
-                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar competencia', 'gestionar recompensas', 'gestionar legacy'])
+                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar competencia', 'gestionar recompensas', 'gestionar inscripciones'])
                     <flux:sidebar.group heading="Gestión" class="grid">
                         @can('viewAny', App\Models\Matricula::class)
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
@@ -93,7 +93,7 @@
                                 Recompensas
                             </flux:sidebar.item>
                         @endcan
-                        @can('gestionar legacy')
+                        @can('gestionar inscripciones')
                             <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
                                 Inscripciones
                             </flux:sidebar.item>
@@ -140,9 +140,9 @@
                     </flux:sidebar.group>
                 @endrole
 
-                @canany(['ver formacion', 'rendir cuestionarios'])
+                @canany(['ver programas', 'rendir cuestionarios'])
                     <flux:sidebar.group heading="Formación" class="grid">
-                        @can('ver formacion')
+                        @can('ver programas')
                             <flux:sidebar.item icon="academic-cap" :href="route('programas.index')" :current="request()->routeIs('programas.index') || request()->routeIs('programas.programa') || request()->routeIs('programas.contenido')" wire:navigate>
                                 Programas
                             </flux:sidebar.item>
@@ -166,7 +166,7 @@
                             </flux:sidebar.item>
                         @endcan
 
-                        @can('gestionar formacion')
+                        @can('gestionar programas')
                             <flux:sidebar.item icon="cog-6-tooth" :href="route('programas.admin.etapas')" :current="request()->routeIs('programas.admin.*')" wire:navigate>
                                 Administrar
                             </flux:sidebar.item>

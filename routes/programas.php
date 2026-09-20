@@ -8,8 +8,8 @@ use App\Livewire\Programas\VerContenido;
 use App\Livewire\Programas\VerPrograma;
 use Illuminate\Support\Facades\Route;
 
-// Administración del catálogo (permiso "gestionar formacion").
-Route::middleware(['auth', 'can:gestionar formacion'])
+// Administración del catálogo (permiso "gestionar programas").
+Route::middleware(['auth', 'can:gestionar programas'])
     ->prefix('programas/admin')
     ->name('programas.admin.')
     ->group(function () {
@@ -17,14 +17,14 @@ Route::middleware(['auth', 'can:gestionar formacion'])
         Route::livewire('etapas/{etapa}/contenidos', AdminContenidos::class)->name('contenidos');
     });
 
-// Gestión de inscripciones a programas (permiso "gestionar legacy").
-Route::middleware(['auth', 'can:gestionar legacy'])
+// Gestión de inscripciones a programas (permiso "gestionar inscripciones").
+Route::middleware(['auth', 'can:gestionar inscripciones'])
     ->group(function () {
         Route::livewire('programas/gestion', GestionInscripciones::class)->name('programas.gestion');
     });
 
-// Consumo (permiso "ver formacion").
-Route::middleware(['auth', 'can:ver formacion'])
+// Consumo (permiso "ver programas").
+Route::middleware(['auth', 'can:ver programas'])
     ->prefix('programas')
     ->name('programas.')
     ->group(function () {

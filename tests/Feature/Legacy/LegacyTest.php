@@ -169,7 +169,7 @@ test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', 
     expect($inscripcion->fresh()->cumpleRequisito($requisito->fresh()))->toBeTrue();
 });
 
-test('la gestión de inscripciones exige el permiso gestionar legacy', function () {
+test('la gestión de inscripciones exige el permiso gestionar inscripciones', function () {
     $instructor = usuarioLegacy('instructor', $this->bekho->id);
     $apoderado = usuarioLegacy('apoderado', $this->bekho->id);
 

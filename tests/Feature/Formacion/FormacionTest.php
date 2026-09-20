@@ -69,7 +69,7 @@ test('un usuario con permiso sí accede a la administración', function () {
     $this->actingAs($user)->get(route('programas.admin.etapas'))->assertOk();
 });
 
-test('un usuario con ver formacion ve el listado de programas', function () {
+test('un usuario con ver programas ve el listado de programas', function () {
     etapaConContenidos();
     $user = usuarioConRol('alumno', $this->bekho->id);
 

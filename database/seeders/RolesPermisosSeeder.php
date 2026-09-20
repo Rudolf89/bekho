@@ -40,14 +40,14 @@ class RolesPermisosSeeder extends Seeder
             'inscribir examenes',
             'gestionar planificaciones',
             'gestionar competencia', // planillas de competencia (certificación de planillero)
-            'gestionar formacion',
-            'ver formacion',
+            'gestionar programas',
+            'ver programas',
             'gestionar cuestionarios', // examinador: crea/edita evaluaciones
             'rendir cuestionarios',    // rinde evaluaciones autocorregidas
             'gestionar recompensas',   // otorga logros/gamificación a los alumnos
             'ver recompensas',         // el alumno/apoderado ve su colección de logros
-            'gestionar legacy',        // registra horas y requisitos del track Legacy
-            'aprobar legacy',          // el licenciatario aprueba el ascenso de nivel
+            'gestionar inscripciones',        // registra horas y requisitos del track Legacy
+            'aprobar ascensos',          // el licenciatario aprueba el ascenso de nivel
         ];
 
         foreach ($permisos as $permiso) {
@@ -69,8 +69,8 @@ class RolesPermisosSeeder extends Seeder
             'gestionar examenes',
             'gestionar planificaciones',
             'gestionar competencia',
-            'gestionar formacion',
-            'ver formacion',
+            'gestionar programas',
+            'ver programas',
         ]);
 
         // direccion (director de un grupo): todo dentro de su grupo (menos crear grupos).
@@ -85,13 +85,13 @@ class RolesPermisosSeeder extends Seeder
             'inscribir examenes',
             'gestionar planificaciones',
             'gestionar competencia',
-            'gestionar formacion',
-            'ver formacion',
+            'gestionar programas',
+            'ver programas',
             'gestionar cuestionarios',
             'rendir cuestionarios',
             'gestionar recompensas',
-            'gestionar legacy',
-            'aprobar legacy',
+            'gestionar inscripciones',
+            'aprobar ascensos',
         ]);
 
         // direccion-sede (director de una sede): lo operativo de SU sede, con pagos.
@@ -103,7 +103,7 @@ class RolesPermisosSeeder extends Seeder
             'tomar asistencia',
             'registrar pagos',
             'gestionar competencia',
-            'ver formacion',
+            'ver programas',
         ]);
 
         // administrativo (secretaría/recepción): alumnos, clases, asistencia. SIN pagos.
@@ -111,7 +111,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar alumnos',
             'gestionar clases',
             'tomar asistencia',
-            'ver formacion',
+            'ver programas',
             'rendir cuestionarios',
         ]);
 
@@ -124,18 +124,18 @@ class RolesPermisosSeeder extends Seeder
             'gestionar planificaciones',
             'gestionar competencia',
             'inscribir examenes',
-            'ver formacion',
+            'ver programas',
             'gestionar cuestionarios',
             'rendir cuestionarios',
             'gestionar recompensas',
-            'gestionar legacy',
+            'gestionar inscripciones',
         ]);
 
         // apoderado: ve a sus hijos (vía Policies) y la colección de logros de ellos.
         Role::findOrCreate('apoderado')->syncPermissions(['ver recompensas']);
 
         // alumno: ver formación, rendir cuestionarios y ver sus logros.
-        Role::findOrCreate('alumno')->syncPermissions(['ver formacion', 'rendir cuestionarios', 'ver recompensas']);
+        Role::findOrCreate('alumno')->syncPermissions(['ver programas', 'rendir cuestionarios', 'ver recompensas']);
 
         // Federación raíz (BEKHO). Se asegura aquí para que el seeder sea
         // autónomo en pruebas, aunque FederacionesSeeder ya la siembre en el

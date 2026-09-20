@@ -158,8 +158,9 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
 
 - **Permisos extra** (además de gestión/formación): `gestionar cuestionarios`
   (examinador) · `rendir cuestionarios` · `gestionar recompensas` · `ver recompensas`
-  (alumno/apoderado) · `gestionar legacy` · `aprobar legacy` (licenciatario:
-  admin/dirección).
+  (alumno/apoderado) · `gestionar inscripciones` · `aprobar ascensos` (licenciatario:
+  admin/dirección). Los permisos del módulo Programas son `ver programas`,
+  `gestionar programas` (catálogo), `gestionar inscripciones` y `aprobar ascensos`.
 - **Rol ≠ Rango**: el rol (spatie) da permisos; el **rango** (`cargos_rangos` →
   `users.rango_id`) es la jerarquía marcial ATA y **no da permisos**. Son ejes
   independientes (puede haber rango sin rol y viceversa).
@@ -187,10 +188,11 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   `contenidos` (estudio) + `requisitos_etapa`. El progreso de estudio cuelga de la
   **persona** (`progreso_contenidos.persona_id`; los menores no tienen cuenta). UI en
   `App\Livewire\Programas\*` (`/programas`): consumo (`ListaProgramas`/`VerPrograma`/
-  `VerContenido`, navegación Anterior/Siguiente + "Completar y continuar →"), gestión de
-  inscripciones (`GestionInscripciones`: inscribe personas, horas, requisitos y aprueba
-  ascensos sobre `inscripciones_programa`) y administración del catálogo
-  (`Admin\AdminEtapas`/`AdminContenidos`). Aquí va el estudio de los manuales ATA:
+  `VerContenido`, navegación Anterior/Siguiente + "Completar y continuar →"; permiso
+  `ver programas`), gestión de inscripciones (`GestionInscripciones`: inscribe personas,
+  horas, requisitos y aprueba ascensos sobre `inscripciones_programa`; permiso
+  `gestionar inscripciones`) y administración del catálogo (`Admin\AdminEtapas`/
+  `AdminContenidos`; permiso `gestionar programas`). Aquí va el estudio de los manuales ATA:
   "Preparación para examen de juez" (Manual del Juez ATA en 18 secciones) y los manuales
   **Legacy, Tigers, MAK y MAX N1/N2** (`ManualesAprenderSeeder`, fuente en
   `database/data/manuales/*.json`, transcritos de los .docx). Cada manual = una etapa de
@@ -398,9 +400,11 @@ y `progreso_contenidos` a colgar de `persona_id`. Los seeders (`ManualesAprender
 `PreparacionJuez`, `FormacionDemo`) crean programa→etapa→contenido directamente. **Aprender
 y Legacy dejan de ser módulos separados: son el módulo "Programas"** (`App\Livewire\
 Programas\*`, rutas `/programas`): `ListaProgramas`, `VerPrograma`, `VerContenido`
-(consumo, permiso `ver formacion`); `GestionInscripciones` (antes PanelLegacy; permiso
-`gestionar legacy`) opera sobre `inscripciones_programa`; `Admin\AdminEtapas`/`AdminContenidos`
-(`gestionar formacion`). El **ascenso** lo aprueba el instructor de la matrícula activa
+(consumo, permiso `ver programas`); `GestionInscripciones` (antes PanelLegacy; permiso
+`gestionar inscripciones`) opera sobre `inscripciones_programa`; `Admin\AdminEtapas`/`AdminContenidos`
+(`gestionar programas`). Los permisos `ver formacion`/`gestionar formacion`/`gestionar
+legacy`/`aprobar legacy` se renombraron a `ver programas`/`gestionar programas`/`gestionar
+inscripciones`/`aprobar ascensos`. El **ascenso** lo aprueba el instructor de la matrícula activa
 del alumno (`matriculas.instructor_persona_id`) o, en su defecto, dirección/licenciatario
 (`aprobar legacy`); la supervisión es solo informativa. `ServicioProgramas` (antes
 `ServicioFormacion`) maneja el progreso por persona. **(d)** retirar `Nivel`/`NivelLegacy`/`Inscripcion
