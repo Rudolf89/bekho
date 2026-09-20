@@ -120,15 +120,10 @@
             @endif
         </section>
 
-        {{-- 5. Salud y consentimientos --}}
+        {{-- 5. Consentimientos --}}
         <section class="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-700 dark:bg-zinc-800">
-            <flux:heading size="lg" class="mb-4">Salud y consentimientos</flux:heading>
-            <flux:textarea wire:model="observaciones_medicas" rows="2"
-                label="Observaciones médicas (lesiones, alergias, medicación)" />
-            <div class="mt-3 space-y-2">
-                <flux:checkbox wire:model="apto_medico" label="Apto médico presentado y vigente" />
-                <flux:checkbox wire:model="autoriza_imagen" label="Autoriza el uso de imagen en comunicaciones de la escuela" />
-            </div>
+            <flux:heading size="lg" class="mb-4">Consentimientos</flux:heading>
+            <flux:checkbox wire:model="autoriza_imagen" label="Autoriza el uso de imagen en comunicaciones de la escuela" />
         </section>
 
         {{-- 6. Grado, mensualidad y reglamento --}}

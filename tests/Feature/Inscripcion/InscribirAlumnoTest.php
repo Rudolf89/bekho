@@ -82,21 +82,17 @@ test('inscribir crea la persona, su documento y la matrícula', function () {
         ->and($matricula->acepto_reglamento_at)->not->toBeNull();
 });
 
-test('inscribir guarda salud, consentimientos y la homologación de grado', function () {
+test('inscribir guarda el consentimiento de imagen y la homologación de grado', function () {
     $grado = Grado::create(['nombre' => 'Amarillo', 'orden' => 2, 'escala' => 'for_kids', 'color' => 'Amarillo', 'activo' => true]);
 
     inscribir()
         ->set('grado_id', (string) $grado->id)
-        ->set('apto_medico', true)
         ->set('autoriza_imagen', true)
-        ->set('observaciones_medicas', 'Asma leve')
         ->call('inscribir')
         ->assertHasNoErrors();
 
     $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
-    expect($matricula->apto_medico)->toBeTrue()
-        ->and($matricula->autoriza_imagen)->toBeTrue()
-        ->and($matricula->observaciones_medicas)->toBe('Asma leve')
+    expect($matricula->autoriza_imagen)->toBeTrue()
         ->and($matricula->persona->grado_id)->toBe($grado->id);
 });
 

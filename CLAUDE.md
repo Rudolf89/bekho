@@ -119,9 +119,8 @@ pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámene
   inicio+45; `cupo_maximo` como aforo que solo advierte), **asistencia como
   calendario semanal** (cada clase aparece en cada día en que tiene horario), pagos,
   exámenes (instructor inscribe; dirección finaliza), planillas. La **inscripción**
-  captura salud (apto médico, observaciones), consentimiento de uso de imagen y
-  homologación de grado, y genera el cobro de ingreso (matrícula + uniforme opcional)
-  según la tarifa de la sede. **Ficha de alumno** (`estudiantes.ver`): progreso al
+  captura el consentimiento de uso de imagen y la homologación de grado, y genera el
+  cobro de ingreso (matrícula + uniforme opcional) según la tarifa de la sede. **Ficha de alumno** (`estudiantes.ver`): progreso al
   siguiente cinturón, requisitos técnicos, historial de exámenes, asistencia, estado
   de cuenta y **notas del instructor** (`notas_matricula`). **Reportes**
   (`reportes.index`): distribución por cinturón, altas por mes y comparativa de

@@ -72,11 +72,7 @@ class InscribirAlumno extends Component
     // Grado de inicio / homologación (nulo = alumno nuevo => Blanco).
     public ?string $grado_id = '';
 
-    // Salud y consentimientos
-    public bool $apto_medico = false;
-
-    public ?string $observaciones_medicas = null;
-
+    // Consentimientos
     public bool $autoriza_imagen = false;
 
     // Pago y declaración
@@ -116,8 +112,6 @@ class InscribirAlumno extends Component
             'email_contacto_2' => ['nullable', 'email', 'max:255'],
             'dia_vencimiento' => ['required', Rule::in($this->diasVencimiento())],
             'grado_id' => ['nullable', Rule::exists('grados', 'id')],
-            'apto_medico' => ['boolean'],
-            'observaciones_medicas' => ['nullable', 'string', 'max:1000'],
             'autoriza_imagen' => ['boolean'],
             'incluir_uniforme' => ['boolean'],
             'acepto_reglamento' => ['accepted'],
@@ -245,8 +239,6 @@ class InscribirAlumno extends Component
             // persona del apoderado y su tutela, apuntará al responsable del menor).
             'acepto_reglamento_persona_id' => $persona->id,
             'aceptado_por_user_id' => Auth::id(),
-            'apto_medico' => $datos['apto_medico'] ?? false,
-            'observaciones_medicas' => $datos['observaciones_medicas'] ?? null,
             'autoriza_imagen' => $datos['autoriza_imagen'] ?? false,
         ]);
 
