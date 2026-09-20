@@ -25,8 +25,19 @@ use Illuminate\Support\Facades\Auth;
  */
 class ServicioPagos
 {
-    /** Clases de gracia que un moroso puede asistir tras el vencimiento (reglamento). */
-    public const CLASES_GRACIA = 3;
+    /**
+     * Clases de gracia que un moroso puede asistir tras el vencimiento antes del
+     * bloqueo. Es configurable por sede (con respaldo de la federación); si la
+     * matrícula no tiene sede, se usa el respaldo de la federación o el default.
+     */
+    public function clasesGracia(Matricula $matricula): int
+    {
+        if ($matricula->sede) {
+            return $matricula->sede->clasesGraciaMorosidad();
+        }
+
+        return $matricula->grupo?->federacion?->clases_gracia_morosidad ?? 3;
+    }
 
     /**
      * Fecha de vencimiento del impago más antiguo (cargo pendiente con vence_el ya
@@ -65,8 +76,9 @@ class ServicioPagos
 
     /**
      * ¿La matrícula quedó bloqueada por deuda? El reglamento: con impago, el alumno
-     * solo puede asistir a un máximo de 3 clases tras el vencimiento; superadas, no
-     * puede ingresar hasta regularizar. No aplica a suspendidas.
+     * solo puede asistir a un máximo de clases de gracia (configurable por sede)
+     * tras el vencimiento; superadas, no puede ingresar hasta regularizar. No
+     * aplica a suspendidas.
      */
     public function estaBloqueadoPorDeuda(Matricula $matricula, ?CarbonInterface $a = null): bool
     {
@@ -77,7 +89,7 @@ class ServicioPagos
         }
 
         return $this->fechaVencimientoImpago($matricula, $a) !== null
-            && $this->clasesDesdeVencimiento($matricula, $a) >= self::CLASES_GRACIA;
+            && $this->clasesDesdeVencimiento($matricula, $a) >= $this->clasesGracia($matricula);
     }
 
     /**

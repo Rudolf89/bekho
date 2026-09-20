@@ -22,6 +22,7 @@ class TipoCargo extends Model
     protected $fillable = [
         'federacion_id',
         'nombre',
+        'codigo',
         'recurrente',
         'requiere_periodo',
         'orden',

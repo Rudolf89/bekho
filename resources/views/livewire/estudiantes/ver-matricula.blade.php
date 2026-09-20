@@ -130,7 +130,7 @@
                 <flux:heading size="lg" class="mb-2">Estado de cuenta</flux:heading>
                 @if ($bloqueado)
                     <flux:callout icon="lock-closed" color="red" class="mb-3">
-                        Bloqueado por deuda: superó las 3 clases de gracia. No puede ingresar hasta regularizar.
+                        Bloqueado por deuda: superó las {{ $clasesGracia }} clases de gracia. No puede ingresar hasta regularizar.
                     </flux:callout>
                 @endif
                 @if ($cargosPendientes->isEmpty())

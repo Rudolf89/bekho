@@ -25,6 +25,10 @@ class Federacion extends Model
         'moneda',
         'logo',
         'activo',
+        'clases_gracia_morosidad',
+        'exencion_matricula_desde_mes',
+        'exencion_matricula_hasta_mes',
+        'dia_vencimiento_maximo',
     ];
 
     /**
@@ -34,6 +38,10 @@ class Federacion extends Model
     {
         return [
             'activo' => 'boolean',
+            'clases_gracia_morosidad' => 'integer',
+            'exencion_matricula_desde_mes' => 'integer',
+            'exencion_matricula_hasta_mes' => 'integer',
+            'dia_vencimiento_maximo' => 'integer',
         ];
     }
 }

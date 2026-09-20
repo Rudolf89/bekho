@@ -89,13 +89,16 @@ class TomarAsistencia extends Component
 
         $estadoEnum = EstadoAsistencia::from($estado);
 
-        // Reglamento: un moroso que ya usó sus 3 clases de gracia tras el
-        // vencimiento no puede ingresar hasta regularizar (solo se le marca ausente).
-        if ($estadoEnum === EstadoAsistencia::Presente
-            && $pagos->estaBloqueadoPorDeuda(Matricula::findOrFail($matriculaId))) {
-            Flux::toast(variant: 'warning', text: 'Alumno con deuda: superó las 3 clases de gracia. Debe regularizar su pago para ingresar.');
+        // Reglamento: un moroso que ya usó sus clases de gracia tras el vencimiento
+        // no puede ingresar hasta regularizar (solo se le marca ausente).
+        if ($estadoEnum === EstadoAsistencia::Presente) {
+            $matricula = Matricula::findOrFail($matriculaId);
+            if ($pagos->estaBloqueadoPorDeuda($matricula)) {
+                $gracia = $pagos->clasesGracia($matricula);
+                Flux::toast(variant: 'warning', text: "Alumno con deuda: superó las {$gracia} clases de gracia. Debe regularizar su pago para ingresar.");
 
-            return;
+                return;
+            }
         }
 
         Asistencia::updateOrCreate(

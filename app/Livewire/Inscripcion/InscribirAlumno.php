@@ -166,14 +166,25 @@ class InscribirAlumno extends Component
     }
 
     /**
-     * Días permitidos para el vencimiento de la mensualidad. El reglamento admite
-     * pago dentro de los primeros 5 días o un día fijo con máximo el 20.
+     * Días permitidos para el vencimiento de la mensualidad: múltiplos de 5 hasta
+     * el día máximo que fije la sede elegida (con respaldo de la federación). Sin
+     * sede elegida se usa el máximo por defecto.
      *
      * @return list<int>
      */
     public function diasVencimiento(): array
     {
-        return [5, 10, 15, 20];
+        $max = 20;
+        if ($this->sede_id !== '') {
+            $max = Sede::sinGrupo()->find($this->sede_id)?->diaVencimientoMaximo() ?? 20;
+        }
+
+        $dias = [];
+        for ($dia = 5; $dia <= $max; $dia += 5) {
+            $dias[] = $dia;
+        }
+
+        return $dias;
     }
 
     /**

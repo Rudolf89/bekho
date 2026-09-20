@@ -28,6 +28,10 @@ class Sede extends Model
         'capacidad',
         'descuento_semestral_pct',
         'descuento_anual_pct',
+        'clases_gracia_morosidad',
+        'exencion_matricula_desde_mes',
+        'exencion_matricula_hasta_mes',
+        'dia_vencimiento_maximo',
         'tipo',
         'privada',
         'activo',
@@ -45,9 +49,60 @@ class Sede extends Model
             'capacidad' => 'integer',
             'descuento_semestral_pct' => 'integer',
             'descuento_anual_pct' => 'integer',
+            'clases_gracia_morosidad' => 'integer',
+            'exencion_matricula_desde_mes' => 'integer',
+            'exencion_matricula_hasta_mes' => 'integer',
+            'dia_vencimiento_maximo' => 'integer',
             'privada' => 'boolean',
             'activo' => 'boolean',
         ];
+    }
+
+    /**
+     * Parámetro de cobro con respaldo de la federación: usa el valor de la sede si
+     * está definido; si no, el de su federación; y en último caso el default dado.
+     */
+    public function parametroCobro(string $columna, int $default): int
+    {
+        if ($this->{$columna} !== null) {
+            return (int) $this->{$columna};
+        }
+
+        $valorFederacion = $this->grupo?->federacion?->{$columna};
+
+        return $valorFederacion !== null ? (int) $valorFederacion : $default;
+    }
+
+    /**
+     * Clases de gracia tras el vencimiento antes de bloquear por deuda.
+     */
+    public function clasesGraciaMorosidad(): int
+    {
+        return $this->parametroCobro('clases_gracia_morosidad', 3);
+    }
+
+    /**
+     * Mes (1–12) en que empieza la ventana de exención de matrícula (año anterior).
+     */
+    public function exencionMatriculaDesdeMes(): int
+    {
+        return $this->parametroCobro('exencion_matricula_desde_mes', 10);
+    }
+
+    /**
+     * Mes (1–12) en que termina la ventana de exención de matrícula (año objetivo).
+     */
+    public function exencionMatriculaHastaMes(): int
+    {
+        return $this->parametroCobro('exencion_matricula_hasta_mes', 1);
+    }
+
+    /**
+     * Día máximo permitido para el vencimiento de la mensualidad.
+     */
+    public function diaVencimientoMaximo(): int
+    {
+        return $this->parametroCobro('dia_vencimiento_maximo', 20);
     }
 
     /**

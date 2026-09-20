@@ -295,14 +295,17 @@ class ServicioCargos
     }
 
     /**
-     * Tipo de cargo "Matrícula" de la federación (una vez al año, feb–mar).
+     * Tipo de cargo "Matrícula" de la federación (una vez al año, feb–mar). Se
+     * busca por el código estable 'matricula'; el nombre es solo un respaldo por
+     * si el catálogo aún no tiene código.
      */
     public function tipoMatricula(?int $federacionId = null): ?TipoCargo
     {
-        return TipoCargo::query()
-            ->when($federacionId, fn ($q) => $q->where('federacion_id', $federacionId))
-            ->where('nombre', 'Matrícula')
-            ->first();
+        return $this->tipoPorCodigo('matricula', $federacionId)
+            ?? TipoCargo::query()
+                ->when($federacionId, fn ($q) => $q->where('federacion_id', $federacionId))
+                ->where('nombre', 'Matrícula')
+                ->first();
     }
 
     /**
@@ -318,8 +321,18 @@ class ServicioCargos
             return false;
         }
 
-        $desde = Carbon::create($anio - 1, 10, 1)->startOfDay();
-        $hasta = Carbon::create($anio, 1, 31)->endOfDay();
+        $sede = $matricula->sede_id ? Sede::withoutGlobalScopes()->find($matricula->sede_id) : null;
+        $desdeMes = $sede
+            ? $sede->exencionMatriculaDesdeMes()
+            : ($matricula->grupo?->federacion?->exencion_matricula_desde_mes ?? 10);
+        $hastaMes = $sede
+            ? $sede->exencionMatriculaHastaMes()
+            : ($matricula->grupo?->federacion?->exencion_matricula_hasta_mes ?? 1);
+
+        // La ventana cruza el fin de año: desde_mes del año anterior hasta hasta_mes
+        // del año objetivo (por defecto, octubre del año previo → fin de enero).
+        $desde = Carbon::create($anio - 1, $desdeMes, 1)->startOfDay();
+        $hasta = Carbon::create($anio, $hastaMes, 1)->endOfMonth()->endOfDay();
 
         return $ingreso->betweenIncluded($desde, $hasta);
     }
@@ -382,10 +395,22 @@ class ServicioCargos
 
     private function tipoMensualidad(?int $federacionId): ?TipoCargo
     {
+        return $this->tipoPorCodigo('mensualidad', $federacionId)
+            ?? TipoCargo::query()
+                ->when($federacionId, fn ($q) => $q->where('federacion_id', $federacionId))
+                ->where('recurrente', true)
+                ->orderBy('orden')
+                ->first();
+    }
+
+    /**
+     * Tipo de cargo por su código estable dentro de la federación (si se indica).
+     */
+    private function tipoPorCodigo(string $codigo, ?int $federacionId): ?TipoCargo
+    {
         return TipoCargo::query()
             ->when($federacionId, fn ($q) => $q->where('federacion_id', $federacionId))
-            ->where('recurrente', true)
-            ->orderBy('orden')
+            ->where('codigo', $codigo)
             ->first();
     }
 
