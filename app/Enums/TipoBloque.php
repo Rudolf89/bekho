@@ -3,7 +3,7 @@
 namespace App\Enums;
 
 /**
- * Tipo de bloque de actividad de una planilla (línea de tiempo de la clase).
+ * Tipo de bloque de actividad de una planificación de clase (línea de tiempo).
  *
  * "Combat Weapon" y "Sparring" van en inglés a propósito: así se llaman en la
  * escuela.

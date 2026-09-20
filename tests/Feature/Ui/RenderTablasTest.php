@@ -4,7 +4,7 @@ use App\Livewire\Clases\GestionClases;
 use App\Livewire\Estudiantes\GestionEstudiantes;
 use App\Livewire\Examenes\GestionConvocatorias;
 use App\Livewire\Grupos\GestionGrupos;
-use App\Livewire\Planillas\GestionPlanillas;
+use App\Livewire\Planificador\GestionPlanificaciones;
 use App\Livewire\Sedes\GestionSedes;
 use App\Livewire\Usuarios\GestionUsuarios;
 use App\Models\User;
@@ -35,7 +35,7 @@ $componentes = [
     GestionEstudiantes::class,
     GestionClases::class,
     GestionConvocatorias::class,
-    GestionPlanillas::class,
+    GestionPlanificaciones::class,
 ];
 
 foreach ($componentes as $componente) {

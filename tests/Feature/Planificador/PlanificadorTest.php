@@ -2,14 +2,14 @@
 
 use App\Enums\HabilidadVida;
 use App\Enums\TipoBloque;
-use App\Livewire\Planillas\Planificador;
+use App\Livewire\Planificador\Planificador;
 use App\Models\CategoriaCalentamiento;
 use App\Models\Ciclo;
 use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
 use App\Models\Grupo;
 use App\Models\LeccionVida;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -86,11 +86,11 @@ test('la biblioteca de calentamiento filtra las categorías por grupo etario', f
     expect($adults)->toContain('cardio');              // Adultos sí
 });
 
-// ── Planillas: el mismo bloque cambia según el grupo etario ─────────────────
+// ── Planificaciones: el mismo bloque cambia según el grupo etario ───────────
 
 test('Tigers y Jóvenes y Adultos del mismo nivel tienen detalles distintos en el mismo bloque', function () {
-    $tigers = Planilla::where('grupo_etario', 'tigers')->where('nivel', 'intermedio')->first();
-    $adultos = Planilla::where('grupo_etario', 'jovenes_adultos')->where('nivel', 'intermedio')->first();
+    $tigers = PlanificacionClase::where('grupo_etario', 'tigers')->where('nivel', 'intermedio')->first();
+    $adultos = PlanificacionClase::where('grupo_etario', 'jovenes_adultos')->where('nivel', 'intermedio')->first();
 
     $roturaTigers = $tigers->bloques->firstWhere('tipo', TipoBloque::Roturas);
     $roturaAdultos = $adultos->bloques->firstWhere('tipo', TipoBloque::Roturas);
@@ -103,22 +103,22 @@ test('Tigers y Jóvenes y Adultos del mismo nivel tienen detalles distintos en e
         ->and($roturaAdultos->contenido)->toContain('Tablillas reales');
 });
 
-test('cada grupo × nivel tiene su planilla con bloques', function () {
-    expect(Planilla::count())->toBe(9); // 3 grupos × 3 niveles
-    Planilla::each(fn ($p) => expect($p->bloques()->count())->toBe(8));
+test('cada grupo × nivel tiene su planificación con bloques', function () {
+    expect(PlanificacionClase::count())->toBe(9); // 3 grupos × 3 niveles
+    PlanificacionClase::each(fn ($p) => expect($p->bloques()->count())->toBe(8));
 });
 
-// ── Transversalidad (las planillas son contenido compartido) ────────────────
+// ── Transversalidad (las planificaciones son contenido compartido) ────────────────
 
-test('las planillas del planificador son transversales (se ven en cualquier grupo)', function () {
+test('las planificaciones del planificador son transversales (se ven en cualquier grupo)', function () {
     $otra = Grupo::create(['nombre' => 'Otro Grupo', 'activo' => true]);
 
-    // Las 9 planillas sembradas se ven con cualquier grupo activo.
+    // Las 9 planificaciones sembradas se ven con cualquier grupo activo.
     Tenant::set($this->bekho->id);
-    expect(Planilla::count())->toBe(9);
+    expect(PlanificacionClase::count())->toBe(9);
 
     Tenant::set($otra->id);
-    expect(Planilla::count())->toBe(9);
+    expect(PlanificacionClase::count())->toBe(9);
 });
 
 // ── Interfaz: armar y guardar calentamiento (por clase) ─────────────────────
@@ -211,7 +211,7 @@ test('las 8 semanas se muestran como casilleros (cargadas + pendientes)', functi
         ->assertSee('8 de 8 semanas cargadas');
 });
 
-test('el planificador exige el permiso de gestionar planillas', function () {
+test('el planificador exige el permiso de gestionar planificaciones', function () {
     $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);

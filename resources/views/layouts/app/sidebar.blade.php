@@ -98,7 +98,7 @@
                                 Legacy
                             </flux:sidebar.item>
                         @endcan
-                        @can('gestionar planillas')
+                        @can('gestionar planificaciones')
                             <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
                                 Ciclos
                             </flux:sidebar.item>
@@ -114,8 +114,8 @@
                             <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
                                 Cuadrantes
                             </flux:sidebar.item>
-                            <flux:sidebar.item icon="clipboard-document-list" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
-                                Planillas
+                            <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
+                                Planificaciones
                             </flux:sidebar.item>
                         @endcan
                         @can('gestionar competencia')

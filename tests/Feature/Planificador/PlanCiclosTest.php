@@ -2,7 +2,7 @@
 
 use App\Enums\FilaPlannerCiclo;
 use App\Enums\HabilidadVida;
-use App\Livewire\Planillas\PlanCiclos;
+use App\Livewire\Planificador\PlanCiclos;
 use App\Models\Ciclo;
 use App\Models\Grupo;
 use App\Models\PlannerCiclo;
@@ -59,7 +59,7 @@ test('la página muestra la grilla del ciclo elegido y su lección', function ()
         ->assertSee('White Belt'); // patadas 1&2 del ciclo Disciplina
 });
 
-test('la página de ciclos exige el permiso de gestionar planillas', function () {
+test('la página de ciclos exige el permiso de gestionar planificaciones', function () {
     $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);

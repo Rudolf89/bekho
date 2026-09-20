@@ -49,7 +49,7 @@ class Panel extends Component
 
         // Clases con un horario hoy; se anota la hora de inicio de ese día para
         // mostrarla y ordenar la agenda.
-        $clasesHoy = Clase::activas()->with(['sede', 'planilla', 'horarios'])
+        $clasesHoy = Clase::activas()->with(['sede', 'planificacion', 'horarios'])
             ->whereHas('horarios', fn ($q) => $q->where('dia_semana', $diaHoy))
             ->get()
             ->map(function (Clase $c) use ($diaHoy) {

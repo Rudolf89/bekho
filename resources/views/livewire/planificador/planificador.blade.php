@@ -48,11 +48,22 @@
         @endforeach
     </div>
 
+    {{-- Aviso de contenido sin validar por la federación. --}}
+    @if ($avisoSinVerificar)
+        <flux:callout icon="exclamation-triangle" variant="warning">
+            <flux:callout.heading>Contenido de referencia sin verificar</flux:callout.heading>
+            <flux:callout.text>
+                Este contenido fue generado con IA (prototipo) y aún no lo valida la
+                federación. Úsalo como material de referencia, no como fuente oficial.
+            </flux:callout.text>
+        </flux:callout>
+    @endif
+
     {{-- ═══════════ PLANNER (regular) ═══════════ --}}
     @if ($tab === 'planner' && ! $esBlackBelt)
-        @if ($planilla)
+        @if ($planificacion)
             <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                <flux:text class="font-semibold">{{ $planilla->nombre }}</flux:text>
+                <flux:text class="font-semibold">{{ $planificacion->nombre }}</flux:text>
                 <div class="flex items-center gap-2">
                     @if ($curriculo)
                         <flux:badge color="zinc" size="sm">Defensa: {{ $curriculo->defensa }}</flux:badge>
@@ -109,7 +120,7 @@
             {{-- Combinaciones de patadas del nivel --}}
             @if ($curriculo && filled($curriculo->combinaciones))
                 <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                    <flux:text class="mb-2 block font-semibold">🦵 Combinaciones de Patadas — {{ $planilla->nivel->etiqueta() }}</flux:text>
+                    <flux:text class="mb-2 block font-semibold">🦵 Combinaciones de Patadas — {{ $planificacion->nivel->etiqueta() }}</flux:text>
                     <div class="flex flex-wrap gap-2">
                         @foreach ($curriculo->combinaciones as $i => $combo)
                             <span class="rounded-lg border border-zinc-200 bg-zinc-50 px-2.5 py-1 text-xs font-medium dark:border-zinc-600 dark:bg-zinc-700">
@@ -132,7 +143,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($planilla->bloques as $b)
+                        @foreach ($planificacion->bloques as $b)
                             <tr class="border-b border-zinc-100 align-top last:border-0 dark:border-zinc-700/60">
                                 <td class="whitespace-nowrap px-3 py-3 font-semibold text-zinc-700 dark:text-zinc-200">{{ $b->tiempo }}</td>
                                 <td class="px-3 py-3 font-semibold text-zinc-800 dark:text-zinc-100">{{ $b->tituloVisible() }}</td>
@@ -152,7 +163,7 @@
             </div>
         @else
             <div class="rounded-xl border border-dashed border-zinc-300 p-10 text-center dark:border-zinc-700">
-                <flux:text>No hay una planilla cargada para este grupo y nivel en el grupo activo.</flux:text>
+                <flux:text>No hay una planificación cargada para este grupo y nivel en el grupo activo.</flux:text>
             </div>
         @endif
     @endif

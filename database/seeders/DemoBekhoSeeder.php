@@ -16,7 +16,7 @@ use App\Models\Instructor;
 use App\Models\Matricula;
 use App\Models\Persona;
 use App\Models\PersonalGrupo;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use App\Models\Sede;
 use App\Models\User;
 use App\Support\Tenancy\Grupo as Tenant;
@@ -160,12 +160,12 @@ class DemoBekhoSeeder extends Seeder
         ];
 
         foreach ($config as [$grupoEtario, $ini, $fin, $instructor]) {
-            $planilla = Planilla::where('grupo_etario', $grupoEtario)->where('nivel', 'principiantes')->first();
+            $planificacion = PlanificacionClase::where('grupo_etario', $grupoEtario)->where('nivel', 'principiantes')->first();
 
             $clase = Clase::updateOrCreate(
                 ['grupo_id' => $grupo->id, 'nombre' => 'Clase '.$grupoEtario],
                 [
-                    'sede_id' => $sede->id, 'planilla_id' => $planilla?->id,
+                    'sede_id' => $sede->id, 'planificacion_clase_id' => $planificacion?->id,
                     'grupo_etario' => $grupoEtario, 'activo' => true,
                 ],
             );

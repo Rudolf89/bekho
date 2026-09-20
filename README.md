@@ -248,15 +248,15 @@ Roles (spatie, **sin teams mode** — los roles son globales):
 |-----|-------|----------|
 | `admin-plataforma` | Dueño del sistema | Todos, incl. `gestionar academias`; cruza academias |
 | `federacion` | Casa Central | Solo lectura sobre **todas** las academias |
-| `direccion` | Director de un grupo | Todo dentro de **su** academia (usuarios, sedes, alumnos, clases, asistencia, **pagos**, planillas, formación, cuestionarios, recompensas, Legacy) |
+| `direccion` | Director de un grupo | Todo dentro de **su** academia (usuarios, sedes, alumnos, clases, asistencia, **pagos**, planificaciones, formación, cuestionarios, recompensas, Legacy) |
 | `administrativo` | Secretaría / recepción | Alumnos, clases, asistencia, rendir cuestionarios. **Sin pagos** |
-| `instructor` | Enseña clases | Asistencia, planillas, **inscribir en exámenes**, formación, **cuestionarios** (examinador), **recompensas**, **Legacy**; ve **solo los alumnos de sus clases** |
+| `instructor` | Enseña clases | Asistencia, planificaciones, **inscribir en exámenes**, formación, **cuestionarios** (examinador), **recompensas**, **Legacy**; ve **solo los alumnos de sus clases** |
 | `apoderado` | Apoderado | Ve solo a sus hijos (Policies) y su colección de logros (`ver recompensas`) |
 | `alumno` | Alumno | `ver formacion`, `rendir cuestionarios`, `ver recompensas` |
 
 Permisos definidos: `gestionar academias`, `gestionar usuarios`, `gestionar sedes`,
 `gestionar alumnos`, `gestionar clases`, `tomar asistencia`, `registrar pagos`,
-`gestionar examenes`, `inscribir examenes`, `gestionar planillas`, `gestionar formacion`,
+`gestionar examenes`, `inscribir examenes`, `gestionar planificaciones`, `gestionar formacion`,
 `ver formacion`, `gestionar cuestionarios`, `rendir cuestionarios`, `gestionar recompensas`,
 `ver recompensas`, `gestionar legacy`, `aprobar legacy`.
 
@@ -322,7 +322,7 @@ de 8 semanas.
   grilla por fila (Warm-Up, Kicks, Forms, Quadrants, Protech, Drills en pareja) y
   bloque de semanas (`1&2`, `3&4`, `5&6`, `7&8`) — más sus **lecciones de vida** por
   semana. Transcrito del Manual Legacy.
-- **Planificador**: planilla grupo × nivel (o de Cinturón Negro), con calentamiento
+- **Planificador**: planificación grupo × nivel (o de Cinturón Negro), con calentamiento
   por clase y lección de vida. Es **week-aware**: sobre la estructura fija de la clase
   muestra la **rotación del ciclo** elegido (qué cinturón / forma / cuadrante toca ese
   bloque de semanas, desde `planner_ciclo`) y acota la lección de vida a ese ciclo. El

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\Cuadrante;
 use App\Enums\RolCuadrante;
@@ -19,7 +19,7 @@ class CuadrantesEnsenanza extends Component
     {
         $items = CuadranteItem::orderBy('orden')->get();
 
-        return view('livewire.planillas.cuadrantes-ensenanza', [
+        return view('livewire.planificador.cuadrantes-ensenanza', [
             'cuadrantes' => Cuadrante::cases(),
             'roles' => RolCuadrante::cases(),
             'porCuadranteRol' => $items->groupBy([

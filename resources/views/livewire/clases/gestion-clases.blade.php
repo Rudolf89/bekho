@@ -91,9 +91,9 @@
                         <flux:select.option value="{{ $g->value }}">{{ $g->etiqueta() }}</flux:select.option>
                     @endforeach
                 </flux:select>
-                <flux:select wire:model="planilla_id" label="Planilla (rutina)" placeholder="Sin planilla">
-                    @foreach ($planillas as $planilla)
-                        <flux:select.option value="{{ $planilla->id }}">{{ $planilla->nombre }}</flux:select.option>
+                <flux:select wire:model="planificacion_clase_id" label="Planificación (rutina)" placeholder="Sin planificación">
+                    @foreach ($planificaciones as $planificacion)
+                        <flux:select.option value="{{ $planificacion->id }}">{{ $planificacion->nombre }}</flux:select.option>
                     @endforeach
                 </flux:select>
                 <flux:input wire:model="cupo_maximo" type="number" min="1" label="Cupo máximo" placeholder="Opcional" />

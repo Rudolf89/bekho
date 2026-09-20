@@ -1,15 +1,15 @@
 <div class="mx-auto w-full max-w-3xl space-y-6">
     <div>
-        <flux:button :href="route('planillas.index')" icon="arrow-left" variant="ghost" size="sm" wire:navigate>
-            Volver a planillas
+        <flux:button :href="route('planificaciones.index')" icon="arrow-left" variant="ghost" size="sm" wire:navigate>
+            Volver a planificaciones
         </flux:button>
     </div>
 
     <div>
-        <flux:heading size="xl">{{ $planilla->nombre }}</flux:heading>
+        <flux:heading size="xl">{{ $planificacion->nombre }}</flux:heading>
         <flux:text class="mt-1">
-            {{ $planilla->grupo_etario->etiqueta() }} · {{ $planilla->nivel->etiqueta() }} ·
-            {{ $planilla->programa?->nombre ?? 'Regular' }}
+            {{ $planificacion->grupo_etario->etiqueta() }} · {{ $planificacion->nivel->etiqueta() }} ·
+            {{ $planificacion->programa?->nombre ?? 'Regular' }}
         </flux:text>
     </div>
 
@@ -26,10 +26,10 @@
         {{-- Bloques de actividad --}}
         <div class="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-700 dark:bg-zinc-800">
             <flux:heading size="lg">Bloques de actividad</flux:heading>
-            <flux:text size="sm" class="mt-1">Contenido para {{ $planilla->grupo_etario->etiqueta() }}.</flux:text>
+            <flux:text size="sm" class="mt-1">Contenido para {{ $planificacion->grupo_etario->etiqueta() }}.</flux:text>
 
             <div class="mt-4 space-y-4">
-                @foreach ($planilla->bloques as $bloque)
+                @foreach ($planificacion->bloques as $bloque)
                     <div wire:key="bloque-{{ $bloque->id }}">
                         <flux:textarea
                             wire:model="contenidos.{{ $bloque->id }}"
@@ -47,7 +47,7 @@
             <flux:text size="sm" class="mt-1">Lista de verificación pedagógica que aplicas a toda la clase.</flux:text>
 
             <div class="mt-4 grid gap-4 sm:grid-cols-2">
-                @foreach ($planilla->cuadrantes as $cuadrante)
+                @foreach ($planificacion->cuadrantes as $cuadrante)
                     <div wire:key="cuad-{{ $cuadrante->id }}">
                         <flux:textarea
                             wire:model="notas.{{ $cuadrante->id }}"
@@ -61,7 +61,7 @@
         </div>
 
         <div class="flex justify-end">
-            <flux:button type="submit" variant="primary" icon="check">Guardar planilla</flux:button>
+            <flux:button type="submit" variant="primary" icon="check">Guardar planificación</flux:button>
         </div>
     </form>
 </div>

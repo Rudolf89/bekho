@@ -7,20 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Cuadrante de enseñanza de una planilla. Transversal (contenido compartido).
+ * Cuadrante de enseñanza de una planificación de clase. Transversal (contenido
+ * compartido).
  */
-class CuadrantePlanilla extends Model
+class CuadrantePlanificacion extends Model
 {
     /**
      * @var string
      */
-    protected $table = 'cuadrantes_planilla';
+    protected $table = 'cuadrantes_planificacion';
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'planilla_id',
+        'planificacion_clase_id',
         'cuadrante',
         'nota',
     ];
@@ -36,10 +37,10 @@ class CuadrantePlanilla extends Model
     }
 
     /**
-     * @return BelongsTo<Planilla, $this>
+     * @return BelongsTo<PlanificacionClase, $this>
      */
-    public function planilla(): BelongsTo
+    public function planificacion(): BelongsTo
     {
-        return $this->belongsTo(Planilla::class);
+        return $this->belongsTo(PlanificacionClase::class, 'planificacion_clase_id');
     }
 }

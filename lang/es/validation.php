@@ -201,7 +201,7 @@ return [
         'nivel' => 'nivel',
         'grado_id' => 'grado',
         'programa_id' => 'programa',
-        'planilla_id' => 'planilla',
+        'planificacion_clase_id' => 'planificación',
         'instructor_id' => 'instructor',
         'dia_semana' => 'día',
         'hora_inicio' => 'hora de inicio',

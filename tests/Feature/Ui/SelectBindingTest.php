@@ -3,7 +3,7 @@
 use App\Livewire\Clases\GestionClases;
 use App\Livewire\Estudiantes\GestionEstudiantes;
 use App\Livewire\Examenes\GestionConvocatorias;
-use App\Livewire\Planillas\GestionPlanillas;
+use App\Livewire\Planificador\GestionPlanificaciones;
 use App\Livewire\Sedes\GestionSedes;
 use App\Livewire\Usuarios\GestionUsuarios;
 use App\Models\User;
@@ -37,7 +37,7 @@ test('los select de clases arrancan vacíos, no en null', function () {
         ->assertSet('sede_id', '')
         ->assertSet('grupo_etario', '')
         ->assertSet('horarios.0.dia_semana', '')
-        ->assertSet('planilla_id', '');
+        ->assertSet('planificacion_clase_id', '');
 });
 
 test('los select de estudiantes arrancan vacíos', function () {
@@ -54,8 +54,8 @@ test('los select de sedes arrancan vacíos para admin-plataforma', function () {
         ->assertSet('grupo_id', '');
 });
 
-test('los select de planillas arrancan vacíos', function () {
-    Livewire::test(GestionPlanillas::class)
+test('los select de planificaciones arrancan vacíos', function () {
+    Livewire::test(GestionPlanificaciones::class)
         ->call('nueva')
         ->assertSet('programa_id', '')
         ->assertSet('habilidad_vida', '');

@@ -35,8 +35,8 @@ Piezas del tenant:
   "Todos los grupos", ve todo (`filtraLecturas: false`). La **`federacion`** ve
   todo en **solo lectura**.
 
-**Catálogos compartidos = SIN `grupo_id`** (como `cargos_rangos`): `planillas`,
-`bloques_planilla`, `cuadrantes_planilla`, `ciclos`, `planner_ciclo`, `tecnicas`,
+**Catálogos compartidos = SIN `grupo_id`** (como `cargos_rangos`): `planificaciones_clase`,
+`bloques_planificacion`, `cuadrantes_planificacion`, `ciclos`, `planner_ciclo`, `tecnicas`,
 `pasos_tecnica`, `cuadrante_items`, `grados`, `grado_tecnica`, `curriculos_nivel`,
 `lecciones_vida`, biblioteca de calentamiento, planificador de Cinturón Negro,
 `cuestionarios`, `preguntas_cuestionario`, `opciones_pregunta`, `recompensas`,
@@ -130,7 +130,7 @@ alguna vez se decide mover la autorización allí (hoy no es necesario).
 todos) · `direccion` (todo en su grupo, incl. pagos) · `direccion-sede` (lo
 operativo de **su sede**, con pagos; acotado vía `personal_grupo_rol.sede_id` +
 `User::sedesRestringidas()`) · `administrativo` (alumnos/clases/asistencia, **sin
-pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámenes; ve
+pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir exámenes; ve
 **solo alumnos de sus clases** vía `MatriculaPolicy` + `Matricula::scopeVisiblePara`) ·
 `apoderado` (solo sus hijos, por tutela) · `alumno` (ver formación).
 
@@ -153,7 +153,7 @@ pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámene
   miércoles = una clase con dos horarios; `hora_fin` obligatoria y autocompletada a
   inicio+45; `cupo_maximo` como aforo que solo advierte), **asistencia como
   calendario semanal** (cada clase aparece en cada día en que tiene horario), pagos,
-  exámenes (instructor inscribe; dirección finaliza), planillas. La **inscripción**
+  exámenes (instructor inscribe; dirección finaliza), planificaciones de clase. La **inscripción**
   captura el consentimiento de uso de imagen y la homologación de grado, y genera el
   cobro de ingreso (matrícula + uniforme opcional) según la tarifa de la sede. **Ficha de alumno** (`estudiantes.ver`): progreso al
   siguiente cinturón, requisitos técnicos, historial de exámenes, asistencia, estado
@@ -167,8 +167,8 @@ pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámene
   Tigers, MAK y MAX N1/N2** (`ManualesAprenderSeeder`, fuente en
   `database/data/manuales/*.json`, transcritos de los .docx en español). Cada manual =
   un Nivel con una lección de texto por sección + el documento oficial en Drive.
-- **Currículo ATA (planificador)**: `Planificador` (planilla grupo×nivel o Cinturón
-  Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planilla
+- **Currículo ATA (planificador)**: `Planificador` (planificación grupo×nivel o Cinturón
+  Negro, calentamiento por clase, lección de vida; **week-aware**: sobre la planificación
   fija muestra la rotación del ciclo elegido — selector ciclo + bloque de semanas —
   leyendo `planner_ciclo`, y la lección de vida acotada a ese mismo ciclo. El planner
   regular y el de Cinturón Negro comparten estilo visual: tarjeta blanca con acento
@@ -236,6 +236,17 @@ pagos**) · `instructor` (asistencia, planillas, competencia, inscribir exámene
 - Migraciones L13: clase anónima, `casts()` como método, tipos de retorno.
 - **Tabla nueva**: ¿operativa? → `grupo_id` + trait `PerteneceGrupo`.
   ¿Contenido ATA compartido? → **sin** `grupo_id` (catálogo).
+- **"Planilla" = solo competencia.** La planificación de clase se llama
+  `PlanificacionClase` (tabla `planificaciones_clase`, con `BloquePlanificacion` y
+  `CuadrantePlanificacion`; permiso `gestionar planificaciones`; `App\Livewire\
+  Planificador`). Las "planillas" (`planillas_competencia`, `jueces_planilla`, etc.)
+  son exclusivamente de competencia.
+- **Procedencia del contenido del planificador.** `planificaciones_clase`,
+  `planificaciones_cinturon_negro` y `categorias_calentamiento` llevan `fuente` y
+  `verificado` (bool). El contenido sembrado desde `docs/planificador-unificado.tsx`
+  fue **generado con IA** (no transcrito del manual): va con `verificado=false` y el
+  Planificador muestra un aviso cuando el contenido no está validado. No se corrige
+  ni completa el contenido (requiere los planner reales del manual en español).
 - Tests **Pest** + `RefreshDatabase`; `beforeEach` siembra los seeders necesarios
   (`RolesPermisosSeeder`, etc.) + `app(PermissionRegistrar::class)->forgetCachedPermissions()`;
   `Grupo` tenant con `Tenant::set()/olvidar()`.
@@ -273,7 +284,7 @@ grado (`PatadasGradoSeeder::bekho`), en comparación con la referencia ATA del
 manual (`::ata`). Cada patada se ejecuta en 4 variantes (1-4) o 4 giros (A-D). El **Class Planner físico** (láminas
 Beginners/Intermediate/Advanced) NO tiene página propia: su contenido vive en el
 Planificador (estructura + rotación) y en Cinturones (patadas). El **Planificador
-es week-aware**: sobre la planilla fija muestra la rotación del ciclo elegido
+es week-aware**: sobre la planificación fija muestra la rotación del ciclo elegido
 (`planner_ciclo`) y la Lección de Vida acotada a ese ciclo.
 
 Notificaciones **en la app** (canal database, trait `Notifiable`): cuando el

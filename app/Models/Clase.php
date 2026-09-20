@@ -30,7 +30,7 @@ class Clase extends Model
         'grupo_id',
         'sede_id',
         'instructor_id',
-        'planilla_id',
+        'planificacion_clase_id',
         'nombre',
         'grupo_etario',
         'cupo_maximo',
@@ -133,14 +133,14 @@ class Clase extends Model
     }
 
     /**
-     * Planilla (rutina) que le corresponde a la clase. La planilla es contenido
-     * transversal compartido; la clase solo la referencia.
+     * Planificación (rutina) que le corresponde a la clase. La planificación es
+     * contenido transversal compartido; la clase solo la referencia.
      *
-     * @return BelongsTo<Planilla, $this>
+     * @return BelongsTo<PlanificacionClase, $this>
      */
-    public function planilla(): BelongsTo
+    public function planificacion(): BelongsTo
     {
-        return $this->belongsTo(Planilla::class);
+        return $this->belongsTo(PlanificacionClase::class, 'planificacion_clase_id');
     }
 
     /**

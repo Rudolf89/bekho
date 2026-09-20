@@ -71,14 +71,14 @@
                             <div class="min-w-0">
                                 <p class="truncate font-semibold text-zinc-900 dark:text-white">{{ $clase->grupo_etario->etiqueta() }}</p>
                                 <p class="truncate text-sm text-zinc-500">
-                                    {{ $clase->sede?->nombre ?? 'Sede' }}@if ($clase->planilla?->habilidad_vida) · Habilidad de hoy: {{ $clase->planilla->habilidad_vida->etiqueta() }}@endif
+                                    {{ $clase->sede?->nombre ?? 'Sede' }}@if ($clase->planificacion?->habilidad_vida) · Habilidad de hoy: {{ $clase->planificacion->habilidad_vida->etiqueta() }}@endif
                                 </p>
                             </div>
                         </div>
                         <div class="shrink-0 text-right">
                             <p class="text-sm text-zinc-500">{{ $clase->matriculasEsperadas()->count() }} alumnos</p>
-                            @if ($clase->planilla)
-                                <a href="{{ route('planillas.editar', $clase->planilla) }}" wire:navigate class="text-sm font-semibold text-[#b01e28] hover:underline">Ver planilla</a>
+                            @if ($clase->planificacion)
+                                <a href="{{ route('planificaciones.editar', $clase->planificacion) }}" wire:navigate class="text-sm font-semibold text-[#b01e28] hover:underline">Ver planificación</a>
                             @endif
                         </div>
                     </div>

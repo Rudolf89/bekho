@@ -11,18 +11,22 @@ use App\Models\Ciclo;
 use App\Models\CurriculoNivel;
 use App\Models\LeccionVida;
 use App\Models\PlanificacionCinturonNegro;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Contenido pedagógico real del "Planificador Unificado" (fuente:
+ * Contenido pedagógico del "Planificador Unificado" (fuente:
  * docs/planificador-unificado.tsx). Todo es idempotente.
  *
+ * IMPORTANTE: este contenido fue GENERADO CON IA en el prototipo, NO transcrito
+ * de los manuales ATA. Se siembra marcado con fuente/verificado=false para que la
+ * UI lo advierta como material de referencia sin validar por la federación (no se
+ * corrige ni completa aquí: requiere los planner reales del manual en español).
+ *
  * Catálogos compartidos (sin grupo_id): biblioteca de calentamiento, currículo
- * por nivel, lecciones de vida y planificador de Cinturón Negro. Las planillas
- * grupo × nivel (con sus bloques) sí llevan grupo_id y se siembran para la
- * primera grupo (grupo) existente.
+ * por nivel, lecciones de vida y planificador de Cinturón Negro. Las
+ * planificaciones grupo × nivel (con sus bloques) también son transversales.
  *
  * Correcciones al portar desde el prototipo: kids → For Kids, adults → Jóvenes y
  * Adultos, Tigres → Tigers; "Creencia" → "Convicción". "Combat Weapon" y
@@ -30,6 +34,9 @@ use Illuminate\Support\Facades\DB;
  */
 class PlanificadorSeeder extends Seeder
 {
+    /** Procedencia del contenido sembrado (generado con IA, sin validar). */
+    private const FUENTE = 'planificador-unificado.tsx (generado con IA)';
+
     public function run(): void
     {
         $this->sembrarCiclos();
@@ -37,7 +44,7 @@ class PlanificadorSeeder extends Seeder
         $this->sembrarCurriculos();
         $this->sembrarLecciones();
         $this->sembrarCinturonNegro();
-        $this->sembrarPlanillas();
+        $this->sembrarPlanificaciones();
     }
 
     // ── Ciclos (backbone: 6 Habilidades de Vida) ────────────────────────────
@@ -127,7 +134,7 @@ class PlanificadorSeeder extends Seeder
         foreach ($categorias as $orden => [$clave, $nombre, $color, $grupos, $ejercicios]) {
             $categoria = CategoriaCalentamiento::updateOrCreate(
                 ['clave' => $clave],
-                ['nombre' => $nombre, 'color' => $color, 'orden' => $orden + 1],
+                ['nombre' => $nombre, 'color' => $color, 'orden' => $orden + 1, 'fuente' => self::FUENTE, 'verificado' => false],
             );
             $categoria->sincronizarGrupos($grupos);
 
@@ -339,7 +346,7 @@ class PlanificadorSeeder extends Seeder
         foreach ($semanas as $orden => [$clave, $label, $tema, $icono, $color, $secciones, $adapt]) {
             $plan = PlanificacionCinturonNegro::updateOrCreate(
                 ['clave' => $clave],
-                ['label' => $label, 'tema' => $tema, 'icono' => $icono, 'color' => $color, 'orden' => $orden + 1],
+                ['label' => $label, 'tema' => $tema, 'icono' => $icono, 'color' => $color, 'orden' => $orden + 1, 'fuente' => self::FUENTE, 'verificado' => false],
             );
 
             $plan->secciones()->delete();
@@ -355,9 +362,9 @@ class PlanificadorSeeder extends Seeder
         }
     }
 
-    // ── Planillas grupo × nivel (transversales) ─────────────────────────────
+    // ── Planificaciones grupo × nivel (transversales) ─────────────────────────────
 
-    private function sembrarPlanillas(): void
+    private function sembrarPlanificaciones(): void
     {
         $niveles = [
             NivelEntrenamiento::Principiantes,
@@ -372,21 +379,23 @@ class PlanificadorSeeder extends Seeder
             }
 
             foreach (GrupoEtario::cases() as $grupo) {
-                $planilla = Planilla::updateOrCreate(
+                $planificacion = PlanificacionClase::updateOrCreate(
                     ['grupo_etario' => $grupo->value, 'nivel' => $nivel->value, 'programa_id' => null],
                     [
                         'nombre' => $grupo->etiqueta().' · '.$nivel->etiqueta(),
                         'habilidad_vida' => HabilidadVida::Disciplina->value,
                         'activo' => true,
+                        'fuente' => self::FUENTE,
+                        'verificado' => false,
                     ],
                 );
 
                 $bloques = $this->bloquesDe($grupo, $curriculo);
 
                 // Idempotente: se regeneran los bloques del planificador.
-                $planilla->bloques()->delete();
+                $planificacion->bloques()->delete();
                 foreach ($bloques as $orden => $bloque) {
-                    $planilla->bloques()->create([
+                    $planificacion->bloques()->create([
                         'tipo' => $bloque['tipo']?->value,
                         'tiempo' => $bloque['tiempo'],
                         'titulo' => $bloque['titulo'],

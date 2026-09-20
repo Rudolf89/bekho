@@ -8,7 +8,7 @@ use App\Enums\PapelEnClase;
 use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Clase;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use App\Models\Sede;
 use App\Models\User;
 use Flux\Flux;
@@ -28,7 +28,7 @@ class GestionClases extends Component
 
     public string $sede_id = '';
 
-    public ?string $planilla_id = '';
+    public ?string $planificacion_clase_id = '';
 
     public string $grupo_etario = '';
 
@@ -72,7 +72,7 @@ class GestionClases extends Component
         return [
             'nombre' => ['required', 'string', 'max:255'],
             'sede_id' => ['required', Rule::exists('sedes', 'id')],
-            'planilla_id' => ['nullable', Rule::exists('planillas', 'id')],
+            'planificacion_clase_id' => ['nullable', Rule::exists('planificaciones_clase', 'id')],
             'grupo_etario' => ['required', Rule::enum(GrupoEtario::class)],
             'cupo_maximo' => ['nullable', 'integer', 'min:1', 'max:100000'],
             'activo' => ['boolean'],
@@ -103,7 +103,7 @@ class GestionClases extends Component
 
     public function nuevo(): void
     {
-        $this->reset('editandoId', 'nombre', 'sede_id', 'planilla_id', 'grupo_etario',
+        $this->reset('editandoId', 'nombre', 'sede_id', 'planificacion_clase_id', 'grupo_etario',
             'cupo_maximo', 'horarios', 'asignaciones', 'nombreAuto');
         $this->activo = true;
         $this->agregarHorario();
@@ -205,7 +205,7 @@ class GestionClases extends Component
         $this->editandoId = $clase->id;
         $this->nombre = $clase->nombre;
         $this->sede_id = (string) $clase->sede_id;
-        $this->planilla_id = (string) ($clase->planilla_id ?? '');
+        $this->planificacion_clase_id = (string) ($clase->planificacion_clase_id ?? '');
         $this->grupo_etario = $clase->grupo_etario->value;
         $this->cupo_maximo = $clase->cupo_maximo !== null ? (string) $clase->cupo_maximo : null;
         $this->activo = $clase->activo;
@@ -249,7 +249,7 @@ class GestionClases extends Component
         // Los <select> opcionales devuelven '' cuando no se elige nada; se
         // normaliza a null para que la regla nullable omita 'exists' y para
         // no insertar '' en columnas de llave foránea.
-        $this->planilla_id = $this->planilla_id ?: null;
+        $this->planificacion_clase_id = $this->planificacion_clase_id ?: null;
         $this->cupo_maximo = $this->cupo_maximo !== null && $this->cupo_maximo !== '' ? $this->cupo_maximo : null;
 
         // Se descartan las filas de instructor sin usuario elegido.
@@ -332,7 +332,7 @@ class GestionClases extends Component
             )->get(),
             'sedes' => Sede::orderBy('nombre')->get(),
             'instructores' => User::role(['instructor', 'direccion'])->orderBy('name')->get(),
-            'planillas' => Planilla::where('activo', true)->orderBy('nombre')->get(),
+            'planificaciones' => PlanificacionClase::where('activo', true)->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),
             'dias' => DiaSemana::cases(),
             'papeles' => PapelEnClase::cases(),

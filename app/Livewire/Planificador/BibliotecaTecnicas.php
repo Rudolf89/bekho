@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\CategoriaTecnica;
 use App\Enums\ModalidadTecnica;
@@ -38,7 +38,7 @@ class BibliotecaTecnicas extends Component
             ->ordenadas()
             ->get();
 
-        return view('livewire.planillas.biblioteca-tecnicas', [
+        return view('livewire.planificador.biblioteca-tecnicas', [
             'grupos' => $tecnicas->groupBy(fn (Tecnica $t) => $t->categoria->value),
             'categorias' => CategoriaTecnica::cases(),
             'modalidades' => ModalidadTecnica::cases(),

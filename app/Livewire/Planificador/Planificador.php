@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\FilaPlannerCiclo;
 use App\Enums\GrupoEtario;
@@ -13,7 +13,7 @@ use App\Models\EjercicioCalentamiento;
 use App\Models\LeccionVida;
 use App\Models\NotaCalentamiento;
 use App\Models\PlanificacionCinturonNegro;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use App\Models\PlannerCiclo;
 use Flux\Flux;
 use Livewire\Attributes\Title;
@@ -21,7 +21,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 /**
- * Planificador Unificado: en una sola vista, la rutina de la clase (planilla)
+ * Planificador Unificado: en una sola vista, la rutina de la clase (planificación)
  * por grupo × nivel (o el planificador de Cinturón Negro por semanas), el armado
  * de calentamiento y la Lección de Vida.
  *
@@ -129,15 +129,15 @@ class Planificador extends Component
     }
 
     /**
-     * Planilla transversal (grupo × nivel), si el nivel no es Cinturón Negro.
+     * Planificación transversal (grupo × nivel), si el nivel no es Cinturón Negro.
      */
-    protected function planillaActual(): ?Planilla
+    protected function planificacionActual(): ?PlanificacionClase
     {
         if ($this->esBlackBelt()) {
             return null;
         }
 
-        return Planilla::where('grupo_etario', $this->grupo)
+        return PlanificacionClase::where('grupo_etario', $this->grupo)
             ->where('nivel', $this->nivel)
             ->first();
     }
@@ -219,12 +219,15 @@ class Planificador extends Component
             'niveles' => $this->nivelesDisponibles(),
             'esBlackBelt' => $this->esBlackBelt(),
             'grupoEnum' => GrupoEtario::from($this->grupo),
+            // Aviso: el contenido mostrado no está validado por la federación.
+            'avisoSinVerificar' => false,
         ];
 
         if ($this->tab === 'planner' && ! $this->esBlackBelt()) {
-            $planilla = $this->planillaActual()?->load(['bloques', 'curriculo']);
-            $datos['planilla'] = $planilla;
-            $datos['curriculo'] = $planilla?->curriculo;
+            $planificacion = $this->planificacionActual()?->load(['bloques', 'curriculo']);
+            $datos['planificacion'] = $planificacion;
+            $datos['curriculo'] = $planificacion?->curriculo;
+            $datos['avisoSinVerificar'] = $planificacion !== null && ! $planificacion->verificado;
 
             // Capa de rotación: qué toca esta semana según el ciclo elegido.
             $ciclos = Ciclo::ordenados()->get();
@@ -241,10 +244,12 @@ class Planificador extends Component
             $datos['bb'] = PlanificacionCinturonNegro::where('clave', $this->bbSemana)
                 ->with(['secciones', 'adaptaciones'])
                 ->first();
+            $datos['avisoSinVerificar'] = $datos['bb'] !== null && ! $datos['bb']->verificado;
         }
 
         if ($this->tab === 'warmup') {
             $datos['categorias'] = CategoriaCalentamiento::paraGrupo($this->grupo)->ordenadas()->with('ejercicios')->get();
+            $datos['avisoSinVerificar'] = $datos['categorias']->contains(fn ($c) => ! $c->verificado);
             $datos['nota'] = NotaCalentamiento::where('grupo_etario', $this->grupo)->first();
             $datos['clases'] = Clase::activas()->orderBy('nombre')->get();
 
@@ -278,6 +283,6 @@ class Planificador extends Component
             $datos['leccion'] = $lecciones->firstWhere('semana', $this->lecSemana);
         }
 
-        return view('livewire.planillas.planificador', $datos);
+        return view('livewire.planificador.planificador', $datos);
     }
 }

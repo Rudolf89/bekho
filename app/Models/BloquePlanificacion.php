@@ -7,20 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
- * Bloque de una planilla. Transversal (la planilla es contenido compartido).
+ * Bloque de una planificación de clase. Transversal (la planificación es
+ * contenido compartido).
  */
-class BloquePlanilla extends Model
+class BloquePlanificacion extends Model
 {
     /**
      * @var string
      */
-    protected $table = 'bloques_planilla';
+    protected $table = 'bloques_planificacion';
 
     /**
      * @var list<string>
      */
     protected $fillable = [
-        'planilla_id',
+        'planificacion_clase_id',
         'tipo',
         'tiempo',
         'titulo',
@@ -41,11 +42,11 @@ class BloquePlanilla extends Model
     }
 
     /**
-     * @return BelongsTo<Planilla, $this>
+     * @return BelongsTo<PlanificacionClase, $this>
      */
-    public function planilla(): BelongsTo
+    public function planificacion(): BelongsTo
     {
-        return $this->belongsTo(Planilla::class);
+        return $this->belongsTo(PlanificacionClase::class, 'planificacion_clase_id');
     }
 
     /**

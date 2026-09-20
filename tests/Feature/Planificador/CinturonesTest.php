@@ -2,7 +2,7 @@
 
 use App\Enums\EscalaGrado;
 use App\Enums\TipoGrado;
-use App\Livewire\Planillas\Cinturones;
+use App\Livewire\Planificador\Cinturones;
 use App\Models\Grado;
 use App\Models\Grupo;
 use App\Models\Tecnica;
@@ -100,7 +100,7 @@ test('la página de cinturones muestra la escala y su significado', function () 
         ->assertSee('Decidido');
 });
 
-test('la página de cinturones exige el permiso de gestionar planillas', function () {
+test('la página de cinturones exige el permiso de gestionar planificaciones', function () {
     $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);

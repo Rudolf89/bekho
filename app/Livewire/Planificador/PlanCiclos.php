@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\FilaPlannerCiclo;
 use App\Models\Ciclo;
@@ -38,7 +38,7 @@ class PlanCiclos extends Component
             ])
             : collect();
 
-        return view('livewire.planillas.plan-ciclos', [
+        return view('livewire.planificador.plan-ciclos', [
             'ciclos' => $ciclos,
             'ciclo' => $ciclo,
             'filas' => FilaPlannerCiclo::cases(),

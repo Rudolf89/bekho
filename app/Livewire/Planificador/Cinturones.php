@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\EscalaGrado;
 use App\Models\Grado;
@@ -28,7 +28,7 @@ class Cinturones extends Component
             ->with(['tecnicas' => fn ($q) => $q->ordenadas()])
             ->get();
 
-        return view('livewire.planillas.cinturones', [
+        return view('livewire.planificador.cinturones', [
             'escalas' => EscalaGrado::cases(),
             'escalaActual' => $escala,
             'grados' => $grados,

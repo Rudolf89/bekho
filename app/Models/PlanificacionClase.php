@@ -12,15 +12,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Planilla: rutina de una clase (grupo etario × nivel × programa). Combina
- * bloques de actividad, la capa de Cuadrantes de Enseñanza y una Habilidad para
- * la Vida.
+ * Planificación de clase: rutina de una clase (grupo etario × nivel × programa).
+ * Combina bloques de actividad, la capa de Cuadrantes de Enseñanza y una
+ * Habilidad para la Vida. ("Planilla" queda reservado para competencia.)
  *
  * Es TRANSVERSAL: el currículo/rutina es contenido ATA/BEKHO compartido por toda
  * la federación (sin grupo_id), como cargos_rangos.
  */
-class Planilla extends Model
+class PlanificacionClase extends Model
 {
+    /**
+     * @var string
+     */
+    protected $table = 'planificaciones_clase';
+
     /**
      * @var list<string>
      */
@@ -31,6 +36,8 @@ class Planilla extends Model
         'nivel',
         'habilidad_vida',
         'activo',
+        'fuente',
+        'verificado',
     ];
 
     /**
@@ -43,6 +50,7 @@ class Planilla extends Model
             'nivel' => NivelEntrenamiento::class,
             'habilidad_vida' => HabilidadVida::class,
             'activo' => 'boolean',
+            'verificado' => 'boolean',
         ];
     }
 
@@ -57,35 +65,35 @@ class Planilla extends Model
     /**
      * Bloques de actividad, ordenados.
      *
-     * @return HasMany<BloquePlanilla, $this>
+     * @return HasMany<BloquePlanificacion, $this>
      */
     public function bloques(): HasMany
     {
-        return $this->hasMany(BloquePlanilla::class)->orderBy('orden');
+        return $this->hasMany(BloquePlanificacion::class)->orderBy('orden');
     }
 
     /**
      * Cuadrantes de enseñanza.
      *
-     * @return HasMany<CuadrantePlanilla, $this>
+     * @return HasMany<CuadrantePlanificacion, $this>
      */
     public function cuadrantes(): HasMany
     {
-        return $this->hasMany(CuadrantePlanilla::class);
+        return $this->hasMany(CuadrantePlanificacion::class);
     }
 
     /**
-     * Clases del horario que usan esta planilla.
+     * Clases del horario que usan esta planificación.
      *
      * @return HasMany<Clase, $this>
      */
     public function clases(): HasMany
     {
-        return $this->hasMany(Clase::class);
+        return $this->hasMany(Clase::class, 'planificacion_clase_id');
     }
 
     /**
-     * Currículo técnico del nivel de la planilla (fórmula, patadas, etc.).
+     * Currículo técnico del nivel de la planificación (fórmula, patadas, etc.).
      *
      * @return BelongsTo<CurriculoNivel, $this>
      */

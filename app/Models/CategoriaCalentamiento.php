@@ -20,7 +20,15 @@ class CategoriaCalentamiento extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['clave', 'nombre', 'color', 'orden'];
+    protected $fillable = ['clave', 'nombre', 'color', 'orden', 'fuente', 'verificado'];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return ['verificado' => 'boolean'];
+    }
 
     /**
      * Ejercicios de la categoría, ordenados.

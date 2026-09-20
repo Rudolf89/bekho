@@ -1,7 +1,7 @@
 <?php
 
 use App\Enums\CategoriaTecnica;
-use App\Livewire\Planillas\BibliotecaTecnicas;
+use App\Livewire\Planificador\BibliotecaTecnicas;
 use App\Models\Grupo;
 use App\Models\Tecnica;
 use App\Models\User;
@@ -53,7 +53,7 @@ test('la biblioteca filtra por categoría y modalidad', function () {
         ->assertDontSee('Jahng Bong — Release'); // es un arma, no un trick
 });
 
-test('la biblioteca exige el permiso de gestionar planillas', function () {
+test('la biblioteca exige el permiso de gestionar planificaciones', function () {
     $instructor = User::factory()->create(['grupo_id' => $this->bekho->id]);
     $instructor->assignRole('instructor');
     $apoderado = User::factory()->create(['grupo_id' => $this->bekho->id]);

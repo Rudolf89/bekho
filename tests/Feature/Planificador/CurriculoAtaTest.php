@@ -2,7 +2,7 @@
 
 use App\Enums\Cuadrante;
 use App\Enums\RolCuadrante;
-use App\Livewire\Planillas\CuadrantesEnsenanza;
+use App\Livewire\Planificador\CuadrantesEnsenanza;
 use App\Models\CuadranteItem;
 use App\Models\Grado;
 use App\Models\Grupo;

@@ -1,21 +1,21 @@
 <?php
 
-namespace App\Livewire\Planillas;
+namespace App\Livewire\Planificador;
 
 use App\Enums\GrupoEtario;
 use App\Enums\HabilidadVida;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
-use App\Models\Planilla;
+use App\Models\PlanificacionClase;
 use App\Models\Programa;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Title('Planillas de clase')]
-class GestionPlanillas extends Component
+#[Title('Planificaciones de clase')]
+class GestionPlanificaciones extends Component
 {
     use ConTabla, SoloLectura;
 
@@ -62,19 +62,19 @@ class GestionPlanillas extends Component
 
         $datos = $this->validate();
 
-        $planilla = Planilla::create($datos);
-        $planilla->generarEstructura();
+        $planificacion = PlanificacionClase::create($datos);
+        $planificacion->generarEstructura();
 
-        Flux::toast(variant: 'success', text: 'Planilla creada. Completa su contenido.');
+        Flux::toast(variant: 'success', text: 'Planificación creada. Completa su contenido.');
 
-        return $this->redirect(route('planillas.editar', $planilla), navigate: true);
+        return $this->redirect(route('planificaciones.editar', $planificacion), navigate: true);
     }
 
     public function render()
     {
-        return view('livewire.planillas.gestion-planillas', [
-            'planillas' => $this->aplicarOrden(
-                $this->aplicarBusqueda(Planilla::with('programa'), ['nombre', 'programa.nombre']),
+        return view('livewire.planificador.gestion-planificaciones', [
+            'planificaciones' => $this->aplicarOrden(
+                $this->aplicarBusqueda(PlanificacionClase::with('programa'), ['nombre', 'programa.nombre']),
                 ['nombre', 'grupo_etario', 'nivel'], 'grupo_etario'
             )->orderBy('nombre')->get(),
             'grupos' => GrupoEtario::cases(),

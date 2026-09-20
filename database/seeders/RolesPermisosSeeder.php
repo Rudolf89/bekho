@@ -38,7 +38,7 @@ class RolesPermisosSeeder extends Seeder
             'registrar pagos',
             'gestionar examenes',
             'inscribir examenes',
-            'gestionar planillas',
+            'gestionar planificaciones',
             'gestionar competencia', // planillas de competencia (certificación de planillero)
             'gestionar formacion',
             'ver formacion',
@@ -67,7 +67,7 @@ class RolesPermisosSeeder extends Seeder
             'gestionar alumnos',
             'gestionar clases',
             'gestionar examenes',
-            'gestionar planillas',
+            'gestionar planificaciones',
             'gestionar competencia',
             'gestionar formacion',
             'ver formacion',
@@ -83,7 +83,7 @@ class RolesPermisosSeeder extends Seeder
             'registrar pagos',
             'gestionar examenes',
             'inscribir examenes',
-            'gestionar planillas',
+            'gestionar planificaciones',
             'gestionar competencia',
             'gestionar formacion',
             'ver formacion',
@@ -115,13 +115,13 @@ class RolesPermisosSeeder extends Seeder
             'rendir cuestionarios',
         ]);
 
-        // instructor: asistencia, planillas, inscribir en exámenes, ver formación.
+        // instructor: asistencia, planificaciones, inscribir en exámenes, ver formación.
         // Los alumnos que ve son solo los de SUS clases (MatriculaPolicy), por eso
         // NO tiene "gestionar alumnos" (accede a la vista por la Policy viewAny).
         // Como examinador puede crear/editar cuestionarios.
         Role::findOrCreate('instructor')->syncPermissions([
             'tomar asistencia',
-            'gestionar planillas',
+            'gestionar planificaciones',
             'gestionar competencia',
             'inscribir examenes',
             'ver formacion',
