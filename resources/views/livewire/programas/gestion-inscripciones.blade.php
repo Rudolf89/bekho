@@ -92,6 +92,31 @@
                         </ul>
                     @endif
 
+                    {{-- Asistencia como ayudante (horas calculadas del horario) --}}
+                    <div class="rounded-lg border border-zinc-100 p-3 dark:border-zinc-700">
+                        <flux:text class="text-xs font-semibold uppercase text-zinc-500">Asistencia como ayudante</flux:text>
+                        <form wire:submit="registrarAyudante" class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-[1fr_auto_auto] sm:items-end">
+                            <flux:select wire:model="ayudanteClaseId" label="Clase" placeholder="Elige…">
+                                @foreach ($clases as $clase)
+                                    <flux:select.option value="{{ $clase->id }}">{{ $clase->nombre }}</flux:select.option>
+                                @endforeach
+                            </flux:select>
+                            <flux:input type="date" wire:model="ayudanteFecha" label="Fecha" />
+                            <flux:button type="submit" size="sm" icon="plus">Registrar</flux:button>
+                        </form>
+
+                        @if ($marcasAyudante->isNotEmpty())
+                            <ul class="mt-2 divide-y divide-zinc-100 text-sm dark:divide-zinc-700">
+                                @foreach ($marcasAyudante as $marca)
+                                    <li class="flex items-center justify-between py-1.5">
+                                        <span>{{ $marca->fecha?->format('d-m-Y') }} · {{ $marca->clase?->nombre }} · {{ $marca->horas }} h</span>
+                                        <flux:button variant="ghost" size="xs" icon="trash" wire:click="quitarAyudante({{ $marca->id }})" />
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+
                     {{-- Requisitos --}}
                     @if ($inscripcion->etapaActual?->requisitos->isNotEmpty())
                         <div>

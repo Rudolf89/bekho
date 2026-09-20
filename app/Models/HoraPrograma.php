@@ -18,7 +18,7 @@ class HoraPrograma extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'inscripcion_programa_id', 'fecha', 'horas', 'origen', 'descripcion', 'registrado_por_user_id',
+        'inscripcion_programa_id', 'fecha', 'horas', 'origen', 'asistencia_ayudante_id', 'descripcion', 'registrado_por_user_id',
     ];
 
     /**
@@ -46,5 +46,15 @@ class HoraPrograma extends Model
     public function registradoPor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'registrado_por_user_id');
+    }
+
+    /**
+     * Marca de asistencia de ayudante que originó la hora (si aplica).
+     *
+     * @return BelongsTo<AsistenciaAyudante, $this>
+     */
+    public function asistenciaAyudante(): BelongsTo
+    {
+        return $this->belongsTo(AsistenciaAyudante::class, 'asistencia_ayudante_id');
     }
 }

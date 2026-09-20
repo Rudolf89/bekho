@@ -244,6 +244,8 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   `database/data/legacy_niveles.json` (`EtapasProgramaSeeder`); un requisito puede
   enlazarse a un cuestionario (prueba escrita = intento aprobado). Operativo por persona:
   `inscripciones_programa`, `horas_programa`, `cumplimientos_requisito`, `ascensos_programa`.
+  Las horas se registran a mano o desde la **asistencia como ayudante**
+  (`asistencias_ayudante` + `ServicioHorasAyudante`, horas congeladas del horario).
 
 ## Convenciones
 
@@ -380,9 +382,14 @@ PERSONA: nuevas `inscripciones_programa` (transversal, sin grupo_id), `horas_pro
 + `registrado_por_user_id` (un hook autocompleta persona desde el user al crear).
 `App\Support\Formacion\MigraFormacionAPersona` traslada los datos viejos sin pérdida
 (user→persona; horas manuales congeladas; un user sin persona queda fuera y se reporta;
-cumplimientos best-effort al resembrar los requisitos). **Decisión:** las horas por ahora
-solo migran las manuales; el cálculo desde la asistencia con papel de ayudante queda como
-follow-up (hoy no hay registro de ayudante por sesión del cual sumarlas). **(c) HECHO** —
+cumplimientos best-effort al resembrar los requisitos). **Horas por asistencia (follow-up
+HECHO):** `asistencias_ayudante` (persona×clase×fecha, marca por sesión, operativo) +
+`ServicioHorasAyudante`: al marcar a un trainee como ayudante de una clase en una fecha se
+CONGELAN las horas (= suma de la duración de los horarios de esa clase ese día) y se
+acreditan a su inscripción En curso cuya etapa exige horas (`horas_programa` con
+`origen='asistencia'` y `asistencia_ayudante_id`); no se recalculan si cambia el horario, y
+quitar la marca elimina su hora. Se registra desde `GestionInscripciones` (permiso
+`gestionar inscripciones`). Conviven con las horas manuales. **(c) HECHO** —
 instrumentos de evaluación práctica: `instrumentos_evaluacion` (catálogo de la
 federación; escala + `puntaje_maximo`; aprueba por `umbral_porcentaje` O `nota_minima`,
 alternativos según la escala) → `secciones_instrumento` → `criterios_instrumento`

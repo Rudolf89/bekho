@@ -4,11 +4,15 @@ namespace App\Livewire\Programas;
 
 use App\Enums\EstadoLegacy;
 use App\Livewire\Concerns\ConTabla;
+use App\Models\AsistenciaAyudante;
+use App\Models\Clase;
 use App\Models\InscripcionPrograma;
 use App\Models\Persona;
 use App\Models\Programa;
 use App\Models\RequisitoEtapa;
+use App\Services\ServicioHorasAyudante;
 use App\Support\Tenancy\Grupo as Tenant;
+use Carbon\Carbon;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Title;
@@ -39,6 +43,11 @@ class GestionInscripciones extends Component
     public string $horaCantidad = '';
 
     public string $horaDescripcion = '';
+
+    // Registro de asistencia como ayudante (horas calculadas del horario).
+    public string $ayudanteClaseId = '';
+
+    public string $ayudanteFecha = '';
 
     public function crearInscripcion(): void
     {
@@ -116,6 +125,43 @@ class GestionInscripciones extends Component
         }
     }
 
+    /**
+     * Registra la asistencia del trainee como ayudante: congela las horas del
+     * horario de esa clase ese día y las acredita a su inscripción que las exige.
+     */
+    public function registrarAyudante(ServicioHorasAyudante $servicio): void
+    {
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
+
+        $inscripcion = $this->inscripcion();
+        if (! $inscripcion) {
+            return;
+        }
+
+        $this->validate([
+            'ayudanteClaseId' => ['required', 'exists:clases,id'],
+            'ayudanteFecha' => ['required', 'date'],
+        ], [], ['ayudanteClaseId' => 'clase', 'ayudanteFecha' => 'fecha']);
+
+        $clase = Clase::with('horarios')->find($this->ayudanteClaseId);
+        $marca = $servicio->marcar($inscripcion->persona, $clase, Carbon::parse($this->ayudanteFecha), Auth::id());
+
+        $this->reset('ayudanteClaseId', 'ayudanteFecha');
+
+        if ((float) $marca->horas <= 0) {
+            Flux::toast(variant: 'warning', text: 'Esa clase no tiene horario ese día: no se sumaron horas.');
+        }
+    }
+
+    public function quitarAyudante(int $marcaId, ServicioHorasAyudante $servicio): void
+    {
+        abort_unless(Auth::user()->can('gestionar inscripciones'), 403);
+
+        if ($marca = AsistenciaAyudante::find($marcaId)) {
+            $servicio->quitar($marca);
+        }
+    }
+
     public function aprobar(): void
     {
         $inscripcion = $this->inscripcion();
@@ -184,13 +230,20 @@ class GestionInscripciones extends Component
             ->when(Tenant::id(), fn ($q, $id) => $q->whereHas('matriculas', fn ($m) => $m->where('grupo_id', $id)))
             ->orderBy('nombres')->get();
 
+        $inscripcion = $this->inscripcion();
+        $marcasAyudante = $inscripcion
+            ? AsistenciaAyudante::where('persona_id', $inscripcion->persona_id)->with('clase')->orderByDesc('fecha')->get()
+            : collect();
+
         return view('livewire.programas.gestion-inscripciones', [
             'inscripciones' => $inscripciones,
             'horasTotales' => $inscripciones->sum('horas_total'),
-            'inscripcion' => $this->inscripcion(),
+            'inscripcion' => $inscripcion,
             'personas' => $personas,
             'programas' => Programa::activos()->has('etapas')->ordenados()->get(),
-            'puedeAprobarActual' => ($i = $this->inscripcion()) ? $this->puedeAprobar($i) : false,
+            'puedeAprobarActual' => $inscripcion ? $this->puedeAprobar($inscripcion) : false,
+            'clases' => Clase::where('activo', true)->orderBy('nombre')->get(),
+            'marcasAyudante' => $marcasAyudante,
         ]);
     }
 }

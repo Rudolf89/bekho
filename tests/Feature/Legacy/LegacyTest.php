@@ -3,6 +3,7 @@
 use App\Enums\EstadoIntento;
 use App\Enums\EstadoLegacy;
 use App\Livewire\Programas\GestionInscripciones;
+use App\Models\Clase;
 use App\Models\Cuestionario;
 use App\Models\EtapaPrograma;
 use App\Models\Grupo;
@@ -144,6 +145,30 @@ test('el instructor del alumno puede aprobar; uno ajeno no', function () {
         ->set('inscripcionId', $inscripcion->id)
         ->call('aprobar')
         ->assertOk();
+});
+
+test('registrar asistencia como ayudante suma las horas del horario a la inscripción', function () {
+    $direccion = usuarioLegacy('direccion', $this->bekho->id);
+    $sede = Sede::create(['grupo_id' => $this->bekho->id, 'nombre' => 'Central', 'activo' => true]);
+
+    $clase = Clase::create([
+        'grupo_id' => $this->bekho->id, 'sede_id' => $sede->id, 'nombre' => 'Kids A',
+        'grupo_etario' => 'for_kids', 'activo' => true,
+    ]);
+    $clase->horarios()->create(['dia_semana' => 1, 'hora_inicio' => '18:00', 'hora_fin' => '19:30']); // lunes 1,5 h
+
+    $persona = Persona::create(['nombres' => 'Formando', 'fecha_nacimiento' => now()->subYears(18)]);
+    $etapa = $this->legacy->etapas()->orderBy('orden')->first();
+    $inscripcion = inscribirEnPrograma($persona, $etapa);
+
+    Livewire::actingAs($direccion)->test(GestionInscripciones::class)
+        ->set('inscripcionId', $inscripcion->id)
+        ->set('ayudanteClaseId', (string) $clase->id)
+        ->set('ayudanteFecha', '2026-01-05') // lunes
+        ->call('registrarAyudante');
+
+    expect((float) $inscripcion->fresh()->horasAcumuladas())->toBe(1.5)
+        ->and($inscripcion->horas()->where('origen', 'asistencia')->count())->toBe(1);
 });
 
 test('un requisito enlazado a un cuestionario se cumple al aprobar el intento', function () {
