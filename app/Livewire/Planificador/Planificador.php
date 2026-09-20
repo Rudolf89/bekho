@@ -2,14 +2,17 @@
 
 namespace App\Livewire\Planificador;
 
+use App\Enums\CategoriaJuramento;
 use App\Enums\FilaPlannerCiclo;
 use App\Enums\GrupoEtario;
+use App\Enums\MomentoJuramento;
 use App\Enums\NivelEntrenamiento;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\CategoriaCalentamiento;
 use App\Models\Ciclo;
 use App\Models\Clase;
 use App\Models\EjercicioCalentamiento;
+use App\Models\Juramento;
 use App\Models\LeccionVida;
 use App\Models\NotaCalentamiento;
 use App\Models\PlanificacionCinturonNegro;
@@ -221,7 +224,18 @@ class Planificador extends Component
             'grupoEnum' => GrupoEtario::from($this->grupo),
             // Aviso: el contenido mostrado no está validado por la federación.
             'avisoSinVerificar' => false,
+            // Juramentos de inicio/cierre de la categoría del grupo (se llenan en planner).
+            'juramentosInicio' => collect(),
+            'juramentosCierre' => collect(),
         ];
+
+        // Juramentos que se recitan al inicio y al cierre, según la categoría de
+        // clase del grupo etario elegido (Tigers vs. Kids y Adultos).
+        if ($this->tab === 'planner') {
+            $categoria = CategoriaJuramento::paraGrupo(GrupoEtario::from($this->grupo));
+            $datos['juramentosInicio'] = Juramento::paraCategoria($categoria)->paraMomento(MomentoJuramento::Inicio)->get();
+            $datos['juramentosCierre'] = Juramento::paraCategoria($categoria)->paraMomento(MomentoJuramento::Cierre)->get();
+        }
 
         if ($this->tab === 'planner' && ! $this->esBlackBelt()) {
             $planificacion = $this->planificacionActual()?->load(['bloques', 'curriculo']);

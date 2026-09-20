@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             // Catálogos del Manual ATA Legacy (verificados): leyenda de formas,
             // habilidades para la vida, atributos técnicos y armas Protech.
             ManualLegacySeeder::class,
+            // Juramentos confirmados por la federación (inicio/cierre + Tigers).
+            JuramentosSeeder::class,
             ProgramasSeeder::class,
             GradosSeeder::class,
             RolesPermisosSeeder::class,

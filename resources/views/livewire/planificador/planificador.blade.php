@@ -59,6 +59,25 @@
         </flux:callout>
     @endif
 
+    {{-- Juramentos de inicio y cierre de la clase (según la categoría del grupo). --}}
+    @if ($tab === 'planner' && ($juramentosInicio->isNotEmpty() || $juramentosCierre->isNotEmpty()))
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            @foreach (['Inicio de la clase' => $juramentosInicio, 'Cierre de la clase' => $juramentosCierre] as $titulo => $lista)
+                <div class="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-700 dark:bg-zinc-800">
+                    <flux:heading size="sm" class="mb-2">🙏 {{ $titulo }}</flux:heading>
+                    @forelse ($lista as $juramento)
+                        <div wire:key="jur-{{ $titulo }}-{{ $juramento->id }}" class="mb-3 last:mb-0">
+                            <flux:text size="sm" class="font-semibold">{{ $juramento->nombre }}</flux:text>
+                            <flux:text size="sm" class="mt-0.5 italic text-zinc-500">{{ $juramento->texto }}</flux:text>
+                        </div>
+                    @empty
+                        <flux:text size="sm" class="text-zinc-400">Sin juramento para este momento.</flux:text>
+                    @endforelse
+                </div>
+            @endforeach
+        </div>
+    @endif
+
     {{-- ═══════════ PLANNER (regular) ═══════════ --}}
     @if ($tab === 'planner' && ! $esBlackBelt)
         @if ($planificacion)

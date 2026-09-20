@@ -41,7 +41,8 @@ Piezas del tenant:
 `habilidades_vida`, `atributos_tecnicos`, `armas`, `cuadrante_items`, `grados`,
 `grado_tecnica`, `curriculos_nivel`, `lecciones_vida`, biblioteca de calentamiento,
 planificador de Cinturón Negro, `cuestionarios`, `preguntas_cuestionario`,
-`opciones_pregunta`, `recompensas`, `niveles_legacy`, `requisitos_legacy`, `distintivos_rango`. **Transversales (identidad,
+`opciones_pregunta`, `recompensas`, `niveles_legacy`, `requisitos_legacy`, `distintivos_rango`,
+`juramentos`. **Transversales (identidad,
 sin `grupo_id` pero operativos):** `personas`, `instructores`, `tutelas`,
 `creditos_graduacion`. **Datos operativos = CON `grupo_id`**:
 usuarios, sedes, alumnos, clases, asistencia, pagos, exámenes, `calentamiento_clase`,
@@ -178,7 +179,11 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   vida), **Biblioteca de técnicas** (patadas/manos/tricks/armas con pasos; las
   **formas** ya NO son técnicas), **Formas** (`Formas`: página propia, poomsae del
   Manual ATA Legacy con su secuencia paso a paso desde `formas`/`pasos_forma`),
-  **Cuadrantes de Enseñanza**, **Cinturones** (`Cinturones`: escala de grados con
+  **Cuadrantes de Enseñanza**, **juramentos** (`juramentos`: Espíritu Songahm de
+  inicio/cierre y juramento Tigers, confirmados por la federación; el Planificador
+  los muestra al inicio y al cierre según la categoría del grupo —
+  `App\Enums\CategoriaJuramento` Tigers / Kids y Adultos, `MomentoJuramento`
+  inicio/cierre/ambos), **Cinturones** (`Cinturones`: escala de grados con
   color, `tipo` recomendado/decidido/dan, `franjas`, significado Songahm, las
   técnicas enlazadas por color vía `grado_tecnica` y la **comparativa de patadas
   BEKHO (examen) vs ATA (manual)** por grado). Eje: `Ciclo` = 6 Habilidades de
