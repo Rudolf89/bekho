@@ -1,0 +1,26 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018): cuadrante Conocimiento y Hojas de trabajo de habilidades físicas",
+  "nota": "Los diez atributos son la rúbrica con que se evalúan formas y patadas. Para las formas se agregan tres criterios previos de conocimiento.",
+  "atributos": [
+    { "orden": 1, "nombre": "Base", "definicion": "Fundamento de toda técnica: pie de apoyo al patear, punto de partida de las técnicas de mano." },
+    { "orden": 2, "nombre": "Trayectoria", "definicion": "El camino que recorre la técnica del punto A al punto B." },
+    { "orden": 3, "nombre": "Extensión / acompañamiento", "definicion": "Ir más allá del blanco: extensión completa de la técnica." },
+    { "orden": 4, "nombre": "Posición articular", "definicion": "Disposición correcta de todas las articulaciones para la técnica." },
+    { "orden": 5, "nombre": "Equilibrio (alineación corporal)", "definicion": "Alineación corporal, postura, base correcta y contacto visual." },
+    { "orden": 6, "nombre": "Precisión", "definicion": "Golpear el blanco exacto con el punto de contacto correcto." },
+    { "orden": 7, "nombre": "Velocidad", "definicion": "Tiempo que tarda la técnica del punto A al B. Relajar los músculos y explotar." },
+    { "orden": 8, "nombre": "Fuerza de reacción", "definicion": "El contrabalance de cada movimiento." },
+    { "orden": 9, "nombre": "Potencia", "definicion": "Rotación del cuerpo e incorporación de la masa corporal mediante la aceleración." },
+    { "orden": 10, "nombre": "Reflejo automático", "definicion": "La repetición correcta permite reaccionar sin esfuerzo." }
+  ],
+  "criterios_conocimiento_forma": [
+    { "orden": 1, "nombre": "Significado del color de cinturón" },
+    { "orden": 2, "nombre": "Significado del nombre de la forma" },
+    { "orden": 3, "nombre": "Memoria de la forma" }
+  ],
+  "aplicacion": {
+    "formas_por_numero": ["Songahm 1", "Songahm 2", "Songahm 3", "Songahm 4", "Songahm 5", "In Wha 1", "In Wha 2", "Choong Jung 1", "Choong Jung 2"],
+    "formas_por_nombre": ["Shim Jun", "Jung Yul", "Chung San", "Sok Bong", "Chung Hae", "Jahng Soo", "Chul Joon", "Jeong Seung"],
+    "patadas_por_cinturon": ["Blanco", "Naranja", "Amarillo", "Camuflaje", "Verde", "Morado", "Azul", "Marrón", "Rojo", "Rojo-Negro", "1.er Dan (recomendado)", "2.º Dan"]
+  }
+}

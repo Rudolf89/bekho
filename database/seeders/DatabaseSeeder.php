@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
             CargosRangosSeeder::class,
             // Distintivos de collar del profesor (avance por créditos de graduación).
             DistintivosRangoSeeder::class,
+            // Catálogos del Manual ATA Legacy (verificados): leyenda de formas,
+            // habilidades para la vida, atributos técnicos y armas Protech.
+            ManualLegacySeeder::class,
             ProgramasSeeder::class,
             GradosSeeder::class,
             RolesPermisosSeeder::class,

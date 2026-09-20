@@ -1,0 +1,250 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018), sección Nivel 2: Cuadrantes de Enseñanza",
+  "cuadrantes": [
+    {
+      "nombre": "Estructura",
+      "subtitulo": "Organización de la clase",
+      "orden": 1,
+      "items": [
+        {
+          "orden": 1,
+          "alumno": "Saludar (reverencia) en la puerta y en el tatami",
+          "explicacion_alumno": "El alumno entra y sale del recinto diciendo «Hola, señor/señora — Adiós, señor/señora». Enseña comunicación y respeto, y permite a los instructores notar su presencia.",
+          "instructor": "Puntos marcados en el piso",
+          "explicacion_instructor": "Deben ser visibles y mantener una distancia segura entre sí para la práctica."
+        },
+        {
+          "orden": 2,
+          "alumno": "Bolsos y zapatos en su lugar",
+          "explicacion_alumno": "Disciplina. La escuela es un lugar de respeto y hay que dar el ejemplo. Si no hay un lugar designado, los bolsos se alinean uno junto a otro con los zapatos dentro.",
+          "instructor": "Blancos (targets) en la pared",
+          "explicacion_instructor": "Todos los blancos deben verse ordenados contra la pared. Evitar apilarlos por higiene."
+        },
+        {
+          "orden": 3,
+          "alumno": "Retirar la tarjeta de asistencia",
+          "explicacion_alumno": "Inmediatamente después de saludar y guardar sus cosas, el alumno retira su tarjeta del tarjetero. Facilita la llamada de «te extrañamos» cuando alguien falta.",
+          "instructor": "Cintas precortadas, estrellas en papel, parches con nombre",
+          "explicacion_instructor": "Las cintas, precortadas y listas. Las estrellas, en papel de premiación para que los padres vean el reconocimiento. El parche Karate for Kids se entrega cuando el alumno trae un invitado. Todo alumno nuevo debe tener su nombre en un parche visible."
+        },
+        {
+          "orden": 4,
+          "alumno": "Formar fila por estatura",
+          "explicacion_alumno": "Fila recta sobre el tatami, del más bajo al más alto, antes de entrar a clase. El más bajo adelante, para mejor visibilidad de alumnos e instructores.",
+          "instructor": "Reverencia a los padres / a las banderas",
+          "explicacion_instructor": "Es el momento de conectar con los padres y hacerlos sentir parte de la clase. El instructor camina hacia ellos, da el ejemplo y los saluda."
+        },
+        {
+          "orden": 5,
+          "alumno": "Entregar las tarjetas",
+          "explicacion_alumno": "A la orden «¡Tarjetas afuera!», los alumnos abren los pies en paralelo, extienden los brazos y sostienen la tarjeta entre las yemas. El alumno más alto las recoge y las entrega al instructor, que así ve quién está por recibir cintas o recomendaciones de ascenso.",
+          "instructor": "Recitar el juramento correspondiente",
+          "explicacion_instructor": "Juramento Tiger de ATA, juramento Karate Kid y Espíritu Songahm."
+        },
+        {
+          "orden": 6,
+          "alumno": "Giro a la derecha / izquierda",
+          "explicacion_alumno": "Forma militar de dar estructura. Tras la orden, los alumnos golpean el piso dos veces con los pies diciendo «¡Sí, señor! ¡Listo!» y llevan las manos a los costados en atención.",
+          "instructor": "Calendario, folletos, pases VIP",
+          "explicacion_instructor": "Tener cada evento listo con un folleto o invitación para repartir al final de la clase."
+        },
+        {
+          "orden": 7,
+          "alumno": "Tomar y guardar el equipo por fila",
+          "explicacion_alumno": "El equipo se toma de forma ordenada. Evitar correr y el desorden; resalta la disciplina de la clase.",
+          "instructor": "Equipo adecuado",
+          "explicacion_instructor": "El equipo de protección debe ser apropiado y revisarse durante la clase a medida que se usa."
+        },
+        {
+          "orden": 8,
+          "alumno": "Posición de escucha",
+          "explicacion_alumno": "El alumno se arrodilla con ambas manos sobre las rodillas, o adopta una posición de bloqueo bajo.",
+          "instructor": "Inspección de uniforme",
+          "explicacion_instructor": "Se realiza en la formación. Uniformes planchados, limpios y sin olor, con el cinturón bien atado."
+        },
+        {
+          "orden": 9,
+          "alumno": "Fila 1 frente a Fila 2 (etc.)",
+          "explicacion_alumno": "Para ejercicios en pareja. Los alumnos proceden igual que en el giro a la derecha o izquierda.",
+          "instructor": "Imagen impecable",
+          "explicacion_instructor": "La apariencia del instructor debe ser intachable: cabello, olor, sin piercings ni tatuajes visibles."
+        },
+        {
+          "orden": 10,
+          "alumno": "Salida por filas",
+          "explicacion_alumno": "Se despide a los alumnos en orden de estatura; cada uno toma su bolso y zapatos y hace la reverencia al salir.",
+          "instructor": "Seguir el planificador de clase",
+          "explicacion_instructor": "Deben cubrirse todos los puntos del planificador. No desviarse del sistema es lo que hace crecer a la escuela."
+        }
+      ]
+    },
+    {
+      "nombre": "Emoción",
+      "subtitulo": "Punto del instructor",
+      "orden": 2,
+      "items": [
+        {
+          "orden": 1,
+          "alumno": "Actitud «¡Sí puedo!»",
+          "explicacion_alumno": "El alumno debe mostrar su mejor comportamiento. La actitud es imprescindible.",
+          "instructor": "Contacto visual",
+          "explicacion_instructor": "Haz contacto visual con cada alumno. Cada 3 segundos, cada alumno debe sentir que le hablas a él."
+        },
+        {
+          "orden": 2,
+          "alumno": "Tono de voz",
+          "explicacion_alumno": "Al recibir una orden, las respuestas deben ser firmes.",
+          "instructor": "Voz de mando",
+          "explicacion_instructor": "Las órdenes deben ser firmes, breves y fuertes. Deben entrar por los oídos y llegar a los músculos. La voz debe transmitir confianza."
+        },
+        {
+          "orden": 3,
+          "alumno": "Postura corporal",
+          "explicacion_alumno": "Pecho afuera, mentón arriba. El alumno mantiene postura de líder en todo momento.",
+          "instructor": "Ritmo y picos de voz (pace and peak)",
+          "explicacion_instructor": "El volumen sube y luego vuelve a bajar. Reservar el volumen alto para una orden, no para explicar un ejercicio."
+        },
+        {
+          "orden": 4,
+          "alumno": "Movimiento corporal / reacción inmediata",
+          "explicacion_alumno": "Ante una orden, el alumno responde de inmediato. Sin tiempo para analizar.",
+          "instructor": "Sonrisa",
+          "explicacion_instructor": "Vale más que mil palabras. El instructor debe verse fuerte y seguro, pero no molesto. La sonrisa es una de las mejores formas de aprobar la técnica o conducta del alumno."
+        },
+        {
+          "orden": 5,
+          "alumno": "Intensidad",
+          "explicacion_alumno": "Cada movimiento y técnica se practica con total intensidad, como si fuera una situación real.",
+          "instructor": "Destacar (highlight)",
+          "explicacion_instructor": "Encuentra a alguien que pueda demostrar lo que quieres que todos logren. Destaca la acción específica, no a la persona."
+        },
+        {
+          "orden": 6,
+          "alumno": "Expresiones faciales",
+          "explicacion_alumno": "Expresiones positivas, fuertes, de guerrero.",
+          "instructor": "Demostración espectacular",
+          "explicacion_instructor": "La ejecución debe inspirar y dar al alumno una comprensión visual de cómo realizar la técnica."
+        },
+        {
+          "orden": 7,
+          "alumno": "Respiración correcta / KIHAP fuerte",
+          "explicacion_alumno": "Gritar fuerte no es un atributo; el alumno debe aprender a usar el «Ki» como fuente de fuerza y energía.",
+          "instructor": "Contacto físico adecuado",
+          "explicacion_instructor": "Si tocas al alumno, hazlo de forma apropiada y visible. Los demás deben ver tus dos manos."
+        },
+        {
+          "orden": 8,
+          "alumno": "Dramatismo positivo",
+          "explicacion_alumno": "Los movimientos y ejecuciones deben verse dramáticos y realizarse de manera positiva.",
+          "instructor": "Historia personal",
+          "explicacion_instructor": "Vincula tu historia personal (o la de otro instructor) con el tema enseñado. Debe ser real y breve."
+        },
+        {
+          "orden": 9,
+          "alumno": "Aliento (alentar a los demás)",
+          "explicacion_alumno": "Los alumnos deben alentarse entre sí. Es un gran rasgo de liderazgo.",
+          "instructor": "Dramatismo e intensidad",
+          "explicacion_instructor": "Ejecuta con dramatismo positivo. Usa la intensidad de tu técnica para que hable más fuerte que tus palabras."
+        },
+        {
+          "orden": 10,
+          "alumno": "Celebrar",
+          "explicacion_alumno": "El alumno celebra sus logros cuando el instructor lo indica. Fija en el cuerpo el hábito de lograr algo.",
+          "instructor": "Involucrar a los padres",
+          "explicacion_instructor": "Hazlos participar animando y relacionando el mensaje con la vida diaria de los alumnos. Si están leyendo o usando el teléfono, la clase es aburrida."
+        }
+      ]
+    },
+    {
+      "nombre": "Conocimiento",
+      "subtitulo": "Atributos técnicos",
+      "orden": 3,
+      "items": [
+        {
+          "orden": 1,
+          "alumno": "Base",
+          "explicacion_alumno": "Fundamento de toda técnica: pie de apoyo al patear, punto de partida de las técnicas de mano.",
+          "instructor": "Demostrar, explicar, practicar, confirmar resultados",
+          "explicacion_instructor": "Proceso de 4 pasos. La demostración debe ser dinámica e inspiradora; la explicación, simple y con analogías; la práctica permite experimentar errores y logros; y se confirma el resultado destacando al individuo o al grupo."
+        },
+        {
+          "orden": 2,
+          "alumno": "Trayectoria",
+          "explicacion_alumno": "El camino que recorre la técnica del punto A al punto B.",
+          "instructor": "Individual, blanco, compañero",
+          "explicacion_instructor": "Se enseña técnicamente en el aire, se usa un blanco para desarrollar atributos y un compañero para lograr la aplicación realista."
+        },
+        {
+          "orden": 3,
+          "alumno": "Extensión / acompañamiento",
+          "explicacion_alumno": "Ir más allá del blanco: extensión completa de la técnica.",
+          "instructor": "Ubicación del instructor en el tatami",
+          "explicacion_instructor": "Buena visión periférica del piso. Evitar dar la espalda a la clase. Permanecer cerca de los alumnos con dificultades y guiar a los demás desde el otro lado del salón."
+        },
+        {
+          "orden": 4,
+          "alumno": "Posición articular",
+          "explicacion_alumno": "Disposición correcta de todas las articulaciones para la técnica.",
+          "instructor": "Aplicación práctica",
+          "explicacion_instructor": "La capacidad de llevar la técnica a una aplicación real: la razón detrás de la técnica."
+        },
+        {
+          "orden": 5,
+          "alumno": "Equilibrio",
+          "explicacion_alumno": "Alineación corporal, postura, base correcta y contacto visual.",
+          "instructor": "Historia (origen de la técnica)",
+          "explicacion_instructor": "Conocer la historia y las raíces de la técnica. El alumno valorará tu conocimiento de las artes marciales."
+        },
+        {
+          "orden": 6,
+          "alumno": "Precisión",
+          "explicacion_alumno": "Golpear el blanco exacto con el punto de contacto correcto.",
+          "instructor": "Elogiar, corregir, elogiar",
+          "explicacion_instructor": "Encuentra algo bueno en el alumno, corrige la técnica y confirma el resultado elogiando la corrección específica."
+        },
+        {
+          "orden": 7,
+          "alumno": "Velocidad",
+          "explicacion_alumno": "Tiempo que tarda la técnica del punto A al B. Relajar los músculos y explotar.",
+          "instructor": "Verbalizar las expectativas",
+          "explicacion_instructor": "Sé claro respecto de lo que esperas en cada ejercicio o práctica."
+        },
+        {
+          "orden": 8,
+          "alumno": "Fuerza de reacción",
+          "explicacion_alumno": "El contrabalance de cada movimiento.",
+          "instructor": "Asistentes activos",
+          "explicacion_instructor": "Los asistentes deben estar activos, moviéndose, corrigiendo y elevando la energía de la clase. Deben estar al frente demostrando y dominar la sección de Emoción del alumno."
+        },
+        {
+          "orden": 9,
+          "alumno": "Potencia",
+          "explicacion_alumno": "Rotación del cuerpo e incorporación de la masa corporal mediante la aceleración.",
+          "instructor": "Conciencia del entorno",
+          "explicacion_instructor": "Saber qué ocurre en todas las áreas de la escuela: quién entra y sale, cuántos prospectos llegan, el olor del lugar, la temperatura, la seguridad y el control de la multitud."
+        },
+        {
+          "orden": 10,
+          "alumno": "Reflejo automático",
+          "explicacion_alumno": "La repetición correcta permite reaccionar sin esfuerzo.",
+          "instructor": "Imagen en espejo",
+          "explicacion_instructor": "Al enseñar de frente, tu derecha es su izquierda. El alumno aprende según lo que ve, así que adapta tu técnica a su lado de aprendizaje."
+        }
+      ]
+    },
+    {
+      "nombre": "Legado",
+      "subtitulo": "Desarrollo del carácter",
+      "orden": 4,
+      "referencia": "Los seis ítems de este cuadrante son las habilidades para la vida; ver habilidades_vida.json",
+      "items": [
+        { "orden": 1, "alumno": "Disciplina", "explicacion_alumno": "Es obedecer lo que es correcto." },
+        { "orden": 2, "alumno": "Convicción", "explicacion_alumno": "«Sí, yo puedo»." },
+        { "orden": 3, "alumno": "Comunicación", "explicacion_alumno": "Es el vínculo entre el mundo y yo." },
+        { "orden": 4, "alumno": "Respeto", "explicacion_alumno": "No es lo que sé, es lo que hago." },
+        { "orden": 5, "alumno": "Autoestima", "explicacion_alumno": "Es la alegría de ser yo mismo." },
+        { "orden": 6, "alumno": "Honestidad", "explicacion_alumno": "Es el primer paso hacia una vida plena." }
+      ]
+    }
+  ]
+}

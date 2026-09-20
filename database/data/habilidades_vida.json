@@ -1,0 +1,12 @@
+{
+  "fuente": "Manual del Facilitador — Programa ATA Legacy, versión 4 (julio 2018): cuadrante Legado y Hoja de trabajo del plan de estudios de Nivel 3",
+  "nota": "El Nivel 3 exige demostrar dominio de la definición y de la aplicación de cada habilidad junto con el taekwondo («Life Skill con TKD»).",
+  "habilidades": [
+    { "orden": 1, "nombre": "Disciplina", "definicion": "Es obedecer lo que es correcto." },
+    { "orden": 2, "nombre": "Convicción", "definicion": "«Sí, yo puedo»." },
+    { "orden": 3, "nombre": "Comunicación", "definicion": "Es el vínculo entre el mundo y yo." },
+    { "orden": 4, "nombre": "Respeto", "definicion": "No es lo que sé, es lo que hago." },
+    { "orden": 5, "nombre": "Autoestima", "definicion": "Es la alegría de ser yo mismo." },
+    { "orden": 6, "nombre": "Honestidad", "definicion": "Es el primer paso hacia una vida plena." }
+  ]
+}

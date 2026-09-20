@@ -1,3362 +1,3362 @@
 {
- "Songahm Il-Jahng n.º 1": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 3 — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 3 — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  }
- ],
- "Songahm Ee-Jahng n.º 2": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo gemelo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de antebrazo externo",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de antebrazo externo",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo gemelo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  }
- ],
- "Songahm Sahm-Jahng n.º 3": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 4",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño — KIHAP",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño — KIHAP",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos vertical",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de punta de dedos vertical",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal en salto n.º 3 — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 4",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  }
- ],
- "Songahm Sah-Jahng n.º 4": [
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral invertida",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño — KIHAP",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de antebrazo interno",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral invertida",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de antebrazo interno",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo — KIHAP",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  }
- ],
- "Songahm Oh-Jahng n.º 5": [
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo externo",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de canto interno de la mano invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de antebrazo externo",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 3 — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo gemelo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Combate",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral invertida con paso",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo externo",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de canto interno de la mano invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos horizontal invertido — KIHAP",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo gemelo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de antebrazo interno",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Combate",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral invertida con paso",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  }
- ],
- "In Wha Il-Jahng n.º 1": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo horizontal invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente interna n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral invertida",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo vertical hacia atrás",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Baja o media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular (repetida)",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo horizontal invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente interna n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral invertida",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo vertical hacia atrás — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Baja o media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular (repetida)",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño vertical",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo frontal alto-bajo",
-   "postura": "Cerrada",
-   "seccion": "Alta y baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos horizontal invertido",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente externa",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de mano de cuchillo externo",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño vertical",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo frontal alto-bajo",
-   "postura": "Cerrada",
-   "seccion": "Alta y baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de punta de dedos horizontal invertido",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente externa",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de mano de cuchillo externo",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  }
- ],
- "In Wha Ee-Jahng n.º 2": [
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo en aspa",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de puño gemelo (palma arriba)",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal en salto n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo ascendente invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de canto interno de la mano (ridgehand)",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo en aspa",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de puño gemelo (palma arriba) — KIHAP",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal en salto n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo ascendente invertido",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de canto interno de la mano (ridgehand)",
-   "postura": "Media",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo — KIHAP",
-   "postura": "Cerrada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Agarre de cabeza",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de rodilla",
-   "postura": "",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo lateral alto-bajo",
-   "postura": "Media",
-   "seccion": "Media y baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo — KIHAP",
-   "postura": "Cerrada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Agarre de cabeza",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de rodilla",
-   "postura": "",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo lateral alto-bajo",
-   "postura": "Media",
-   "seccion": "Media y baja"
-  }
- ],
- "Choong Jung Il-Jahng n.º 1": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo con la palma (palma arriba)",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo con la palma (palma arriba)",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto-bajo de mano de cuchillo (5 s)",
-   "postura": "Atrasada",
-   "seccion": "Baja y alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto-bajo de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Baja y alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido (5 s)",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2 — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de canto interno de la mano (palma arriba)",
-   "postura": "Trasera",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de punta de dedos horizontal",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente externa en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe con talón de la palma invertido",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo alto en aspa",
-   "postura": "Cerrada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Cerrada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño — KIHAP",
-   "postura": "Cerrada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo doble de antebrazo externo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral en salto n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo doble de antebrazo externo",
-   "postura": "Media",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral en salto n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de canto interno de la mano (palma arriba)",
-   "postura": "Trasera",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos horizontal",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente externa en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe con talón de la palma invertido — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo alto en aspa",
-   "postura": "Cerrada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "Cerrada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "Cerrada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido (5 s)",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto-bajo de mano de cuchillo (5 s)",
-   "postura": "Atrasada",
-   "seccion": "Baja y alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto-bajo de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Baja y alta"
-  }
- ],
- "Choong Jung Ee-Jahng n.º 2": [
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo (5 s)",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo (5 s)",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Atrasada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "Atrasada",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo interno",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido (palma arriba)",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe con talón de la palma — KIHAP",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe con talón de la palma invertido",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo horizontal hacia atrás",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo doble de mano de cuchillo",
-   "postura": "Trasera",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de canto interno de la mano (palma arriba)",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho invertida — KIHAP",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de canto interno de la mano",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo interno",
-   "postura": "Frontal",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido (palma arriba)",
-   "postura": "Frontal",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe con talón de la palma",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe con talón de la palma invertido",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo horizontal hacia atrás — KIHAP",
-   "postura": "Media",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado de mano de cuchillo",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Atrasada",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular en salto n.º 3",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo externo",
-   "postura": "Combate",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo doble de mano de cuchillo",
-   "postura": "Trasera",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de canto interno de la mano (palma arriba)",
-   "postura": "Media",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho invertida",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "Atrasada",
-   "seccion": "Media"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de canto interno de la mano",
-   "postura": "Atrasada",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo en aspa",
-   "postura": "Frontal",
-   "seccion": "Baja"
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo en aspa",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 2",
-   "postura": "",
-   "seccion": "Media / alta"
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
-   "postura": "Frontal",
-   "seccion": "Alta"
-  }
- ],
- "Shim Jun": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble de antebrazo interno",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño (palma arriba) (con retracción)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo con la palma (palma arriba)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño (doble acción)",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de pisotón n.º 2",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño (con retracción)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 3",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto/bajo",
-   "postura": "C H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto/bajo",
-   "postura": "C H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo (tensión, 5 s)",
-   "postura": "R L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho en salto n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo nueve",
-   "postura": "S M&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble de antebrazo interno",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño (palma arriba) (con retracción)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo con la palma (palma arriba)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño (doble acción) — KIHAP",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de pisotón n.º 2",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño (con retracción)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 3",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo bajo en aspa",
-   "postura": "C L",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Agarre de cabeza con ambas palmas",
-   "postura": "C H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de rodilla",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo (tensión, 5 s)",
-   "postura": "R L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho en salto n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo nueve",
-   "postura": "S M&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado (izq. cerrada, der. abierta)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo (palma arriba)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "F M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe con talón de la palma invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de antebrazo interno hacia adentro",
-   "postura": "C L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo horizontal hacia atrás",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo — KIHAP",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
-   "postura": "C H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "C H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de rodilla",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo de canto interno de la mano (ridgehand) (tensión, 5 s)",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos horizontal (lento, 2 s)",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho con giro y paso",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de antebrazo interno",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 3 (lento, 2 s)",
-   "postura": "-- L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo doble de antebrazo externo (izq. abierta, der. cerrada)",
-   "postura": "S L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado (der. cerrada, izq. abierta)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo (palma arriba)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "F M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe con talón de la palma invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de antebrazo interno hacia adentro",
-   "postura": "C L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo horizontal hacia atrás — KIHAP",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto/bajo de mano de cuchillo",
-   "postura": "C H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto/bajo de mano de cuchillo",
-   "postura": "C H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo de canto interno de la mano (ridgehand) (tensión, 5 s)",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de punta de dedos horizontal (lento, 2 s)",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho con giro y paso",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de antebrazo interno",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 3 (lento, 2 s)",
-   "postura": "-- L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo doble de antebrazo externo (der. abierta / izq. cerrada)",
-   "postura": "S L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral en salto (con paso adelante) n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble avanzado de antebrazo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble avanzado de antebrazo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
-   "postura": "B L",
-   "seccion": ""
-  }
- ],
- "Jung Yul": [
-  {
-   "lado": "Izq.",
-   "tecnica": "Codo horizontal (L) + Golpe de codo vertical hacia atrás (R)",
-   "postura": "M M&H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo cuadrado (tensión, 5 s)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Codo horizontal (R) + Golpe de codo vertical hacia atrás (L)",
-   "postura": "M M&H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo cuadrado (tensión, 5 s)",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de puño gemelo (tensión, 5 s)",
-   "postura": "C H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo descendente",
-   "postura": "X M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
-   "postura": "X L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de gancho invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de gancho",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de hacha externa n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "F L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular invertido de mano de cuchillo externo",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano en arco",
-   "postura": "OL H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de codo ascendente invertido",
-   "postura": "OL H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo combinado: mano de cuchillo alta + mano abierta baja (der.) (lento, 2 s)",
-   "postura": "OL H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo reforzado de antebrazo interno",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño martillo horizontal",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente interna n.º 2 — KIHAP",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho invertida",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo descendente con la palma",
-   "postura": "R L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo con la palma hacia adentro",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo (palma arriba)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe descendente circular de mano de cuchillo",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe descendente circular doble de mano de cuchillo",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo nueve alto (lento, 2 s)",
-   "postura": "R H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe descendente circular doble de mano de cuchillo",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo nueve alto — KIHAP (lento, 2 s)",
-   "postura": "R H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada mariposa",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral invertida",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe descendente circular doble de mano de cuchillo",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de puño gemelo (tensión, 5 s)",
-   "postura": "C H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo descendente",
-   "postura": "X M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
-   "postura": "X L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de gancho invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de gancho",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño vertical invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de hacha externa n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo de mano de cuchillo",
-   "postura": "F L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular invertido de mano de cuchillo externo",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano en arco",
-   "postura": "OL H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de codo ascendente invertido",
-   "postura": "OL H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo combinado: mano de cuchillo alta + mano abierta baja (izq.) — KIHAP (lento, 2 s)",
-   "postura": "OL H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo reforzado de antebrazo interno",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño martillo horizontal",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente interna n.º 2",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho invertida",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo descendente con la palma",
-   "postura": "R L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo con la palma hacia adentro",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo (palma arriba)",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe descendente circular de mano de cuchillo",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
-   "postura": "M L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "-- H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B H",
-   "seccion": ""
-  }
- ],
- "Chung San": [
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de mano de cuchillo (palma arriba)",
-   "postura": "P H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño largo",
-   "postura": "P H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "OL M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral (lento, 2 s)",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de mano de cuchillo (palma arriba)",
-   "postura": "P H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño largo",
-   "postura": "P H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de mano de cuchillo",
-   "postura": "OL M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral (lento, 2 s)",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe con talón de la palma vertical gemelo",
-   "postura": "F M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular (bloqueo articular, 2 s, empeine)",
-   "postura": "-- H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo bajo circular doble de canto interno de la mano",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble avanzado de antebrazo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de antebrazo interno",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble avanzado de canto interno de la mano — KIHAP",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de dos dedos (lento, 2 s)",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo descendente con la palma (lento, 2 s)",
-   "postura": "OL L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente interna en salto",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada mariposa",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de codo horizontal hacia atrás gemelo",
-   "postura": "M M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo nueve (der. mano de cuchillo, izq. puño) (lento, 2 s)",
-   "postura": "F/R M&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular de canto interno de la mano",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de dos dedos invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto/bajo de antebrazo interno",
-   "postura": "P H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto/bajo de canto interno de la mano",
-   "postura": "P H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente externa",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente externa con giro",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de mano de cuchillo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de punta de dedos (palma arriba)",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño martillo",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe reforzado de codo vertical hacia atrás",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada de gancho invertida",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada circular — KIHAP",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada lateral",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño martillo descendente circular doble (lento, 2 s)",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo descendente de antebrazo externo",
-   "postura": "HS M/L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo barrido bajo con mano abierta",
-   "postura": "C L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de revés de puño (con retracción)",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo nueve (izq. mano de cuchillo, der. puño) (lento, 2 s)",
-   "postura": "F/R M&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal n.º 1",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de canto interno de la mano",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de dos dedos invertido",
-   "postura": "F H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada frontal en salto n.º 3",
-   "postura": "-- H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo alto/bajo de antebrazo interno",
-   "postura": "P H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo alto/bajo de canto interno de la mano",
-   "postura": "P H&L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente externa",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Patada creciente externa con giro",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Bloqueo gemelo de mano de cuchillo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de punta de dedos (palma arriba)",
-   "postura": "X H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño martillo",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe reforzado de codo vertical hacia atrás",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de gancho invertida",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular — KIHAP",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño martillo descendente circular doble (lento, 2 s)",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo descendente con la palma (lento, 2 s)",
-   "postura": "OL L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada creciente interna en salto",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe de puño martillo horizontal gemelo",
-   "postura": "M H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada de talón con giro y paso",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada lateral invertida en salto",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo avanzado de antebrazo externo",
-   "postura": "S H",
-   "seccion": ""
-  },
-  {
-   "lado": "Ambos",
-   "tecnica": "Golpe con talón de la palma vertical gemelo",
-   "postura": "F M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular n.º 1",
-   "postura": "-- M",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Patada circular (bloqueo articular, 2 s, empeine)",
-   "postura": "-- M/H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo bajo circular doble de canto interno de la mano",
-   "postura": "B L",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Bloqueo circular doble de mano de cuchillo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble avanzado de antebrazo externo",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Der.",
-   "tecnica": "Golpe de puño invertido",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de puño",
-   "postura": "B M",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo circular de antebrazo interno",
-   "postura": "B H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Bloqueo doble avanzado de canto interno de la mano",
-   "postura": "R H",
-   "seccion": ""
-  },
-  {
-   "lado": "Izq.",
-   "tecnica": "Golpe de dos dedos (lento, 2 s)",
-   "postura": "R H",
-   "seccion": ""
-  }
- ]
+  "Songahm Il-Jahng n.º 1": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 3 — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 3 — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    }
+  ],
+  "Songahm Ee-Jahng n.º 2": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo gemelo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de antebrazo externo",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de antebrazo externo",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo gemelo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    }
+  ],
+  "Songahm Sahm-Jahng n.º 3": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 4",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño — KIHAP",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño — KIHAP",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos vertical",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de punta de dedos vertical",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal en salto n.º 3 — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 4",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    }
+  ],
+  "Songahm Sah-Jahng n.º 4": [
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral invertida",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño — KIHAP",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de antebrazo interno",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral invertida",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de antebrazo interno",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo — KIHAP",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    }
+  ],
+  "Songahm Oh-Jahng n.º 5": [
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo externo",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de canto interno de la mano invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de antebrazo externo",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 3 — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo gemelo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Combate",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral invertida con paso",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo externo",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de canto interno de la mano invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos horizontal invertido — KIHAP",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo gemelo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de antebrazo interno",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Combate",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral invertida con paso",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    }
+  ],
+  "In Wha Il-Jahng n.º 1": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo horizontal invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente interna n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral invertida",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo vertical hacia atrás",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Baja o media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular (repetida)",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo horizontal invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente interna n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral invertida",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo vertical hacia atrás — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Baja o media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular (repetida)",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño vertical",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo frontal alto-bajo",
+      "postura": "Cerrada",
+      "seccion": "Alta y baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos horizontal invertido",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente externa",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de mano de cuchillo externo",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño vertical",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo frontal alto-bajo",
+      "postura": "Cerrada",
+      "seccion": "Alta y baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de punta de dedos horizontal invertido",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente externa",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de mano de cuchillo externo",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    }
+  ],
+  "In Wha Ee-Jahng n.º 2": [
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo en aspa",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de puño gemelo (palma arriba)",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal en salto n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo ascendente invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de canto interno de la mano (ridgehand)",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo en aspa",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de puño gemelo (palma arriba) — KIHAP",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal en salto n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo ascendente invertido",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de canto interno de la mano (ridgehand)",
+      "postura": "Media",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo — KIHAP",
+      "postura": "Cerrada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Agarre de cabeza",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de rodilla",
+      "postura": "",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo lateral alto-bajo",
+      "postura": "Media",
+      "seccion": "Media y baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo — KIHAP",
+      "postura": "Cerrada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Agarre de cabeza",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de rodilla",
+      "postura": "",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo lateral alto-bajo",
+      "postura": "Media",
+      "seccion": "Media y baja"
+    }
+  ],
+  "Choong Jung Il-Jahng n.º 1": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo con la palma (palma arriba)",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo con la palma (palma arriba)",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto-bajo de mano de cuchillo (5 s)",
+      "postura": "Atrasada",
+      "seccion": "Baja y alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto-bajo de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Baja y alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido (5 s)",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2 — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de canto interno de la mano (palma arriba)",
+      "postura": "Trasera",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de punta de dedos horizontal",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente externa en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe con talón de la palma invertido",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo alto en aspa",
+      "postura": "Cerrada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Cerrada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño — KIHAP",
+      "postura": "Cerrada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo doble de antebrazo externo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral en salto n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo doble de antebrazo externo",
+      "postura": "Media",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral en salto n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de canto interno de la mano (palma arriba)",
+      "postura": "Trasera",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos horizontal",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente externa en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe con talón de la palma invertido — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo alto en aspa",
+      "postura": "Cerrada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "Cerrada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "Cerrada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido (5 s)",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe invertido de mano de cuchillo (palma arriba)",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto-bajo de mano de cuchillo (5 s)",
+      "postura": "Atrasada",
+      "seccion": "Baja y alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto-bajo de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Baja y alta"
+    }
+  ],
+  "Choong Jung Ee-Jahng n.º 2": [
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo (5 s)",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo (5 s)",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Atrasada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "Atrasada",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo interno",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido (palma arriba)",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe con talón de la palma — KIHAP",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe con talón de la palma invertido",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo horizontal hacia atrás",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo doble de mano de cuchillo",
+      "postura": "Trasera",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de canto interno de la mano (palma arriba)",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho invertida — KIHAP",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de canto interno de la mano",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo interno",
+      "postura": "Frontal",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido (palma arriba)",
+      "postura": "Frontal",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe con talón de la palma",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe con talón de la palma invertido",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo horizontal hacia atrás — KIHAP",
+      "postura": "Media",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado de mano de cuchillo",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Atrasada",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular en salto n.º 3",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo externo",
+      "postura": "Combate",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo doble de mano de cuchillo",
+      "postura": "Trasera",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de canto interno de la mano (palma arriba)",
+      "postura": "Media",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho invertida",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "Atrasada",
+      "seccion": "Media"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de canto interno de la mano",
+      "postura": "Atrasada",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo en aspa",
+      "postura": "Frontal",
+      "seccion": "Baja"
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo en aspa",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 2",
+      "postura": "",
+      "seccion": "Media / alta"
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
+      "postura": "Frontal",
+      "seccion": "Alta"
+    }
+  ],
+  "Shim Jun": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble de antebrazo interno",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño (palma arriba) (con retracción)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo con la palma (palma arriba)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño (doble acción)",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de pisotón n.º 2",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño (con retracción)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 3",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto/bajo",
+      "postura": "C H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto/bajo",
+      "postura": "C H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo (tensión, 5 s)",
+      "postura": "R L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho en salto n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo nueve",
+      "postura": "S M&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble de antebrazo interno",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño (palma arriba) (con retracción)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo con la palma (palma arriba)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño (doble acción) — KIHAP",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de pisotón n.º 2",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño (con retracción)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 3",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo bajo en aspa",
+      "postura": "C L",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Agarre de cabeza con ambas palmas",
+      "postura": "C H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de rodilla",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo (tensión, 5 s)",
+      "postura": "R L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho en salto n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo nueve",
+      "postura": "S M&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado (izq. cerrada, der. abierta)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo (palma arriba)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "F M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe con talón de la palma invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de antebrazo interno hacia adentro",
+      "postura": "C L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo horizontal hacia atrás",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo — KIHAP",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo alto en aspa de mano de cuchillo",
+      "postura": "C H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "C H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de rodilla",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo de canto interno de la mano (ridgehand) (tensión, 5 s)",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos horizontal (lento, 2 s)",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho con giro y paso",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de antebrazo interno",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 3 (lento, 2 s)",
+      "postura": "-- L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo doble de antebrazo externo (izq. abierta, der. cerrada)",
+      "postura": "S L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado (der. cerrada, izq. abierta)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo (palma arriba)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "F M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe con talón de la palma invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de antebrazo interno hacia adentro",
+      "postura": "C L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo horizontal hacia atrás — KIHAP",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto/bajo de mano de cuchillo",
+      "postura": "C H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto/bajo de mano de cuchillo",
+      "postura": "C H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo de canto interno de la mano (ridgehand) (tensión, 5 s)",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de punta de dedos horizontal (lento, 2 s)",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho con giro y paso",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de antebrazo interno",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 3 (lento, 2 s)",
+      "postura": "-- L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo doble de antebrazo externo (der. abierta / izq. cerrada)",
+      "postura": "S L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral en salto (con paso adelante) n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble avanzado de antebrazo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble avanzado de antebrazo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
+      "postura": "B L",
+      "seccion": ""
+    }
+  ],
+  "Jung Yul": [
+    {
+      "lado": "Izq.",
+      "tecnica": "Codo horizontal (L) + Golpe de codo vertical hacia atrás (R)",
+      "postura": "M M&H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo cuadrado (tensión, 5 s)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Codo horizontal (R) + Golpe de codo vertical hacia atrás (L)",
+      "postura": "M M&H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo cuadrado (tensión, 5 s)",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de puño gemelo (tensión, 5 s)",
+      "postura": "C H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo descendente",
+      "postura": "X M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
+      "postura": "X L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de gancho invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de gancho",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de hacha externa n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "F L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular invertido de mano de cuchillo externo",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano en arco",
+      "postura": "OL H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de codo ascendente invertido",
+      "postura": "OL H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo combinado: mano de cuchillo alta + mano abierta baja (der.) (lento, 2 s)",
+      "postura": "OL H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo reforzado de antebrazo interno",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño martillo horizontal",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente interna n.º 2 — KIHAP",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho invertida",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo descendente con la palma",
+      "postura": "R L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo con la palma hacia adentro",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo (palma arriba)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe descendente circular de mano de cuchillo",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe descendente circular doble de mano de cuchillo",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo nueve alto (lento, 2 s)",
+      "postura": "R H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe descendente circular doble de mano de cuchillo",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo nueve alto — KIHAP (lento, 2 s)",
+      "postura": "R H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada mariposa",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral invertida",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe descendente circular doble de mano de cuchillo",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de puño gemelo (tensión, 5 s)",
+      "postura": "C H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo descendente",
+      "postura": "X M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo circular doble de mano de cuchillo",
+      "postura": "X L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de gancho invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de gancho",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño vertical invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de hacha externa n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo de mano de cuchillo",
+      "postura": "F L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular invertido de mano de cuchillo externo",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano en arco",
+      "postura": "OL H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de codo ascendente invertido",
+      "postura": "OL H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo combinado: mano de cuchillo alta + mano abierta baja (izq.) — KIHAP (lento, 2 s)",
+      "postura": "OL H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo reforzado de antebrazo interno",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño martillo horizontal",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente interna n.º 2",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho invertida",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo descendente con la palma",
+      "postura": "R L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo con la palma hacia adentro",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo (palma arriba)",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe descendente circular de mano de cuchillo",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo circular doble de antebrazo externo",
+      "postura": "M L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "-- H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B H",
+      "seccion": ""
+    }
+  ],
+  "Chung San": [
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de mano de cuchillo (palma arriba)",
+      "postura": "P H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño largo",
+      "postura": "P H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "OL M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral (lento, 2 s)",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de mano de cuchillo (palma arriba)",
+      "postura": "P H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño largo",
+      "postura": "P H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de mano de cuchillo",
+      "postura": "OL M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral (lento, 2 s)",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe con talón de la palma vertical gemelo",
+      "postura": "F M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular (bloqueo articular, 2 s, empeine)",
+      "postura": "-- H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo bajo circular doble de canto interno de la mano",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble avanzado de antebrazo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de antebrazo interno",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble avanzado de canto interno de la mano — KIHAP",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de dos dedos (lento, 2 s)",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo descendente con la palma (lento, 2 s)",
+      "postura": "OL L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente interna en salto",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada mariposa",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de codo horizontal hacia atrás gemelo",
+      "postura": "M M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo nueve (der. mano de cuchillo, izq. puño) (lento, 2 s)",
+      "postura": "F/R M&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular de canto interno de la mano",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de dos dedos invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto/bajo de antebrazo interno",
+      "postura": "P H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto/bajo de canto interno de la mano",
+      "postura": "P H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente externa",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente externa con giro",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de mano de cuchillo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de punta de dedos (palma arriba)",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño martillo",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe reforzado de codo vertical hacia atrás",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada de gancho invertida",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada circular — KIHAP",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada lateral",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño martillo descendente circular doble (lento, 2 s)",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo descendente de antebrazo externo",
+      "postura": "HS M/L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo barrido bajo con mano abierta",
+      "postura": "C L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de revés de puño (con retracción)",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo nueve (izq. mano de cuchillo, der. puño) (lento, 2 s)",
+      "postura": "F/R M&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal n.º 1",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de canto interno de la mano",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de dos dedos invertido",
+      "postura": "F H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada frontal en salto n.º 3",
+      "postura": "-- H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo alto/bajo de antebrazo interno",
+      "postura": "P H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo alto/bajo de canto interno de la mano",
+      "postura": "P H&L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente externa",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Patada creciente externa con giro",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Bloqueo gemelo de mano de cuchillo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de punta de dedos (palma arriba)",
+      "postura": "X H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño martillo",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe reforzado de codo vertical hacia atrás",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de gancho invertida",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular — KIHAP",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño martillo descendente circular doble (lento, 2 s)",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo descendente con la palma (lento, 2 s)",
+      "postura": "OL L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada creciente interna en salto",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe de puño martillo horizontal gemelo",
+      "postura": "M H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada de talón con giro y paso",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada lateral invertida en salto",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo avanzado de antebrazo externo",
+      "postura": "S H",
+      "seccion": ""
+    },
+    {
+      "lado": "Ambos",
+      "tecnica": "Golpe con talón de la palma vertical gemelo",
+      "postura": "F M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo doble avanzado de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular n.º 1",
+      "postura": "-- M",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Patada circular (bloqueo articular, 2 s, empeine)",
+      "postura": "-- M/H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo bajo circular doble de canto interno de la mano",
+      "postura": "B L",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Bloqueo circular doble de mano de cuchillo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble avanzado de antebrazo externo",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Der.",
+      "tecnica": "Golpe de puño invertido",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de puño",
+      "postura": "B M",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo circular de antebrazo interno",
+      "postura": "B H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Bloqueo doble avanzado de canto interno de la mano",
+      "postura": "R H",
+      "seccion": ""
+    },
+    {
+      "lado": "Izq.",
+      "tecnica": "Golpe de dos dedos (lento, 2 s)",
+      "postura": "R H",
+      "seccion": ""
+    }
+  ]
 }
