@@ -57,6 +57,17 @@ test('los requisitos Protech se siembran (14: 4/6/4) verificados y con fuente', 
     expect($protech($etapas[0])->where('descripcion', 'like', 'Protech (condición general)%')->exists())->toBeTrue();
 });
 
+test('ningún requisito de etapa de Legacy queda sin procedencia', function () {
+    $legacy = Programa::where('nombre', 'Legacy')->first();
+    $ids = $legacy->etapas()->pluck('id');
+    $reqs = RequisitoEtapa::whereIn('etapa_programa_id', $ids)->get();
+
+    expect($reqs)->not->toBeEmpty()
+        ->and($reqs->whereNull('fuente')->count())->toBe(0)
+        ->and($reqs->where('verificado', false)->count())->toBe(0)
+        ->and($reqs->every(fn ($r) => str_contains((string) $r->fuente, 'Manual')))->toBeTrue();
+});
+
 test('los Protech se suman a los requisitos de legacy_niveles.json (no los reemplazan)', function () {
     $legacy = Programa::where('nombre', 'Legacy')->first();
     $n1 = $legacy->etapas()->where('orden', 1)->first();

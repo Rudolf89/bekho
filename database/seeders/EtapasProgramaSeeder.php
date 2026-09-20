@@ -73,6 +73,9 @@ class EtapasProgramaSeeder extends Seeder
                         'tipo' => $esEscrito ? 'cuestionario' : 'manual',
                         'cuestionario_id' => $esEscrito ? $pruebaN3?->id : null,
                         'orden' => $orden,
+                        // Los requisitos salen del mismo manual (el JSON declara su fuente).
+                        'fuente' => $fuente,
+                        'verificado' => true,
                     ],
                 );
             }
