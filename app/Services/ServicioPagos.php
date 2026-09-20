@@ -11,6 +11,7 @@ use App\Models\Cargo;
 use App\Models\Matricula;
 use App\Models\Pago;
 use App\Models\User;
+use App\Support\Tenancy\Grupo;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -171,30 +172,35 @@ class ServicioPagos
      */
     public function registrarPago(Matricula $matricula, int $monto, CarbonInterface $fechaPago, array $opts = []): Pago
     {
-        $estado = $opts['estado'] ?? EstadoPago::Verificado;
+        // Opera sobre la matrícula dada y sus cargos/pagos (bookkeeping intrínseco).
+        // Se hace como sistema para que la cobertura (Cargo::estaCubierto lee pagos)
+        // funcione aunque no haya grupo activo (p. ej. traslados o comandos).
+        return Grupo::comoSistema(function () use ($matricula, $monto, $fechaPago, $opts): Pago {
+            $estado = $opts['estado'] ?? EstadoPago::Verificado;
 
-        $pago = Pago::create([
-            'grupo_id' => $matricula->grupo_id,
-            'pagado_por_persona_id' => $opts['pagado_por_persona_id'] ?? $matricula->persona_id,
-            'monto' => $monto,
-            'fecha_pago' => $fechaPago,
-            'banco' => $opts['banco'] ?? null,
-            'referencia' => $opts['referencia'] ?? null,
-            'comprobante_archivo' => $opts['comprobante_archivo'] ?? null,
-            'estado' => $estado->value,
-            'registrado_por' => Auth::id(),
-            'verificado_por_user_id' => $estado === EstadoPago::Verificado ? Auth::id() : null,
-            'verificado_at' => $estado === EstadoPago::Verificado ? now() : null,
-        ]);
+            $pago = Pago::create([
+                'grupo_id' => $matricula->grupo_id,
+                'pagado_por_persona_id' => $opts['pagado_por_persona_id'] ?? $matricula->persona_id,
+                'monto' => $monto,
+                'fecha_pago' => $fechaPago,
+                'banco' => $opts['banco'] ?? null,
+                'referencia' => $opts['referencia'] ?? null,
+                'comprobante_archivo' => $opts['comprobante_archivo'] ?? null,
+                'estado' => $estado->value,
+                'registrado_por' => Auth::id(),
+                'verificado_por_user_id' => $estado === EstadoPago::Verificado ? Auth::id() : null,
+                'verificado_at' => $estado === EstadoPago::Verificado ? now() : null,
+            ]);
 
-        $cargos = $opts['cargos'] ?? $this->cargosPendientes($matricula);
-        $this->aplicar($pago, $cargos);
+            $cargos = $opts['cargos'] ?? $this->cargosPendientes($matricula);
+            $this->aplicar($pago, $cargos);
 
-        if ($estado === EstadoPago::Verificado) {
-            $this->marcarCubiertos($cargos);
-        }
+            if ($estado === EstadoPago::Verificado) {
+                $this->marcarCubiertos($cargos);
+            }
 
-        return $pago;
+            return $pago;
+        });
     }
 
     /**
@@ -202,13 +208,15 @@ class ServicioPagos
      */
     public function verificar(Pago $pago, User $verificador): void
     {
-        $pago->update([
-            'estado' => EstadoPago::Verificado->value,
-            'verificado_por_user_id' => $verificador->id,
-            'verificado_at' => now(),
-        ]);
+        Grupo::comoSistema(function () use ($pago, $verificador): void {
+            $pago->update([
+                'estado' => EstadoPago::Verificado->value,
+                'verificado_por_user_id' => $verificador->id,
+                'verificado_at' => now(),
+            ]);
 
-        $this->marcarCubiertos($pago->cargos()->get());
+            $this->marcarCubiertos($pago->cargos()->get());
+        });
     }
 
     /**
@@ -217,18 +225,20 @@ class ServicioPagos
      */
     public function anular(Pago $pago, User $usuario, ?string $motivo = null): void
     {
-        $cargos = $pago->cargos()->get();
+        Grupo::comoSistema(function () use ($pago, $motivo): void {
+            $cargos = $pago->cargos()->get();
 
-        $pago->update([
-            'estado' => EstadoPago::Anulado->value,
-            'motivo_anulacion' => $motivo,
-        ]);
+            $pago->update([
+                'estado' => EstadoPago::Anulado->value,
+                'motivo_anulacion' => $motivo,
+            ]);
 
-        foreach ($cargos as $cargo) {
-            if ($cargo->estado === EstadoCargo::Pagado && ! $cargo->estaCubierto()) {
-                $cargo->update(['estado' => EstadoCargo::Pendiente->value]);
+            foreach ($cargos as $cargo) {
+                if ($cargo->estado === EstadoCargo::Pagado && ! $cargo->estaCubierto()) {
+                    $cargo->update(['estado' => EstadoCargo::Pendiente->value]);
+                }
             }
-        }
+        });
     }
 
     /**

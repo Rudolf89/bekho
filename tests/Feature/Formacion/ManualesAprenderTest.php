@@ -15,9 +15,13 @@ beforeEach(function () {
     $this->seed(RolesPermisosSeeder::class);
     app(PermissionRegistrar::class)->forgetCachedPermissions();
     $this->bekho = Grupo::where('nombre', 'BEKHO Power Academy')->first();
-    Tenant::set($this->bekho->id);
+    // El seeder termina con Tenant::olvidar(); se fija el tenant DESPUÉS para que
+    // las lecturas del test (aislamiento falla cerrado) vean los niveles del grupo.
     $this->seed(ManualesAprenderSeeder::class);
+    Tenant::set($this->bekho->id);
 });
+
+afterEach(fn () => Tenant::olvidar());
 
 test('cada manual crea un Nivel de Aprender con sus contenidos', function () {
     $esperados = [
@@ -55,6 +59,7 @@ test('las secciones se vuelcan como texto y el manual como documento', function 
 test('el seeder es idempotente', function () {
     $antes = Contenido::count();
     $this->seed(ManualesAprenderSeeder::class);
+    Tenant::set($this->bekho->id); // el seeder termina con olvidar(); se reestablece
 
     expect(Contenido::count())->toBe($antes);
 });

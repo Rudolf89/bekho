@@ -25,15 +25,32 @@ tabla `federaciones` es la entidad raíz y `grupos.federacion_id` la ancla. El
 una costura futura.
 
 Piezas del tenant:
-- `App\Support\Tenancy\Grupo` — holder estático: `set(?int $id, bool $filtraLecturas = true)`, `id()`, `hayActiva()`, `filtraLecturas()`, `olvidar()`.
-- `App\Models\Concerns\PerteneceGrupo` — trait: global scope que filtra por
-  `grupo_id` **si hay grupo activo y `filtraLecturas()`**; autorellena
-  `grupo_id` al crear; scope `sinGrupo()`.
-- `App\Http\Middleware\EstableceGrupoActual` — fija el tenant. Un rol normal
-  queda atado a su `grupo_id`. El **`admin-plataforma`** elige grupo en el
-  selector: si elige uno, la vista se **acota** (`filtraLecturas: true`); si elige
-  "Todos los grupos", ve todo (`filtraLecturas: false`). La **`federacion`** ve
-  todo en **solo lectura**.
+- `App\Support\Tenancy\Grupo` — holder estático: `set(?int $id, bool $filtraLecturas = true)`, `id()`, `hayActiva()`, `filtraLecturas()`, `olvidar()`, `esSistema()`, `comoSistema(callable)`.
+- `App\Models\Concerns\PerteneceGrupo` — trait: global scope que **FALLA CERRADO**.
+  (1) grupo activo con filtro → filtra por `grupo_id`; (2) grupo activo sin filtro
+  (`admin-plataforma`) → ve todo; (3) **sin grupo activo ni modo sistema → NO
+  devuelve nada** (`whereRaw('1 = 0')`), y en consola deja un aviso en el log (una
+  vez por tabla). Autorellena `grupo_id` al crear; scope `sinGrupo()` para consultas
+  puntuales. Un modelo de identidad que se resuelve antes del tenant puede
+  sobrescribir `fallaCerradoSinGrupo()` devolviendo `false` (**solo `User`**, porque
+  la autenticación resuelve la cuenta antes de conocer el grupo).
+- **`Grupo::comoSistema(fn () => …)`** — salida explícita para el código de sistema
+  (seeders, comandos, jobs) que DEBE ver todos los grupos: desactiva el aislamiento
+  a propósito y restaura el estado al terminar (aun con excepción; anidable).
+  `DatabaseSeeder` y los servicios de sistema (`ServicioCargos::generarMensualidades`
+  /`generarMatriculasAnuales`, `ServicioPagos::registrarPago`/`verificar`/`anular`)
+  corren dentro de `comoSistema`. Preferir esto a `withoutGlobalScopes()`.
+- **Colas:** `Queue::before` limpia el grupo activo antes de cada job
+  (`AppServiceProvider`), porque el holder es estático y en un worker de larga vida
+  el estado se filtraría entre trabajos; un job que deba ver todos los grupos usa
+  `comoSistema`.
+- `App\Http\Middleware\EstableceGrupoActual` — fija el tenant, **antes de
+  `SubstituteBindings`** (prioridad en `bootstrap/app.php`) para que el route-model
+  binding de un modelo con `grupo_id` quede acotado al grupo (y no se abran por URL
+  registros de otro grupo). Un rol normal queda atado a su `grupo_id`. El
+  **`admin-plataforma`** elige grupo en el selector: si elige uno, la vista se
+  **acota** (`filtraLecturas: true`); si elige "Todos los grupos", ve todo
+  (`filtraLecturas: false`). La **`federacion`** ve todo en **solo lectura**.
 
 **Catálogos compartidos = SIN `grupo_id`** (como `cargos_rangos`): `planificaciones_clase`,
 `bloques_planificacion`, `cuadrantes_planificacion`, `ciclos`, `planner_ciclo`, `tecnicas`,

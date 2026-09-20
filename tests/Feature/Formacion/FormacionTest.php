@@ -180,9 +180,12 @@ test('el global scope filtra los niveles por grupo', function () {
     expect(Nivel::count())->toBe(1);
     expect(Nivel::first()->nombre)->toBe('De OTRA');
 
-    // Sin grupo activo se ven todos.
+    // Sin grupo activo el aislamiento FALLA CERRADO: no se ve nada.
     Tenant::olvidar();
-    expect(Nivel::count())->toBe(2);
+    expect(Nivel::count())->toBe(0);
+
+    // El código de sistema que debe ver todo lo declara con comoSistema().
+    expect(Tenant::comoSistema(fn () => Nivel::count()))->toBe(2);
 
     // El scope sinGrupo() también ignora el filtro.
     Tenant::set($this->bekho->id);

@@ -74,10 +74,10 @@ test('otorgar el mismo rol y sede es idempotente', function () {
 });
 
 test('la siembra completa refleja los roles del personal', function () {
-    // La siembra completa maneja su propio tenant; sin grupo activo el lookup de
-    // usuarios transversales (admin) no queda acotado por el scope.
-    Tenant::olvidar();
+    // La siembra completa maneja su propio tenant; tras sembrar se fija el grupo
+    // de Rodolfo para leer su personal (el aislamiento falla cerrado sin grupo).
     $this->seed();
+    Tenant::set($this->bekho->id);
 
     // Cada personal con grupo tiene al menos un rol reflejado.
     expect(PersonalGrupoRol::count())->toBeGreaterThan(0);

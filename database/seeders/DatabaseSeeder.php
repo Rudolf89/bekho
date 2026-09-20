@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Support\Tenancy\Grupo;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -10,11 +11,14 @@ class DatabaseSeeder extends Seeder
     use WithoutModelEvents;
 
     /**
-     * Seed the application's database.
+     * Seed the application's database. Corre como SISTEMA: el sembrado necesita ver
+     * y crear datos de todos los grupos, así que el aislamiento por grupo queda
+     * desactivado a propósito (los seeders que fijan un tenant para autocompletar
+     * siguen haciéndolo dentro de este contexto).
      */
     public function run(): void
     {
-        $this->call([
+        Grupo::comoSistema(fn () => $this->call([
             // Federación raíz (BEKHO). Fase 0 del rediseño del modelo de datos.
             FederacionesSeeder::class,
             TramosEntrenamientoSeeder::class,
@@ -66,6 +70,6 @@ class DatabaseSeeder extends Seeder
             DemoExamenesSeeder::class,
             // Planilla de competencia de demostración (competidores ficticios).
             DemoCompetenciaSeeder::class,
-        ]);
+        ]));
     }
 }

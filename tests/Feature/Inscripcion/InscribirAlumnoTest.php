@@ -13,6 +13,7 @@ use App\Models\Sede;
 use App\Models\TarifaSede;
 use App\Models\TipoCargo;
 use App\Models\User;
+use App\Support\Tenancy\Grupo as Tenant;
 use Database\Seeders\CatalogosFederacionSeeder;
 use Livewire\Features\SupportTesting\Testable;
 use Livewire\Livewire;
@@ -36,7 +37,13 @@ beforeEach(function () {
     $usuario = User::factory()->create(['grupo_id' => $this->grupo->id]);
     $usuario->assignRole('direccion');
     actingAs($usuario);
+
+    // En una petición real, EstableceGrupoActual fija el tenant; aquí (Livewire::test
+    // sin middleware) se fija a mano para reproducir ese contexto.
+    Tenant::set($this->grupo->id);
 });
+
+afterEach(fn () => Tenant::olvidar());
 
 function inscribir(): Testable
 {

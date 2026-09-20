@@ -11,6 +11,7 @@ use App\Models\Sede;
 use App\Models\TarifaSede;
 use App\Models\TipoCargo;
 use App\Models\Tutela;
+use App\Support\Tenancy\Grupo;
 use Carbon\CarbonInterface;
 use Illuminate\Support\Carbon;
 use RuntimeException;
@@ -35,53 +36,58 @@ class ServicioCargos
      */
     public function generarMensualidades(?CarbonInterface $periodo = null): int
     {
-        $periodo = $this->periodo($periodo);
-        $creados = 0;
+        // Operación de sistema: recorre las matrículas de TODOS los grupos y lee
+        // sus relaciones (suspensiones, becas). El aislamiento se desactiva a
+        // propósito para que esas lecturas no fallen cerradas sin tenant.
+        return Grupo::comoSistema(function () use ($periodo): int {
+            $periodo = $this->periodo($periodo);
+            $creados = 0;
 
-        foreach (Matricula::withoutGlobalScopes()->activas()->get() as $matricula) {
-            // Solo el plan mensual se cobra mes a mes; semestral y anual se cobran
-            // por adelantado en un único cargo (ver generarCargoPlan).
-            if (($matricula->plan_pago ?? PlanPago::Mensual) !== PlanPago::Mensual) {
-                continue;
+            foreach (Matricula::withoutGlobalScopes()->activas()->get() as $matricula) {
+                // Solo el plan mensual se cobra mes a mes; semestral y anual se cobran
+                // por adelantado en un único cargo (ver generarCargoPlan).
+                if (($matricula->plan_pago ?? PlanPago::Mensual) !== PlanPago::Mensual) {
+                    continue;
+                }
+
+                if ($matricula->estaSuspendidaEn($periodo)) {
+                    continue;
+                }
+
+                $tipo = $this->tipoMensualidad($matricula->grupo->federacion_id ?? null);
+                if (! $tipo) {
+                    continue;
+                }
+
+                $existe = Cargo::withoutGlobalScopes()
+                    ->where('matricula_id', $matricula->id)
+                    ->where('tipo_cargo_id', $tipo->id)
+                    ->whereDate('periodo', $periodo)
+                    ->where('estado', '!=', EstadoCargo::Anulado->value)
+                    ->exists();
+
+                if ($existe) {
+                    continue;
+                }
+
+                [$monto, $detalle] = $this->calcularMensualidad($matricula, $tipo, $periodo);
+
+                Cargo::withoutGlobalScopes()->create([
+                    'grupo_id' => $matricula->grupo_id,
+                    'matricula_id' => $matricula->id,
+                    'sede_id' => $matricula->sede_id,
+                    'tipo_cargo_id' => $tipo->id,
+                    'periodo' => $periodo,
+                    'monto' => $monto,
+                    'vence_el' => $this->venceEl($matricula, $periodo),
+                    'estado' => EstadoCargo::Pendiente->value,
+                    'detalle_calculo' => $detalle,
+                ]);
+                $creados++;
             }
 
-            if ($matricula->estaSuspendidaEn($periodo)) {
-                continue;
-            }
-
-            $tipo = $this->tipoMensualidad($matricula->grupo->federacion_id ?? null);
-            if (! $tipo) {
-                continue;
-            }
-
-            $existe = Cargo::withoutGlobalScopes()
-                ->where('matricula_id', $matricula->id)
-                ->where('tipo_cargo_id', $tipo->id)
-                ->whereDate('periodo', $periodo)
-                ->where('estado', '!=', EstadoCargo::Anulado->value)
-                ->exists();
-
-            if ($existe) {
-                continue;
-            }
-
-            [$monto, $detalle] = $this->calcularMensualidad($matricula, $tipo, $periodo);
-
-            Cargo::withoutGlobalScopes()->create([
-                'grupo_id' => $matricula->grupo_id,
-                'matricula_id' => $matricula->id,
-                'sede_id' => $matricula->sede_id,
-                'tipo_cargo_id' => $tipo->id,
-                'periodo' => $periodo,
-                'monto' => $monto,
-                'vence_el' => $this->venceEl($matricula, $periodo),
-                'estado' => EstadoCargo::Pendiente->value,
-                'detalle_calculo' => $detalle,
-            ]);
-            $creados++;
-        }
-
-        return $creados;
+            return $creados;
+        });
     }
 
     /**
@@ -344,39 +350,42 @@ class ServicioCargos
      */
     public function generarMatriculasAnuales(?int $anio = null): int
     {
-        $anio = $anio ?? (int) now()->year;
-        $periodo = Carbon::create($anio, 1, 1)->startOfDay();
-        $creadas = 0;
+        // Operación de sistema: recorre las matrículas de TODOS los grupos.
+        return Grupo::comoSistema(function () use ($anio): int {
+            $anio = $anio ?? (int) now()->year;
+            $periodo = Carbon::create($anio, 1, 1)->startOfDay();
+            $creadas = 0;
 
-        foreach (Matricula::withoutGlobalScopes()->activas()->get() as $matricula) {
-            if ($this->exentaDeMatricula($matricula, $anio)) {
-                continue;
+            foreach (Matricula::withoutGlobalScopes()->activas()->get() as $matricula) {
+                if ($this->exentaDeMatricula($matricula, $anio)) {
+                    continue;
+                }
+
+                $tipo = $this->tipoMatricula($matricula->grupo->federacion_id ?? null);
+                if (! $tipo) {
+                    continue;
+                }
+
+                $existe = Cargo::withoutGlobalScopes()
+                    ->where('matricula_id', $matricula->id)
+                    ->where('tipo_cargo_id', $tipo->id)
+                    ->whereDate('periodo', $periodo)
+                    ->where('estado', '!=', EstadoCargo::Anulado->value)
+                    ->exists();
+
+                if ($existe) {
+                    continue;
+                }
+
+                // Vence en marzo (fin del período feb–mar de matrícula).
+                $vence = Carbon::create($anio, 3, 31);
+                if ($this->generarCargoUnico($matricula, $tipo, $vence, $periodo)) {
+                    $creadas++;
+                }
             }
 
-            $tipo = $this->tipoMatricula($matricula->grupo->federacion_id ?? null);
-            if (! $tipo) {
-                continue;
-            }
-
-            $existe = Cargo::withoutGlobalScopes()
-                ->where('matricula_id', $matricula->id)
-                ->where('tipo_cargo_id', $tipo->id)
-                ->whereDate('periodo', $periodo)
-                ->where('estado', '!=', EstadoCargo::Anulado->value)
-                ->exists();
-
-            if ($existe) {
-                continue;
-            }
-
-            // Vence en marzo (fin del período feb–mar de matrícula).
-            $vence = Carbon::create($anio, 3, 31);
-            if ($this->generarCargoUnico($matricula, $tipo, $vence, $periodo)) {
-                $creadas++;
-            }
-        }
-
-        return $creadas;
+            return $creadas;
+        });
     }
 
     /**

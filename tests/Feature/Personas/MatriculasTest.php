@@ -39,6 +39,7 @@ test('una persona solo puede tener una matrícula activa en toda la federación'
 });
 
 test('una matrícula retirada no bloquea una nueva activa', function () {
+    Tenant::set($this->bekho->id);
     $persona = Persona::create(['nombres' => 'Retornado', 'fecha_nacimiento' => now()->subYears(20)]);
 
     Matricula::create([

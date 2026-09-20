@@ -53,6 +53,20 @@ class User extends Authenticatable implements PasskeyUser
     use HasFactory, HasRoles, Notifiable, PasskeyAuthenticatable, PerteneceGrupo, TwoFactorAuthenticatable;
 
     /**
+     * La cuenta es identidad/acceso y se resuelve ANTES de que exista un tenant
+     * (login, recuperación de sesión, reset de contraseña): la autenticación no
+     * conoce el grupo hasta conocer al usuario. Por eso User NO falla cerrado sin
+     * grupo activo (cuando hay grupo activo, el aislamiento por grupo sí se aplica
+     * en los listados, como en cualquier modelo). Es la excepción a la regla de
+     * fallar cerrado; no se pudo resolver con comoSistema() porque la resolución
+     * del usuario ocurre dentro del guard del framework.
+     */
+    public function fallaCerradoSinGrupo(): bool
+    {
+        return false;
+    }
+
+    /**
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
