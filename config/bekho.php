@@ -54,6 +54,14 @@ return [
     'examenes' => [
         'asistencia_minima_pct' => null,   // TODO: p. ej. 75 (% desde el último grado)
         'meses_minimos_en_grado' => null,  // TODO: p. ej. 4 (meses en el grado actual)
+
+        // Escala de la nota en las convocatorias de instructor: de 9.1 a 9.9, con
+        // 9.5 como mínimo de aprobación. Solo aplica al tipo instructor.
+        'nota' => [
+            'minima' => 9.1,
+            'maxima' => 9.9,
+            'aprobacion' => 9.5,
+        ],
     ],
 
     /*

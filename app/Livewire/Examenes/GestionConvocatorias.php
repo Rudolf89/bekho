@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Examenes;
 
+use App\Enums\TipoConvocatoria;
 use App\Livewire\Concerns\ConTabla;
 use App\Livewire\Concerns\SoloLectura;
 use App\Models\Convocatoria;
@@ -19,6 +20,8 @@ class GestionConvocatorias extends Component
 
     public string $nombre = '';
 
+    public string $tipo = 'instructor';
+
     public ?string $sede_id = '';
 
     public ?string $fecha = null;
@@ -32,6 +35,7 @@ class GestionConvocatorias extends Component
     {
         return [
             'nombre' => ['required', 'string', 'max:255'],
+            'tipo' => ['required', Rule::enum(TipoConvocatoria::class)],
             'sede_id' => ['nullable', Rule::exists('sedes', 'id')],
             'fecha' => ['required', 'date'],
         ];
@@ -43,7 +47,7 @@ class GestionConvocatorias extends Component
         $this->authorize('gestionar examenes');
         $this->bloqueaSiSoloLectura();
 
-        $this->reset('nombre', 'sede_id', 'fecha');
+        $this->reset('nombre', 'tipo', 'sede_id', 'fecha');
         $this->fecha = now()->format('Y-m-d');
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -79,6 +83,7 @@ class GestionConvocatorias extends Component
             'convocatorias' => $convocatorias,
             'totalInscritos' => $convocatorias->sum('inscripciones_count'),
             'sedes' => Sede::orderBy('nombre')->get(),
+            'tipos' => TipoConvocatoria::cases(),
         ]);
     }
 }

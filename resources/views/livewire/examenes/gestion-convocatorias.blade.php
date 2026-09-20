@@ -69,6 +69,11 @@
         <form wire:submit="guardar" class="space-y-5">
             <flux:heading size="lg">Nueva convocatoria</flux:heading>
             <flux:input wire:model="nombre" label="Nombre" required />
+            <flux:select wire:model="tipo" label="Tipo">
+                @foreach ($tipos as $t)
+                    <flux:select.option value="{{ $t->value }}">{{ $t->etiqueta() }}</flux:select.option>
+                @endforeach
+            </flux:select>
             <div class="grid gap-4 sm:grid-cols-2">
                 <flux:input wire:model="fecha" type="date" label="Fecha" required />
                 <flux:select wire:model="sede_id" label="Sede" placeholder="Todas las sedes">

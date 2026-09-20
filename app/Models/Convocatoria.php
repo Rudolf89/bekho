@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\EstadoConvocatoria;
+use App\Enums\TipoConvocatoria;
 use App\Models\Concerns\PerteneceGrupo;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -19,6 +20,7 @@ class Convocatoria extends Model
         'grupo_id',
         'sede_id',
         'nombre',
+        'tipo',
         'fecha',
         'estado',
     ];
@@ -30,6 +32,7 @@ class Convocatoria extends Model
     {
         return [
             'fecha' => 'date',
+            'tipo' => TipoConvocatoria::class,
             'estado' => EstadoConvocatoria::class,
         ];
     }

@@ -92,6 +92,24 @@ class DetalleConvocatoria extends Component
         Flux::toast(variant: 'success', text: 'Alumno inscrito.');
     }
 
+    /**
+     * Reglas de la nota según el tipo de convocatoria: en las de instructor se
+     * valida la escala (config); en las demás no se rinde con esta nota.
+     *
+     * @return list<string>
+     */
+    protected function reglasNota(): array
+    {
+        if (! $this->convocatoria->tipo->usaNota()) {
+            return ['nullable', 'numeric'];
+        }
+
+        $min = config('bekho.examenes.nota.minima');
+        $max = config('bekho.examenes.nota.maxima');
+
+        return ['nullable', 'numeric', "between:{$min},{$max}"];
+    }
+
     public function abrirEdicion(Inscripcion $inscripcion): void
     {
         // Ajustar grado destino, nota o visto bueno es gestión, no inscripción.
@@ -122,8 +140,22 @@ class DetalleConvocatoria extends Component
             'ins_instructor' => ['nullable', Rule::exists('users', 'id')],
             'ins_visto_bueno' => ['boolean'],
             'ins_resultado' => ['nullable', Rule::enum(ResultadoExamen::class)],
-            'ins_nota' => ['nullable', 'numeric', 'between:9.0,9.9'],
+            'ins_nota' => $this->reglasNota(),
         ]);
+
+        // La nota solo se exige en convocatorias de instructor: para aprobar debe
+        // alcanzar el mínimo de aprobación de la escala.
+        if ($this->convocatoria->tipo->usaNota()) {
+            $resultado = $datos['ins_resultado'] ? ResultadoExamen::from($datos['ins_resultado']) : null;
+            $aprobacion = (float) config('bekho.examenes.nota.aprobacion');
+
+            if ($resultado?->esAprobado()
+                && ($datos['ins_nota'] === null || (float) $datos['ins_nota'] < $aprobacion)) {
+                $this->addError('ins_nota', "Para aprobar, la nota debe ser al menos {$aprobacion}.");
+
+                return;
+            }
+        }
 
         $inscripcion = Inscripcion::findOrFail($this->inscripcionEditandoId);
         $inscripcion->update([
