@@ -79,6 +79,16 @@ sede no suman — y congela el detalle) y
 **pagos con verificación** (`EstadoPago` por_verificar/verificado/anulado, comprobante,
 `pago_cargo` para abonos que cubren varios cargos; `ServicioPagos` registra/verifica/
 anula y aplica montos a los cargos; el apoderado sube comprobante desde su portal).
+**Reglas de pago del reglamento:** la mensualidad vence el día fijo elegido (máximo el
+20); tras el vencimiento hay **3 clases de gracia** (`ServicioPagos::CLASES_GRACIA`,
+`estaBloqueadoPorDeuda`) y luego el alumno queda bloqueado (no se le marca Presente).
+La **matrícula es anual** (`generarMatriculasAnuales`, feb–mar) con **exención** para el
+alumno que ingresó entre octubre y enero (`exentaDeMatricula`). El **plan de pago**
+(`matriculas.plan_pago`, enum `App\Enums\PlanPago` mensual/semestral/anual) define la
+recurrencia: el mensual se cobra mes a mes (`generarMensualidades`), el semestral/anual
+se cobran **por adelantado** en un solo cargo con el **descuento de la sede**
+(`sedes.descuento_semestral_pct`/`descuento_anual_pct`, 0 sin configurar) vía
+`ServicioCargos::montoPlan`/`generarCargoPlan`.
 **Competencia operativa (Fase 6b):** `planillas_competencia`, `jueces_planilla`,
 `competidores_planilla`, `puntajes_planilla` (`ServicioPlanillaCompetencia`, permiso
 `gestionar competencia`) para la certificación de planillero con competidores y jueces

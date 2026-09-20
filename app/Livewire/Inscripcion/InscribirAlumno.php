@@ -6,6 +6,7 @@ use App\Enums\EscalaGrado;
 use App\Enums\EstadoMatricula;
 use App\Enums\Genero;
 use App\Enums\GrupoEtario;
+use App\Enums\PlanPago;
 use App\Livewire\Concerns\SugiereGrupoEtario;
 use App\Models\Grado;
 use App\Models\Matricula;
@@ -78,6 +79,9 @@ class InscribirAlumno extends Component
     // Pago y declaración
     public string $dia_vencimiento = '';
 
+    /** Plan de pago (mensual por defecto; semestral/anual se cobran por adelantado). */
+    public string $plan_pago = 'mensual';
+
     /** Incluir la matrícula de ingreso y el uniforme en el primer cobro. */
     public bool $incluir_uniforme = false;
 
@@ -111,6 +115,7 @@ class InscribirAlumno extends Component
             'email_contacto' => ['required', 'email', 'max:255'],
             'email_contacto_2' => ['nullable', 'email', 'max:255'],
             'dia_vencimiento' => ['required', Rule::in($this->diasVencimiento())],
+            'plan_pago' => ['required', Rule::enum(PlanPago::class)],
             'grado_id' => ['nullable', Rule::exists('grados', 'id')],
             'autoriza_imagen' => ['boolean'],
             'incluir_uniforme' => ['boolean'],
@@ -241,6 +246,7 @@ class InscribirAlumno extends Component
             'acepto_reglamento_persona_id' => $persona->id,
             'aceptado_por_user_id' => Auth::id(),
             'autoriza_imagen' => $datos['autoriza_imagen'] ?? false,
+            'plan_pago' => $datos['plan_pago'],
         ]);
 
         // 4) Cobros de ingreso (best-effort: solo si la sede tiene la tarifa).
@@ -251,6 +257,10 @@ class InscribirAlumno extends Component
         }
         if (($datos['incluir_uniforme'] ?? false) && $tipoUniforme = TipoCargo::where('nombre', 'Uniforme')->first()) {
             $cargos->generarCargoUnico($matricula, $tipoUniforme);
+        }
+        // Plan semestral/anual: se cobra por adelantado en el acto (best-effort).
+        if ($matricula->plan_pago !== PlanPago::Mensual) {
+            $cargos->generarCargoPlan($matricula);
         }
 
         Flux::toast(variant: 'success', text: 'Alumno inscrito correctamente.');
@@ -277,6 +287,7 @@ class InscribirAlumno extends Component
             'regiones' => $this->regiones(),
             'comunasRegion' => $this->comunas(),
             'diasVencimiento' => $this->diasVencimiento(),
+            'planes' => PlanPago::cases(),
             'grados' => $this->grupo_etario !== ''
                 ? Grado::porEscala(EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario)))->ordenados()->get()
                 : collect(),

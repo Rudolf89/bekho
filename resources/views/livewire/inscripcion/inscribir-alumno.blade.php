@@ -143,7 +143,13 @@
                         <flux:select.option value="{{ $dia }}">Día {{ $dia }}</flux:select.option>
                     @endforeach
                 </flux:select>
+                <flux:select wire:model="plan_pago" label="Plan de pago *">
+                    @foreach ($planes as $plan)
+                        <flux:select.option value="{{ $plan->value }}">{{ $plan->etiqueta() }}</flux:select.option>
+                    @endforeach
+                </flux:select>
             </div>
+            <flux:text size="sm" class="mt-2 text-zinc-500">Los planes semestral y anual se cobran por adelantado con el descuento que fije la sede.</flux:text>
 
             <div class="mt-3">
                 <flux:checkbox wire:model="incluir_uniforme" label="Incluir el uniforme (dobok) en el cobro de ingreso" />

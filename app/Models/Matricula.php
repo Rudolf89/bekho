@@ -6,6 +6,7 @@ use App\Enums\EscalaGrado;
 use App\Enums\EstadoMatricula;
 use App\Enums\GrupoEtario;
 use App\Enums\NivelEntrenamiento;
+use App\Enums\PlanPago;
 use App\Models\Concerns\PerteneceGrupo;
 use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +42,7 @@ class Matricula extends Model
         'acepto_reglamento_persona_id',
         'aceptado_por_user_id',
         'autoriza_imagen',
+        'plan_pago',
         'matricula_origen_id',
     ];
 
@@ -58,6 +60,7 @@ class Matricula extends Model
             'acepto_reglamento_at' => 'datetime',
             'autoriza_imagen' => 'boolean',
             'dia_vencimiento' => 'integer',
+            'plan_pago' => PlanPago::class,
         ];
     }
 

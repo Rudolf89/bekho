@@ -25,6 +25,8 @@ class Sede extends Model
         'comuna',
         'region',
         'capacidad',
+        'descuento_semestral_pct',
+        'descuento_anual_pct',
         'tipo',
         'privada',
         'activo',
@@ -40,6 +42,8 @@ class Sede extends Model
         return [
             'tipo' => TipoSede::class,
             'capacidad' => 'integer',
+            'descuento_semestral_pct' => 'integer',
+            'descuento_anual_pct' => 'integer',
             'privada' => 'boolean',
             'activo' => 'boolean',
         ];

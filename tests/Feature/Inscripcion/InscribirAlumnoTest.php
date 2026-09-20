@@ -125,6 +125,34 @@ test('sin incluir uniforme no se genera el cargo de uniforme', function () {
         ->and(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $uni->id)->exists())->toBeFalse();
 });
 
+test('inscribir con plan semestral registra el plan y genera su cargo por adelantado', function () {
+    $this->seed(CatalogosFederacionSeeder::class); // tipos_cargo (Mensualidad, …)
+    $this->sede->update(['descuento_semestral_pct' => 10]);
+    $mensualidad = TipoCargo::where('nombre', 'Mensualidad')->first();
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $mensualidad->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 30000]);
+
+    inscribir()->set('plan_pago', 'semestral')->call('inscribir')->assertHasNoErrors();
+
+    $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
+    expect($matricula->plan_pago->value)->toBe('semestral');
+
+    // 30.000 × 6 = 180.000, −10% = 162.000.
+    $cargo = Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $mensualidad->id)->first();
+    expect($cargo?->monto)->toBe(162000);
+});
+
+test('el plan de pago por defecto es mensual y no genera cargo adelantado', function () {
+    $this->seed(CatalogosFederacionSeeder::class);
+    $mensualidad = TipoCargo::where('nombre', 'Mensualidad')->first();
+    TarifaSede::create(['sede_id' => $this->sede->id, 'tipo_cargo_id' => $mensualidad->id, 'cantidad_alumnos' => 1, 'monto_por_alumno' => 30000]);
+
+    inscribir()->call('inscribir')->assertHasNoErrors();
+
+    $matricula = Matricula::withoutGlobalScopes()->latest('id')->first();
+    expect($matricula->plan_pago->value)->toBe('mensual')
+        ->and(Cargo::where('matricula_id', $matricula->id)->where('tipo_cargo_id', $mensualidad->id)->exists())->toBeFalse();
+});
+
 test('el reglamento debe aceptarse', function () {
     inscribir()->set('acepto_reglamento', false)->call('inscribir')->assertHasErrors('acepto_reglamento');
 });
