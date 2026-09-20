@@ -241,7 +241,9 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
 - **Programa Legacy** (track de formación de instructores, N1-3): ya NO es un módulo
   aparte, es el programa "Legacy" dentro de **Programas**. Sus 3 etapas (100 h c/u,
   edades 13/16/18, 1.er Dan en la N3) y requisitos se siembran desde
-  `database/data/legacy_niveles.json` (`EtapasProgramaSeeder`); un requisito puede
+  `database/data/legacy_niveles.json` (`EtapasProgramaSeeder`), más los **14 requisitos
+  Protech** por nivel (4/6/4) desde `database/data/armas_protech.json` (verificados, con
+  fuente; el arma va en el texto); un requisito puede
   enlazarse a un cuestionario (prueba escrita = intento aprobado). Operativo por persona:
   `inscripciones_programa`, `horas_programa`, `cumplimientos_requisito`, `ascensos_programa`.
   Las horas se registran a mano o desde la **asistencia como ayudante**

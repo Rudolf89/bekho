@@ -19,7 +19,7 @@ class RequisitoEtapa extends Model
      * @var list<string>
      */
     protected $fillable = [
-        'etapa_programa_id', 'descripcion', 'tipo', 'cantidad', 'cuestionario_id', 'orden',
+        'etapa_programa_id', 'descripcion', 'tipo', 'cantidad', 'cuestionario_id', 'orden', 'fuente', 'verificado',
     ];
 
     /**
@@ -31,6 +31,7 @@ class RequisitoEtapa extends Model
             'tipo' => TipoRequisitoEtapa::class,
             'cantidad' => 'integer',
             'orden' => 'integer',
+            'verificado' => 'boolean',
         ];
     }
 

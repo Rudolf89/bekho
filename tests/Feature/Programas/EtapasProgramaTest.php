@@ -2,6 +2,7 @@
 
 use App\Enums\TipoRequisitoEtapa;
 use App\Models\Programa;
+use App\Models\RequisitoEtapa;
 use Database\Seeders\EtapasProgramaSeeder;
 use Database\Seeders\FederacionesSeeder;
 use Database\Seeders\GradosSeeder;
@@ -37,9 +38,38 @@ test('las etapas del programa Legacy se siembran desde el JSON', function () {
     expect($escrito)->not->toBeNull();
 });
 
+test('los requisitos Protech se siembran (14: 4/6/4) verificados y con fuente', function () {
+    $legacy = Programa::where('nombre', 'Legacy')->first();
+    $etapas = $legacy->etapas()->whereNotNull('horas_requeridas')->orderBy('orden')->get();
+
+    $protech = fn ($etapa) => $etapa->requisitos()->where('descripcion', 'like', 'Protech%');
+
+    expect($protech($etapas[0])->count())->toBe(4)
+        ->and($protech($etapas[1])->count())->toBe(6)
+        ->and($protech($etapas[2])->count())->toBe(4);
+
+    $todos = RequisitoEtapa::where('descripcion', 'like', 'Protech%')->get();
+    expect($todos)->toHaveCount(14)
+        ->and($todos->every(fn ($r) => $r->verificado === true))->toBeTrue()
+        ->and($todos->every(fn ($r) => str_contains((string) $r->fuente, 'Manual')))->toBeTrue();
+
+    // El Nivel 1 trae la condición general de líneas de golpeo.
+    expect($protech($etapas[0])->where('descripcion', 'like', 'Protech (condición general)%')->exists())->toBeTrue();
+});
+
+test('los Protech se suman a los requisitos de legacy_niveles.json (no los reemplazan)', function () {
+    $legacy = Programa::where('nombre', 'Legacy')->first();
+    $n1 = $legacy->etapas()->where('orden', 1)->first();
+
+    // El Nivel 1 conserva sus requisitos del reglamento (membresía, etc.) además de Protech.
+    expect($n1->requisitos()->where('descripcion', 'not like', 'Protech%')->count())->toBeGreaterThan(0)
+        ->and($n1->requisitos()->where('descripcion', 'like', 'Protech%')->count())->toBe(4);
+});
+
 test('el seeder es idempotente', function () {
     (new EtapasProgramaSeeder)->run();
 
     $legacy = Programa::where('nombre', 'Legacy')->first();
-    expect($legacy->etapas()->whereNotNull('horas_requeridas')->count())->toBe(3);
+    expect($legacy->etapas()->whereNotNull('horas_requeridas')->count())->toBe(3)
+        ->and(RequisitoEtapa::where('descripcion', 'like', 'Protech%')->count())->toBe(14);
 });
