@@ -18,7 +18,13 @@
             @endrole
 
             <flux:sidebar.nav>
-                <flux:sidebar.group :heading="__('Platform')" class="grid">
+                <flux:sidebar.group
+                    expandable
+                    x-data="{ abierto: $persist(true).as('bekho-nav-general') }"
+                    x-model="abierto"
+                    :heading="__('Platform')"
+                    class="grid"
+                >
                     <flux:sidebar.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </flux:sidebar.item>
@@ -49,7 +55,13 @@
                 </flux:sidebar.group>
 
                 @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar competencia', 'gestionar recompensas', 'gestionar inscripciones'])
-                    <flux:sidebar.group heading="Gestión" class="grid">
+                    <flux:sidebar.group
+                        expandable
+                        x-data="{ abierto: $persist(true).as('bekho-nav-gestion') }"
+                        x-model="abierto"
+                        heading="Gestión"
+                        class="grid"
+                    >
                         @can('viewAny', App\Models\Matricula::class)
                             <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
                                 Alumnos
@@ -141,7 +153,13 @@
                 @endrole
 
                 @canany(['ver programas', 'rendir cuestionarios'])
-                    <flux:sidebar.group heading="Formación" class="grid">
+                    <flux:sidebar.group
+                        expandable
+                        x-data="{ abierto: $persist(true).as('bekho-nav-formacion') }"
+                        x-model="abierto"
+                        heading="Formación"
+                        class="grid"
+                    >
                         @can('ver programas')
                             <flux:sidebar.item icon="academic-cap" :href="route('programas.index')" :current="request()->routeIs('programas.index') || request()->routeIs('programas.programa') || request()->routeIs('programas.contenido')" wire:navigate>
                                 Programas
