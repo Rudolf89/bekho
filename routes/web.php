@@ -20,6 +20,7 @@ Route::middleware(['auth'])->group(function () {
 
 require __DIR__.'/settings.php';
 require __DIR__.'/programas.php';
+require __DIR__.'/planillas.php';
 require __DIR__.'/cuestionarios.php';
 require __DIR__.'/usuarios.php';
 require __DIR__.'/gestion.php';
