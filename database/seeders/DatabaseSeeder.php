@@ -73,6 +73,8 @@ class DatabaseSeeder extends Seeder
             DemoExamenesSeeder::class,
             // Planilla de competencia de demostración (competidores ficticios).
             DemoCompetenciaSeeder::class,
+            // Avance de demostración en el Programa Legacy (formación de instructores).
+            DemoLegacySeeder::class,
         ]));
     }
 }

@@ -109,7 +109,7 @@
                         @endcanany
 
                         {{-- Progreso: cómo avanza el alumno (grado, logros, formación). --}}
-                        @canany(['ver examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones'])
+                        @canany(['ver examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones', 'ver programas'])
                             <flux:sidebar.group
                                 expandable
                                 x-data="{ abierto: $persist(true).as('bekho-nav-progreso') }"
@@ -130,6 +130,11 @@
                                 @can('gestionar inscripciones')
                                     <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
                                         Inscripciones
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('ver programas')
+                                    <flux:sidebar.item icon="arrow-trending-up" :href="route('programas.legacy')" :current="request()->routeIs('programas.legacy')" wire:navigate>
+                                        Legacy
                                     </flux:sidebar.item>
                                 @endcan
                                 @can('gestionar planificaciones')

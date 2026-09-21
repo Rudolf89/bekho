@@ -4,6 +4,7 @@ use App\Livewire\Programas\Admin\AdminContenidos;
 use App\Livewire\Programas\Admin\AdminEtapas;
 use App\Livewire\Programas\GestionInscripciones;
 use App\Livewire\Programas\ListaProgramas;
+use App\Livewire\Programas\ProgresoLegacy;
 use App\Livewire\Programas\VerContenido;
 use App\Livewire\Programas\VerPrograma;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,8 @@ Route::middleware(['auth', 'can:ver programas'])
     ->name('programas.')
     ->group(function () {
         Route::livewire('/', ListaProgramas::class)->name('index');
+        // Antes de {programa}: si no, "legacy" entraría como parámetro de programa.
+        Route::livewire('legacy', ProgresoLegacy::class)->name('legacy');
         Route::livewire('{programa}', VerPrograma::class)->name('programa');
         Route::livewire('contenidos/{contenido}', VerContenido::class)->name('contenido');
     });
