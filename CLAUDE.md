@@ -148,11 +148,17 @@ oficial BEKHO** (`fuente`/`verificado=true`, `CompetenciaSeeder`). OJO: la plani
 NO se renombran. **Hojas para practicar** (`App\Livewire\Competencia\HojasPractica`,
 `/practica/planillas`, permiso `ver programas` porque practican planilleros, jueces y
 alumnos Legacy — los menores no tienen cuenta y su instructor se las imprime): las tres
-hojas en blanco de la planilla (Fórmula y Armas por prueba, Sparring con la tabla de
-libres y la llave de 16, Recuento de medallas), generadas desde los catálogos con el
-componente Blade `<x-hoja-impresion>`, sin el layout de la app. Las columnas de la hoja
-de medallas NO están en la planilla: se derivan de los catálogos y de los lugares 1.º a
-3.º, y están **por confirmar**. **Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por
+secciones de la planilla, transcritas del xlsx oficial y generadas desde los catálogos
+con el componente Blade `<x-hoja-impresion>`, sin el layout de la app: **1. Fórmula y
+Armas** (las dos pruebas LADO A LADO, 16 competidores, edad y país solo en fórmula,
+resultados y jueces de la pista con Nivel·País por prueba, casillas de edad y categoría),
+**2. Sparring** (tabla de libres, llave 16→8→4→2 con Puntos/Advertencias por ronda —
+Primera ronda, Segunda ronda, Semifinales, Final—, finalistas por 1.º/2.º y 3.º/4.º,
+resultados, registro de firmas y observaciones) y **3. Recuento de medallas** (por pista:
+1.er, 2.º, 3.er lugar y participación). Los nombres de las pruebas y de los criterios de
+cada juez también salen de la planilla (`Formula Tradicional`, `Armas Tradicionales`,
+`Sparring`), por eso `CompetenciaSeeder` busca la prueba por `modalidad` y el criterio por
+`papel_juez`: así el nombre se corrige sin duplicar ni perder los puntajes ya cargados. **Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por
 documento). **Roles por sede (Fase 7b):** `personal_grupo_rol` + rol `direccion-sede`;
 el alcance por sede se aplica en las policies vía `User::sedesRestringidas()` (leyendo
 `personal_grupo_rol`), **sin** activar el modo *teams* de spatie — el aislamiento por

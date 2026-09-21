@@ -14,10 +14,11 @@ use Illuminate\Database\Seeder;
  * Catálogos de competencia de la federación: grupos de edad, categorías, tabla
  * de libres y las pruebas con sus criterios de evaluación.
  *
- * Los grupos de edad, las categorías y la tabla de libres se transcriben de la
- * PLANILLA DE COMPETENCIA OFICIAL de la federación (`verificado = true`). Las
- * pruebas y sus criterios siguen viniendo del documento de decisiones.
- * Idempotente.
+ * Todo se transcribe de la PLANILLA DE COMPETENCIA OFICIAL de la federación
+ * (`EN BLANCO PRUEBA PLANILLAS DE COMPETENCIA`): los grupos de edad, las
+ * categorías y la tabla de libres van con `verificado = true`, y las pruebas
+ * llevan el nombre y los criterios con que la planilla rotula las columnas de
+ * cada juez. Idempotente.
  */
 class CompetenciaSeeder extends Seeder
 {
@@ -129,30 +130,40 @@ class CompetenciaSeeder extends Seeder
         $escalaCompetencia = EscalaPuntaje::where('federacion_id', $federacion->id)
             ->where('nombre', 'Competencia')->first();
 
+        // Los nombres de los criterios se transcriben de la planilla oficial
+        // (encabezados de las columnas de cada juez).
         $pruebas = [
-            ['Formas tradicionales', 'formas', [
-                ['a', 'Patadas y posiciones', false],
+            ['Formula Tradicional', 'formas', [
+                ['a', 'Patadas y Posiciones', false],
                 ['central', 'General', true],
-                ['b', 'Golpes y defensas', false],
+                ['b', 'Golpes y Defensas', false],
             ]],
-            ['Armas tradicionales', 'armas', [
-                ['a', 'Posiciones y golpes', false],
-                ['central', 'Memorización y transición', true],
-                ['b', 'Tiempo y fluidez', false],
+            ['Armas Tradicionales', 'armas', [
+                ['a', 'Posiciones y Golpes', false],
+                ['central', 'Memorización, Transición, Apariencia, Actitud', true],
+                ['b', 'Tiempo, Fluidez, Precisión, Consistencia', false],
             ]],
-            ['Combate', 'combate', []],
+            ['Sparring', 'combate', []],
         ];
 
         foreach ($pruebas as $orden => [$nombre, $modalidad, $criterios]) {
+            // Se busca por modalidad (estable) para poder corregir el nombre.
             $prueba = Prueba::updateOrCreate(
-                ['federacion_id' => $federacion->id, 'nombre' => $nombre],
-                ['modalidad' => $modalidad, 'orden' => $orden + 1],
+                ['federacion_id' => $federacion->id, 'modalidad' => $modalidad],
+                ['nombre' => $nombre, 'orden' => $orden + 1],
             );
 
             foreach ($criterios as $i => [$papel, $criterio, $permiteCero]) {
+                // Un criterio por papel de juez: la clave es el papel, así el
+                // nombre se puede corregir sin duplicar ni perder los puntajes.
                 $prueba->criterios()->updateOrCreate(
-                    ['papel_juez' => $papel, 'nombre' => $criterio],
-                    ['escala_id' => $escalaCompetencia?->id, 'permite_cero' => $permiteCero, 'orden' => $i + 1],
+                    ['papel_juez' => $papel],
+                    [
+                        'nombre' => $criterio,
+                        'escala_id' => $escalaCompetencia?->id,
+                        'permite_cero' => $permiteCero,
+                        'orden' => $i + 1,
+                    ],
                 );
             }
         }

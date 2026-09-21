@@ -1,111 +1,111 @@
 <x-hoja-impresion titulo="Sparring">
     <header>
-        <div>
-            <h1>Sparring</h1>
-            <div class="meta">Llave de {{ $competidores }} competidores</div>
-        </div>
+        <h1>Sección 2. Sparring</h1>
         <div class="grupo-marcas">
-            <span class="marcar"><i></i> Competidores color</span>
-            <span class="marcar"><i></i> Competidores negros</span>
+            <span class="marcar"><i></i> Cinturones de Color</span>
+            <span class="marcar"><i></i> Cinturones Negros</span>
+            <span class="marcar"><i></i> Masculino</span>
+            <span class="marcar"><i></i> Femenino</span>
         </div>
     </header>
 
     <div class="casillas">
-        <span>Género:</span>
-        <span>Horario:</span>
+        <span>N.º de competidores:</span>
+        <span>N.º de libres:</span>
         <span>Fecha:</span>
         <span>N.º de pista:</span>
     </div>
 
-    {{-- La tabla de libres va en el encabezado, como en la planilla oficial. --}}
-    <h2>Tabla de libres</h2>
-    <table>
-        <thead>
-            <tr>
-                <th style="width:14%">Competidores</th>
-                @foreach ($tablaLibres as $fila)
-                    <th style="text-align:center">{{ $fila->competidores }}</th>
-                @endforeach
-            </tr>
-        </thead>
+    {{-- Tabla de libres: la referencia que el planillero consulta al armar la llave. --}}
+    <table style="margin-top:6px">
         <tbody>
             <tr>
-                <th>Libres</th>
+                <th style="width:14%">N.º de competidores</th>
                 @foreach ($tablaLibres as $fila)
-                    <td style="text-align:center">{{ $fila->libres }}</td>
+                    <th style="text-align:center">{{ str_pad((string) $fila->competidores, 2, '0', STR_PAD_LEFT) }}</th>
+                @endforeach
+            </tr>
+            <tr>
+                <th>N.º de libres</th>
+                @foreach ($tablaLibres as $fila)
+                    <td style="text-align:center">{{ str_pad((string) $fila->libres, 2, '0', STR_PAD_LEFT) }}</td>
                 @endforeach
             </tr>
         </tbody>
     </table>
 
-    <h2>Grupo de edad</h2>
-    <div class="grupo-marcas">
-        @foreach ($gruposEdad as $grupo)
-            <span class="marcar"><i></i> {{ $grupo->nombre }}</span>
-        @endforeach
-    </div>
-
-    <h2>Categoría</h2>
-    <div class="grupo-marcas">
-        @foreach ($categorias as $categoria)
-            <span class="marcar"><i></i> {{ $categoria->nombre }}</span>
-        @endforeach
-    </div>
-
-    {{-- Llave: puntos (P) y advertencias (A) por ronda para cada competidor. --}}
     <h2>Llave</h2>
     <table>
         <thead>
             <tr>
-                <th class="num" rowspan="2">#</th>
-                <th style="width:26%" rowspan="2">Competidor</th>
+                <th class="num">#</th>
                 @foreach ($rondas as $ronda)
-                    <th colspan="2" style="text-align:center">{{ $ronda }}</th>
-                @endforeach
-            </tr>
-            <tr>
-                @foreach ($rondas as $ronda)
-                    <th style="text-align:center">P</th>
-                    <th style="text-align:center">A</th>
+                    <th style="text-align:center">{{ $ronda['nombre'] }}</th>
                 @endforeach
             </tr>
         </thead>
         <tbody>
             @for ($fila = 1; $fila <= $competidores; $fila++)
                 <tr>
-                    <td class="num">{{ $fila }}</td>
-                    <td></td>
+                    <td class="num">{{ $fila }}.-</td>
                     @foreach ($rondas as $ronda)
-                        <td></td>
-                        <td></td>
+                        {{-- Cada casilla de una ronda cubre las líneas que se enfrentan en ella. --}}
+                        @if (($fila - 1) % $ronda['lineas'] === 0)
+                            <td rowspan="{{ $ronda['lineas'] }}" style="vertical-align:top">
+                                <span style="display:block; color:#71717a">Puntos</span>
+                                <span style="display:block; color:#71717a; margin-top:14px">Advertencias</span>
+                            </td>
+                        @endif
                     @endforeach
                 </tr>
             @endfor
         </tbody>
     </table>
 
-    <h2>Finalistas por 3.º y 4.º lugar</h2>
-    <table>
-        <thead>
-            <tr>
-                <th style="width:40%">Competidor</th>
-                <th style="text-align:center; width:10%">P</th>
-                <th style="text-align:center; width:10%">A</th>
-                <th>Resultado</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td></tr>
-        </tbody>
-    </table>
+    @foreach (['Finalistas por 1er y 2do lugar', 'Finalistas por 3er y 4to lugar'] as $final)
+        <h2>{{ $final }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:44%">Competidor</th>
+                    <th style="text-align:center; width:14%">Puntos</th>
+                    <th style="text-align:center; width:14%">Advertencias</th>
+                    <th>Resultado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td></td><td></td><td></td><td></td></tr>
+                <tr><td></td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+    @endforeach
 
     <h2>Resultados</h2>
     <table>
         <tbody>
-            @foreach (['1.º lugar', '2.º lugar', '3.º lugar', '4.º lugar'] as $lugar)
+            @foreach (['1er lugar', '2do lugar', '3er lugar'] as $lugar)
                 <tr>
                     <th style="width:12%">{{ $lugar }}</th>
+                    <td></td>
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+    <h2>Registro de firmas</h2>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:16%"></th>
+                <th>Nombre</th>
+                <th style="width:30%">Firma</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (['Juez A', 'Juez central', 'Juez B', 'Planillero'] as $papel)
+                <tr>
+                    <th>{{ $papel }}</th>
+                    <td style="height:28px"></td>
                     <td></td>
                 </tr>
             @endforeach
@@ -115,20 +115,8 @@
     <h2>Observaciones</h2>
     <table>
         <tbody>
-            <tr><td style="height:34px"></td></tr>
-            <tr><td style="height:34px"></td></tr>
-        </tbody>
-    </table>
-
-    <h2>Jueces de la pista</h2>
-    <table>
-        <tbody>
-            @foreach (['Juez central', 'Juez A', 'Juez B', 'Planillero'] as $papel)
-                <tr>
-                    <th style="width:12%">{{ $papel }}</th>
-                    <td></td>
-                </tr>
-            @endforeach
+            <tr><td style="height:32px"></td></tr>
+            <tr><td style="height:32px"></td></tr>
         </tbody>
     </table>
 </x-hoja-impresion>

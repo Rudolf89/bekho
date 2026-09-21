@@ -24,6 +24,20 @@ class HojasPractica
     public const COMPETIDORES = 16;
 
     /**
+     * Rondas de la llave de sparring, con cuántas líneas de la llave abarca
+     * cada casilla: 16 competidores → 8 → 4 → 2. Los nombres son los de la
+     * planilla oficial.
+     *
+     * @var list<array{nombre: string, lineas: int}>
+     */
+    public const RONDAS = [
+        ['nombre' => 'Primera ronda', 'lineas' => 1],
+        ['nombre' => 'Segunda ronda', 'lineas' => 2],
+        ['nombre' => 'Semifinales', 'lineas' => 4],
+        ['nombre' => 'Final', 'lineas' => 8],
+    ];
+
+    /**
      * Grupos de edad para las casillas de la hoja.
      *
      * @return Collection<int, GrupoEdad>

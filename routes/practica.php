@@ -1,7 +1,6 @@
 <?php
 
 use App\Livewire\Competencia\HojasPractica;
-use App\Models\Prueba;
 use App\Support\Competencia\HojasPractica as Datos;
 use Illuminate\Support\Facades\Route;
 
@@ -14,11 +13,10 @@ Route::middleware(['auth', 'can:ver programas'])
     ->group(function () {
         Route::livewire('/', HojasPractica::class)->name('index');
 
-        Route::get('formula/{prueba}', function (Prueba $prueba, Datos $datos) {
-            abort_if($prueba->criterios()->count() === 0, 404, 'Esa prueba no se puntúa con jueces.');
-
+        // Una sola hoja con las dos pruebas lado a lado, como la planilla oficial.
+        Route::get('formula', function (Datos $datos) {
             return view('practica.planillas.formula', [
-                'prueba' => $prueba->load('criterios'),
+                'pruebas' => $datos->pruebasConCriterios(),
                 'gruposEdad' => $datos->gruposEdad(),
                 'categorias' => $datos->categorias(),
                 'competidores' => Datos::COMPETIDORES,
@@ -31,8 +29,7 @@ Route::middleware(['auth', 'can:ver programas'])
                 'gruposEdad' => $datos->gruposEdad(),
                 'categorias' => $datos->categorias(),
                 'competidores' => Datos::COMPETIDORES,
-                // Llave de 16: octavos → cuartos → semifinal → final.
-                'rondas' => ['1.ª ronda', 'Cuartos', 'Semifinal', 'Final'],
+                'rondas' => Datos::RONDAS,
             ]);
         })->name('sparring');
 

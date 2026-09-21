@@ -40,63 +40,79 @@ test('el índice lista las tres hojas', function () {
         ->assertSee('Recuento de medallas');
 });
 
-test('la hoja de fórmula imprime los criterios de la prueba y las 16 líneas', function () {
-    $formas = Prueba::where('modalidad', 'formas')->first();
-
+test('la hoja de fórmula trae las dos pruebas lado a lado con sus criterios', function () {
     $this->actingAs(usuarioHojas('instructor'))
-        ->get(route('practica.planillas.formula', $formas))
+        ->get(route('practica.planillas.formula'))
         ->assertOk()
-        ->assertSee('Fórmula y Armas')
-        // Criterios desde criterios_prueba, con su papel de juez.
-        ->assertSee('Juez A')
-        ->assertSee('Patadas y posiciones')
-        ->assertSee('Juez central')
-        ->assertSee('Golpes y defensas')
+        // Las dos tablas de la planilla, en el orden del catálogo.
+        ->assertSeeInOrder(['Formula Tradicional', 'Armas Tradicionales'])
+        // Criterios desde criterios_prueba, con el texto de la planilla.
+        ->assertSee('Patadas y Posiciones')
+        ->assertSee('Golpes y Defensas')
+        ->assertSee('Memorización, Transición, Apariencia, Actitud')
+        ->assertSee('Tiempo, Fluidez, Precisión, Consistencia')
         // Encabezado y cierre de la planilla.
+        ->assertSee('Cinturones Negros')
         ->assertSee('N.º de pista:')
-        ->assertSee('Competidores negros')
+        ->assertSee('Nivel · País')
         ->assertSee('Planillero')
-        ->assertSeeInOrder(['1.º lugar', '2.º lugar', '3.º lugar'])
-        ->assertSeeInOrder(['>1</td>', '>16</td>'], false);
+        ->assertSeeInOrder(['1er lugar', '2do lugar', '3er lugar'])
+        ->assertSeeInOrder(['>1.-</td>', '>16.-</td>'], false);
+});
+
+test('solo la tabla de fórmula lleva edad y país', function () {
+    // La planilla lo dice al pie: la edad es solo para cinturones negros y el
+    // país para el Panamericano; la tabla de armas no trae esas columnas.
+    $html = $this->actingAs(usuarioHojas('instructor'))
+        ->get(route('practica.planillas.formula'))
+        ->assertOk()
+        ->getContent();
+
+    expect(substr_count($html, '>Edad</th>'))->toBe(1)
+        ->and(substr_count($html, '>País</th>'))->toBe(1);
 });
 
 test('la hoja de fórmula usa las casillas de los catálogos', function () {
-    $formas = Prueba::where('modalidad', 'formas')->first();
-
     $this->actingAs(usuarioHojas('instructor'))
-        ->get(route('practica.planillas.formula', $formas))
+        ->get(route('practica.planillas.formula'))
         ->assertOk()
         // Grupos de edad y categorías tal como los sembró la planilla oficial.
         ->assertSeeInOrder(['Tigers', '7 a 8', '50 a 59'])
         ->assertSeeInOrder(['Blanco', 'Rojo-Negro', 'Categoría Especial']);
 });
 
-test('el combate no tiene hoja de fórmula porque no se puntúa con jueces', function () {
-    $combate = Prueba::where('modalidad', 'combate')->first();
+test('el sparring no aparece en la hoja de fórmula: no se puntúa con jueces', function () {
+    expect(Prueba::where('modalidad', 'combate')->first()->criterios)->toBeEmpty();
 
     $this->actingAs(usuarioHojas('instructor'))
-        ->get(route('practica.planillas.formula', $combate))
-        ->assertNotFound();
+        ->get(route('practica.planillas.formula'))
+        ->assertOk()
+        ->assertDontSee('<th colspan="2" style="text-align:center">Sparring</th>', false);
 });
 
 test('la hoja de sparring trae la tabla de libres y la llave de 16', function () {
     $this->actingAs(usuarioHojas('instructor'))
         ->get(route('practica.planillas.sparring'))
         ->assertOk()
-        ->assertSee('Tabla de libres')
-        ->assertSee('Libres')
-        ->assertSeeInOrder(['1.ª ronda', 'Cuartos', 'Semifinal', 'Final'])
-        ->assertSee('Finalistas por 3.º y 4.º lugar')
+        ->assertSee('N.º de libres')
+        // La tabla de libres, con los pares de la planilla (02→00 … 09→07).
+        ->assertSeeInOrder(['>02</th>', '>09</th>', '>16</th>'], false)
+        ->assertSeeInOrder(['>00</td>', '>07</td>', '>00</td>'], false)
+        ->assertSeeInOrder(['Primera ronda', 'Segunda ronda', 'Semifinales', 'Final'])
+        ->assertSee('Finalistas por 1er y 2do lugar')
+        ->assertSee('Finalistas por 3er y 4to lugar')
+        ->assertSee('Registro de firmas')
         ->assertSee('Observaciones')
-        ->assertSeeInOrder(['>1</td>', '>16</td>'], false);
+        ->assertSeeInOrder(['>1.-</td>', '>16.-</td>'], false);
 });
 
-test('la hoja de medallas sale con sus columnas de lugares', function () {
+test('la hoja de medallas cuenta por pista los tres lugares y la participación', function () {
     $this->actingAs(usuarioHojas('instructor'))
         ->get(route('practica.planillas.medallas'))
         ->assertOk()
         ->assertSee('Recuento de medallas')
-        ->assertSeeInOrder(['Grupo de edad', 'Categoría', 'Prueba', '1.º lugar', '2.º lugar', '3.º lugar']);
+        ->assertSeeInOrder(['N.º pista', '1er lugar', '2do lugar', '3er lugar', 'Participación'])
+        ->assertSee('N.º de medallas');
 });
 
 test('un alumno practica con las hojas; un apoderado no entra', function () {
@@ -108,4 +124,16 @@ test('un alumno practica con las hojas; un apoderado no entra', function () {
     $this->actingAs(usuarioHojas('apoderado'))
         ->get(route('practica.planillas.sparring'))
         ->assertForbidden();
+});
+
+test('la llave agrupa las 16 líneas: 16 → 8 → 4 → 2', function () {
+    $html = $this->actingAs(usuarioHojas('instructor'))
+        ->get(route('practica.planillas.sparring'))
+        ->assertOk()
+        ->getContent();
+
+    // Cada ronda cubre el doble de líneas que la anterior.
+    expect(substr_count($html, 'rowspan="2"'))->toBe(8)
+        ->and(substr_count($html, 'rowspan="4"'))->toBe(4)
+        ->and(substr_count($html, 'rowspan="8"'))->toBe(2);
 });
