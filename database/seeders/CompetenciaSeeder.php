@@ -38,31 +38,36 @@ class CompetenciaSeeder extends Seeder
     }
 
     /**
-     * Grupos de edad de la planilla, en su orden. Tigers va SIN rango de edad:
-     * la planilla no lo indica y no se inventa.
+     * Grupos de edad de la planilla, con su rótulo LITERAL y en su orden (la
+     * planilla los lista por columnas). Tigers va SIN rango de edad: la planilla
+     * no lo indica y no se inventa.
+     *
+     * Se busca por `orden` (la posición en la planilla, estable) y no por
+     * nombre, para poder corregir el rótulo sin duplicar la fila ni dejar
+     * huérfanas las planillas que ya la usan.
      */
     private function gruposEdad(Federacion $federacion): void
     {
         $grupos = [
-            ['Tigers', null, null],
-            ['7 a 8', 7, 8],
-            ['9 a 10', 9, 10],
-            ['11 a 12', 11, 12],
-            ['13 a 14', 13, 14],
-            ['15 a 17', 15, 17],
-            ['18 a 29', 18, 29],
-            ['30 a 39', 30, 39],
-            ['40 a 49', 40, 49],
-            ['50 a 59', 50, 59],
+            ['TIGERS', null, null],
+            ['7 a 8 años', 7, 8],
+            ['9 a 10 años', 9, 10],
+            ['11 a 12 años', 11, 12],
+            ['13 a 14 años', 13, 14],
+            ['15 a 17 años', 15, 17],
+            ['18 a 29 años', 18, 29],
+            ['30 a 39 años', 30, 39],
+            ['40 a 49 años', 40, 49],
+            ['50 a 59 años', 50, 59],
         ];
 
         foreach ($grupos as $orden => [$nombre, $desde, $hasta]) {
             GrupoEdad::updateOrCreate(
-                ['federacion_id' => $federacion->id, 'nombre' => $nombre],
+                ['federacion_id' => $federacion->id, 'orden' => $orden + 1],
                 [
+                    'nombre' => $nombre,
                     'edad_desde' => $desde,
                     'edad_hasta' => $hasta,
-                    'orden' => $orden + 1,
                     'fuente' => self::FUENTE,
                     'verificado' => true,
                 ],
@@ -71,8 +76,9 @@ class CompetenciaSeeder extends Seeder
     }
 
     /**
-     * Categorías de la planilla, en su orden: color hasta Rojo-Negro y negro
-     * desde 1 BD en adelante.
+     * Categorías de la planilla, con su rótulo LITERAL y en su orden (la
+     * planilla las lista por columnas): color hasta Rojo-Negro y negro desde
+     * 1 BD en adelante.
      *
      * La planilla escribe "Naranjo", "Púrpura" y "Café" donde el Manual ATA y la
      * tabla `grados` usan "Naranja", "Morado" y "Marrón". Es la misma escala con
@@ -81,16 +87,18 @@ class CompetenciaSeeder extends Seeder
     private function categorias(Federacion $federacion): void
     {
         $color = ['Blanco', 'Naranjo', 'Amarillo', 'Camuflado', 'Verde', 'Púrpura', 'Azul', 'Café', 'Rojo', 'Rojo-Negro'];
-        $negro = ['1 BD', '2 BD y 3 BD', '4 BD y 5 BD', 'Categoría Maestros', 'Categoría Especial'];
+        $negro = ['1 BD', '2 BD y 3 BD', '4 BD y 5 BD', 'Ctg. Maestros', 'Ctg. Especial'];
 
         $orden = 0;
 
         foreach ([['color', $color], ['negro', $negro]] as [$tipo, $nombres]) {
             foreach ($nombres as $nombre) {
                 $orden++;
+                // Igual que los grupos de edad: la clave es la posición en la
+                // planilla, así el rótulo se corrige sin duplicar la categoría.
                 CategoriaCompetencia::updateOrCreate(
-                    ['federacion_id' => $federacion->id, 'nombre' => $nombre],
-                    ['tipo' => $tipo, 'orden' => $orden, 'fuente' => self::FUENTE, 'verificado' => true],
+                    ['federacion_id' => $federacion->id, 'orden' => $orden],
+                    ['nombre' => $nombre, 'tipo' => $tipo, 'fuente' => self::FUENTE, 'verificado' => true],
                 );
             }
         }

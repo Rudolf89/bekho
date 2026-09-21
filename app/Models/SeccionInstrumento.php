@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Sección de un instrumento de evaluación (p. ej. "Sparring"). Agrupa criterios.
+ * Sección de un instrumento de evaluación (p. ej. "Sparring"). Agrupa criterios
+ * y, cuando la prueba plantea un caso, su enunciado literal.
  */
 class SeccionInstrumento extends Model
 {
@@ -16,7 +17,7 @@ class SeccionInstrumento extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['instrumento_evaluacion_id', 'nombre', 'ponderacion', 'orden'];
+    protected $fillable = ['instrumento_evaluacion_id', 'nombre', 'enunciado', 'ponderacion', 'orden'];
 
     /**
      * @return array<string, string>

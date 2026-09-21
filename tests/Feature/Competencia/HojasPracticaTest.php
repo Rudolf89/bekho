@@ -78,8 +78,8 @@ test('la hoja de fórmula usa las casillas de los catálogos', function () {
         ->get(route('practica.planillas.formula'))
         ->assertOk()
         // Grupos de edad y categorías tal como los sembró la planilla oficial.
-        ->assertSeeInOrder(['Tigers', '7 a 8', '50 a 59'])
-        ->assertSeeInOrder(['Blanco', 'Rojo-Negro', 'Categoría Especial']);
+        ->assertSeeInOrder(['TIGERS', '7 a 8 años', '50 a 59 años'])
+        ->assertSeeInOrder(['Blanco', 'Rojo-Negro', 'Ctg. Especial']);
 });
 
 test('el sparring no aparece en la hoja de fórmula: no se puntúa con jueces', function () {

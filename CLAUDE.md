@@ -139,10 +139,14 @@ se cobran **por adelantado** en un solo cargo con el **descuento de la sede**
 **Competencia operativa (Fase 6b):** `planillas_competencia`, `jueces_planilla`,
 `competidores_planilla`, `puntajes_planilla` (`ServicioPlanillaCompetencia`, permiso
 `gestionar competencia`) para la certificación de planillero con competidores y jueces
-ficticios. Los catálogos `grupos_edad` (10, Tigers SIN rango porque la planilla no lo
+ficticios. Los catálogos `grupos_edad` (10, TIGERS SIN rango porque la planilla no lo
 indica), `categorias_competencia` (15: 10 de color hasta Rojo-Negro y 5 de negro desde
 1 BD) y `tabla_libres` (2–16 competidores) se transcriben de la **planilla de competencia
-oficial BEKHO** (`fuente`/`verificado=true`, `CompetenciaSeeder`). OJO: la planilla dice
+oficial BEKHO** (`fuente`/`verificado=true`, `CompetenciaSeeder`). Los rótulos son
+**LITERALES del xlsx** ("TIGERS", "7 a 8 años", "Ctg. Maestros", "Ctg. Especial"), porque
+la hoja impresa tiene que verse igual que la planilla real; por eso `CompetenciaSeeder`
+busca el grupo de edad y la categoría por `orden` (su posición en la planilla) y no por
+nombre: así el rótulo se corrige sin duplicar la fila. OJO: la planilla dice
 "Naranjo", "Púrpura" y "Café" donde el Manual y `grados` usan "Naranja", "Morado" y
 "Marrón": es la misma escala con otro nombre, manda la planilla en esa tabla y los grados
 NO se renombran. **Hojas para practicar** (`App\Livewire\Competencia\HojasPractica`,
@@ -420,7 +424,17 @@ alternativos según la escala) → `secciones_instrumento` → `criterios_instru
 la persona, transversal) → `puntajes_criterio`; `planillas_competencia` gana
 `evaluacion_practica_id`. `InstrumentosEvaluacionSeeder` siembra la **Prueba de
 planillero** (escala Rúbrica 0–6.0, umbral 80 %, secciones Fórmula y Armas / Sparring /
-Recuento de medallas) y la **Evaluación de formas y patadas** (escala Competencia 9.1–9.9,
+Recuento de medallas), transcrita LITERAL del xlsx oficial: `secciones_instrumento.enunciado`
+guarda el caso que plantea cada sección (participantes, pista, categoría, "Usted es el
+Planillero" y los incidentes) y cada `criterios_instrumento.valor` el puntaje del ítem
+(0,1 · 0,5 · 1,0). Los 18 ítems suman **exactamente 6,0**, el `PUNTAJE MÁXIMO` que declara
+la prueba, y un test lo verifica: si alguna vez no cuadra se reporta la diferencia, **no se
+ajustan los valores**. El xlsx salta de "f.-" a "h.-" (no existe un "g.-"): se transcribe
+tal cual. Al resembrar, un criterio que ya no está en la rúbrica se borra solo si no tiene
+`puntajes_criterio`; si los tiene se conserva y el seeder avisa por consola (la FK es
+`cascadeOnDelete` y se perdería el historial). La prueba se rinde llenando las **hojas para
+practicar** y el evaluador registra el puntaje por criterio en `evaluaciones_practicas`; no
+hay pantalla aparte y la **Evaluación de formas y patadas** (escala Competencia 9.1–9.9,
 nota mínima 9.5; 13 criterios = 10 atributos + 3 criterios de conocimiento de
 `atributos_tecnicos`). **(d) HECHO** — retiro del modelo viejo y UI unificada: se
 eliminaron `Nivel`/`NivelLegacy`/`InscripcionLegacy`/`RequisitoLegacy` y las tablas
