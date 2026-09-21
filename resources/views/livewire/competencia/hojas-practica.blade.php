@@ -3,7 +3,7 @@
         <flux:text size="xs" class="font-semibold uppercase tracking-wide text-zinc-400">Gestión · Programa</flux:text>
         <flux:heading size="xl" class="mt-1">Hojas para practicar</flux:heading>
         <flux:text class="mt-1">
-            Las tres secciones de la planilla de competencia oficial, en blanco, para practicar
+            Las hojas de la planilla de competencia oficial, en blanco, para practicar
             el llenado a mano. Se generan desde los catálogos de la federación, así que las
             casillas coinciden con la planilla digital.
         </flux:text>
@@ -37,6 +37,21 @@
                 </div>
                 <flux:button size="sm" variant="filled" icon="printer"
                              :href="route('practica.planillas.sparring')" target="_blank">
+                    Imprimir
+                </flux:button>
+            </li>
+
+            <li class="flex flex-wrap items-start gap-4 px-5 py-4">
+                <flux:icon.document-text class="mt-0.5 size-5 shrink-0 text-zinc-400" />
+                <div class="min-w-0 flex-1 basis-64">
+                    <flux:heading>Combat Weapons</flux:heading>
+                    <flux:text size="sm" class="mt-0.5">
+                        La misma hoja del Sparring, con el título de la prueba: la llave, los puntos
+                        y las advertencias se llenan igual.
+                    </flux:text>
+                </div>
+                <flux:button size="sm" variant="filled" icon="printer"
+                             :href="route('practica.planillas.combat-weapons')" target="_blank">
                     Imprimir
                 </flux:button>
             </li>

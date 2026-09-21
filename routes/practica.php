@@ -23,15 +23,24 @@ Route::middleware(['auth', 'can:ver programas'])
             ]);
         })->name('formula');
 
-        Route::get('sparring', function (Datos $datos) {
-            return view('practica.planillas.sparring', [
+        // Sparring y Combat Weapons comparten hoja: misma llave, misma tabla de
+        // libres, mismos cierres; solo cambia el título.
+        $combate = fn (string $titulo, string $encabezado) => function (Datos $datos) use ($titulo, $encabezado) {
+            return view('practica.planillas.combate', [
+                'titulo' => $titulo,
+                'encabezado' => $encabezado,
                 'tablaLibres' => $datos->tablaLibres(),
                 'gruposEdad' => $datos->gruposEdad(),
                 'categorias' => $datos->categorias(),
                 'competidores' => Datos::COMPETIDORES,
                 'rondas' => Datos::RONDAS,
             ]);
-        })->name('sparring');
+        };
+
+        Route::get('sparring', $combate('Sparring', 'Sección 2. Sparring'))->name('sparring');
+
+        Route::get('combat-weapons', $combate('Combat Weapons', 'Combat Weapons'))
+            ->name('combat-weapons');
 
         Route::get('medallas', function (Datos $datos) {
             return view('practica.planillas.medallas', [

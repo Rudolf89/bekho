@@ -147,14 +147,16 @@ oficial BEKHO** (`fuente`/`verificado=true`, `CompetenciaSeeder`). OJO: la plani
 "Marrón": es la misma escala con otro nombre, manda la planilla en esa tabla y los grados
 NO se renombran. **Hojas para practicar** (`App\Livewire\Competencia\HojasPractica`,
 `/practica/planillas`, permiso `ver programas` porque practican planilleros, jueces y
-alumnos Legacy — los menores no tienen cuenta y su instructor se las imprime): las tres
+alumnos Legacy — los menores no tienen cuenta y su instructor se las imprime): las
 secciones de la planilla, transcritas del xlsx oficial y generadas desde los catálogos
 con el componente Blade `<x-hoja-impresion>`, sin el layout de la app: **1. Fórmula y
 Armas** (las dos pruebas LADO A LADO, 16 competidores, edad y país solo en fórmula,
 resultados y jueces de la pista con Nivel·País por prueba, casillas de edad y categoría),
 **2. Sparring** (tabla de libres, llave 16→8→4→2 con Puntos/Advertencias por ronda —
 Primera ronda, Segunda ronda, Semifinales, Final—, finalistas por 1.º/2.º y 3.º/4.º,
-resultados, registro de firmas y observaciones) y **3. Recuento de medallas** (por pista:
+resultados, registro de firmas y observaciones), **Combat Weapons** (la MISMA hoja del
+sparring: solo cambia el título, por eso las dos rutas rinden
+`practica/planillas/combate.blade.php`) y **3. Recuento de medallas** (por pista:
 1.er, 2.º, 3.er lugar y participación). Los nombres de las pruebas y de los criterios de
 cada juez también salen de la planilla (`Formula Tradicional`, `Armas Tradicionales`,
 `Sparring`), por eso `CompetenciaSeeder` busca la prueba por `modalidad` y el criterio por

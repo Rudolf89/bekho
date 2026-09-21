@@ -31,12 +31,13 @@ function usuarioHojas(string $rol): User
     return $user;
 }
 
-test('el índice lista las tres hojas', function () {
+test('el índice lista las cuatro hojas', function () {
     $this->actingAs(usuarioHojas('instructor'))
         ->get(route('practica.planillas.index'))
         ->assertOk()
         ->assertSee('Fórmula y Armas')
         ->assertSee('Sparring')
+        ->assertSee('Combat Weapons')
         ->assertSee('Recuento de medallas');
 });
 
@@ -136,4 +137,35 @@ test('la llave agrupa las 16 líneas: 16 → 8 → 4 → 2', function () {
     expect(substr_count($html, 'rowspan="2"'))->toBe(8)
         ->and(substr_count($html, 'rowspan="4"'))->toBe(4)
         ->and(substr_count($html, 'rowspan="8"'))->toBe(2);
+});
+
+test('Combat Weapons es la hoja del sparring con otro título', function () {
+    // La federación llena Combat Weapons con la misma hoja: cambia el título y
+    // nada más, así que el cuerpo debe ser idéntico al del sparring.
+    $usuario = usuarioHojas('instructor');
+
+    $sparring = $this->actingAs($usuario)
+        ->get(route('practica.planillas.sparring'))->assertOk()->getContent();
+
+    $armas = $this->actingAs($usuario)
+        ->get(route('practica.planillas.combat-weapons'))->assertOk()
+        ->assertSee('<title>Combat Weapons</title>', false)
+        ->assertSee('<h1>Combat Weapons</h1>', false)
+        ->assertDontSee('Sección 2. Sparring')
+        ->getContent();
+
+    // Mismo cuerpo salvo el título y el encabezado. Se quitan los assets que
+    // Livewire inyecta, que no son parte de la hoja.
+    $limpia = fn (string $html) => trim((string) preg_replace(
+        ['/<!-- Livewire (Styles|Scripts) -->.*?(<\/style>|<\/script>)/s', '/\s+/'],
+        ['', ' '],
+        $html,
+    ));
+    $normaliza = fn (string $html) => str_replace(
+        ['<title>Sparring</title>', '<h1>Sección 2. Sparring</h1>'],
+        ['<title>Combat Weapons</title>', '<h1>Combat Weapons</h1>'],
+        $limpia($html),
+    );
+
+    expect($limpia($armas))->toBe($normaliza($sparring));
 });

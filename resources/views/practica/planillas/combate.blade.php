@@ -1,6 +1,11 @@
-<x-hoja-impresion titulo="Sparring">
+{{--
+    Hoja de combate: la misma de la planilla oficial para Sparring y para Combat
+    Weapons, que solo cambian de título (la llave, la tabla de libres y los
+    cierres son idénticos).
+--}}
+<x-hoja-impresion :titulo="$titulo">
     <header>
-        <h1>Sección 2. Sparring</h1>
+        <h1>{{ $encabezado }}</h1>
         <div class="grupo-marcas">
             <span class="marcar"><i></i> Cinturones de Color</span>
             <span class="marcar"><i></i> Cinturones Negros</span>
