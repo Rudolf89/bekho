@@ -19,14 +19,14 @@ class GrupoEdad extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['federacion_id', 'nombre', 'edad_desde', 'edad_hasta', 'orden'];
+    protected $fillable = ['federacion_id', 'nombre', 'edad_desde', 'edad_hasta', 'orden', 'fuente', 'verificado'];
 
     /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
-        return ['edad_desde' => 'integer', 'edad_hasta' => 'integer', 'orden' => 'integer'];
+        return ['edad_desde' => 'integer', 'edad_hasta' => 'integer', 'orden' => 'integer', 'verificado' => 'boolean'];
     }
 
     /**

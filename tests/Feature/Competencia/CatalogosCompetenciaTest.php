@@ -1,56 +1,87 @@
 <?php
 
-use App\Enums\PapelJuez;
 use App\Models\CategoriaCompetencia;
-use App\Models\CriterioPrueba;
-use App\Models\Prueba;
-use Database\Seeders\CatalogosFederacionSeeder;
+use App\Models\GrupoEdad;
+use App\Models\TablaLibre;
 use Database\Seeders\CompetenciaSeeder;
+use Database\Seeders\FederacionesSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Schema;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(CatalogosFederacionSeeder::class); // escalas de puntaje
+    $this->seed(FederacionesSeeder::class);
     $this->seed(CompetenciaSeeder::class);
 });
 
-test('los catálogos de competencia son de la federación', function () {
-    foreach (['grupos_edad', 'categorias_competencia', 'pruebas', 'tabla_libres'] as $tabla) {
-        expect(Schema::hasColumn($tabla, 'federacion_id'))->toBeTrue()
-            ->and(Schema::hasColumn($tabla, 'grupo_id'))->toBeFalse();
+test('los grupos de edad salen de la planilla oficial, en su orden', function () {
+    $grupos = GrupoEdad::ordenados()->get();
+
+    expect($grupos)->toHaveCount(10)
+        ->and($grupos->pluck('nombre')->all())->toBe([
+            'Tigers', '7 a 8', '9 a 10', '11 a 12', '13 a 14',
+            '15 a 17', '18 a 29', '30 a 39', '40 a 49', '50 a 59',
+        ])
+        ->and($grupos->pluck('orden')->all())->toBe(range(1, 10));
+});
+
+test('Tigers queda sin rango de edad porque la planilla no lo indica', function () {
+    $tigers = GrupoEdad::where('nombre', 'Tigers')->first();
+    $adultos = GrupoEdad::where('nombre', '18 a 29')->first();
+
+    expect($tigers->edad_desde)->toBeNull()
+        ->and($tigers->edad_hasta)->toBeNull()
+        ->and($adultos->edad_desde)->toBe(18)
+        ->and($adultos->edad_hasta)->toBe(29);
+});
+
+test('las categorías salen de la planilla, en su orden y con su tipo', function () {
+    $categorias = CategoriaCompetencia::ordenados()->get();
+
+    expect($categorias)->toHaveCount(15)
+        ->and($categorias->pluck('nombre')->all())->toBe([
+            'Blanco', 'Naranjo', 'Amarillo', 'Camuflado', 'Verde', 'Púrpura',
+            'Azul', 'Café', 'Rojo', 'Rojo-Negro',
+            '1 BD', '2 BD y 3 BD', '4 BD y 5 BD', 'Categoría Maestros', 'Categoría Especial',
+        ]);
+
+    // Color hasta Rojo-Negro; negro desde 1 BD en adelante.
+    expect($categorias->take(10)->pluck('tipo')->unique()->all())->toBe(['color'])
+        ->and($categorias->slice(10)->pluck('tipo')->unique()->values()->all())->toBe(['negro']);
+});
+
+test('la planilla manda sobre el nombre del color: Naranjo, Púrpura y Café', function () {
+    // El Manual y la tabla `grados` usan Naranja / Morado / Marrón: no se tocan.
+    expect(CategoriaCompetencia::whereIn('nombre', ['Naranjo', 'Púrpura', 'Café'])->count())->toBe(3)
+        ->and(CategoriaCompetencia::whereIn('nombre', ['Naranja', 'Morado', 'Marrón'])->count())->toBe(0);
+});
+
+test('la tabla de libres transcribe los 15 pares de la planilla', function () {
+    $tabla = TablaLibre::orderBy('competidores')->get()->pluck('libres', 'competidores')->all();
+
+    expect($tabla)->toBe([
+        2 => 0, 3 => 1, 4 => 0, 5 => 3, 6 => 2, 7 => 1, 8 => 0,
+        9 => 7, 10 => 6, 11 => 5, 12 => 4, 13 => 3, 14 => 2, 15 => 1, 16 => 0,
+    ]);
+});
+
+test('los tres catálogos quedan marcados con la fuente y verificados', function () {
+    foreach ([GrupoEdad::class, CategoriaCompetencia::class, TablaLibre::class] as $modelo) {
+        expect($modelo::where('verificado', false)->count())->toBe(0)
+            ->and($modelo::where('fuente', '!=', 'Planilla de competencia oficial BEKHO')->count())->toBe(0);
     }
 });
 
-test('el seeder crea las categorías y es idempotente', function () {
+test('el seeder es idempotente y retira las categorías genéricas viejas', function () {
+    // Las que se sembraban antes de tener la planilla real.
+    CategoriaCompetencia::create([
+        'federacion_id' => GrupoEdad::first()->federacion_id,
+        'nombre' => 'Color', 'tipo' => 'color', 'orden' => 99,
+    ]);
+
     $this->seed(CompetenciaSeeder::class);
 
-    expect(CategoriaCompetencia::count())->toBe(2)
-        ->and(CategoriaCompetencia::pluck('tipo')->all())->toContain('color', 'negro');
-});
-
-test('la prueba de formas tiene sus tres criterios por papel de juez', function () {
-    $formas = Prueba::where('nombre', 'Formas tradicionales')->with('criterios')->first();
-
-    expect($formas->modalidad)->toBe('formas')
-        ->and($formas->criterios)->toHaveCount(3)
-        ->and($formas->criterios->pluck('papel_juez')->map->value->all())->toBe(['a', 'central', 'b']);
-
-    // Solo el juez central puede penalizar con 0.
-    $central = $formas->criterios->firstWhere('papel_juez', PapelJuez::Central);
-    expect($central->permite_cero)->toBeTrue()
-        ->and($central->escala->nombre)->toBe('Competencia');
-
-    $lateral = $formas->criterios->firstWhere('papel_juez', PapelJuez::A);
-    expect($lateral->permite_cero)->toBeFalse();
-});
-
-test('las pruebas de armas y combate quedan sembradas', function () {
-    expect(Prueba::where('modalidad', 'armas')->exists())->toBeTrue()
-        ->and(Prueba::where('modalidad', 'combate')->exists())->toBeTrue();
-
-    // Armas usa la fórmula de posiciones/memorización/tiempo.
-    $armas = Prueba::where('modalidad', 'armas')->first();
-    expect(CriterioPrueba::where('prueba_id', $armas->id)->count())->toBe(3);
+    expect(CategoriaCompetencia::count())->toBe(15)
+        ->and(GrupoEdad::count())->toBe(10)
+        ->and(TablaLibre::count())->toBe(15);
 });

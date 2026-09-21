@@ -139,7 +139,20 @@ se cobran **por adelantado** en un solo cargo con el **descuento de la sede**
 **Competencia operativa (Fase 6b):** `planillas_competencia`, `jueces_planilla`,
 `competidores_planilla`, `puntajes_planilla` (`ServicioPlanillaCompetencia`, permiso
 `gestionar competencia`) para la certificación de planillero con competidores y jueces
-ficticios. **Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por
+ficticios. Los catálogos `grupos_edad` (10, Tigers SIN rango porque la planilla no lo
+indica), `categorias_competencia` (15: 10 de color hasta Rojo-Negro y 5 de negro desde
+1 BD) y `tabla_libres` (2–16 competidores) se transcriben de la **planilla de competencia
+oficial BEKHO** (`fuente`/`verificado=true`, `CompetenciaSeeder`). OJO: la planilla dice
+"Naranjo", "Púrpura" y "Café" donde el Manual y `grados` usan "Naranja", "Morado" y
+"Marrón": es la misma escala con otro nombre, manda la planilla en esa tabla y los grados
+NO se renombran. **Hojas para practicar** (`App\Livewire\Competencia\HojasPractica`,
+`/practica/planillas`, permiso `ver programas` porque practican planilleros, jueces y
+alumnos Legacy — los menores no tienen cuenta y su instructor se las imprime): las tres
+hojas en blanco de la planilla (Fórmula y Armas por prueba, Sparring con la tabla de
+libres y la llave de 16, Recuento de medallas), generadas desde los catálogos con el
+componente Blade `<x-hoja-impresion>`, sin el layout de la app. Las columnas de la hoja
+de medallas NO están en la planilla: se derivan de los catálogos y de los lugares 1.º a
+3.º, y están **por confirmar**. **Auditoría (Fase 7a):** `accesos_datos` + `BuscadorPersonas` (alta por
 documento). **Roles por sede (Fase 7b):** `personal_grupo_rol` + rol `direccion-sede`;
 el alcance por sede se aplica en las policies vía `User::sedesRestringidas()` (leyendo
 `personal_grupo_rol`), **sin** activar el modo *teams* de spatie — el aislamiento por

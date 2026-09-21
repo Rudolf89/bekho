@@ -26,5 +26,6 @@ require __DIR__.'/gestion.php';
 require __DIR__.'/examenes.php';
 require __DIR__.'/planificador.php';
 require __DIR__.'/competencia.php';
+require __DIR__.'/practica.php';
 require __DIR__.'/recompensas.php';
 require __DIR__.'/organizacion.php';

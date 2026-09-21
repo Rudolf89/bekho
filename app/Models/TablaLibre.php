@@ -19,14 +19,14 @@ class TablaLibre extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = ['federacion_id', 'competidores', 'libres'];
+    protected $fillable = ['federacion_id', 'competidores', 'libres', 'fuente', 'verificado'];
 
     /**
      * @return array<string, string>
      */
     protected function casts(): array
     {
-        return ['competidores' => 'integer', 'libres' => 'integer'];
+        return ['competidores' => 'integer', 'libres' => 'integer', 'verificado' => 'boolean'];
     }
 
     /**

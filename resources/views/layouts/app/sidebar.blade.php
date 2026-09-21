@@ -146,7 +146,7 @@
                         @endcanany
 
                         {{-- Programa: el currículo ATA con el que se arma la clase. --}}
-                        @canany(['gestionar planificaciones', 'gestionar competencia'])
+                        @canany(['gestionar planificaciones', 'gestionar competencia', 'ver programas'])
                             <flux:sidebar.group
                                 expandable
                                 x-data="{ abierto: $persist(true).as('bekho-nav-programa') }"
@@ -178,6 +178,12 @@
                                 @can('gestionar competencia')
                                     <flux:sidebar.item icon="table-cells" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
                                         Planillas
+                                    </flux:sidebar.item>
+                                @endcan
+                                {{-- Hojas en blanco: practican planilleros, jueces y Legacy. --}}
+                                @can('ver programas')
+                                    <flux:sidebar.item icon="printer" :href="route('practica.planillas.index')" :current="request()->routeIs('practica.planillas.*')" wire:navigate>
+                                        Hojas para practicar
                                     </flux:sidebar.item>
                                 @endcan
                             </flux:sidebar.group>
