@@ -64,8 +64,6 @@ class DatabaseSeeder extends Seeder
             EtapasProgramaSeeder::class,
             // Instrumentos de evaluación práctica (planillero; formas y patadas).
             InstrumentosEvaluacionSeeder::class,
-            // Planillas imprimibles del programa (catálogo, sin verificar aún).
-            PlanillasSeeder::class,
             // Datos de demostración para ver el panel "vivo"; quitar en producción.
             // Crea directamente la capa de identidad (personas/matrículas/personal).
             DemoBekhoSeeder::class,

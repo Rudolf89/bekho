@@ -174,14 +174,10 @@
                                         Planificaciones
                                     </flux:sidebar.item>
                                 @endcan
-                                @can('gestionar planificaciones')
-                                    <flux:sidebar.item icon="table-cells" :href="route('planillas.index')" :current="request()->routeIs('planillas.*')" wire:navigate>
-                                        Planillas
-                                    </flux:sidebar.item>
-                                @endcan
+                                {{-- «Planilla» en BEKHO es solo la de competencia (planillas_competencia). --}}
                                 @can('gestionar competencia')
-                                    <flux:sidebar.item icon="trophy" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
-                                        Competencia
+                                    <flux:sidebar.item icon="table-cells" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
+                                        Planillas
                                     </flux:sidebar.item>
                                 @endcan
                             </flux:sidebar.group>

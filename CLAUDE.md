@@ -136,17 +136,6 @@ recurrencia: el mensual se cobra mes a mes (`generarMensualidades`), el semestra
 se cobran **por adelantado** en un solo cargo con el **descuento de la sede**
 (`sedes.descuento_semestral_pct`/`descuento_anual_pct`, 0 sin configurar) vía
 `ServicioCargos::montoPlan`/`generarCargoPlan`.
-**Planillas imprimibles:** `planillas` + `columnas_planilla` (catálogo de la
-federación, sin `grupo_id`): los formularios en papel que se llenan en la cancha
-(examen de grado, arbitraje, registro de lección de vida…). Cada planilla declara
-sus columnas y con ellas se imprime la grilla en blanco (`filas` líneas vacías,
-ruta `planillas.imprimir`, vista propia sin el layout de la app). Verlas e
-imprimirlas va con `gestionar planificaciones`; editar el catálogo, con
-`gestionar programas`. El listado sembrado (`PlanillasSeeder`) viene del
-prototipo de pantallas, NO de un documento de la federación: va con
-`verificado=false` y la pantalla lo avisa; donde el prototipo describía la
-planilla en vez de enumerar sus casillas, queda **sin columnas** (no se inventan)
-y no se puede imprimir hasta que la escuela las defina.
 **Competencia operativa (Fase 6b):** `planillas_competencia`, `jueces_planilla`,
 `competidores_planilla`, `puntajes_planilla` (`ServicioPlanillaCompetencia`, permiso
 `gestionar competencia`) para la certificación de planillero con competidores y jueces
@@ -257,13 +246,6 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   fuente; el arma va en el texto); un requisito puede
   enlazarse a un cuestionario (prueba escrita = intento aprobado). Operativo por persona:
   `inscripciones_programa`, `horas_programa`, `cumplimientos_requisito`, `ascensos_programa`.
-  El trainee ve su propio avance en **`App\Livewire\Programas\ProgresoLegacy`**
-  (`/programas/legacy`, Gestión › Progreso): niveles con su estado (aprobada /
-  en curso / bloqueada según los ascensos), barra de la etapa en curso y lo que
-  falta para certificar. Es de **solo lectura**: las horas y los requisitos los
-  registra el instructor en `GestionInscripciones`; lo único accionable es rendir
-  la prueba escrita. Los "niveles" son las etapas con `horas_requeridas` (las 3
-  del manual): la etapa contenedora del manual no es un nivel de la ruta.
   Las horas se registran a mano o desde la **asistencia como ayudante**
   (`asistencias_ayudante` + `ServicioHorasAyudante`, horas congeladas del horario).
 
@@ -309,13 +291,11 @@ pagos**) · `instructor` (asistencia, planificaciones, competencia, inscribir ex
   legítima (el hijo no existe sin su padre: `pago_cargo`, `personal_grupo_rol`, hijos de
   planilla de competencia, `bloques`/`cuadrantes` de planificación, catálogos colgados de
   la federación).
-- **"Planilla" NUNCA es la planificación de clase.** La planificación se llama
+- **"Planilla" = solo competencia.** La planificación de clase se llama
   `PlanificacionClase` (tabla `planificaciones_clase`, con `BloquePlanificacion` y
   `CuadrantePlanificacion`; permiso `gestionar planificaciones`; `App\Livewire\
-  Planificador`). Hay dos familias de "planillas", y no se mezclan: las de
-  **competencia** (`planillas_competencia`, `jueces_planilla`…, `App\Livewire\
-  Competencia`) y las **imprimibles** (`planillas` + `columnas_planilla`,
-  `App\Livewire\Planillas`), que son los formularios en papel del programa.
+  Planificador`). Las "planillas" (`planillas_competencia`, `jueces_planilla`, etc.)
+  son exclusivamente de competencia.
 - **Procedencia del contenido.** El contenido carga `fuente`/`verificado` (bool).
   El del planificador (`planificaciones_clase`, `planificaciones_cinturon_negro`,
   `categorias_calentamiento`) fue **generado con IA** desde
