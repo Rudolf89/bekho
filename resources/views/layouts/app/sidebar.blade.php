@@ -54,7 +54,8 @@
                     @endcan
                 </flux:sidebar.group>
 
-                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'gestionar planillas', 'gestionar competencia', 'gestionar recompensas', 'gestionar inscripciones'])
+                {{-- Unión de los permisos de los tres subgrupos: si no tiene ninguno, no se pinta el grupo. --}}
+                @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos', 'gestionar examenes', 'inscribir examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones', 'gestionar competencia'])
                     <flux:sidebar.group
                         expandable
                         x-data="{ abierto: $persist(true).as('bekho-nav-gestion') }"
@@ -62,81 +63,116 @@
                         heading="Gestión"
                         class="grid"
                     >
-                        @can('viewAny', App\Models\Matricula::class)
-                            <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
-                                Alumnos
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar alumnos')
-                            <flux:sidebar.item icon="user-plus" :href="route('inscripcion.crear')" :current="request()->routeIs('inscripcion.*')" wire:navigate>
-                                Inscribir alumno
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar clases')
-                            <flux:sidebar.item icon="calendar-days" :href="route('clases.index')" :current="request()->routeIs('clases.*')" wire:navigate>
-                                Clases
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('tomar asistencia')
-                            <flux:sidebar.item icon="clipboard-document-check" :href="route('asistencia.tomar')" :current="request()->routeIs('asistencia.*')" wire:navigate>
-                                Asistencia
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar alumnos')
-                            <flux:sidebar.item icon="chart-bar" :href="route('reportes.index')" :current="request()->routeIs('reportes.*')" wire:navigate>
-                                Reportes
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('registrar pagos')
-                            <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
-                                Pagos
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="tag" :href="route('tarifas.index')" :current="request()->routeIs('tarifas.*')" wire:navigate>
-                                Tarifas
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('ver examenes')
-                            <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
-                                Exámenes
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar recompensas')
-                            <flux:sidebar.item icon="gift" :href="route('recompensas.index')" :current="request()->routeIs('recompensas.index')" wire:navigate>
-                                Recompensas
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar inscripciones')
-                            <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
-                                Inscripciones
-                            </flux:sidebar.item>
-                        @endcan
+                        {{-- Día a día: la operación de la sede. --}}
+                        @canany(['gestionar alumnos', 'gestionar clases', 'tomar asistencia', 'registrar pagos'])
+                            <flux:sidebar.group
+                                expandable
+                                x-data="{ abierto: $persist(true).as('bekho-nav-dia-a-dia') }"
+                                x-model="abierto"
+                                heading="Día a día"
+                                class="grid"
+                            >
+                                @can('viewAny', App\Models\Matricula::class)
+                                    <flux:sidebar.item icon="identification" :href="route('estudiantes.index')" :current="request()->routeIs('estudiantes.*')" wire:navigate>
+                                        Alumnos
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar alumnos')
+                                    <flux:sidebar.item icon="user-plus" :href="route('inscripcion.crear')" :current="request()->routeIs('inscripcion.*')" wire:navigate>
+                                        Inscribir alumno
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar clases')
+                                    <flux:sidebar.item icon="calendar-days" :href="route('clases.index')" :current="request()->routeIs('clases.*')" wire:navigate>
+                                        Clases
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('tomar asistencia')
+                                    <flux:sidebar.item icon="clipboard-document-check" :href="route('asistencia.tomar')" :current="request()->routeIs('asistencia.*')" wire:navigate>
+                                        Asistencia
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('registrar pagos')
+                                    <flux:sidebar.item icon="banknotes" :href="route('pagos.index')" :current="request()->routeIs('pagos.*')" wire:navigate>
+                                        Pagos
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="tag" :href="route('tarifas.index')" :current="request()->routeIs('tarifas.*')" wire:navigate>
+                                        Tarifas
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar alumnos')
+                                    <flux:sidebar.item icon="chart-bar" :href="route('reportes.index')" :current="request()->routeIs('reportes.*')" wire:navigate>
+                                        Reportes
+                                    </flux:sidebar.item>
+                                @endcan
+                            </flux:sidebar.group>
+                        @endcanany
+
+                        {{-- Progreso: cómo avanza el alumno (grado, logros, formación). --}}
+                        @canany(['ver examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones', 'gestionar competencia'])
+                            <flux:sidebar.group
+                                expandable
+                                x-data="{ abierto: $persist(true).as('bekho-nav-progreso') }"
+                                x-model="abierto"
+                                heading="Progreso"
+                                class="grid"
+                            >
+                                @can('ver examenes')
+                                    <flux:sidebar.item icon="trophy" :href="route('examenes.index')" :current="request()->routeIs('examenes.*')" wire:navigate>
+                                        Exámenes
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar recompensas')
+                                    <flux:sidebar.item icon="gift" :href="route('recompensas.index')" :current="request()->routeIs('recompensas.index')" wire:navigate>
+                                        Recompensas
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar inscripciones')
+                                    <flux:sidebar.item icon="academic-cap" :href="route('programas.gestion')" :current="request()->routeIs('programas.gestion')" wire:navigate>
+                                        Inscripciones
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar planificaciones')
+                                    <flux:sidebar.item icon="swatch" :href="route('cinturones.index')" :current="request()->routeIs('cinturones.*')" wire:navigate>
+                                        Cinturones
+                                    </flux:sidebar.item>
+                                @endcan
+                                @can('gestionar competencia')
+                                    <flux:sidebar.item icon="trophy" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
+                                        Competencia
+                                    </flux:sidebar.item>
+                                @endcan
+                            </flux:sidebar.group>
+                        @endcanany
+
+                        {{-- Programa: el currículo ATA con el que se arma la clase. --}}
                         @can('gestionar planificaciones')
-                            <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
-                                Ciclos
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
-                                Planificador
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
-                                Biblioteca
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="bars-3-bottom-left" :href="route('formas.index')" :current="request()->routeIs('formas.*')" wire:navigate>
-                                Formas
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="swatch" :href="route('cinturones.index')" :current="request()->routeIs('cinturones.*')" wire:navigate>
-                                Cinturones
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
-                                Cuadrantes
-                            </flux:sidebar.item>
-                            <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
-                                Planificaciones
-                            </flux:sidebar.item>
-                        @endcan
-                        @can('gestionar competencia')
-                            <flux:sidebar.item icon="trophy" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
-                                Competencia
-                            </flux:sidebar.item>
+                            <flux:sidebar.group
+                                expandable
+                                x-data="{ abierto: $persist(true).as('bekho-nav-programa') }"
+                                x-model="abierto"
+                                heading="Programa"
+                                class="grid"
+                            >
+                                <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
+                                    Ciclos
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
+                                    Planificador
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
+                                    Biblioteca
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="bars-3-bottom-left" :href="route('formas.index')" :current="request()->routeIs('formas.*')" wire:navigate>
+                                    Formas
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
+                                    Cuadrantes
+                                </flux:sidebar.item>
+                                <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
+                                    Planificaciones
+                                </flux:sidebar.item>
+                            </flux:sidebar.group>
                         @endcan
                     </flux:sidebar.group>
                 @endcanany
