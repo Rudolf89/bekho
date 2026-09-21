@@ -67,7 +67,6 @@ class Graduacion extends Model
     public function plazoEntregaVencido(?\DateTimeInterface $a = null): bool
     {
         return $this->entregaPendiente()
-            && $this->fecha !== null
             && $this->fecha->copy()->addDays(30)->lt($a ?? now());
     }
 

@@ -6,6 +6,7 @@ use App\Livewire\Concerns\ConTabla;
 use App\Models\DistintivoRango;
 use App\Models\User;
 use App\Services\ServicioCreditos;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -14,7 +15,7 @@ class ConteoCascada extends Component
 {
     use ConTabla;
 
-    public function render(ServicioCreditos $creditos)
+    public function render(ServicioCreditos $creditos): View
     {
         // Perfil del usuario en sesión (rango, distintivo, total, cadena).
         $persona = auth()->user()?->persona;

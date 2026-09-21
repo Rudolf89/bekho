@@ -10,6 +10,7 @@ use App\Models\Prueba;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -60,7 +61,7 @@ class PlanillasCompetencia extends Component
         $this->mostrarModal = true;
     }
 
-    public function crear()
+    public function crear(): void
     {
         $this->bloqueaSiSoloLectura();
 
@@ -76,10 +77,10 @@ class PlanillasCompetencia extends Component
 
         Flux::toast(variant: 'success', text: 'Planilla creada.');
 
-        return $this->redirectRoute('competencia.ver', $planilla, navigate: true);
+        $this->redirectRoute('competencia.ver', $planilla, navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.competencia.planillas-competencia', [
             'planillas' => PlanillaCompetencia::with(['prueba', 'grupoEdad', 'categoria'])

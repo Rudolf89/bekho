@@ -14,6 +14,7 @@ use App\Models\User;
 use Flux\Flux;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -222,7 +223,7 @@ class GestionClases extends Component
         }
 
         $this->asignaciones = $clase->instructores
-            ->map(fn (User $u) => ['user_id' => (string) $u->id, 'papel' => $u->pivot->papel])
+            ->map(fn (User $u) => ['user_id' => (string) $u->id, 'papel' => (string) $u->getAttribute('pivot')->papel])
             ->all();
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -255,7 +256,7 @@ class GestionClases extends Component
         // Se descartan las filas de instructor sin usuario elegido.
         $this->asignaciones = array_values(array_filter(
             $this->asignaciones,
-            fn (array $fila) => ($fila['user_id'] ?? '') !== '',
+            fn (array $fila) => $fila['user_id'] !== '',
         ));
 
         $datos = $this->validate();
@@ -263,7 +264,7 @@ class GestionClases extends Component
         // La clase pertenece al grupo de su sede. Así queda bien también cuando
         // la crea el admin-plataforma, que no tiene grupo activo (y por tanto el
         // relleno automático del tenant no aplica).
-        $datos['grupo_id'] = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
+        $datos['grupo_id'] = Sede::sinGrupo()->findOrFail((int) $datos['sede_id'])->grupo_id;
 
         $asignaciones = $datos['asignaciones'] ?? [];
         $horarios = $datos['horarios'];
@@ -323,7 +324,7 @@ class GestionClases extends Component
         $clase->update(['activo' => ! $clase->activo]);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.clases.gestion-clases', [
             'clases' => $this->aplicarOrden(

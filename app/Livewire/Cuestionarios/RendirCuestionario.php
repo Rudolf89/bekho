@@ -7,6 +7,7 @@ use App\Models\IntentoCuestionario;
 use App\Models\PreguntaCuestionario;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -90,7 +91,7 @@ class RendirCuestionario extends Component
             ]);
 
             foreach ($preguntas as $pregunta) {
-                $elegidas = $this->seleccion[$pregunta->id] ?? [];
+                $elegidas = array_values($this->seleccion[$pregunta->id] ?? []);
                 $acierto = $pregunta->esCorrecta($elegidas);
 
                 if ($acierto) {
@@ -140,10 +141,10 @@ class RendirCuestionario extends Component
      */
     public function aciertoEn(PreguntaCuestionario $pregunta): bool
     {
-        return $pregunta->esCorrecta($this->seleccion[$pregunta->id] ?? []);
+        return $pregunta->esCorrecta(array_values($this->seleccion[$pregunta->id] ?? []));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cuestionarios.rendir-cuestionario');
     }

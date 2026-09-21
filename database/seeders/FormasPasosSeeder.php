@@ -38,7 +38,7 @@ class FormasPasosSeeder extends Seeder
     {
         $ruta = database_path('data/formas_songahm.json');
         if (! File::exists($ruta)) {
-            $this->command?->warn("No existe {$ruta}; se omiten las formas.");
+            $this->command->warn("No existe {$ruta}; se omiten las formas.");
 
             return;
         }
@@ -48,8 +48,11 @@ class FormasPasosSeeder extends Seeder
             ['razon_social' => 'BEKHO Martial Arts', 'pais' => 'Chile', 'moneda' => 'CLP', 'activo' => true],
         );
 
-        /** @var array<int, int> $posiciones  código => id */
-        $posiciones = Posicion::where('federacion_id', $federacion->id)->pluck('id', 'codigo')->all();
+        // Catálogo de posiciones indexado por su código.
+        $posiciones = [];
+        foreach (Posicion::where('federacion_id', $federacion->id)->get() as $posicion) {
+            $posiciones[(string) $posicion->codigo] = $posicion->id;
+        }
 
         /** @var array<string, list<array{lado: string, tecnica: string, postura: string, seccion: string}>> $formas */
         $formas = json_decode(File::get($ruta), true);
@@ -70,12 +73,12 @@ class FormasPasosSeeder extends Seeder
             // Idempotente: se regeneran los pasos.
             $forma->pasos()->delete();
             foreach ($pasos as $i => $paso) {
-                [$posicionId, $seccion] = $this->resolverPostura($paso['postura'] ?? '', $paso['seccion'] ?? '', $posiciones);
+                [$posicionId, $seccion] = $this->resolverPostura($paso['postura'], $paso['seccion'], $posiciones);
 
                 $forma->pasos()->create([
                     'numero' => $i + 1,
                     'orden' => $i + 1,
-                    'lado' => ($paso['lado'] ?? '') ?: null,
+                    'lado' => $paso['lado'] ?: null,
                     'tecnica' => $paso['tecnica'],
                     'posicion_id' => $posicionId,
                     'seccion' => $seccion,

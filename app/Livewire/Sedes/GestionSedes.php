@@ -11,6 +11,7 @@ use App\Models\User;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -167,7 +168,8 @@ class GestionSedes extends Component
      */
     public function regiones(): array
     {
-        return array_keys(config('regiones', []));
+        // Las claves del catálogo son los nombres de región (strings).
+        return array_map(strval(...), array_keys(config('regiones', [])));
     }
 
     /**
@@ -180,7 +182,7 @@ class GestionSedes extends Component
         return config('regiones.'.$this->region, []);
     }
 
-    public function render()
+    public function render(): View
     {
         // El aislamiento por grupo lo maneja el tenant: el admin-plataforma (que
         // no filtra lecturas) ve todas las sedes e instructores; el maestro,

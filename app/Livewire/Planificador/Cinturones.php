@@ -4,6 +4,7 @@ namespace App\Livewire\Planificador;
 
 use App\Enums\EscalaGrado;
 use App\Models\Grado;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -19,7 +20,7 @@ class Cinturones extends Component
     #[Url]
     public string $escala = 'adultos';
 
-    public function render()
+    public function render(): View
     {
         $escala = EscalaGrado::tryFrom($this->escala) ?? EscalaGrado::Adultos;
 

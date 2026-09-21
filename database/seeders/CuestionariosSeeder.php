@@ -41,7 +41,7 @@ class CuestionariosSeeder extends Seeder
             foreach ($datos['preguntas'] as $ordenPregunta => $pregunta) {
                 $modelo = $cuestionario->preguntas()->create([
                     'enunciado' => $pregunta['q'],
-                    'explicacion' => $pregunta['why'] ?? null,
+                    'explicacion' => $pregunta['why'],
                     'nota' => ! empty($pregunta['flag'])
                         ? 'Pregunta ambigua o dependiente de la versión del examen; verifica con tu instructor.'
                         : null,

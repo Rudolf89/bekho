@@ -109,7 +109,7 @@ class ServicioTraslados
             }
 
             $origen = $solicitud->matriculaOrigen()->withoutGlobalScopes()->first();
-            $grupoEtario = $origen?->grupo_etario?->value ?? 'jovenes_adultos';
+            $grupoEtario = $origen->grupo_etario->value ?? 'jovenes_adultos';
 
             if ($origen) {
                 $origen->update([

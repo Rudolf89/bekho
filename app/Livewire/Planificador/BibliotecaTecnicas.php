@@ -5,6 +5,7 @@ namespace App\Livewire\Planificador;
 use App\Enums\CategoriaTecnica;
 use App\Enums\ModalidadTecnica;
 use App\Models\Tecnica;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -25,7 +26,7 @@ class BibliotecaTecnicas extends Component
 
     public string $buscar = '';
 
-    public function render()
+    public function render(): View
     {
         $tecnicas = Tecnica::query()
             ->when($this->categoria !== '', fn ($q) => $q->where('categoria', $this->categoria))

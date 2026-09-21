@@ -191,7 +191,7 @@ class ServicioCreditos
 
         $responsableId = Sede::withoutGlobalScopes()->whereKey($sedeId)->value('responsable_persona_id');
 
-        return $responsableId ? Persona::withTrashed()->find($responsableId) : null;
+        return $responsableId ? Persona::withTrashed()->find((int) $responsableId) : null;
     }
 
     /**
@@ -201,6 +201,6 @@ class ServicioCreditos
     {
         $supervisorId = Instructor::where('persona_id', $persona->id)->value('supervisor_persona_id');
 
-        return $supervisorId ? Persona::withTrashed()->find($supervisorId) : null;
+        return $supervisorId ? Persona::withTrashed()->find((int) $supervisorId) : null;
     }
 }

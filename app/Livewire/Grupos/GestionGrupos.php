@@ -5,6 +5,7 @@ namespace App\Livewire\Grupos;
 use App\Livewire\Concerns\ConTabla;
 use App\Models\Grupo;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -81,7 +82,7 @@ class GestionGrupos extends Component
         $grupo->update(['activo' => ! $grupo->activo]);
     }
 
-    public function render()
+    public function render(): View
     {
         // El admin-plataforma no filtra lecturas, así que los conteos de sedes y
         // usuarios salen globales (el total real de cada grupo).

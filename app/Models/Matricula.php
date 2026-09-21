@@ -175,7 +175,7 @@ class Matricula extends Model
     {
         return $instructor->clases()
             ->where('sede_id', $this->sede_id)
-            ->where('grupo_etario', $this->grupo_etario?->value)
+            ->where('grupo_etario', $this->grupo_etario->value)
             ->exists();
     }
 

@@ -3,6 +3,7 @@
 namespace App\Livewire\Planificador;
 
 use App\Models\Forma;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -17,7 +18,7 @@ class Formas extends Component
 {
     public string $buscar = '';
 
-    public function render()
+    public function render(): View
     {
         $formas = Forma::query()
             ->when($this->buscar !== '', fn ($q) => $q->whereRaw(

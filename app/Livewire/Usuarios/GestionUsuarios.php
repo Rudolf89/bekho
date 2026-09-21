@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
@@ -93,13 +94,13 @@ class GestionUsuarios extends Component
      */
     public function rolesDisponibles(): array
     {
-        $roles = Role::orderBy('name')->pluck('name');
+        $roles = Role::orderBy('name')->get()->map(fn (Role $rol) => (string) $rol->name);
 
         if (! $this->esSuperAdmin()) {
             $roles = $roles->reject(fn (string $r) => $r === 'admin-plataforma');
         }
 
-        return $roles->values()->all();
+        return array_values($roles->all());
     }
 
     /**
@@ -146,7 +147,7 @@ class GestionUsuarios extends Component
         $this->name = $usuario->name;
         $this->email = $usuario->email;
         $this->telefono = $usuario->telefono;
-        $this->rol = $usuario->roles->first()?->name ?? '';
+        $this->rol = (string) $usuario->getRoleNames()->first();
         $this->rango_id = (string) ($usuario->rango_id ?? '');
         $this->sedes = $usuario->sedes->pluck('id')->map(fn ($id) => (string) $id)->all();
         $this->grupo_id = (string) ($usuario->grupo_id ?? '');
@@ -308,7 +309,7 @@ class GestionUsuarios extends Component
         $this->reset('eliminandoId', 'eliminandoNombre');
     }
 
-    public function render()
+    public function render(): View
     {
         $grupoFormulario = $this->grupoEfectiva();
 

@@ -108,7 +108,7 @@ class InscripcionPrograma extends Model
      */
     public function horasCompletas(): bool
     {
-        return $this->horasAcumuladas() >= ($this->etapaActual?->horas_requeridas ?? 0);
+        return $this->horasAcumuladas() >= ($this->etapaActual->horas_requeridas ?? 0);
     }
 
     /**
@@ -135,7 +135,7 @@ class InscripcionPrograma extends Model
      */
     public function cumpleTodosLosRequisitos(): bool
     {
-        $requisitos = $this->etapaActual?->requisitos ?? collect();
+        $requisitos = $this->etapaActual->requisitos ?? collect();
 
         return $requisitos->every(fn (RequisitoEtapa $r) => $this->cumpleRequisito($r));
     }

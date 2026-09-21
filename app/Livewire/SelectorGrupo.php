@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Grupo;
+use Illuminate\View\View;
 use Livewire\Component;
 
 /**
@@ -26,7 +27,7 @@ class SelectorGrupo extends Component
         $this->redirect(request()->headers->get('referer') ?: route('dashboard'));
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.selector-grupo', [
             'grupos' => Grupo::orderBy('nombre')->get(),

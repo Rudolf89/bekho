@@ -4,6 +4,7 @@ namespace App\Livewire\Planificador;
 
 use App\Enums\FilaPlannerCiclo;
 use App\Models\Ciclo;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -23,7 +24,7 @@ class PlanCiclos extends Component
         $this->cicloId ??= Ciclo::ordenados()->value('id');
     }
 
-    public function render()
+    public function render(): View
     {
         $ciclos = Ciclo::ordenados()->get();
 

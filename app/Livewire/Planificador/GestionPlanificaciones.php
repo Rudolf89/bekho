@@ -11,6 +11,7 @@ use App\Models\PlanificacionClase;
 use App\Models\Programa;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -52,7 +53,7 @@ class GestionPlanificaciones extends Component
         $this->mostrarModal = true;
     }
 
-    public function guardar()
+    public function guardar(): void
     {
         $this->bloqueaSiSoloLectura();
 
@@ -67,10 +68,10 @@ class GestionPlanificaciones extends Component
 
         Flux::toast(variant: 'success', text: 'Planificación creada. Completa su contenido.');
 
-        return $this->redirect(route('planificaciones.editar', $planificacion), navigate: true);
+        $this->redirect(route('planificaciones.editar', $planificacion), navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.planificador.gestion-planificaciones', [
             'planificaciones' => $this->aplicarOrden(

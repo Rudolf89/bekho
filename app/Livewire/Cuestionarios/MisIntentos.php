@@ -5,6 +5,7 @@ namespace App\Livewire\Cuestionarios;
 use App\Livewire\Concerns\ConTabla;
 use App\Models\IntentoCuestionario;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -18,7 +19,7 @@ class MisIntentos extends Component
 {
     use ConTabla, WithPagination;
 
-    public function render()
+    public function render(): View
     {
         $intentos = $this->aplicarBusqueda(
             IntentoCuestionario::query()

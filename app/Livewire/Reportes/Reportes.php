@@ -8,9 +8,12 @@ use App\Models\Matricula;
 use App\Models\Sede;
 use App\Services\ServicioPagos;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Collection;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /**
  * Reportes de gestión (solo lectura): distribución por cinturón, altas por mes y
@@ -21,21 +24,39 @@ use Livewire\Component;
 class Reportes extends Component
 {
     /**
-     * Distribución de matrículas activas por grado (cinturón).
+     * Distribución de matrículas activas por grado (cinturón), de mayor a menor.
      *
-     * @return Collection<int, array{nombre: string, color: ?string, total: int}>
+     * @return list<array{nombre: string, color: string|null, total: int}>
      */
-    protected function distribucionPorCinturon(): Collection
+    protected function distribucionPorCinturon(): array
     {
-        return Matricula::activas()->with('persona.grado')->get()
-            ->groupBy(fn (Matricula $m) => $m->persona?->grado?->nombre ?? 'Sin grado')
-            ->map(fn (Collection $g, string $nombre) => [
-                'nombre' => $nombre,
-                'color' => $g->first()->persona?->grado?->color,
-                'total' => $g->count(),
-            ])
-            ->sortByDesc('total')
-            ->values();
+        $porGrado = Matricula::activas()->with('persona.grado')->get()
+            ->groupBy(fn (Matricula $m) => $m->persona->grado->nombre ?? 'Sin grado');
+
+        $filas = [];
+
+        foreach ($porGrado as $nombre => $matriculas) {
+            $filas[] = $this->filaCinturon((string) $nombre, $matriculas);
+        }
+
+        usort($filas, fn (array $a, array $b) => $b['total'] <=> $a['total']);
+
+        return $filas;
+    }
+
+    /**
+     * Una fila de la distribución: nombre del cinturón, color y total.
+     *
+     * @param  Collection<int, Matricula>  $matriculas
+     * @return array{nombre: string, color: string|null, total: int}
+     */
+    private function filaCinturon(string $nombre, Collection $matriculas): array
+    {
+        return [
+            'nombre' => $nombre,
+            'color' => $matriculas->first()?->persona?->grado?->color,
+            'total' => $matriculas->count(),
+        ];
     }
 
     /**
@@ -48,7 +69,9 @@ class Reportes extends Component
         $desde = CarbonImmutable::now()->startOfMonth()->subMonths(11);
 
         $porMes = Matricula::where('created_at', '>=', $desde)->get()
-            ->groupBy(fn (Matricula $m) => $m->created_at?->format('Y-m'))
+            // La consulta ya acota por created_at, así que el bucket de reserva
+            // no se usa; está para que la clave del agrupado sea siempre un texto.
+            ->groupBy(fn (Matricula $m) => $m->created_at?->format('Y-m') ?? 'sin-fecha')
             ->map->count();
 
         return collect(range(0, 11))->map(function (int $i) use ($desde, $porMes) {
@@ -68,25 +91,38 @@ class Reportes extends Component
         $periodo = $pagos->periodo();
         $morosos = $pagos->morosos()->groupBy('sede_id')->map->count();
 
-        return Sede::orderBy('nombre')->get()->map(function (Sede $sede) use ($periodo, $morosos) {
-            return [
-                'sede' => $sede->nombre,
-                'activos' => Matricula::activas()->where('sede_id', $sede->id)->count(),
-                'morosos' => (int) ($morosos[$sede->id] ?? 0),
-                'cobrado' => (int) Cargo::where('sede_id', $sede->id)
-                    ->where('estado', EstadoCargo::Pagado->value)
-                    ->whereDate('periodo', $periodo)
-                    ->sum('monto'),
-            ];
-        });
+        return Sede::orderBy('nombre')->get()
+            ->map(fn (Sede $sede) => $this->filaSede($sede, $periodo, (int) ($morosos[$sede->id] ?? 0)));
     }
 
-    public function exportarCsv(ServicioPagos $pagos)
+    /**
+     * Una fila de la comparativa: activos, morosos e ingresos cobrados del mes.
+     *
+     * @return array{sede: string, activos: int, morosos: int, cobrado: int}
+     */
+    private function filaSede(Sede $sede, CarbonInterface $periodo, int $morosos): array
+    {
+        return [
+            'sede' => $sede->nombre,
+            'activos' => Matricula::activas()->where('sede_id', $sede->id)->count(),
+            'morosos' => $morosos,
+            'cobrado' => (int) Cargo::where('sede_id', $sede->id)
+                ->where('estado', EstadoCargo::Pagado->value)
+                ->whereDate('periodo', $periodo)
+                ->sum('monto'),
+        ];
+    }
+
+    public function exportarCsv(ServicioPagos $pagos): StreamedResponse
     {
         $filas = $this->comparativaSedes($pagos);
 
         return response()->streamDownload(function () use ($filas) {
             $out = fopen('php://output', 'w');
+            if ($out === false) {
+                return;
+            }
+
             fputcsv($out, ['Sede', 'Activos', 'Morosos', 'Cobrado del mes']);
             foreach ($filas as $f) {
                 fputcsv($out, [$f['sede'], $f['activos'], $f['morosos'], $f['cobrado']]);
@@ -95,9 +131,9 @@ class Reportes extends Component
         }, 'comparativa-sedes-'.now()->format('Y-m').'.csv', ['Content-Type' => 'text/csv']);
     }
 
-    public function render(ServicioPagos $pagos)
+    public function render(ServicioPagos $pagos): View
     {
-        $distribucion = $this->distribucionPorCinturon();
+        $distribucion = collect($this->distribucionPorCinturon());
         $altas = $this->altasPorMes();
 
         return view('livewire.reportes.reportes', [

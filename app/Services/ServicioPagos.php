@@ -10,6 +10,7 @@ use App\Models\Asistencia;
 use App\Models\Cargo;
 use App\Models\Matricula;
 use App\Models\Pago;
+use App\Models\Suspension;
 use App\Models\User;
 use App\Support\Tenancy\Grupo;
 use Carbon\CarbonInterface;
@@ -37,7 +38,7 @@ class ServicioPagos
             return $matricula->sede->clasesGraciaMorosidad();
         }
 
-        return $matricula->grupo?->federacion?->clases_gracia_morosidad ?? 3;
+        return $matricula->grupo->federacion->clases_gracia_morosidad ?? 3;
     }
 
     /**
@@ -156,7 +157,8 @@ class ServicioPagos
             ->whereHas('cargos', fn ($q) => $q
                 ->where('estado', EstadoCargo::Pendiente->value)
                 ->where(fn ($sub) => $sub->whereNull('periodo')->orWhereDate('periodo', '<=', $periodo)))
-            ->whereDoesntHave('suspensiones', fn ($q) => $q->cubrePeriodo($periodo))
+            // Sin suspensión que cubra el período (subconsulta sobre el scope tipado).
+            ->whereNotIn('matriculas.id', Suspension::query()->cubrePeriodo($periodo)->select('matricula_id'))
             ->with('persona')
             ->get()
             ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())

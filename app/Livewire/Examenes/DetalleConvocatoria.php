@@ -14,6 +14,7 @@ use App\Services\ServicioExamenes;
 use Flux\Flux;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -119,7 +120,7 @@ class DetalleConvocatoria extends Component
         $this->ins_grado_destino = (string) ($inscripcion->grado_destino_id ?? '');
         $this->ins_instructor = (string) ($inscripcion->instructor_id ?? '');
         $this->ins_visto_bueno = $inscripcion->visto_bueno;
-        $this->ins_resultado = $inscripcion->resultado?->value ?? '';
+        $this->ins_resultado = $inscripcion->resultado->value ?? '';
         $this->ins_nota = $inscripcion->nota !== null ? (float) $inscripcion->nota : null;
         $this->resetErrorBag();
         $this->mostrarModal = true;
@@ -193,7 +194,7 @@ class DetalleConvocatoria extends Component
         Flux::toast(variant: 'success', text: 'Convocatoria finalizada: se aplicaron las graduaciones.');
     }
 
-    public function render(ServicioExamenes $servicio)
+    public function render(ServicioExamenes $servicio): View
     {
         $inscritos = $this->convocatoria->inscripciones()
             ->with(['matricula.persona', 'gradoOrigen', 'gradoDestino', 'instructor'])
@@ -201,7 +202,7 @@ class DetalleConvocatoria extends Component
 
         $idsInscritos = $inscritos->pluck('matricula_id')->all();
 
-        $sugeridos = $servicio->sugerirElegibles($this->convocatoria)
+        $sugeridos = collect($servicio->sugerirElegibles($this->convocatoria))
             ->reject(fn ($s) => in_array($s['matricula']->id, $idsInscritos, true))
             ->values();
 

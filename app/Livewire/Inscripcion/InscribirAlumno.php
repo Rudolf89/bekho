@@ -19,6 +19,7 @@ use App\Support\Rut;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -192,7 +193,8 @@ class InscribirAlumno extends Component
      */
     public function regiones(): array
     {
-        return array_keys(config('regiones', []));
+        // Las claves del catálogo son los nombres de región (strings).
+        return array_map(strval(...), array_keys(config('regiones', [])));
     }
 
     /**
@@ -211,7 +213,7 @@ class InscribirAlumno extends Component
 
         // El grupo del alumno es el de su sede (funciona también para el
         // admin-plataforma, que gestiona por grupo).
-        $grupoId = Sede::sinGrupo()->findOrFail($datos['sede_id'])->grupo_id;
+        $grupoId = Sede::sinGrupo()->findOrFail((int) $datos['sede_id'])->grupo_id;
 
         // 1) Persona (identidad): datos personales + apoderado como contacto de
         //    emergencia. El vínculo formal con un apoderado va por tutelas.
@@ -249,7 +251,7 @@ class InscribirAlumno extends Component
             'grupo_etario' => $datos['grupo_etario'],
             'estado' => EstadoMatricula::Activa->value,
             'fecha_ingreso' => now()->toDateString(),
-            'instructor_persona_id' => User::find($datos['instructor_id'])?->persona_id,
+            'instructor_persona_id' => User::find((int) $datos['instructor_id'])?->persona_id,
             'dia_vencimiento' => $datos['dia_vencimiento'],
             'acepto_reglamento_at' => now(),
             // Quién acepta: la persona del alumno (cuando la inscripción cree la
@@ -279,7 +281,7 @@ class InscribirAlumno extends Component
         $this->redirectRoute('estudiantes.index', navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
         // Los instructores disponibles son los asignados a la sede elegida
         // (pivote sede_user). Sin sede elegida no se muestra ninguno.

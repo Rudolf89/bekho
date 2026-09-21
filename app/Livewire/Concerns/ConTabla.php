@@ -36,9 +36,11 @@ trait ConTabla
      * Aplica el término de búsqueda como LIKE sobre las columnas indicadas.
      * Una columna con punto ("relacion.columna") busca dentro de la relación.
      *
-     * @param  Builder<covariant \Illuminate\Database\Eloquent\Model>  $query
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
      * @param  list<string>  $columnas
-     * @return Builder<covariant \Illuminate\Database\Eloquent\Model>
+     * @return Builder<TModel>
      */
     public function aplicarBusqueda(Builder $query, array $columnas): Builder
     {
@@ -60,6 +62,10 @@ trait ConTabla
     /**
      * Aplica un LIKE sobre una columna que puede pertenecer a una relación
      * anidada ("matricula.persona.nombres"): baja por cada nivel con whereHas.
+     *
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $q
      */
     protected function aplicarColumnaBusqueda(Builder $q, string $columna, string $like, bool $or): void
     {

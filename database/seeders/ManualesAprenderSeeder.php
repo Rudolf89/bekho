@@ -45,13 +45,32 @@ class ManualesAprenderSeeder extends Seeder
             return [];
         }
 
-        return collect(File::files($dir))
-            ->filter(fn ($f) => $f->getExtension() === 'json')
-            ->map(fn ($f) => json_decode(File::get($f->getPathname()), true))
-            ->filter()
-            ->sortBy('orden')
-            ->values()
-            ->all();
+        $manuales = [];
+
+        foreach (File::files($dir) as $archivo) {
+            if ($archivo->getExtension() !== 'json') {
+                continue;
+            }
+
+            $datos = json_decode(File::get($archivo->getPathname()), true);
+
+            if (! is_array($datos) || $datos === []) {
+                continue;
+            }
+
+            // El JSON de cada manual es un objeto; se normalizan las claves a
+            // texto porque json_decode() no lo promete.
+            $manual = [];
+            foreach ($datos as $clave => $valor) {
+                $manual[(string) $clave] = $valor;
+            }
+
+            $manuales[] = $manual;
+        }
+
+        usort($manuales, fn (array $a, array $b) => ($a['orden'] ?? 0) <=> ($b['orden'] ?? 0));
+
+        return $manuales;
     }
 
     /**

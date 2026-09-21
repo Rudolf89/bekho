@@ -15,28 +15,29 @@ use Illuminate\Support\Facades\Schema;
  */
 return new class extends Migration
 {
-    /**
-     * @var list<string>
-     */
-    private array $tablas = [
-        'planificaciones_clase',
-        'planificaciones_cinturon_negro',
-        'categorias_calentamiento',
-    ];
-
     public function up(): void
     {
-        foreach ($this->tablas as $tabla) {
-            Schema::table($tabla, function (Blueprint $table) {
-                $table->string('fuente')->nullable();
-                $table->boolean('verificado')->default(false);
-            });
-        }
+        // Tabla por tabla (sin bucle) para que el análisis estático vea las
+        // columnas nuevas al leer la migración.
+        Schema::table('planificaciones_clase', function (Blueprint $table) {
+            $table->string('fuente')->nullable();
+            $table->boolean('verificado')->default(false);
+        });
+
+        Schema::table('planificaciones_cinturon_negro', function (Blueprint $table) {
+            $table->string('fuente')->nullable();
+            $table->boolean('verificado')->default(false);
+        });
+
+        Schema::table('categorias_calentamiento', function (Blueprint $table) {
+            $table->string('fuente')->nullable();
+            $table->boolean('verificado')->default(false);
+        });
     }
 
     public function down(): void
     {
-        foreach ($this->tablas as $tabla) {
+        foreach (['planificaciones_clase', 'planificaciones_cinturon_negro', 'categorias_calentamiento'] as $tabla) {
             Schema::table($tabla, function (Blueprint $table) {
                 $table->dropColumn(['fuente', 'verificado']);
             });

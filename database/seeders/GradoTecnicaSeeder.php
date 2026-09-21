@@ -52,12 +52,12 @@ class GradoTecnicaSeeder extends Seeder
     {
         // Danes: "1.er Dan (decidido)", "2.º Dan (recomendado)"… → grado "Nº Dan".
         if (Str::contains($cinturon, 'Dan') && preg_match('/(\d+)/', $cinturon, $m)) {
-            return Grado::where('nombre', "{$m[1]}º Dan")->pluck('id')->all();
+            return array_values(Grado::where('nombre', "{$m[1]}º Dan")->get()->map(fn (Grado $g) => $g->id)->all());
         }
 
         // Cinturones de color: se normaliza la grafía y se toman todas las escalas.
         $color = self::MAPA_COLOR[$cinturon] ?? $cinturon;
 
-        return Grado::where('color', $color)->pluck('id')->all();
+        return array_values(Grado::where('color', $color)->get()->map(fn (Grado $g) => $g->id)->all());
     }
 }

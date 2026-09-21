@@ -13,6 +13,7 @@ use App\Services\ServicioPlanillaCompetencia;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -149,7 +150,7 @@ class VerPlanillaCompetencia extends Component
         $this->planilla->update(['estado' => EstadoPlanillaCompetencia::Borrador->value]);
     }
 
-    public function render(ServicioPlanillaCompetencia $servicio)
+    public function render(ServicioPlanillaCompetencia $servicio): View
     {
         $this->planilla->load(['prueba.criterios.escala', 'jueces', 'grupoEdad', 'categoria']);
 

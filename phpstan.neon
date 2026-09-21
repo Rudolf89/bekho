@@ -11,3 +11,7 @@ parameters:
         - routes/
 
     level: 7
+
+    # Larastan lee los `casts()` del cuerpo del método (no solo su @return),
+    # para que los enums y las fechas casteadas se tipen de verdad.
+    parseModelCastsMethod: true

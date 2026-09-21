@@ -14,8 +14,10 @@ use App\Models\Persona;
 use App\Models\Sede;
 use App\Support\Rut;
 use Flux\Flux;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -80,7 +82,7 @@ class GestionEstudiantes extends Component
         ];
     }
 
-    public function updating($campo): void
+    public function updating(string $campo): void
     {
         if (in_array($campo, ['buscar', 'filtroGrupo', 'filtroNivel', 'filtroEstado'], true)) {
             $this->resetPage();
@@ -106,7 +108,7 @@ class GestionEstudiantes extends Component
         $this->editandoId = $matricula->id;
         $this->nombre = $persona->nombreCompleto();
         $this->rut = $persona->documentos()->where('tipo', 'rut')->value('numero');
-        $this->fecha_nacimiento = $persona->fecha_nacimiento?->format('Y-m-d');
+        $this->fecha_nacimiento = $persona->fecha_nacimiento->format('Y-m-d');
         $this->grupo_etario = $matricula->grupo_etario->value;
         $this->grado_id = (string) ($persona->grado_id ?? '');
         $this->sede_id = (string) ($matricula->sede_id ?? '');
@@ -175,11 +177,13 @@ class GestionEstudiantes extends Component
 
     /**
      * Grados disponibles según el grupo etario elegido en el formulario.
+     *
+     * @return Collection<int, Grado>
      */
-    public function gradosDisponibles()
+    public function gradosDisponibles(): Collection
     {
         if ($this->grupo_etario === '') {
-            return collect();
+            return new Collection;
         }
 
         return Grado::porEscala(EscalaGrado::paraGrupo(GrupoEtario::from($this->grupo_etario)))->ordenados()->get();
@@ -195,7 +199,7 @@ class GestionEstudiantes extends Component
             : NivelEntrenamiento::Principiantes;
     }
 
-    public function render()
+    public function render(): View
     {
         $query = Matricula::query()
             ->visiblePara(auth()->user())

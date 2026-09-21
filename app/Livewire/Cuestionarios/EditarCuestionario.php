@@ -3,8 +3,11 @@
 namespace App\Livewire\Cuestionarios;
 
 use App\Models\Cuestionario;
+use App\Models\OpcionPregunta;
+use App\Models\PreguntaCuestionario;
 use Flux\Flux;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -30,11 +33,10 @@ class EditarCuestionario extends Component
     public bool $activo = true;
 
     /**
-     * Árbol editable de preguntas:
-     * [['id'=>?int, 'enunciado'=>string, 'explicacion'=>string, 'nota'=>string,
-     *   'opciones'=>[['id'=>?int, 'texto'=>string, 'correcta'=>bool], ...]], ...].
+     * Árbol editable de preguntas con sus opciones.
      *
-     * @var array<int, array<string, mixed>>
+     * @var list<array{id: int|null, enunciado: string, explicacion: string, nota: string,
+     *     opciones: list<array{id: int|null, texto: string, correcta: bool}>}>
      */
     public array $preguntas = [];
 
@@ -48,17 +50,21 @@ class EditarCuestionario extends Component
             $this->umbral_aprobacion = $cuestionario->umbral_aprobacion;
             $this->activo = $cuestionario->activo;
 
-            $this->preguntas = $cuestionario->preguntas->map(fn ($p) => [
-                'id' => $p->id,
-                'enunciado' => $p->enunciado,
-                'explicacion' => (string) $p->explicacion,
-                'nota' => (string) $p->nota,
-                'opciones' => $p->opciones->map(fn ($o) => [
-                    'id' => $o->id,
-                    'texto' => $o->texto,
-                    'correcta' => $o->correcta,
-                ])->all(),
-            ])->all();
+            $this->preguntas = array_values(
+                $cuestionario->preguntas->map(fn (PreguntaCuestionario $p) => [
+                    'id' => $p->id,
+                    'enunciado' => $p->enunciado,
+                    'explicacion' => (string) $p->explicacion,
+                    'nota' => (string) $p->nota,
+                    'opciones' => array_values(
+                        $p->opciones->map(fn (OpcionPregunta $o) => [
+                            'id' => $o->id,
+                            'texto' => $o->texto,
+                            'correcta' => $o->correcta,
+                        ])->all()
+                    ),
+                ])->all()
+            );
         }
 
         if ($this->preguntas === []) {
@@ -82,8 +88,7 @@ class EditarCuestionario extends Component
 
     public function eliminarPregunta(int $i): void
     {
-        unset($this->preguntas[$i]);
-        $this->preguntas = array_values($this->preguntas);
+        array_splice($this->preguntas, $i, 1);
     }
 
     public function agregarOpcion(int $i): void
@@ -93,11 +98,10 @@ class EditarCuestionario extends Component
 
     public function eliminarOpcion(int $i, int $j): void
     {
-        unset($this->preguntas[$i]['opciones'][$j]);
-        $this->preguntas[$i]['opciones'] = array_values($this->preguntas[$i]['opciones']);
+        array_splice($this->preguntas[$i]['opciones'], $j, 1);
     }
 
-    public function guardar()
+    public function guardar(): void
     {
         $this->validate([
             'titulo' => ['required', 'string', 'max:255'],
@@ -132,7 +136,7 @@ class EditarCuestionario extends Component
                     'area' => $this->area ?: null,
                     'umbral_aprobacion' => $this->umbral_aprobacion,
                     'activo' => $this->activo,
-                    'orden' => $this->cuestionario?->orden ?? 0,
+                    'orden' => $this->cuestionario->orden ?? 0,
                 ],
             );
 
@@ -174,10 +178,10 @@ class EditarCuestionario extends Component
 
         Flux::toast(variant: 'success', text: 'Cuestionario guardado.');
 
-        return $this->redirect(route('cuestionarios.index'), navigate: true);
+        $this->redirect(route('cuestionarios.index'), navigate: true);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.cuestionarios.editar-cuestionario');
     }

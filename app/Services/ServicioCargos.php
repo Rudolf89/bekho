@@ -330,10 +330,10 @@ class ServicioCargos
         $sede = $matricula->sede_id ? Sede::withoutGlobalScopes()->find($matricula->sede_id) : null;
         $desdeMes = $sede
             ? $sede->exencionMatriculaDesdeMes()
-            : ($matricula->grupo?->federacion?->exencion_matricula_desde_mes ?? 10);
+            : ($matricula->grupo->federacion->exencion_matricula_desde_mes ?? 10);
         $hastaMes = $sede
             ? $sede->exencionMatriculaHastaMes()
-            : ($matricula->grupo?->federacion?->exencion_matricula_hasta_mes ?? 1);
+            : ($matricula->grupo->federacion->exencion_matricula_hasta_mes ?? 1);
 
         // La ventana cruza el fin de año: desde_mes del año anterior hasta hasta_mes
         // del año objetivo (por defecto, octubre del año previo → fin de enero).

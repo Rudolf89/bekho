@@ -7,6 +7,7 @@ use App\Livewire\Concerns\SoloLectura;
 use App\Models\Contenido;
 use App\Models\EtapaPrograma;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -125,7 +126,7 @@ class AdminContenidos extends Component
         $contenido->update(['activo' => ! $contenido->activo]);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.programas.admin.admin-contenidos', [
             'contenidos' => $this->etapa->contenidos()->get(),

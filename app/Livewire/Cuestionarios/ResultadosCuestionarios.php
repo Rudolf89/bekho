@@ -9,6 +9,7 @@ use App\Models\IntentoCuestionario;
 use App\Notifications\IntentoDecidido;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -93,7 +94,7 @@ class ResultadosCuestionarios extends Component
             : 'Se pidió volver a intentar.');
     }
 
-    public function render()
+    public function render(): View
     {
         $intentos = $this->aplicarBusqueda(
             IntentoCuestionario::query()

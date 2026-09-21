@@ -19,6 +19,7 @@ use App\Models\PlanificacionCinturonNegro;
 use App\Models\PlanificacionClase;
 use App\Models\PlannerCiclo;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -215,7 +216,7 @@ class Planificador extends Component
         ];
     }
 
-    public function render()
+    public function render(): View
     {
         $datos = [
             'grupos' => GrupoEtario::cases(),
@@ -292,7 +293,7 @@ class Planificador extends Component
             $datos['lecciones'] = $lecciones;
             // Todas las semanas del ciclo (8) se muestran como casilleros: las
             // cargadas resaltadas, las pendientes atenuadas.
-            $datos['semanasCiclo'] = $cicloActual?->semanas ?? 8;
+            $datos['semanasCiclo'] = $cicloActual->semanas ?? 8;
             $datos['semanasCargadas'] = $lecciones->pluck('semana')->all();
             $datos['leccion'] = $lecciones->firstWhere('semana', $this->lecSemana);
         }

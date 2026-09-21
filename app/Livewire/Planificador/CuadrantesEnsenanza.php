@@ -5,6 +5,7 @@ namespace App\Livewire\Planificador;
 use App\Enums\Cuadrante;
 use App\Enums\RolCuadrante;
 use App\Models\CuadranteItem;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -15,7 +16,7 @@ use Livewire\Component;
 #[Title('Cuadrantes de Enseñanza')]
 class CuadrantesEnsenanza extends Component
 {
-    public function render()
+    public function render(): View
     {
         $items = CuadranteItem::orderBy('orden')->get();
 

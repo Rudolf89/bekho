@@ -51,10 +51,12 @@ class PlanificacionCinturonNegro extends Model
      */
     public function itemsDe(string $seccion): array
     {
-        return $this->secciones
-            ->where('seccion', $seccion)
-            ->pluck('item')
-            ->all();
+        return array_values(
+            $this->secciones
+                ->where('seccion', $seccion)
+                ->map(fn (SeccionCinturonNegro $s) => $s->item)
+                ->all()
+        );
     }
 
     /**

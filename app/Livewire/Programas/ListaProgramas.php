@@ -6,6 +6,7 @@ use App\Livewire\Concerns\ConTabla;
 use App\Models\Programa;
 use App\Services\ServicioProgramas;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -18,7 +19,7 @@ class ListaProgramas extends Component
 {
     use ConTabla;
 
-    public function render(ServicioProgramas $servicio)
+    public function render(ServicioProgramas $servicio): View
     {
         $persona = Auth::user()?->persona;
 

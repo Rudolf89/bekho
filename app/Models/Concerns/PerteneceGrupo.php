@@ -63,8 +63,8 @@ trait PerteneceGrupo
         });
 
         static::creating(function (Model $modelo): void {
-            if (empty($modelo->grupo_id) && Grupo::hayActiva()) {
-                $modelo->grupo_id = Grupo::id();
+            if (empty($modelo->getAttribute('grupo_id')) && Grupo::hayActiva()) {
+                $modelo->setAttribute('grupo_id', Grupo::id());
             }
         });
     }
@@ -102,6 +102,11 @@ trait PerteneceGrupo
 
     /**
      * Consulta sin el aislamiento por grupo.
+     *
+     * @template TModel of Model
+     *
+     * @param  Builder<TModel>  $query
+     * @return Builder<TModel>
      */
     public function scopeSinGrupo(Builder $query): Builder
     {

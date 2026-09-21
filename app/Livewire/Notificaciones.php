@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -31,7 +32,7 @@ class Notificaciones extends Component
         Auth::user()->notifications()->where('id', $id)->delete();
     }
 
-    public function render()
+    public function render(): View
     {
         $notificaciones = Auth::user()->notifications()
             ->when($this->soloNoLeidas, fn ($q) => $q->whereNull('read_at'))

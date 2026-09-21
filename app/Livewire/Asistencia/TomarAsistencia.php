@@ -5,12 +5,14 @@ namespace App\Livewire\Asistencia;
 use App\Enums\EstadoAsistencia;
 use App\Models\Asistencia;
 use App\Models\Clase;
+use App\Models\HorarioClase;
 use App\Models\Matricula;
 use App\Services\ServicioPagos;
 use Flux\Flux;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -138,7 +140,12 @@ class TomarAsistencia extends Component
         // Cada clase aparece en cada día en que tiene un horario: se aplanan las
         // clases en pares (clase, horario) agrupados por día de la semana.
         $porDia = $clases
-            ->flatMap(fn (Clase $c) => $c->horarios->map(fn ($h) => ['clase' => $c, 'horario' => $h]))
+            ->flatMap(fn (Clase $c) => $c->horarios->map(
+                /**
+                 * @return array{clase: Clase, horario: HorarioClase}
+                 */
+                fn (HorarioClase $h) => ['clase' => $c, 'horario' => $h]
+            ))
             ->groupBy(fn (array $par) => $par['horario']->dia_semana->value);
 
         $dias = [];
@@ -178,9 +185,9 @@ class TomarAsistencia extends Component
 
             $dias[] = [
                 'fecha' => $fecha->toDateString(),
-                'diaNombre' => $fecha->locale('es')->isoFormat('dddd'),
+                'diaNombre' => $fecha->isoFormat('dddd'),
                 'diaNumero' => $fecha->day,
-                'mes' => $fecha->locale('es')->isoFormat('MMM'),
+                'mes' => $fecha->isoFormat('MMM'),
                 'esHoy' => $fecha->toDateString() === $hoy,
                 'clases' => $clasesDelDia,
             ];
@@ -189,7 +196,7 @@ class TomarAsistencia extends Component
         return $dias;
     }
 
-    public function render()
+    public function render(): View
     {
         $clases = Clase::activas()->with(['sede', 'instructores', 'horarios'])->get();
 
@@ -223,10 +230,10 @@ class TomarAsistencia extends Component
 
         return view('livewire.asistencia.tomar-asistencia', [
             'dias' => $this->armarDias($clases),
-            'rangoSemana' => $lunes->locale('es')->isoFormat('D [de] MMMM').' – '.$lunes->copy()->addDays(6)->locale('es')->isoFormat('D [de] MMMM'),
+            'rangoSemana' => $lunes->isoFormat('D [de] MMMM').' – '.$lunes->copy()->addDays(6)->isoFormat('D [de] MMMM'),
             'clase' => $clase,
             'horarioLista' => $horarioLista,
-            'fechaLista' => Carbon::parse($this->fecha)->locale('es')->isoFormat('dddd D [de] MMMM'),
+            'fechaLista' => Carbon::parse($this->fecha)->isoFormat('dddd D [de] MMMM'),
             'roster' => $roster,
             'estados' => $estados,
             'presentes' => $presentes,

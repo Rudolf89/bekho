@@ -47,10 +47,13 @@ class CategoriaCalentamiento extends Model
      */
     public function gruposEtarios(): array
     {
-        return DB::table('categoria_calentamiento_grupo')
-            ->where('categoria_calentamiento_id', $this->id)
-            ->pluck('grupo_etario')
-            ->all();
+        return array_values(
+            DB::table('categoria_calentamiento_grupo')
+                ->where('categoria_calentamiento_id', $this->id)
+                ->pluck('grupo_etario')
+                ->map(fn (mixed $grupo) => (string) $grupo)
+                ->all()
+        );
     }
 
     /**

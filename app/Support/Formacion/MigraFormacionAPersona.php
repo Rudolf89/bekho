@@ -4,6 +4,7 @@ namespace App\Support\Formacion;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use stdClass;
 
 /**
  * Traslada la formación del modelo viejo (colgada de user_id) al nuevo (colgada
@@ -86,7 +87,7 @@ class MigraFormacionAPersona
     /**
      * Crea/actualiza la inscripción al programa por (persona, programa) y devuelve su id.
      */
-    private function upsertInscripcion(int $programaId, int $personaId, ?int $etapaId, object $insc): int
+    private function upsertInscripcion(int $programaId, int $personaId, ?int $etapaId, stdClass $insc): int
     {
         $aprobadoPorPersona = $insc->aprobado_por
             ? DB::table('users')->where('id', $insc->aprobado_por)->value('persona_id')

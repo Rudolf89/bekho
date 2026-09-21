@@ -7,6 +7,7 @@ use App\Livewire\Concerns\ConTabla;
 use App\Models\Cuestionario;
 use App\Models\IntentoCuestionario;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -27,7 +28,7 @@ class ListaCuestionarios extends Component
         Cuestionario::whereKey($id)->delete();
     }
 
-    public function render()
+    public function render(): View
     {
         $puedeGestionar = Auth::user()->can('gestionar cuestionarios');
 

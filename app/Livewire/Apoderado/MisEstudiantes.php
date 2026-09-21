@@ -7,8 +7,10 @@ use App\Models\Matricula;
 use App\Services\ServicioPagos;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 
 /**
@@ -31,7 +33,7 @@ class MisEstudiantes extends Component
 
     public ?string $pagoReferencia = null;
 
-    public $comprobante = null;
+    public ?TemporaryUploadedFile $comprobante = null;
 
     public bool $mostrarInformar = false;
 
@@ -55,7 +57,7 @@ class MisEstudiantes extends Component
 
         // Solo matrículas que el apoderado tutela (misma regla que la vista).
         $matricula = Matricula::visiblePara(Auth::user())
-            ->findOrFail($datos['informandoMatriculaId']);
+            ->findOrFail((int) $datos['informandoMatriculaId']);
 
         $ruta = $this->comprobante->store('comprobantes');
 
@@ -71,7 +73,7 @@ class MisEstudiantes extends Component
         $this->mostrarInformar = false;
     }
 
-    public function render(ServicioPagos $servicio)
+    public function render(ServicioPagos $servicio): View
     {
         $matriculas = Matricula::visiblePara(Auth::user())
             ->with(['persona.grado', 'sede'])

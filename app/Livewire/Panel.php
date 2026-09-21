@@ -15,13 +15,14 @@ use App\Services\ServicioCreditos;
 use App\Services\ServicioPagos;
 use App\Support\Tenancy\Grupo as Tenant;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Title('Resumen')]
 class Panel extends Component
 {
-    public function render(ServicioPagos $pagos, ServicioCreditos $creditos)
+    public function render(ServicioPagos $pagos, ServicioCreditos $creditos): View
     {
         $usuario = Auth::user();
         $hoy = now();

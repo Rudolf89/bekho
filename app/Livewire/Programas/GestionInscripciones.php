@@ -15,6 +15,7 @@ use App\Support\Tenancy\Grupo as Tenant;
 use Carbon\Carbon;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -144,7 +145,7 @@ class GestionInscripciones extends Component
         ], [], ['ayudanteClaseId' => 'clase', 'ayudanteFecha' => 'fecha']);
 
         $clase = Clase::with('horarios')->find($this->ayudanteClaseId);
-        $marca = $servicio->marcar($inscripcion->persona, $clase, Carbon::parse($this->ayudanteFecha), Auth::id());
+        $marca = $servicio->marcar($inscripcion->persona, $clase, Carbon::parse($this->ayudanteFecha), Auth::user()?->id);
 
         $this->reset('ayudanteClaseId', 'ayudanteFecha');
 
@@ -219,7 +220,7 @@ class GestionInscripciones extends Component
             : null;
     }
 
-    public function render()
+    public function render(): View
     {
         $inscripciones = $this->aplicarBusqueda(
             InscripcionPrograma::with(['persona', 'programa', 'etapaActual'])->withSum('horas as horas_total', 'horas'),

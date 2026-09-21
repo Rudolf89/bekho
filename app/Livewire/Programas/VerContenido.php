@@ -9,6 +9,7 @@ use App\Services\ServicioProgramas;
 use Flux\Flux;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -46,7 +47,7 @@ class VerContenido extends Component
         }
     }
 
-    public function completarYSeguir(ServicioProgramas $servicio)
+    public function completarYSeguir(ServicioProgramas $servicio): void
     {
         if ($persona = Auth::user()?->persona) {
             $servicio->marcarContenido($persona, $this->contenido, EstadoProgreso::Completado);
@@ -54,7 +55,7 @@ class VerContenido extends Component
 
         $siguiente = $this->vecino(1);
 
-        return $this->redirect(
+        $this->redirect(
             $siguiente
                 ? route('programas.contenido', $siguiente)
                 : route('programas.programa', $this->contenido->etapaPrograma->programa_id),
@@ -103,7 +104,7 @@ class VerContenido extends Component
         return null;
     }
 
-    public function render()
+    public function render(): View
     {
         $hermanos = $this->hermanos();
         $indice = $hermanos->search(fn (Contenido $c) => $c->id === $this->contenido->id);

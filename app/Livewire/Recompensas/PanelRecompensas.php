@@ -7,6 +7,7 @@ use App\Models\Matricula;
 use App\Models\Recompensa;
 use Flux\Flux;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -82,7 +83,7 @@ class PanelRecompensas extends Component
         $logro?->delete();
     }
 
-    public function render()
+    public function render(): View
     {
         $matricula = $this->matricula();
 

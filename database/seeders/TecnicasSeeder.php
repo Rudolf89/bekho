@@ -33,6 +33,7 @@ class TecnicasSeeder extends Seeder
     /**
      * Crea (idempotente) una técnica y opcionalmente sus pasos.
      *
+     * @param  array<string, mixed>  $attrs
      * @param  array<int, array{0: ?string, 1: string}>  $pasos  [segmento, texto]
      */
     private function tecnica(CategoriaTecnica $cat, string $nombre, array $attrs = [], array $pasos = []): void

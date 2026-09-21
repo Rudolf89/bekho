@@ -7,9 +7,10 @@ use App\Models\Sede;
 use App\Models\TarifaSede;
 use App\Models\TipoCargo;
 use Flux\Flux;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -97,7 +98,7 @@ class GestionTarifas extends Component
      *
      * @return Collection<int, Sede>
      */
-    protected function sedesVisibles()
+    protected function sedesVisibles(): Collection
     {
         $restringidas = Auth::user()?->sedesRestringidas();
 
@@ -107,7 +108,7 @@ class GestionTarifas extends Component
             ->get();
     }
 
-    public function render()
+    public function render(): View
     {
         $sedes = $this->sedesVisibles()->load('tarifas.tipoCargo');
 

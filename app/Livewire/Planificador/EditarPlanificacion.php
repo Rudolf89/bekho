@@ -7,6 +7,7 @@ use App\Livewire\Concerns\SoloLectura;
 use App\Models\PlanificacionClase;
 use Flux\Flux;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -28,7 +29,7 @@ class EditarPlanificacion extends Component
     public function mount(PlanificacionClase $planificacion): void
     {
         $this->planificacion = $planificacion;
-        $this->habilidad_vida = $planificacion->habilidad_vida?->value ?? '';
+        $this->habilidad_vida = $planificacion->habilidad_vida->value ?? '';
         $this->contenidos = $planificacion->bloques->pluck('contenido', 'id')->all();
         $this->notas = $planificacion->cuadrantes->pluck('nota', 'id')->all();
     }
@@ -58,7 +59,7 @@ class EditarPlanificacion extends Component
         Flux::toast(variant: 'success', text: 'Planificación guardada.');
     }
 
-    public function render()
+    public function render(): View
     {
         // Recarga con relaciones frescas para la vista.
         $this->planificacion->load(['bloques', 'cuadrantes', 'programa']);

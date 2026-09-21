@@ -69,7 +69,7 @@ class RecompensasSeeder extends Seeder
                 'habilidad_vida' => $habilidad->value,
                 'grupo_etario' => null, // aplica a todos los grupos
                 'color' => '#7c3aed',
-                'emoji' => $emoji[$habilidad->value] ?? '🏅',
+                'emoji' => $emoji[$habilidad->value],
                 'repetible' => false,
                 'orden' => $orden + 1,
             ]);

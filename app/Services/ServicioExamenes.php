@@ -51,7 +51,7 @@ class ServicioExamenes
     {
         $ultima = $matricula->graduaciones()->latest('fecha')->first();
 
-        return $ultima?->fecha ?? $matricula->fecha_ingreso ?? $matricula->created_at;
+        return $ultima->fecha ?? $matricula->fecha_ingreso ?? $matricula->created_at;
     }
 
     /**
@@ -106,22 +106,38 @@ class ServicioExamenes
      * Matrículas activas sugeridas para una convocatoria (de su sede), con las
      * métricas de elegibilidad. El instructor confirma con el visto bueno.
      *
-     * @return Collection<int, array{matricula: Matricula, meses: int, asistencia: int|null, cumple: bool}>
+     * @return list<array{matricula: Matricula, meses: int, asistencia: int|null, cumple: bool}>
      */
-    public function sugerirElegibles(Convocatoria $convocatoria): Collection
+    public function sugerirElegibles(Convocatoria $convocatoria): array
     {
-        return Matricula::activas()
+        $matriculas = Matricula::activas()
             ->when($convocatoria->sede_id, fn ($q) => $q->where('sede_id', $convocatoria->sede_id))
             ->with('persona')
             ->get()
-            ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto())
-            ->values()
-            ->map(fn (Matricula $m) => [
-                'matricula' => $m,
-                'meses' => $this->mesesEnGradoActual($m),
-                'asistencia' => $this->porcentajeAsistencia($m),
-                'cumple' => $this->cumpleElegibilidad($m),
-            ]);
+            ->sortBy(fn (Matricula $m) => $m->persona?->nombreCompleto());
+
+        $sugeridos = [];
+
+        foreach ($matriculas as $matricula) {
+            $sugeridos[] = $this->metricasElegibilidad($matricula);
+        }
+
+        return $sugeridos;
+    }
+
+    /**
+     * Métricas de elegibilidad de una matrícula para la convocatoria.
+     *
+     * @return array{matricula: Matricula, meses: int, asistencia: int|null, cumple: bool}
+     */
+    private function metricasElegibilidad(Matricula $matricula): array
+    {
+        return [
+            'matricula' => $matricula,
+            'meses' => $this->mesesEnGradoActual($matricula),
+            'asistencia' => $this->porcentajeAsistencia($matricula),
+            'cumple' => $this->cumpleElegibilidad($matricula),
+        ];
     }
 
     /**

@@ -52,7 +52,12 @@ class PreguntaCuestionario extends Model
      */
     public function idsCorrectos(): array
     {
-        return $this->opciones->where('correcta', true)->pluck('id')->all();
+        return array_values(
+            $this->opciones
+                ->where('correcta', true)
+                ->map(fn (OpcionPregunta $o) => $o->id)
+                ->all()
+        );
     }
 
     /**

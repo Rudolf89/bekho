@@ -10,6 +10,7 @@ use App\Models\Sede;
 use Flux\Flux;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -68,7 +69,7 @@ class GestionConvocatorias extends Component
         $this->mostrarModal = false;
     }
 
-    public function render()
+    public function render(): View
     {
         $convocatorias = $this->aplicarOrden(
             $this->aplicarBusqueda(

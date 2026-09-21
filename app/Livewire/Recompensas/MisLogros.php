@@ -7,6 +7,7 @@ use App\Models\Matricula;
 use App\Models\Recompensa;
 use App\Models\Tutela;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -18,7 +19,7 @@ use Livewire\Component;
 #[Title('Mis logros')]
 class MisLogros extends Component
 {
-    public function render()
+    public function render(): View
     {
         $usuario = Auth::user();
 

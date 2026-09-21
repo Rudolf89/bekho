@@ -6,6 +6,7 @@ use App\Livewire\Concerns\SoloLectura;
 use App\Models\EtapaPrograma;
 use App\Models\Programa;
 use Flux\Flux;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -97,7 +98,7 @@ class AdminEtapas extends Component
         $etapa->update(['activo' => ! $etapa->activo]);
     }
 
-    public function render()
+    public function render(): View
     {
         return view('livewire.programas.admin.admin-etapas', [
             'etapas' => EtapaPrograma::with('programa')->orderBy('programa_id')->orderBy('orden')->withCount('contenidos')->get(),

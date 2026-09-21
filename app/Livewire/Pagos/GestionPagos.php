@@ -13,6 +13,7 @@ use Flux\Flux;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -86,7 +87,7 @@ class GestionPagos extends Component
     protected function config(): ConfiguracionPago
     {
         $grupoId = Grupo::id()
-            ?? Auth::user()?->grupo_id
+            ?? Auth::user()->grupo_id
             ?? \App\Models\Grupo::query()->orderBy('id')->value('id');
 
         if (! $grupoId) {
@@ -118,7 +119,7 @@ class GestionPagos extends Component
             'pagoReferencia' => ['nullable', 'string', 'max:100'],
         ]);
 
-        $matricula = Matricula::findOrFail($datos['pagoMatriculaId']);
+        $matricula = Matricula::findOrFail((int) $datos['pagoMatriculaId']);
 
         // Registro manual de dirección/recepción: nace verificado y se aplica a
         // los cargos pendientes de la matrícula.
@@ -179,7 +180,7 @@ class GestionPagos extends Component
         $this->mostrarConfig = false;
     }
 
-    public function render(ServicioPagos $servicio)
+    public function render(ServicioPagos $servicio): View
     {
         // Consulta base filtrable: búsqueda por quien pagó / referencia + estado.
         $base = $this->aplicarBusqueda(

@@ -10,6 +10,7 @@ use App\Services\ServicioPagos;
 use Flux\Flux;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
@@ -62,7 +63,7 @@ class VerMatricula extends Component
             ->first();
     }
 
-    public function render(ServicioExamenes $examenes, ServicioPagos $pagos)
+    public function render(ServicioExamenes $examenes, ServicioPagos $pagos): View
     {
         $this->matricula->load(['persona.grado', 'sede', 'notas.autor',
             'graduaciones.gradoDestino']);

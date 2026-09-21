@@ -6,6 +6,7 @@ use App\Enums\EstadoLegacy;
 use App\Models\AsistenciaAyudante;
 use App\Models\Clase;
 use App\Models\HoraPrograma;
+use App\Models\HorarioClase;
 use App\Models\InscripcionPrograma;
 use App\Models\Persona;
 use Carbon\Carbon;
@@ -31,8 +32,9 @@ class ServicioHorasAyudante
         $dia = $fecha->dayOfWeekIso; // 1 (lunes) … 7 (domingo)
 
         return (float) $clase->horarios
-            ->filter(fn ($h) => (int) (is_object($h->dia_semana) ? $h->dia_semana->value : $h->dia_semana) === $dia)
-            ->sum(fn ($h) => abs(Carbon::parse($h->hora_fin)->floatDiffInHours(Carbon::parse($h->hora_inicio))));
+            ->filter(fn (HorarioClase $h) => $h->dia_semana->value === $dia)
+            ->sum(fn (HorarioClase $h) => Carbon::parse($h->hora_fin)
+                ->diffInHours(Carbon::parse($h->hora_inicio), absolute: true));
     }
 
     /**

@@ -34,8 +34,11 @@ trait ConOrden
     /**
      * Aplica el orden a la consulta, validando contra los campos permitidos.
      *
-     * @param  Builder<covariant \Illuminate\Database\Eloquent\Model>  $query
+     * @template TModel of \Illuminate\Database\Eloquent\Model
+     *
+     * @param  Builder<TModel>  $query
      * @param  list<string>  $permitidos
+     * @return Builder<TModel>
      */
     public function aplicarOrden(Builder $query, array $permitidos, string $porDefecto): Builder
     {

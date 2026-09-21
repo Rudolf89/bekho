@@ -193,9 +193,11 @@ class User extends Authenticatable implements PasskeyUser
             return EstadoProgreso::Pendiente;
         }
 
-        return $this->progresos()
+        $progreso = $this->progresos()
             ->where('contenido_id', $contenido->id)
-            ->first()?->estado ?? EstadoProgreso::Pendiente;
+            ->first();
+
+        return $progreso === null ? EstadoProgreso::Pendiente : $progreso->estado;
     }
 
     /**
@@ -233,7 +235,13 @@ class User extends Authenticatable implements PasskeyUser
             return null;
         }
 
-        $sedes = $roles->pluck('sede_id')->filter()->unique()->values()->all();
+        $sedes = array_values(
+            $roles
+                ->filter(fn (PersonalGrupoRol $r) => $r->sede_id !== null)
+                ->map(fn (PersonalGrupoRol $r) => (int) $r->sede_id)
+                ->unique()
+                ->all()
+        );
 
         return $sedes === [] ? null : $sedes;
     }

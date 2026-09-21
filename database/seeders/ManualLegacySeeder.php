@@ -47,7 +47,7 @@ class ManualLegacySeeder extends Seeder
         $ruta = database_path("data/{$archivo}");
 
         if (! File::exists($ruta)) {
-            $this->command?->warn("No existe {$ruta}; se omite.");
+            $this->command->warn("No existe {$ruta}; se omite.");
 
             return null;
         }
