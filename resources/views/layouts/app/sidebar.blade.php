@@ -109,7 +109,7 @@
                         @endcanany
 
                         {{-- Progreso: cómo avanza el alumno (grado, logros, formación). --}}
-                        @canany(['ver examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones', 'gestionar competencia'])
+                        @canany(['ver examenes', 'gestionar recompensas', 'gestionar inscripciones', 'gestionar planificaciones'])
                             <flux:sidebar.group
                                 expandable
                                 x-data="{ abierto: $persist(true).as('bekho-nav-progreso') }"
@@ -137,16 +137,11 @@
                                         Cinturones
                                     </flux:sidebar.item>
                                 @endcan
-                                @can('gestionar competencia')
-                                    <flux:sidebar.item icon="trophy" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
-                                        Competencia
-                                    </flux:sidebar.item>
-                                @endcan
                             </flux:sidebar.group>
                         @endcanany
 
                         {{-- Programa: el currículo ATA con el que se arma la clase. --}}
-                        @can('gestionar planificaciones')
+                        @canany(['gestionar planificaciones', 'gestionar competencia'])
                             <flux:sidebar.group
                                 expandable
                                 x-data="{ abierto: $persist(true).as('bekho-nav-programa') }"
@@ -154,26 +149,34 @@
                                 heading="Programa"
                                 class="grid"
                             >
-                                <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
-                                    Ciclos
-                                </flux:sidebar.item>
-                                <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
-                                    Planificador
-                                </flux:sidebar.item>
-                                <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
-                                    Biblioteca
-                                </flux:sidebar.item>
-                                <flux:sidebar.item icon="bars-3-bottom-left" :href="route('formas.index')" :current="request()->routeIs('formas.*')" wire:navigate>
-                                    Formas
-                                </flux:sidebar.item>
-                                <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
-                                    Cuadrantes
-                                </flux:sidebar.item>
-                                <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
-                                    Planificaciones
-                                </flux:sidebar.item>
+                                @can('gestionar planificaciones')
+                                    <flux:sidebar.item icon="arrow-path-rounded-square" :href="route('ciclos.index')" :current="request()->routeIs('ciclos.*')" wire:navigate>
+                                        Ciclos
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="book-open" :href="route('planificador.index')" :current="request()->routeIs('planificador.*')" wire:navigate>
+                                        Planificador
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="rectangle-stack" :href="route('biblioteca.index')" :current="request()->routeIs('biblioteca.*')" wire:navigate>
+                                        Biblioteca
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="bars-3-bottom-left" :href="route('formas.index')" :current="request()->routeIs('formas.*')" wire:navigate>
+                                        Formas
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="squares-2x2" :href="route('cuadrantes.index')" :current="request()->routeIs('cuadrantes.*')" wire:navigate>
+                                        Cuadrantes
+                                    </flux:sidebar.item>
+                                    <flux:sidebar.item icon="clipboard-document-list" :href="route('planificaciones.index')" :current="request()->routeIs('planificaciones.*')" wire:navigate>
+                                        Planificaciones
+                                    </flux:sidebar.item>
+                                @endcan
+                                {{-- «Planilla» en BEKHO es solo la de competencia (planillas_competencia). --}}
+                                @can('gestionar competencia')
+                                    <flux:sidebar.item icon="table-cells" :href="route('competencia.index')" :current="request()->routeIs('competencia.*')" wire:navigate>
+                                        Planillas
+                                    </flux:sidebar.item>
+                                @endcan
                             </flux:sidebar.group>
-                        @endcan
+                        @endcanany
                     </flux:sidebar.group>
                 @endcanany
 
